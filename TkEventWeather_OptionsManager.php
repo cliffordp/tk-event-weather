@@ -310,39 +310,11 @@ class TkEventWeather_OptionsManager {
 
             <h2><?php echo $this->getPluginDisplayName(); echo ' '; _e('Settings', 'tk-event-weather'); ?></h2>
 
-            <form method="post" action="">
-            <?php settings_fields($settingsGroup); ?>
-                <style type="text/css">
-                    table.plugin-options-table {width: 100%; padding: 0;}
-                    table.plugin-options-table tr:nth-child(even) {background: #f9f9f9}
-                    table.plugin-options-table tr:nth-child(odd) {background: #FFF}
-                    table.plugin-options-table tr:first-child {width: 35%;}
-                    table.plugin-options-table td {vertical-align: middle;}
-                    table.plugin-options-table td+td {width: auto}
-                    table.plugin-options-table td > p {margin-top: 0; margin-bottom: 0;}
-                </style>
-                <table class="plugin-options-table"><tbody>
-                <?php
-                if ($optionMetaData != null) {
-                    foreach ($optionMetaData as $aOptionKey => $aOptionMeta) {
-                        $displayText = is_array($aOptionMeta) ? $aOptionMeta[0] : $aOptionMeta;
-                        ?>
-                            <tr valign="top">
-                                <th scope="row"><p><label for="<?php echo $aOptionKey ?>"><?php echo $displayText ?></label></p></th>
-                                <td>
-                                <?php $this->createFormControl($aOptionKey, $aOptionMeta, $this->getOption($aOptionKey)); ?>
-                                </td>
-                            </tr>
-                        <?php
-                    }
-                }
-                ?>
-                </tbody></table>
-                <p class="submit">
-                    <input type="submit" class="button-primary"
-                           value="<?php _e('Save Changes', 'tk-event-weather') ?>"/>
-                </p>
-            </form>
+            <p>
+                <a href="<?php echo apply_filters( 'tk_event_weather_customizer_link', get_admin_url( get_current_blog_id(), 'customize.php' ) ); ?>" class="button-primary">
+                  <?php _e( 'Edit Plugin Settings in WP Customizer', 'tk-weather-for-tec' ) ?>
+                </a>
+            </p>
         </div>
         <?php
 
@@ -356,6 +328,29 @@ class TkEventWeather_OptionsManager {
      * @return void
      */
     protected function createFormControl($aOptionKey, $aOptionMeta, $savedOptionValue) {
+        $all_password_field_key_endings = array(
+          // enter lower-case here to match any case
+          '_api_key',
+          '_apikey',
+          '_password',
+          '_secret',
+        );
+        
+        $is_password_type_field = false;
+        
+        foreach( $all_password_field_key_endings as $password_ending ) {
+          $aOptionKey_strlen = strlen( $aOptionKey );
+          $password_ending_strlen = strlen( $password_ending );
+          if(
+            1 <= $password_ending_strlen
+            && 1 <= $aOptionKey_strlen
+            && $password_ending_strlen <= $aOptionKey_strlen
+            && 0 === substr_compare( $aOptionKey, $password_ending, $aOptionKey_strlen - $password_ending_strlen, $password_ending_strlen, TRUE ) // added 1+ checks, above, so this function does not throw errors in PHP versions lower than 5.6.0 -- Reference: http://stackoverflow.com/a/619725/893907
+          ) {
+            $is_password_type_field = true;
+          }
+        }
+        
         if (is_array($aOptionMeta) && count($aOptionMeta) >= 2) { // Drop-down list
             $choices = array_slice($aOptionMeta, 1);
             ?>
@@ -369,6 +364,13 @@ class TkEventWeather_OptionsManager {
             }
             ?>
             </select></p>
+            <?php
+
+        }
+        elseif( true === $is_password_type_field ) { // Password/API Key Type field
+            ?>
+            <p><input type="password" autocomplete="off" name="<?php echo $aOptionKey ?>" id="<?php echo $aOptionKey ?>"
+                      value="<?php echo esc_attr($savedOptionValue) ?>" size="50"/></p>
             <?php
 
         }

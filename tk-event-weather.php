@@ -1,13 +1,15 @@
 <?php
 /*
    Plugin Name: TK Event Weather
-   Plugin URI: http://wordpress.org/extend/plugins/tk-event-weather/
-   Version: 0.1
+   Plugin URI: https://wordpress.org/plugins/tk-event-weather/
+   Version: 1.0
    Author: TourKick (Clifford Paulick)
-   Description: Bringing weather forecasts to your online event information
+   Author URI: http://tourkick.com/
+   Description: Accurate, reliable, and free weather forecasts for your WordPress events
    Text Domain: tk-event-weather
    License: GPLv3
-  */
+   License URI: http://www.gnu.org/licenses/gpl-3.0.html
+*/
 
 /*
     "WordPress Plugin Template" Copyright (C) 2016 Michael Simpson  (email : michael.d.simpson@gmail.com)

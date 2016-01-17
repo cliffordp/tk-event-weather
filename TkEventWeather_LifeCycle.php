@@ -121,8 +121,8 @@ class TkEventWeather_LifeCycle extends TkEventWeather_InstallIndicator {
      * @return void
      */
     public function addSettingsSubMenuPage() {
-        $this->addSettingsSubMenuPageToPluginsMenu();
-        //$this->addSettingsSubMenuPageToSettingsMenu();
+        //$this->addSettingsSubMenuPageToPluginsMenu();
+        $this->addSettingsSubMenuPageToSettingsMenu();
     }
 
 
