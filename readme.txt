@@ -16,7 +16,7 @@ Accurate, reliable, and free weather forecasts for your WordPress events
 
 = Highlights =
 
-* Registers the `[tk_event_weather]` shortcode for use anywhere on your site (not just for your site calendar's event-specific information) so its usage is very flexible as long as there is a valid Forecast.io API key, latitude, longitude, and timestamp (will output for current time if no timestamp is given)
+* Registers the `[tk-event-weather]` shortcode for use anywhere on your site (not just for your site calendar's event-specific information) so its usage is very flexible as long as there is a valid Forecast.io API key, latitude, longitude, and timestamp (will output for current time if no timestamp is given)
 * Uses the Forecast.io API to provide you with an accurate, reliable (typically 99.9% uptime), and free (or low cost if over the daily free API calls limit) weather forecast
 * Uses WordPress' Transients API to minimize Forecast.io API calls (i.e. does not call the Forecast.io API on every page load) to increase page load time and save you money (or keep you from hitting the daily free limit)
 * Internationalized / translatable (translations not provided)
@@ -74,7 +74,7 @@ After automatically or manually installing to wp-content/plugins/:
 
 = What shortcodes are available? =
 
-`[tk_event_weather]`
+`[tk-event-weather]`
 
 = What are some shortcode examples? =
 

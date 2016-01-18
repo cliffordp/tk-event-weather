@@ -117,6 +117,10 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
         
         // Register short codes
         // http://plugin.michael-simpson.com/?page_id=39
+        
+        include_once( 'TkEventWeather_TkEventWeatherShortcode.php' );
+        $sc = new TkEventWeather_TkEventWeatherShortcode();
+        $sc->register( 'tk-event-weather' );
 
 
         // Register AJAX hooks
