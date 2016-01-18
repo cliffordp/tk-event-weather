@@ -241,11 +241,11 @@ class TkEventWeather_OptionsManager {
                       $pluginName,
                       'administrator',
                       get_class($this),
-                      array(&$this, 'settingsPage')
+                      array($this, 'settingsPage')
         /*,plugins_url('/images/icon.png', __FILE__)*/); // if you call 'plugins_url; be sure to "require_once" it
 
         //call register settings function
-        add_action('admin_init', array(&$this, 'registerSettings'));
+        add_action('admin_init', array($this, 'registerSettings'));
     }
 
     public function registerSettings() {
