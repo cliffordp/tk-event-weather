@@ -4,7 +4,7 @@ Donate link: http://tourkick.com/pay/
 Tags: add-on, api, bookings, calendar, celsius, class, community, concert, conference, custom fields, date, dates, event, event ticketing, event tickets, Event Tickets Plus, events, Events Calendar PRO, fahrenheit, forecast, Forecast.io, Forecastio, geolocation, google maps, gps, icon font, icon fonts, local weather, meeting, Modern Tribe, Organizer, posts, registration, responsive, RSVP, seminar, shortcode, summit, svg, The Events Calendar, ticket integration, ticket sales, tickets, Tribe, venue, weather, weather by location, weather underground, widget, workshop, wunderground
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
-Requires at least: 4.0
+Requires at least: 4.3.0
 Tested up to: 4.4.1
 Stable tag: trunk
 
@@ -86,7 +86,7 @@ This plugin will work with any properly-coded WordPress theme. Free styling / cu
 
 = What system specs are required? =
 
-This plugin requires WordPress version 4.0 or later. It is always recommended to use the latest version of WordPress for compatibility, performance, and security reasons.
+This plugin requires WordPress version 4.3.0 or later. It is always recommended to use the latest version of WordPress for compatibility, performance, and security reasons.
 
 This plugin may not work properly with PHP versions earlier than 5.2. You should meet or exceed the (WordPress recommended software specs)[https://wordpress.org/about/requirements/] for best performance and security.
 
