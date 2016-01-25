@@ -186,8 +186,13 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
       	  return TkEventWeather_Functions::invalid_shortcode_message( 'Event Time needs to be more recent than the Past Cutoff Time' );
         }
       }
-    	
-    	
+      
+      // max 60 years in the past, per API docs
+      if( strtotime( '-60 years' ) > $time_timestamp ) {
+    	  return TkEventWeather_Functions::invalid_shortcode_message( 'Event Time needs to be more recent than 60 years in the past, per Forecast.io API docs,' );
+      }
+      
+    	//
     	// cutoff_future
     	// strtotime date relative to $time_timestamp
     	if ( ! empty( $atts['cutoff_future'] ) ) {
@@ -216,6 +221,12 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
         }
       }
       
+      // max 10 years future, per API docs
+      if( $time_timestamp > strtotime( '+10 years' ) ) {
+    	  return TkEventWeather_Functions::invalid_shortcode_message( 'Event Time needs to be more recent than 60 years in the past, per Forecast.io API docs,' );
+      }
+      
+      
       //
       // either $time_timestamp is equal to or greater than $min_timestamp
       // and less than or equal to $max_timestamp
@@ -236,7 +247,7 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
     	// exclude
     	$exclude = '';
     	
-    	$exclude_default = apply_filters( 'tk_event_weather_forecast_io_exclude_default', 'alerts,daily,flags,hourly,minutely' );
+    	$exclude_default = apply_filters( 'tk_event_weather_forecast_io_exclude_default', 'alerts,flags,minutely' );
     	
     	// shortcode argument's value
     	$exclude_arg = TkEventWeather_Functions::remove_all_whitespace( strtolower( $atts['exclude'] ) );
@@ -376,7 +387,471 @@ TK Event Weather JSON Data
         "ozone": 280.52
     }
 }
--->      
+-->
+
+
+https://api.forecast.io/forecast/_______API_KEY_______/36.281445,-75.794662,2016-02-01T16:30:00-05:00?units=auto&exclude=alerts,flags,minutely
+
+<!--
+TK Event Weather JSON Data
+{
+    "latitude": 36.281445,
+    "longitude": -75.794662,
+    "timezone": "America\/New_York",
+    "offset": -5,
+    "currently": {
+        "time": 1454362200,
+        "summary": "Clear",
+        "icon": "clear-day",
+        "precipIntensity": 0.0008,
+        "precipProbability": 0.01,
+        "precipType": "rain",
+        "temperature": 59.97,
+        "apparentTemperature": 59.97,
+        "dewPoint": 53.86,
+        "humidity": 0.8,
+        "windSpeed": 10.45,
+        "windBearing": 233,
+        "cloudCover": 0.21,
+        "pressure": 1013.48,
+        "ozone": 285.89
+    },
+    "hourly": {
+        "summary": "Partly cloudy in the evening.",
+        "icon": "partly-cloudy-night",
+        "data": [
+            {
+                "time": 1454302800,
+                "summary": "Clear",
+                "icon": "clear-night",
+                "precipIntensity": 0,
+                "precipProbability": 0,
+                "temperature": 47.57,
+                "apparentTemperature": 44.68,
+                "dewPoint": 44.67,
+                "humidity": 0.9,
+                "windSpeed": 6.19,
+                "windBearing": 222,
+                "cloudCover": 0,
+                "pressure": 1016.87,
+                "ozone": 318.03
+            },
+            {
+                "time": 1454306400,
+                "summary": "Clear",
+                "icon": "clear-night",
+                "precipIntensity": 0,
+                "precipProbability": 0,
+                "temperature": 47.23,
+                "apparentTemperature": 44.25,
+                "dewPoint": 44.62,
+                "humidity": 0.91,
+                "windSpeed": 6.22,
+                "windBearing": 222,
+                "cloudCover": 0,
+                "pressure": 1016.58,
+                "ozone": 317.5
+            },
+            {
+                "time": 1454310000,
+                "summary": "Clear",
+                "icon": "clear-night",
+                "precipIntensity": 0,
+                "precipProbability": 0,
+                "temperature": 47.14,
+                "apparentTemperature": 44.04,
+                "dewPoint": 44.88,
+                "humidity": 0.92,
+                "windSpeed": 6.41,
+                "windBearing": 224,
+                "cloudCover": 0,
+                "pressure": 1016.35,
+                "ozone": 316.39
+            },
+            {
+                "time": 1454313600,
+                "summary": "Clear",
+                "icon": "clear-night",
+                "precipIntensity": 0,
+                "precipProbability": 0,
+                "temperature": 47.13,
+                "apparentTemperature": 43.87,
+                "dewPoint": 45.24,
+                "humidity": 0.93,
+                "windSpeed": 6.71,
+                "windBearing": 227,
+                "cloudCover": 0,
+                "pressure": 1016.17,
+                "ozone": 315.02
+            },
+            {
+                "time": 1454317200,
+                "summary": "Clear",
+                "icon": "clear-night",
+                "precipIntensity": 0,
+                "precipProbability": 0,
+                "temperature": 47.1,
+                "apparentTemperature": 43.68,
+                "dewPoint": 45.46,
+                "humidity": 0.94,
+                "windSpeed": 7.04,
+                "windBearing": 229,
+                "cloudCover": 0,
+                "pressure": 1016.08,
+                "ozone": 313.5
+            },
+            {
+                "time": 1454320800,
+                "summary": "Clear",
+                "icon": "clear-night",
+                "precipIntensity": 0,
+                "precipProbability": 0,
+                "temperature": 46.85,
+                "apparentTemperature": 43.27,
+                "dewPoint": 45.3,
+                "humidity": 0.94,
+                "windSpeed": 7.24,
+                "windBearing": 228,
+                "cloudCover": 0,
+                "pressure": 1016.13,
+                "ozone": 312.01
+            },
+            {
+                "time": 1454324400,
+                "summary": "Clear",
+                "icon": "clear-night",
+                "precipIntensity": 0,
+                "precipProbability": 0,
+                "temperature": 46.63,
+                "apparentTemperature": 42.92,
+                "dewPoint": 45.03,
+                "humidity": 0.94,
+                "windSpeed": 7.44,
+                "windBearing": 228,
+                "cloudCover": 0,
+                "pressure": 1016.27,
+                "ozone": 310.37
+            },
+            {
+                "time": 1454328000,
+                "summary": "Clear",
+                "icon": "clear-night",
+                "precipIntensity": 0,
+                "precipProbability": 0,
+                "temperature": 47.15,
+                "apparentTemperature": 43.31,
+                "dewPoint": 45.25,
+                "humidity": 0.93,
+                "windSpeed": 7.95,
+                "windBearing": 228,
+                "cloudCover": 0,
+                "pressure": 1016.39,
+                "ozone": 308.2
+            },
+            {
+                "time": 1454331600,
+                "summary": "Clear",
+                "icon": "clear-day",
+                "precipIntensity": 0,
+                "precipProbability": 0,
+                "temperature": 48.9,
+                "apparentTemperature": 45.08,
+                "dewPoint": 46.26,
+                "humidity": 0.91,
+                "windSpeed": 8.88,
+                "windBearing": 229,
+                "cloudCover": 0,
+                "pressure": 1016.52,
+                "ozone": 305.1
+            },
+            {
+                "time": 1454335200,
+                "summary": "Clear",
+                "icon": "clear-day",
+                "precipIntensity": 0,
+                "precipProbability": 0,
+                "temperature": 51.39,
+                "apparentTemperature": 51.39,
+                "dewPoint": 47.67,
+                "humidity": 0.87,
+                "windSpeed": 9.96,
+                "windBearing": 230,
+                "cloudCover": 0,
+                "pressure": 1016.63,
+                "ozone": 301.47
+            },
+            {
+                "time": 1454338800,
+                "summary": "Clear",
+                "icon": "clear-day",
+                "precipIntensity": 0,
+                "precipProbability": 0,
+                "temperature": 53.94,
+                "apparentTemperature": 53.94,
+                "dewPoint": 49.15,
+                "humidity": 0.84,
+                "windSpeed": 10.98,
+                "windBearing": 231,
+                "cloudCover": 0,
+                "pressure": 1016.48,
+                "ozone": 298.1
+            },
+            {
+                "time": 1454342400,
+                "summary": "Clear",
+                "icon": "clear-day",
+                "precipIntensity": 0,
+                "precipProbability": 0,
+                "temperature": 56.44,
+                "apparentTemperature": 56.44,
+                "dewPoint": 50.73,
+                "humidity": 0.81,
+                "windSpeed": 12.07,
+                "windBearing": 231,
+                "cloudCover": 0,
+                "pressure": 1015.88,
+                "ozone": 295.19
+            },
+            {
+                "time": 1454346000,
+                "summary": "Clear",
+                "icon": "clear-day",
+                "precipIntensity": 0,
+                "precipProbability": 0,
+                "temperature": 58.83,
+                "apparentTemperature": 58.83,
+                "dewPoint": 52.32,
+                "humidity": 0.79,
+                "windSpeed": 13.09,
+                "windBearing": 231,
+                "cloudCover": 0,
+                "pressure": 1015.09,
+                "ozone": 292.54
+            },
+            {
+                "time": 1454349600,
+                "summary": "Clear",
+                "icon": "clear-day",
+                "precipIntensity": 0,
+                "precipProbability": 0,
+                "temperature": 60.49,
+                "apparentTemperature": 60.49,
+                "dewPoint": 53.45,
+                "humidity": 0.78,
+                "windSpeed": 13.51,
+                "windBearing": 231,
+                "cloudCover": 0,
+                "pressure": 1014.43,
+                "ozone": 290.3
+            },
+            {
+                "time": 1454353200,
+                "summary": "Clear",
+                "icon": "clear-day",
+                "precipIntensity": 0,
+                "precipProbability": 0,
+                "temperature": 61.2,
+                "apparentTemperature": 61.2,
+                "dewPoint": 53.95,
+                "humidity": 0.77,
+                "windSpeed": 12.94,
+                "windBearing": 232,
+                "cloudCover": 0.03,
+                "pressure": 1013.94,
+                "ozone": 288.55
+            },
+            {
+                "time": 1454356800,
+                "summary": "Clear",
+                "icon": "clear-day",
+                "precipIntensity": 0,
+                "precipProbability": 0,
+                "temperature": 61.2,
+                "apparentTemperature": 61.2,
+                "dewPoint": 54.04,
+                "humidity": 0.77,
+                "windSpeed": 11.75,
+                "windBearing": 233,
+                "cloudCover": 0.08,
+                "pressure": 1013.55,
+                "ozone": 287.21
+            },
+            {
+                "time": 1454360400,
+                "summary": "Clear",
+                "icon": "clear-day",
+                "precipIntensity": 0.0008,
+                "precipProbability": 0.01,
+                "precipType": "rain",
+                "temperature": 60.59,
+                "apparentTemperature": 60.59,
+                "dewPoint": 53.92,
+                "humidity": 0.79,
+                "windSpeed": 10.7,
+                "windBearing": 234,
+                "cloudCover": 0.15,
+                "pressure": 1013.38,
+                "ozone": 286.2
+            },
+            {
+                "time": 1454364000,
+                "summary": "Partly Cloudy",
+                "icon": "partly-cloudy-day",
+                "precipIntensity": 0.0009,
+                "precipProbability": 0.01,
+                "precipType": "rain",
+                "temperature": 59.36,
+                "apparentTemperature": 59.36,
+                "dewPoint": 53.79,
+                "humidity": 0.82,
+                "windSpeed": 10.2,
+                "windBearing": 233,
+                "cloudCover": 0.26,
+                "pressure": 1013.57,
+                "ozone": 285.57
+            },
+            {
+                "time": 1454367600,
+                "summary": "Partly Cloudy",
+                "icon": "partly-cloudy-night",
+                "precipIntensity": 0.0009,
+                "precipProbability": 0.01,
+                "precipType": "rain",
+                "temperature": 57.79,
+                "apparentTemperature": 57.79,
+                "dewPoint": 53.57,
+                "humidity": 0.86,
+                "windSpeed": 9.89,
+                "windBearing": 230,
+                "cloudCover": 0.39,
+                "pressure": 1014.02,
+                "ozone": 285.27
+            },
+            {
+                "time": 1454371200,
+                "summary": "Partly Cloudy",
+                "icon": "partly-cloudy-night",
+                "precipIntensity": 0.001,
+                "precipProbability": 0.01,
+                "precipType": "rain",
+                "temperature": 56.47,
+                "apparentTemperature": 56.47,
+                "dewPoint": 53.29,
+                "humidity": 0.89,
+                "windSpeed": 9.5,
+                "windBearing": 229,
+                "cloudCover": 0.46,
+                "pressure": 1014.44,
+                "ozone": 285
+            },
+            {
+                "time": 1454374800,
+                "summary": "Partly Cloudy",
+                "icon": "partly-cloudy-night",
+                "precipIntensity": 0.0012,
+                "precipProbability": 0.02,
+                "precipType": "rain",
+                "temperature": 55.67,
+                "apparentTemperature": 55.67,
+                "dewPoint": 53.05,
+                "humidity": 0.91,
+                "windSpeed": 8.88,
+                "windBearing": 232,
+                "cloudCover": 0.39,
+                "pressure": 1014.77,
+                "ozone": 284.73
+            },
+            {
+                "time": 1454378400,
+                "summary": "Partly Cloudy",
+                "icon": "partly-cloudy-night",
+                "precipIntensity": 0.0013,
+                "precipProbability": 0.02,
+                "precipType": "rain",
+                "temperature": 55.11,
+                "apparentTemperature": 55.11,
+                "dewPoint": 52.84,
+                "humidity": 0.92,
+                "windSpeed": 8.2,
+                "windBearing": 237,
+                "cloudCover": 0.25,
+                "pressure": 1015.08,
+                "ozone": 284.5
+            },
+            {
+                "time": 1454382000,
+                "summary": "Clear",
+                "icon": "clear-night",
+                "precipIntensity": 0.0014,
+                "precipProbability": 0.03,
+                "precipType": "rain",
+                "temperature": 54.72,
+                "apparentTemperature": 54.72,
+                "dewPoint": 52.7,
+                "humidity": 0.93,
+                "windSpeed": 7.64,
+                "windBearing": 242,
+                "cloudCover": 0.18,
+                "pressure": 1015.31,
+                "ozone": 284.1
+            },
+            {
+                "time": 1454385600,
+                "summary": "Partly Cloudy",
+                "icon": "partly-cloudy-night",
+                "precipIntensity": 0.0012,
+                "precipProbability": 0.02,
+                "precipType": "rain",
+                "temperature": 54.64,
+                "apparentTemperature": 54.64,
+                "dewPoint": 52.72,
+                "humidity": 0.93,
+                "windSpeed": 7.31,
+                "windBearing": 245,
+                "cloudCover": 0.28,
+                "pressure": 1015.41,
+                "ozone": 283.3
+            }
+        ]
+    },
+    "daily": {
+        "data": [
+            {
+                "time": 1454302800,
+                "summary": "Partly cloudy starting in the evening.",
+                "icon": "partly-cloudy-night",
+                "sunriseTime": 1454328362,
+                "sunsetTime": 1454365792,
+                "moonPhase": 0.77,
+                "precipIntensity": 0.0005,
+                "precipIntensityMax": 0.0014,
+                "precipIntensityMaxTime": 1454382000,
+                "precipProbability": 0.03,
+                "precipType": "rain",
+                "temperatureMin": 46.63,
+                "temperatureMinTime": 1454324400,
+                "temperatureMax": 61.2,
+                "temperatureMaxTime": 1454353200,
+                "apparentTemperatureMin": 42.92,
+                "apparentTemperatureMinTime": 1454324400,
+                "apparentTemperatureMax": 61.2,
+                "apparentTemperatureMaxTime": 1454353200,
+                "dewPoint": 49.75,
+                "humidity": 0.87,
+                "windSpeed": 9.17,
+                "windBearing": 231,
+                "cloudCover": 0.1,
+                "pressure": 1015.39,
+                "ozone": 297.84
+            }
+        ]
+    }
+}
+-->
+
+
+
+
       // if API doesn't TECHNICALLY error out but does return an API error message
       examples:
       {"code":400,"error":"An invalid time was specified."}
@@ -424,7 +899,7 @@ TK Event Weather JSON Data
     		// @link https://codex.wordpress.org/Function_Reference/esc_url_raw
     		// @link https://developer.wordpress.org/reference/functions/wp_safe_remote_get/
         $request = wp_safe_remote_get( esc_url_raw( $request_uri ) );
-        
+                
     		// @link https://developer.wordpress.org/reference/functions/wp_remote_retrieve_body/
     		$body = wp_remote_retrieve_body( $request );
     		
@@ -452,7 +927,7 @@ TK Event Weather JSON Data
     	}
     	
     	// now $data is set for sure (better be to have gotten this far)
-    	$output .= sprintf( '<!--%1$sTK Event Weather JSON Data%1$s%2$s%1$s-->', PHP_EOL, json_encode( $data, JSON_PRETTY_PRINT ) ); // requires PHP 5.4
+    	$output .= sprintf( '<!--%1$sTK Event Weather JSON Data%1$s%2$s%1$s-->%1$s', PHP_EOL, json_encode( $data, JSON_PRETTY_PRINT ) ); // requires PHP 5.4
     	$output .= '`tk-event-weather go ahead with API data`';
     	$output .= PHP_EOL;
     	$output .= PHP_EOL;
@@ -465,7 +940,7 @@ TK Event Weather JSON Data
     	// class
     	
     	// $debug_vars = true;
-    	$debug_vars = WP_DEBUG; // if WP_DEBUG is true, set $debug_vars to true
+    	$debug_vars = WP_DEBUG; // if WP_DEBUG is true, set $debug_vars to true for admins only
     	if ( ! empty( $debug_vars ) && current_user_can( 'edit_theme_options' ) ) { // admins only
       	var_dump( get_defined_vars() );
     	}

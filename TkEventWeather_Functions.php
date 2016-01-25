@@ -227,21 +227,23 @@ class TkEventWeather_Functions {
     
     // is valid ISO 8601 time (i.e. we do not want valid ISO 8601 Duration, Time Interval, etc.)
     // API requires [YYYY]-[MM]-[DD]T[HH]:[MM]:[SS] -- https://en.wikipedia.org/wiki/ISO_8601#Combined_date_and_time_representations
-    // with an optional time zone formatted as Z for GMT time or {+,-}[HH][MM] for an offset in hours or minutes
+    // with an optional time zone formatted as Z for GMT time or {+,-}[HH]:[MM] (with or without separating colon) for an offset in hours or minutes
     // For the latter format, if no timezone is present, local time (at the provided latitude and longitude) is assumed.
 /*
-    @link https://regex101.com/r/fM7sG2/1
+    @link https://regex101.com/r/mL0xZ4/1
     Should match ISO 8601 datetime for Forecast.io API:
     [YYYY]-[MM]-[DD]T[HH]:[MM]:[SS]
-    with an optional time zone formatted as Z for GMT time or {+,-}[HH][MM] (with or without separating colon) for an offset
+    with an optional time zone formatted as Z for GMT time or {+,-}[HH]:[MM] (with or without separating colon) for an offset
     
     Does Match:
     2008-09-15T15:53:00
     2007-03-01T13:00:00Z
-    2015-10-05T21:46:54-0800
-    2015-10-05T21:46:54+00:00
+    2015-10-05T21:46:54-1500
+    2015-10-05T21:46:54+07:00
     
     Does Not Match:
+    2015-10-05T21:46:54-02
+    0
     2008
     2008-09
     2008-09-15
