@@ -287,9 +287,9 @@ class TkEventWeather_OptionsManager {
             <tr><td><?php _e('PHP Version', 'tk-event-weather'); ?></td>
                 <td><?php echo phpversion(); ?>
                 <?php
-                if (version_compare('5.2', phpversion()) > 0) {
+                if (version_compare('5.4', phpversion()) > 0) {
                     echo '&nbsp;&nbsp;&nbsp;<span style="background-color: #ffcc00;">';
-                    _e('(WARNING: This plugin may not work properly with versions earlier than PHP 5.2)', 'tk-event-weather');
+                    _e('(WARNING: This plugin may not work properly with versions earlier than PHP 5.4)', 'tk-event-weather');
                     echo '</span>';
                 }
                 ?>

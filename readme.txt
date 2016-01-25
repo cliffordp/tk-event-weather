@@ -16,7 +16,7 @@ Accurate, reliable, and free weather forecasts for your WordPress events
 
 = Highlights =
 
-* Registers the `[tk-event-weather]` shortcode for use anywhere on your site (not just for your site calendar's event-specific information) so its usage is very flexible as long as there is a valid Forecast.io API key, latitude, longitude, and timestamp (will output for current time if no timestamp is given)
+* Registers the `[tk-event-weather]` shortcode for use anywhere on your site (not just for your site calendar's event-specific information) so its usage is very flexible as long as there is a valid Forecast.io API key, latitude, longitude, and time (will output for _right now_ if no time is given)
 * Uses the Forecast.io API to provide you with an accurate, reliable (typically 99.9% uptime), and free (or low cost if over the daily free API calls limit) weather forecast
 * Uses WordPress' Transients API to minimize Forecast.io API calls (i.e. does not call the Forecast.io API on every page load) to increase page load time and save you money (or keep you from hitting the daily free limit)
 * Internationalized / translatable (translations not provided)
@@ -67,7 +67,7 @@ After automatically or manually installing to wp-content/plugins/:
 1. Activate this plugin
 2. Navigate to this plugin's Settings page (wp-admin > Settings > TK Event Weather)
 3. Click the "Edit Plugin Settings in WP Customizer" button to enter your Forecast.io API key and setup any other available settings.
-4. Then use the shortcode however you wish throughout your site (will require manually entering latitude, longitude, and timestamp) or install one of our add-ons to make it easy to integrate with your event calendar.
+4. Then use the shortcode however you wish throughout your site (will require manually entering latitude and longitude) or install one of our add-ons to make it easy to integrate with your event calendar.
 
 == Frequently Asked Questions ==
 
@@ -88,9 +88,18 @@ This plugin will work with any properly-coded WordPress theme. Free styling / cu
 
 This plugin requires WordPress version 4.3.0 or later. It is always recommended to use the latest version of WordPress for compatibility, performance, and security reasons.
 
-This plugin may not work properly with PHP versions earlier than 5.2. You should meet or exceed the (WordPress recommended software specs)[https://wordpress.org/about/requirements/] for best performance and security.
+This plugin may not work properly with PHP versions earlier than 5.4. You should meet or exceed the (WordPress recommended software specs)[https://wordpress.org/about/requirements/] for best performance and security.
 
 Any of this plugin's add-ons for specific event calendars would require the latest version of each add-on plugin and each event calendar plugin.
+
+= How accurate are the forecasts? =
+
+Basically, accuracy is a high priority.
+
+Here are quotes from the [Forecast.io API docs](https://developer.forecast.io/docs/v2):
+
+* "Please note that we only store the best data we have for a given location and time: in the past, this will usually be observations from weather stations (though we may fall back to forecasted data if we don't have any observations); in the future, data will be more accurate the closer to the present moment you request."
+* "This API is backed by a wide range of data sources, which are aggregated together statistically to provide the most accurate forecast possible for a given location."
 
 == Screenshots ==
 1. Caption here
