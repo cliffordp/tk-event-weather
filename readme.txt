@@ -78,7 +78,19 @@ After automatically or manually installing to wp-content/plugins/:
 
 = What are some shortcode examples? =
 
-Answer here
+1) Weather for the White House on Feb 1 at 4:30pm Eastern Time:
+
+A) with single Latitude/Longitude shortcode argument and ISO 8601 datetime format
+
+`[tk-event-weather lat_long="36.281445,-75.794662" start_time="2016-02-01T16:30:00-05:00" end_time="2016-02-01T21:45:00-05:00"]`
+
+B) or separate shortcode arguments for Latitude and Longitude
+
+`[tk-event-weather lat="36.281445" long="-75.794662" start_time="2016-02-01T16:30:00-05:00" end_time="2016-02-01T21:45:00-05:00"]`
+
+C) or with Unix timestamps
+
+`[tk-event-weather lat_long="36.281445,-75.794662" start_time="1454362200" end_time="1454381100"]`
 
 = Will this plugin work with my theme? =
 
