@@ -4,7 +4,7 @@ class TkEventWeather_Functions {
   // all variables and methods should be 'static'
   
   public static $transient_name_prepend = 'tkeventw';
-  
+    
   public static function array_get_value_by_key( $array, $key, $fallback = '' ) {
     if( ! is_array( $array )
       || empty( $array )
@@ -266,6 +266,14 @@ class TkEventWeather_Functions {
         return false;
       }
     }
+  }
+  
+  public static function degrees_html() {
+    return wp_kses_post ( apply_filters( 'tk_event_weather_degrees_html', '<span class="tk-event-weather tk-event-weather-degrees">&deg;</span>' ) );
+  }
+  
+  public static function temperature_separator_html() {
+    return wp_kses_post ( apply_filters( 'tk_event_weather_temperature_separator_html', '<span class="tk-event-weather tk-event-weather-temperature-separator">&ndash;</span>' ) );
   }
   
   

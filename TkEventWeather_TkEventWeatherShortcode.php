@@ -234,6 +234,11 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
       	return TkEventWeather_Functions::invalid_shortcode_message( 'Please enter a valid End Time format' );
     	}
     	
+    	// if Event Start and End times are the same
+    	if( $start_time_timestamp == $end_time_timestamp ) {
+      	return TkEventWeather_Functions::invalid_shortcode_message( 'Please make sure Event Start Time and Event End Time are not the same' );
+    	}
+    	
     	//
     	// cutoff_future
     	// strtotime date relative to $end_time_timestamp
@@ -288,7 +293,7 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
     	// exclude
     	$exclude = '';
     	
-    	$exclude_default = apply_filters( 'tk_event_weather_forecast_io_exclude_default', 'alerts,flags,minutely' );
+    	$exclude_default = apply_filters( 'tk_event_weather_forecast_io_exclude_default', 'minutely' );
     	
     	// shortcode argument's value
     	$exclude_arg = TkEventWeather_Functions::remove_all_whitespace( strtolower( $atts['exclude'] ) );
@@ -1047,10 +1052,27 @@ TK Event Weather JSON Data
     	$weather_hourly_low = min( $weather_hourly_temps );
     	
     	
+    	$output .= '<span class="tk-event-weather tk-event-weather-temperature">';
     	
+    	$output .= __( 'Event temperature:', 'tk-event-weather' );
+      
     	
-    	$output .= sprintf( 'Event Temperatures from %s&deg;&ndash;%s&deg;.', $weather_hourly_low, $weather_hourly_high );
+    	if ( $weather_hourly_high == $weather_hourly_low ) {
+      	$output .= sprintf( ' %s%s',
+      	  $weather_hourly_low,
+      	  TkEventWeather_Functions::degrees_html()
+        );
+    	} else {
+      	$output .= sprintf( ' %s%s%s%s%s',
+      	  $weather_hourly_low,
+      	  TkEventWeather_Functions::degrees_html(),
+      	  TkEventWeather_Functions::temperature_separator_html(),
+      	  $weather_hourly_high,
+      	  TkEventWeather_Functions::degrees_html()
+        );
+      }
     	
+    	$output .= '</span>';
     	
     	// before
     	
