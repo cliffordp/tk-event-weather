@@ -25,9 +25,6 @@ class TkEventWeather_LifeCycle extends TkEventWeather_InstallIndicator {
 
     public function install() {
 
-        // Initialize Plugin Options
-        $this->initOptions();
-
         // Initialize DB Tables used by the plugin
         $this->installDatabaseTables();
 
@@ -67,13 +64,6 @@ class TkEventWeather_LifeCycle extends TkEventWeather_InstallIndicator {
      * @return void
      */
     public function deactivate() {
-    }
-
-    /**
-     * See: http://plugin.michael-simpson.com/?page_id=31
-     * @return void
-     */
-    protected function initOptions() {
     }
 
     public function addActionsAndFilters() {

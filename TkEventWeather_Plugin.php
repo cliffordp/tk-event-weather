@@ -11,39 +11,8 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     
     private static $customizer_section_id = 'tk_event_weather_section';
     
-    /**
-     * See: http://plugin.michael-simpson.com/?page_id=31
-     * @return array of option meta data.
-     */
-    public function getOptionMetaData() {
-        //  http://plugin.michael-simpson.com/?page_id=31
-        return array(
-            //'_version' => array('Installed Version'), // Leave this one commented-out. Uncomment to test upgrades.
-            //'Forecast_io_API_Key' => array(__('Enter your <a href="https://developer.forecast.io/" target="_blank">Forecast.io API Key</a> (link opens in new window) (required)', 'tk-event-weather')),
-            //'Forecast_Time_of_Event' => array(__('Use start time or end time?', 'tk-event-weather'), '', 'Start', 'End'),
-            /*
-              'CanDoSomething' => array(__('Which user role can do something', 'tk-event-weather'),
-                                        '', 'Administrator', 'Editor', 'Author', 'Contributor', 'Subscriber', 'Anyone'),
-            */
-        );
-    }
-
-//    protected function getOptionValueI18nString($optionValue) {
-//        $i18nValue = parent::getOptionValueI18nString($optionValue);
-//        return $i18nValue;
-//    }
-
-    protected function initOptions() {
-        $options = $this->getOptionMetaData();
-        if (!empty($options)) {
-            foreach ($options as $key => $arr) {
-                if (is_array($arr) && count($arr > 1)) {
-                    $this->addOption($key, $arr[1]);
-                }
-            }
-        }
-    }
-
+    
+    
     public function getPluginDisplayName() {
         return 'TK Event Weather';
     }

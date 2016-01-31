@@ -25,46 +25,12 @@ class TkEventWeather_OptionsManager {
         return get_class($this) . '_';
     }
 
-
-    /**
-     * Define your options meta data here as an array, where each element in the array
-     * @return array of key=>display-name and/or key=>array(display-name, choice1, choice2, ...)
-     * key: an option name for the key (this name will be given a prefix when stored in
-     * the database to ensure it does not conflict with other plugin options)
-     * value: can be one of two things:
-     *   (1) string display name for displaying the name of the option to the user on a web page
-     *   (2) array where the first element is a display name (as above) and the rest of
-     *       the elements are choices of values that the user can select
-     * e.g.
-     * array(
-     *   'item' => 'Item:',             // key => display-name
-     *   'rating' => array(             // key => array ( display-name, choice1, choice2, ...)
-     *       'CanDoOperationX' => array('Can do Operation X', 'Administrator', 'Editor', 'Author', 'Contributor', 'Subscriber'),
-     *       'Rating:', 'Excellent', 'Good', 'Fair', 'Poor')
-     */
-    public function getOptionMetaData() {
-        return array();
-    }
-
-    /**
-     * @return array of string name of options
-     */
-    public function getOptionNames() {
-        return array_keys($this->getOptionMetaData());
-    }
-
-    /**
-     * Override this method to initialize options to default values and save to the database with add_option
-     * @return void
-     */
-    protected function initOptions() {
-    }
-
     /**
      * Cleanup: remove all options from the DB
      * @return void
      */
     protected function deleteSavedOptions() {
+/*
         $optionMetaData = $this->getOptionMetaData();
         if (is_array($optionMetaData)) {
             foreach ($optionMetaData as $aOptionKey => $aOptionMeta) {
@@ -72,6 +38,7 @@ class TkEventWeather_OptionsManager {
                 delete_option($prefixedOptionName);
             }
         }
+*/
     }
 
     /**
@@ -136,18 +103,6 @@ class TkEventWeather_OptionsManager {
     public function deleteOption($optionName) {
         $prefixedOptionName = $this->prefix($optionName); // how it is stored in DB
         return delete_option($prefixedOptionName);
-    }
-
-    /**
-     * A wrapper function delegating to WP add_option() but it prefixes the input $optionName
-     * to enforce "scoping" the options in the WP options table thereby avoiding name conflicts
-     * @param  $optionName string defined in settings.php and set as keys of $this->optionMetaData
-     * @param  $value mixed the new value
-     * @return null from delegated call to delete_option()
-     */
-    public function addOption($optionName, $value) {
-        $prefixedOptionName = $this->prefix($optionName); // how it is stored in DB
-        return add_option($prefixedOptionName, $value);
     }
 
     /**
@@ -243,19 +198,9 @@ class TkEventWeather_OptionsManager {
                       get_class($this),
                       array($this, 'settingsPage')
         /*,plugins_url('/images/icon.png', __FILE__)*/); // if you call 'plugins_url; be sure to "require_once" it
-
-        //call register settings function
-        add_action('admin_init', array($this, 'registerSettings'));
     }
-
-    public function registerSettings() {
-        $settingsGroup = get_class($this) . '-settings-group';
-        $optionMetaData = $this->getOptionMetaData();
-        foreach ($optionMetaData as $aOptionKey => $aOptionMeta) {
-            register_setting($settingsGroup, $aOptionMeta);
-        }
-    }
-
+    
+    
     /**
      * Creates HTML for the Administration page to set options for this plugin.
      * Override this method to create a customized page.
@@ -264,17 +209,6 @@ class TkEventWeather_OptionsManager {
     public function settingsPage() {
         if (!current_user_can('manage_options')) {
             wp_die(__('You do not have sufficient permissions to access this page.', 'tk-event-weather'));
-        }
-
-        $optionMetaData = $this->getOptionMetaData();
-
-        // Save Posted Options
-        if ($optionMetaData != null) {
-            foreach ($optionMetaData as $aOptionKey => $aOptionMeta) {
-                if (isset($_POST[$aOptionKey])) {
-                    $this->updateOption($aOptionKey, $_POST[$aOptionKey]);
-                }
-            }
         }
 
         // HTML for the page
