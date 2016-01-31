@@ -19,10 +19,10 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
         //  http://plugin.michael-simpson.com/?page_id=31
         return array(
             //'_version' => array('Installed Version'), // Leave this one commented-out. Uncomment to test upgrades.
-            //'Forecast_io_API_Key' => array(__('Enter your <a href="https://developer.forecast.io/" target="_blank">Forecast.io API Key</a> (link opens in new window) (required)', 'tk-weather-for-tec')),
-            //'Forecast_Time_of_Event' => array(__('Use start time or end time?', 'tk-weather-for-tec'), '', 'Start', 'End'),
+            //'Forecast_io_API_Key' => array(__('Enter your <a href="https://developer.forecast.io/" target="_blank">Forecast.io API Key</a> (link opens in new window) (required)', 'tk-event-weather')),
+            //'Forecast_Time_of_Event' => array(__('Use start time or end time?', 'tk-event-weather'), '', 'Start', 'End'),
             /*
-              'CanDoSomething' => array(__('Which user role can do something', 'tk-weather-for-tec'),
+              'CanDoSomething' => array(__('Which user role can do something', 'tk-event-weather'),
                                         '', 'Administrator', 'Editor', 'Author', 'Contributor', 'Subscriber', 'Anyone'),
             */
         );
@@ -161,7 +161,7 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     			'tk_event_weather_panel',
     			array(
     				'title'			=> $this->getPluginDisplayName(),
-    				'description'	=> esc_html__('Plugin options and settings', 'tk-weather-for-tec'),
+    				'description'	=> esc_html__('Plugin options and settings', 'tk-event-weather'),
     				//'priority'		=> 10,
     			)
     		);
@@ -171,7 +171,7 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     		$wp_customize->add_section( self::$customizer_section_id,
     			array(
     				'title'       => $this->getPluginDisplayName(),
-    				'description' => esc_html__( 'Plugin options and settings', 'tk-weather-for-tec' ),
+    				'description' => esc_html__( 'Plugin options and settings', 'tk-event-weather' ),
     				//'priority'		=> 12,
     				//'panel'			=> 'tk_event_weather_panel',
     			)
@@ -187,8 +187,8 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     			));
     			
     			$wp_customize->add_control( 'tk_event_weather_forecast_io_api_key_control', array(
-      			'label'       => esc_html__( 'Forecast.io API Key', 'tk-weather-for-tec' ),
-    				'description' => __( 'Enter your <a href="https://developer.forecast.io/" target="_blank">Forecast.io API Key</a> (link opens in new window)', 'tk-weather-for-tec' ),
+      			'label'       => esc_html__( 'Forecast.io API Key', 'tk-event-weather' ),
+    				'description' => __( 'Enter your <a href="https://developer.forecast.io/" target="_blank">Forecast.io API Key</a> (link opens in new window)', 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
     				'settings'    => 'tk_event_weather[forecast_io_api_key]',
     				'type'		    => 'password',
@@ -202,8 +202,8 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     			));
     			
     			$wp_customize->add_control( 'tk_event_weather_forecast_io_units_control', array(
-      			'label'       => esc_html__( 'Units', 'tk-weather-for-tec' ),
-    				'description' => esc_html__( 'Although it is recommended to leave this as "Auto", you may choose to force returning the weather data in specific units.', 'tk-weather-for-tec' ),
+      			'label'       => esc_html__( 'Units', 'tk-event-weather' ),
+    				'description' => esc_html__( 'Although it is recommended to leave this as "Auto", you may choose to force returning the weather data in specific units.', 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
     				'settings'    => 'tk_event_weather[forecast_io_units]',
     				'type'		    => 'select',
@@ -218,8 +218,8 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     			));
     			
     			$wp_customize->add_control( 'tk_event_weather_transients_off_control', array(
-      			'label'       => esc_html__( 'Disable Transients', 'tk-weather-for-tec' ),
-    				'description' => __( 'The <a href="https://codex.wordpress.org/Transients_API" target="_blank">WordPress Transients API</a> (link opens in new window) is used to reduce repetitive API calls and improve performance. Check this box if you wish to disable using Transients (should only be used for testing).', 'tk-weather-for-tec' ),
+      			'label'       => esc_html__( 'Disable Transients', 'tk-event-weather' ),
+    				'description' => __( 'The <a href="https://codex.wordpress.org/Transients_API" target="_blank">WordPress Transients API</a> (link opens in new window) is used to reduce repetitive API calls and improve performance. Check this box if you wish to disable using Transients (should only be used for testing).', 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
     				'settings'    => 'tk_event_weather[transients_off]',
     				'type'		    => 'checkbox',
@@ -235,8 +235,8 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     			));
     			
     			$wp_customize->add_control( 'tk_event_weather_transients_expiration_hours_control', array(
-      			'label'       => esc_html__( 'Transient expiration (in hours)', 'tk-weather-for-tec' ),
-    				'description' => __( 'If stored Forecast.io API data is older than this many hours, pull the API data afresh.<br>Default: 12', 'tk-weather-for-tec' ),
+      			'label'       => esc_html__( 'Transient expiration (in hours)', 'tk-event-weather' ),
+    				'description' => __( 'If stored Forecast.io API data is older than this many hours, pull the API data afresh.<br>Default: 12', 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
     				'settings'    => 'tk_event_weather[transients_expiration_hours]',
     				'type'		    => 'text',
@@ -251,8 +251,8 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     			));
     			
     			$wp_customize->add_control( 'tk_event_weather_cutoff_past_days_control', array(
-      			'label'       => esc_html__( 'Past cutoff (in days)', 'tk-weather-for-tec' ),
-    				'description' => __( 'If datetime is this far in the past, do not output the forecast. Enter zero for "no limit".<br>Example: "30" would disable weather for datetimes older than 30 days from Event Time.<br>Default: 30', 'tk-weather-for-tec' ),
+      			'label'       => esc_html__( 'Past cutoff (in days)', 'tk-event-weather' ),
+    				'description' => __( 'If datetime is this far in the past, do not output the forecast. Enter zero for "no limit".<br>Example: "30" would disable weather for datetimes older than 30 days from Event Time.<br>Default: 30', 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
     				'settings'    => 'tk_event_weather[cutoff_past_days]',
     				'type'		    => 'text',
@@ -267,8 +267,8 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     			));
     			
     			$wp_customize->add_control( 'tk_event_weather_cutoff_future_days_control', array(
-      			'label'       => esc_html__( 'Future cutoff (in days)', 'tk-weather-for-tec' ),
-    				'description' => __( 'If datetime is this far in the future, do not output the forecast. Enter zero for "no limit".<br>Example: "365" would disable weather for datetimes more than 1 year after Event Time.<br>Default: 365', 'tk-weather-for-tec' ),
+      			'label'       => esc_html__( 'Future cutoff (in days)', 'tk-event-weather' ),
+    				'description' => __( 'If datetime is this far in the future, do not output the forecast. Enter zero for "no limit".<br>Example: "365" would disable weather for datetimes more than 1 year after Event Time.<br>Default: 365', 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
     				'settings'    => 'tk_event_weather[cutoff_future_days]',
     				'type'		    => 'text',

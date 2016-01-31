@@ -312,7 +312,7 @@ class TkEventWeather_OptionsManager {
 
             <p>
                 <a href="<?php echo apply_filters( 'tk_event_weather_customizer_link', get_admin_url( get_current_blog_id(), 'customize.php' ) ); ?>" class="button-primary">
-                  <?php _e( 'Edit Plugin Settings in WP Customizer', 'tk-weather-for-tec' ) ?>
+                  <?php _e( 'Edit Plugin Settings in WP Customizer', 'tk-event-weather' ) ?>
                 </a>
             </p>
         </div>
