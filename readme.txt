@@ -1,7 +1,7 @@
 === TK Event Weather ===
 Contributors: cliffpaulick
 Donate link: http://tourkick.com/pay/
-Tags: calendars, celsius, concerts, events, fahrenheit, forecast, meetings, shortcode, The Events Calendar, tickets, weather
+Tags: calendars, celsius, classes, concerts, events, fahrenheit, forecast, local, meetings, shortcode, tickets, weather
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.3.0
