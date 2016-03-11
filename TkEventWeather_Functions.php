@@ -4,7 +4,32 @@ class TkEventWeather_Functions {
   // all variables and methods should be 'static'
   
   public static $transient_name_prepend = 'tkeventw';
+  
+  // https://wordpress.org/about/requirements/
+  
+  public static $min_allowed_version_php = '5.4';
+  
+  public static $min_allowed_version_mysql = '5.0';
+  
+  public static $min_allowed_version_wordpress = '4.3.0';
+  
+  public static $support_email_address = 'tko+support-tk-event-weather@tourkick.com';
+  
+  
+  public static function plugin_options() {
+    return get_option( 'tk_event_weather' );
+  }
     
+  
+  /**
+   * Clean variables using sanitize_text_field.
+   * @param string|array $var
+   * @return string|array
+   */
+  public static function tk_clean_var( $var ) {
+    return is_array( $var ) ? array_map( 'tk_clean_var', $var ) : sanitize_text_field( $var );
+  }
+  
   public static function array_get_value_by_key( $array, $key, $fallback = '' ) {
     if( ! is_array( $array )
       || empty( $array )
@@ -142,7 +167,6 @@ class TkEventWeather_Functions {
   }
   
   
-  
   public static function remove_all_whitespace( $input ) {
     return preg_replace( '/\s+/', '', $input );
   }
@@ -268,12 +292,167 @@ class TkEventWeather_Functions {
     }
   }
   
-  public static function degrees_html() {
-    return wp_kses_post ( apply_filters( 'tk_event_weather_degrees_html', '<span class="tk-event-weather tk-event-weather-degrees">&deg;</span>' ) );
+  
+  
+  /**
+   * Check if a string is a valid PHP timezone
+   *
+   * timezone_identifiers_list() requires PHP >= 5.2
+   *
+   * @param string $input
+   * @return bool
+   * @link http://www.pontikis.net/tip/?id=28
+   */
+/*
+  public static function valid_php_timezone_string( $input = '' ) {
+    if ( empty ( $input ) || ! in_array( $input, timezone_identifiers_list() ) ) {
+      $result = false;
+    } else {
+      $result = true;
+    }
+    
+    return $result;
+  }
+*/
+  
+  
+  
+  /**
+   * Returns the timezone string for a site, even if it's set to a UTC offset
+   *
+   * Adapted from http://www.php.net/manual/en/function.timezone-name-from-abbr.php#89155
+   *
+   * @link https://www.skyverge.com/blog/down-the-rabbit-hole-wordpress-and-timezones/
+   * @return string valid PHP timezone string
+   */
+/*
+  public static function wp_get_timezone_string() {
+ 
+    // if site timezone string exists, return it
+    if ( $timezone = get_option( 'timezone_string' ) ) {
+      return $timezone;
+    }
+ 
+    // get UTC offset, if it is not set then return UTC
+    $utc_offset = get_option( 'gmt_offset', 0 );
+    
+    if ( 0 === $utc_offset ) {
+      return 'UTC';
+    }
+ 
+    // adjust UTC offset from hours to seconds
+    $utc_offset *= 3600;
+ 
+    // attempt to guess the timezone string from the UTC offset
+    if ( $timezone = timezone_name_from_abbr( '', $utc_offset, 0 ) ) {
+      return $timezone;
+    }
+ 
+    // last try, guess timezone string manually
+    $is_dst = date( 'I' );
+ 
+    foreach ( timezone_abbreviations_list() as $abbr ) {
+      foreach ( $abbr as $city ) {
+        if ( $is_dst == $city['dst'] && $utc_offset == $city['offset'] )
+          return $city['timezone_id'];
+      }
+    }
+     
+    // fallback to UTC
+    return 'UTC';
+  }  
+*/
+  
+  
+  public static function valid_api_icon( $prepend_empty = 'false' ) {
+    $result = array(
+      'clear-day',
+      'clear-night',
+      'rain',
+      'snow',
+      'sleet',
+      'wind',
+      'fog',
+      'cloudy',
+      'partly-cloudy-day',
+      'partly-cloudy-night',
+      'sunrise',
+      'sunset'
+    );
+    
+    if ( 'true' == $prepend_empty ) {
+      $result = self::array_prepend_empty( $result );
+    }
+    
+    return $result;
+  }
+  
+  public static function icon_html( $input, $icon_type = 'fa' ) {
+    $input = self::remove_all_whitespace ( strtolower( $input ) );
+    
+    if ( ! in_array( $input, self::valid_api_icon() ) ) {
+      return '';
+    }
+    
+    $result = '';
+    
+    // Font Awesome
+		$fa_icons = array(
+			'clear-day'           => 'fa fa-sun-o',
+			'clear-night'         => 'fa fa-moon-o',
+			'rain'                => 'fa fa-umbrella',
+			'snow'                => 'fa fa-tint',
+			'sleet'               => 'fa fa-tint',
+			'wind'                => 'fa fa-send',
+			'fog'                 => 'fa fa-shield',
+			'cloudy'              => 'fa fa-cloud',
+			'partly-cloudy-day'   => 'fa fa-cloud',
+			'partly-cloudy-night' => 'fa fa-star-half',
+			'sunrise'             => 'fa fa-arrow-up',
+			'sunset'              => 'fa fa-arrow-down',
+		);
+		
+    if ( 'fa' == $icon_type ) {
+      $icon = $fa_icons[$input];
+      $result = sprintf( '<i class="%s"></i>', $icon );
+    }
+        
+    return $result;
+  }
+  
+  public static function temperature_units( $input ) {
+  	if( empty( $input ) || ! array_key_exists( $input, TkEventWeather_Functions::forecast_io_option_units() ) ) {
+    	$result = apply_filters( 'tk_event_weather_indeterminate_units', '' );
+  	} else {
+    	if( 'us' == $input ) {
+      	$result = __( 'F', 'tk-event-weather' ); //Fahrenheit
+    	} else {
+      	$result = __( 'C', 'tk-event-weather' ); //Celsius
+    	}
+  	}
+  	
+  	return $result;
   }
   
   public static function temperature_separator_html() {
-    return wp_kses_post ( apply_filters( 'tk_event_weather_temperature_separator_html', '<span class="tk-event-weather tk-event-weather-temperature-separator">&ndash;</span>' ) );
+    return wp_kses_post ( apply_filters( 'tk_event_weather_temperature_separator_html', '&ndash;' ) );
+  }
+  
+  public static function timestamp_to_display( $timestamp = '', $date_format = '' ) {
+    // timestamp
+    if ( false === self::valid_timestamp( $timestamp, 'bool' ) ) {
+      return '';
+    } else {
+      $timestamp = $timestamp + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
+    }
+    
+    if ( empty ( $date_format ) ) {
+      /* translators: hourly display time format, see https://developer.wordpress.org/reference/functions/date_i18n/#comment-972 */
+      $date_format = __( 'g:i a T' );
+    }
+    
+    // return date ( $date_format, $timestamp );
+    return date_i18n ( $date_format, $timestamp, false );
   }
   
   

@@ -163,6 +163,38 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     				'type'		    => 'password',
     			));
     			
+    			// Past cutoff days
+    			$wp_customize->add_setting( 'tk_event_weather[cutoff_past_days]', array(
+    				'type'              => 'option',
+    				'capability'        => 'edit_theme_options',
+    				'default'           => '',
+    				'sanitize_callback' => 'absint',
+    			));
+    			
+    			$wp_customize->add_control( 'tk_event_weather_cutoff_past_days_control', array(
+      			'label'       => esc_html__( 'Past cutoff (in days)', 'tk-event-weather' ),
+    				'description' => __( 'If datetime is this far in the past, do not output the forecast. Enter zero for "no limit".<br>Example: "30" would disable weather for datetimes older than 30 days from Event Time.<br>Default: 30', 'tk-event-weather' ),
+    				'section'     => self::$customizer_section_id,
+    				'settings'    => 'tk_event_weather[cutoff_past_days]',
+    				'type'		    => 'text',
+    			));
+    			
+    			// Future cutoff days
+    			$wp_customize->add_setting( 'tk_event_weather[cutoff_future_days]', array(
+    				'type'              => 'option',
+    				'capability'        => 'edit_theme_options',
+    				'default'           => '',
+    				'sanitize_callback' => 'absint',
+    			));
+    			
+    			$wp_customize->add_control( 'tk_event_weather_cutoff_future_days_control', array(
+      			'label'       => esc_html__( 'Future cutoff (in days)', 'tk-event-weather' ),
+    				'description' => __( 'If datetime is this far in the future, do not output the forecast. Enter zero for "no limit".<br>Example: "365" would disable weather for datetimes more than 1 year after Event Time.<br>Default: 365', 'tk-event-weather' ),
+    				'section'     => self::$customizer_section_id,
+    				'settings'    => 'tk_event_weather[cutoff_future_days]',
+    				'type'		    => 'text',
+    			));
+          
     			// Units
     			$wp_customize->add_setting( 'tk_event_weather[forecast_io_units]', array(
     				'type'              => 'option',
@@ -211,37 +243,22 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     				'type'		    => 'text',
     			));
     			
-    			// Past cutoff days
-    			$wp_customize->add_setting( 'tk_event_weather[cutoff_past_days]', array(
+    			// Disable Sunrise/Sunset
+    			$wp_customize->add_setting( 'tk_event_weather[sunrise_sunset_off]', array(
     				'type'              => 'option',
     				'capability'        => 'edit_theme_options',
     				'default'           => '',
-    				'sanitize_callback' => 'absint',
     			));
     			
-    			$wp_customize->add_control( 'tk_event_weather_cutoff_past_days_control', array(
-      			'label'       => esc_html__( 'Past cutoff (in days)', 'tk-event-weather' ),
-    				'description' => __( 'If datetime is this far in the past, do not output the forecast. Enter zero for "no limit".<br>Example: "30" would disable weather for datetimes older than 30 days from Event Time.<br>Default: 30', 'tk-event-weather' ),
+    			$wp_customize->add_control( 'tk_event_weather_sunrise_sunset_off_control', array(
+      			'label'       => esc_html__( 'Disable Sunrise/Sunset', 'tk-event-weather' ),
+    				'description' => __( 'Check this box to disable injecting sunrise and sunset times into the hourly weather view.', 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
-    				'settings'    => 'tk_event_weather[cutoff_past_days]',
-    				'type'		    => 'text',
+    				'settings'    => 'tk_event_weather[sunrise_sunset_off]',
+    				'type'		    => 'checkbox',
+    				'choices'     => array( 'true' => __( 'Off', 'tk-event-weather' ) ),
     			));
     			
-    			// Future cutoff days
-    			$wp_customize->add_setting( 'tk_event_weather[cutoff_future_days]', array(
-    				'type'              => 'option',
-    				'capability'        => 'edit_theme_options',
-    				'default'           => '',
-    				'sanitize_callback' => 'absint',
-    			));
-    			
-    			$wp_customize->add_control( 'tk_event_weather_cutoff_future_days_control', array(
-      			'label'       => esc_html__( 'Future cutoff (in days)', 'tk-event-weather' ),
-    				'description' => __( 'If datetime is this far in the future, do not output the forecast. Enter zero for "no limit".<br>Example: "365" would disable weather for datetimes more than 1 year after Event Time.<br>Default: 365', 'tk-event-weather' ),
-    				'section'     => self::$customizer_section_id,
-    				'settings'    => 'tk_event_weather[cutoff_future_days]',
-    				'type'		    => 'text',
-    			));    			
-    }
+    } // end customizer_options()
 
 }
