@@ -19,7 +19,17 @@ class TkEventWeather_Functions {
   public static function plugin_options() {
     return get_option( 'tk_event_weather' );
   }
-    
+  
+  
+  // Outdated: http://adamwhitcroft.com/climacons/font/
+  // https://github.com/christiannaths/Climacons-Font
+  // https://github.com/christiannaths/Climacons-Font/blob/master/webfont/demo.html
+  //
+  // https://developer.wordpress.org/reference/functions/plugin_dir_url/ does respect HTTPS
+  public static function register_climacons_css() {
+    wp_register_style( 'tkeventw-climacons', plugin_dir_url( __FILE__ ) . 'climacons/climacons-font.css', array(), null );
+  }
+  
   
   /**
    * Clean variables using sanitize_text_field.
@@ -387,7 +397,7 @@ class TkEventWeather_Functions {
     return $result;
   }
   
-  public static function icon_html( $input, $icon_type = 'fa' ) {
+  public static function icon_html( $input, $icon_type = 'climacons' ) {
     $input = self::remove_all_whitespace ( strtolower( $input ) );
     
     if ( ! in_array( $input, self::valid_api_icon() ) ) {
@@ -396,25 +406,45 @@ class TkEventWeather_Functions {
     
     $result = '';
     
-    // Font Awesome
+    // Font Awesome (really not usable, plus you will need to add the icon font yourself (e.g. via https://wordpress.org/plugins/better-font-awesome/)
 		$fa_icons = array(
-			'clear-day'           => 'fa fa-sun-o',
-			'clear-night'         => 'fa fa-moon-o',
-			'rain'                => 'fa fa-umbrella',
-			'snow'                => 'fa fa-tint',
-			'sleet'               => 'fa fa-tint',
-			'wind'                => 'fa fa-send',
-			'fog'                 => 'fa fa-shield',
-			'cloudy'              => 'fa fa-cloud',
-			'partly-cloudy-day'   => 'fa fa-cloud',
-			'partly-cloudy-night' => 'fa fa-star-half',
-			'sunrise'             => 'fa fa-arrow-up',
-			'sunset'              => 'fa fa-arrow-down',
+			'clear-day'           => 'fa-sun-o',
+			'clear-night'         => 'fa-moon-o',
+			'rain'                => 'fa-umbrella',
+			'snow'                => 'fa-tint',
+			'sleet'               => 'fa-tint',
+			'wind'                => 'fa-send',
+			'fog'                 => 'fa-shield',
+			'cloudy'              => 'fa-cloud',
+			'partly-cloudy-day'   => 'fa-cloud',
+			'partly-cloudy-night' => 'fa-star-half',
+			'sunrise'             => 'fa-arrow-up',
+			'sunset'              => 'fa-arrow-down',
 		);
 		
-    if ( 'fa' == $icon_type ) {
+		$climacons = array(
+			'clear-day'           => 'sun',
+			'clear-night'         => 'moon',
+			'rain'                => 'rain',
+			'snow'                => 'snow',
+			'sleet'               => 'sleet',
+			'wind'                => 'wind',
+			'fog'                 => 'fog',
+			'cloudy'              => 'cloud',
+			'partly-cloudy-day'   => 'cloud sun',
+			'partly-cloudy-night' => 'cloud moon',
+			'sunrise'             => 'sunrise',
+			'sunset'              => 'sunset',
+		);
+		
+    if ( 'climacons' == $icon_type ) {
+      $icon = $climacons[$input];
+      $result = sprintf( '<i class="climacon %s"></i>', $icon );
+    }
+        
+    if ( 'font-awesome' == $icon_type ) {
       $icon = $fa_icons[$input];
-      $result = sprintf( '<i class="%s"></i>', $icon );
+      $result = sprintf( '<i class="fa %s"></i>', $icon );
     }
         
     return $result;

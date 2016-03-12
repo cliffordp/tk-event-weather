@@ -259,6 +259,28 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     				'choices'     => array( 'true' => __( 'Off', 'tk-event-weather' ) ),
     			));
     			
+/*
+    			// Icons
+    			$wp_customize->add_setting( 'tk_event_weather[icons]', array(
+    				'type'              => 'option',
+    				'capability'        => 'edit_theme_options',
+    				'default'           => '',
+    			));
+    			
+    			$wp_customize->add_control( 'tk_event_weather_icons_control', array(
+      			'label'       => esc_html__( 'Icons settings', 'tk-event-weather' ),
+    				'description' => __( 'Check this box to disable injecting sunrise and sunset times into the hourly weather view.', 'tk-event-weather' ),
+    				'section'     => self::$customizer_section_id,
+    				'settings'    => 'tk_event_weather[sunrise_sunset_off]',
+    				'type'		    => 'radio',
+    				'choices'     => array(
+    				  'climacons'     => __( 'Climacons (Default)', 'tk-event-weather' ),
+    				  'font-awesome'  => __( 'Font Awesome', 'tk-event-weather' ),
+    				  'off'           => __( 'Disable Icons', 'tk-event-weather' ),
+    				),
+    			));
+*/
+    			
     } // end customizer_options()
 
 }

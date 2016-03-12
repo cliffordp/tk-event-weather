@@ -43,6 +43,9 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
       	$transients_expiration_hours_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'transients_expiration_hours', 12 );
       	
       	$sunrise_sunset_off_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'sunrise_sunset_off' );
+      	
+        //$icons_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'icons' );
+
       }
       
       /*
@@ -80,7 +83,7 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
       	'transients_expiration'   => $transients_expiration_hours_option, // "true" is only valid value
       	// Display Customizations
       	'sunrise_sunset_off'      => $sunrise_sunset_off_option, // "true" is the only valid value
-      	'icons'                   => '', // "off", "climacons", or "font-awesome" ???
+      	'icons'                   => 'climacons', // "off", "climacons", or "font-awesome" ???
       	// HTML
       	'before'                  => '<li class="tk-event-weather">Weather estimate: ',
       	'after'                   => '</li>',
@@ -1057,6 +1060,17 @@ TK Event Weather JSON Data
           $sunset_to_be_inserted = false;
         }
     	}
+    	
+    	$icons = 'climacons';
+    	
+    	if ( ! empty( $atts['icons'] ) && 'off' == $atts['icons'] ) {
+      	$icons = '';
+      }
+      
+      if ( 'climacons' == $icons ) {
+        TkEventWeather_Functions::register_climacons_css();
+        wp_enqueue_style( 'tkeventw-climacons' );
+      }
       
       $weather_hourly = array();
       

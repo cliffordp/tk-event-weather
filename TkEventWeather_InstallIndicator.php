@@ -102,6 +102,8 @@ class TkEventWeather_InstallIndicator extends TkEventWeather_OptionsManager {
      * override this method with the exact same code. Since __FILE__ will
      * be different, you will then get the right dir returned.
      * @return string
+     *
+     * @link https://developer.wordpress.org/reference/functions/plugin_dir_path/
      */
     protected function getPluginDir() {
         return dirname(__FILE__);
