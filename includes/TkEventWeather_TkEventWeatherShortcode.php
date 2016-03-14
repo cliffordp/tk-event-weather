@@ -5,11 +5,21 @@
 
 
 /** TO DO:
-  * round temps to zero decimals
-  * direction of wind
-  * replace font awesome with Climacons
+  * FYI: the forecast.io "apparentTemperature" value is the "feels like" temperature
+  * icon direction of wind
   * settings page translatable
-  * shortcode arguments for display: hourly, min-max, anything else?
+  * end time on different date throws fatal at `&& intval( $weather_end_time->time ) !== intval( $value->time )`
+  * handle multi-day events (e.g. Monday 8pm to Tuesday 2am or Monday 8pm to Wednesday 5pm)
+  * sanitize valid value for $icons -- add 'demo' option to output all for styling/testing?
+  * shortcode arguments for display: hourly, min-max, right now (e.g. if event is currently happening), anything else?
+  * 12 or 24 hour time format
+  * timezone display on/off
+  * display options (on/off each instead of custom CSS to hide):
+    * hourly: temp, wind speed, wind direction, icon, humidity
+    * entire event: min-max event temp, advisories
+  * child theme template override
+  * color options for styling SVGs (e.g. color yellow of sun) -- not possible with SVGs because they're flattened (no CSS classes to "fill")
+  * allow single time instead of hourly (start + end times) to make shortcode more flexible and also maybe applicable for events without an end time (e.g. The Events Calendar)
   */
 
 
@@ -26,6 +36,8 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
     public function handleShortcode($atts) {
       
       $output = '';
+      
+      $template_data = array(); // sent to view template to render output
       
       $plugin_options = TkEventWeather_Functions::plugin_options();
       
@@ -83,11 +95,10 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
       	'transients_expiration'   => $transients_expiration_hours_option, // "true" is only valid value
       	// Display Customizations
       	'sunrise_sunset_off'      => $sunrise_sunset_off_option, // "true" is the only valid value
-      	'icons'                   => 'climacons', // "off", "climacons", or "font-awesome" ???
+      	'icons'                   => 'climacons_font', // "off", "climacons_svg", "climacons_font", or "font-awesome" ???
       	// HTML
-      	'before'                  => '<li class="tk-event-weather">Weather estimate: ',
-      	'after'                   => '</li>',
       	'class'                   => '', // custom class
+      	'template'                => 'event_low_high', // event_low_high, hourly_horizontal, hourly_vertical
     	);
     	
     	$atts = shortcode_atts( $defaults, $atts, 'tk-event-weather' );
@@ -114,6 +125,8 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
           $post_id = '';
         }
       }
+      
+      $template_data['post_id'] = $post_id;
       
     	// the variable to send to Forecast.io API -- to be built via the code below
     	$latitude_longitude = '';
@@ -157,6 +170,8 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
       	return TkEventWeather_Functions::invalid_shortcode_message( 'Please enter valid Latitude and Longitude coordinates' );
     	}
     	
+    	$template_data['latitude_longitude'] = $latitude_longitude;
+    	
     	// Start Time
     	// ISO 8601 datetime or Unix timestamp
     	if ( '' != $atts['start_time'] ) {
@@ -189,6 +204,8 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
     	if( '' == $start_time ) {
       	return TkEventWeather_Functions::invalid_shortcode_message( 'Please enter a valid Start Time format' );
     	}
+    	
+    	$template_data['start_time_timestamp'] = $start_time_timestamp;
     	
     	// cutoff_past
     	// strtotime date relative to $start_time_timestamp
@@ -260,6 +277,8 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
     	if( $start_time_timestamp == $end_time_timestamp ) {
       	return TkEventWeather_Functions::invalid_shortcode_message( 'Please make sure Event Start Time and Event End Time are not the same' );
     	}
+    	
+    	$template_data['end_time_timestamp'] = $end_time_timestamp;
     	
     	//
     	// cutoff_future
@@ -369,7 +388,7 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
     	
     	// build transient
     	$transient_name = sprintf( '%s_%d_%s_%s_%s_%s_%d',
-    	  TkEventWeather_Functions::$transient_name_prepend,
+    	  TkEventWeather_FuncSetup::$transient_name_prepend,
     	  $post_id,
     	  substr( $units, 0, 2 ), // e.g. 'auto' becomes 'au'
     	  $exclude_for_transient,
@@ -419,7 +438,7 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
       // if invalid API key, returns 400 Bad Request
       // API does not want any querying wrapped in brackets, as may be shown in the documentation -- brackets indicates OPTIONAL parameters, not to actually wrap in brackets for your request
       // 
-    	// $data->currently is either 'right now' if no TIMESTAMP is part of the API or is the weather for the given TIMESTAMP even if in the past or future (yes, it still is called 'currently')
+    	// $api_data->currently is either 'right now' if no TIMESTAMP is part of the API or is the weather for the given TIMESTAMP even if in the past or future (yes, it still is called 'currently')
     	// 
       /*
        *
@@ -930,20 +949,20 @@ TK Event Weather JSON Data
       */
       
     	if( ! empty( $transient_value ) ) {
-      	$data = $transient_value;
-        if( empty( $data ) ) {
+      	$api_data = $transient_value;
+        if( empty( $api_data ) ) {
           delete_transient( $transient_name );
           // return TkEventWeather_Functions::invalid_shortcode_message( 'Data from Transient used but some sort of data inconsistency. Transient deleted. May or may not need to troubleshoot' );
         }
         
-    		if( ! empty( $data->error ) ) {
+    		if( ! empty( $api_data->error ) ) {
       		delete_transient( $transient_name );
-          // return TkEventWeather_Functions::invalid_shortcode_message( 'Data from Transient used but an error: ' . $data->error . '. Transient deleted. May or may not need to troubleshoot' );
+          // return TkEventWeather_Functions::invalid_shortcode_message( 'Data from Transient used but an error: ' . $api_data->error . '. Transient deleted. May or may not need to troubleshoot' );
     		}
     	}
     	
-    	// $data not yet set because $transient_value was bad so just run through new API call as if transient did not exist (got deleted a few lines above)
-    	if ( empty( $data ) ) {
+    	// $api_data not yet set because $transient_value was bad so just run through new API call as if transient did not exist (got deleted a few lines above)
+    	if ( empty( $api_data ) ) {
       	delete_transient( $transient_name ); // delete any expired transient by this name
       	
     		$request_uri = sprintf( 'https://api.forecast.io/forecast/%s/%s,%s',
@@ -976,14 +995,14 @@ TK Event Weather JSON Data
           return TkEventWeather_Functions::invalid_shortcode_message( 'Forecast.io API request sent but nothing received. Please troubleshoot' );
         }
         
-        $data = json_decode( $body );
+        $api_data = json_decode( $body );
         
-        if( empty( $data ) ) {
+        if( empty( $api_data ) ) {
           return TkEventWeather_Functions::invalid_shortcode_message( 'Forecast.io API response received but some sort of data inconsistency. Please troubleshoot' );
         }
         
-    		if( ! empty( $data->error ) ) {
-          return TkEventWeather_Functions::invalid_shortcode_message( 'Forecast.io API responded with an error: ' . $data->error . ' - Please troubleshoot' );
+    		if( ! empty( $api_data->error ) ) {
+          return TkEventWeather_Functions::invalid_shortcode_message( 'Forecast.io API responded with an error: ' . $api_data->error . ' - Please troubleshoot' );
     		}
         
         if( true === $transients ) {
@@ -991,22 +1010,22 @@ TK Event Weather JSON Data
           if ( 0 >= $transients_expiration_hours ) {
             $transients_expiration_hours = absint( $transients_expiration_hours_option );
           }
-          set_transient( $transient_name, $data, $transients_expiration_hours * HOUR_IN_SECONDS ); // e.g. 12 hours
+          set_transient( $transient_name, $api_data, $transients_expiration_hours * HOUR_IN_SECONDS ); // e.g. 12 hours
         }
     	}
     	
-    	// now $data is set for sure (better be to have gotten this far)
-    	$output .= sprintf( '<!--%1$sTK Event Weather JSON Data%1$s%2$s%1$s-->%1$s', PHP_EOL, json_encode( $data, JSON_PRETTY_PRINT ) ); // requires PHP 5.4
+    	// now $api_data is set for sure (better be to have gotten this far)
+    	$output .= sprintf( '<!--%1$sTK Event Weather JSON Data%1$s%2$s%1$s-->%1$s', PHP_EOL, json_encode( $api_data, JSON_PRETTY_PRINT ) ); // requires PHP 5.4
     	
     	
     	// Build Weather data that we'll use
     	
     	// Start Time Weather
-    	$weather_start_time = $data->currently;
+    	$weather_start_time = $api_data->currently;
     	
       
     	// End Time Weather
-      foreach ( $data->hourly->data as $key => $value ) {
+      foreach ( $api_data->hourly->data as $key => $value ) {
         if( intval( $value->time ) >= intval( $end_time_timestamp ) ) {
           $weather_end_time = $value;
           $weather_hourly_end_key = $key;
@@ -1016,7 +1035,7 @@ TK Event Weather JSON Data
       
       // if none, just get last hour of the day (e.g. if Event End Time is next day 2am, just get 11pm same day as Event Start Time (not perfect but may be better than 2nd API call)
       if ( empty( $weather_end_time ) ) {
-        $weather_end_time = array_slice( $data->hourly->data, -1, 1, true );
+        $weather_end_time = array_slice( $api_data->hourly->data, -1, 1, true );
         $weather_hourly_end_key = key( $weather_end_time );
       }
       
@@ -1025,7 +1044,7 @@ TK Event Weather JSON Data
       }
             
     	// First hourly data at/after Start Time
-      foreach ( $data->hourly->data as $key => $value ) {
+      foreach ( $api_data->hourly->data as $key => $value ) {
         if( intval( $value->time ) >= intval( $start_time_timestamp ) ) {
           $weather_hourly_start = $value;
           $weather_hourly_start_key = $key; // bookmark for when we pull hourly weather
@@ -1033,41 +1052,51 @@ TK Event Weather JSON Data
         }
       }
       
-    	if( ! empty( $atts['sunrise_sunset_off'] )
-    	  && 'true' == $atts['sunrise_sunset_off']
+      $sunrise_sunset = array(
+        'on'                      => false,
+        'sunrise_timestamp'       => false,
+        'sunset_timestamp'        => false,
+        'sunrise_to_be_inserted'  => false,
+        'sunset_to_be_inserted'   => false,
+      );
+      
+    	if( empty( $atts['sunrise_sunset_off'] )
+    	  || 'true' != $atts['sunrise_sunset_off']
       ) {
-      	$sunrise_sunset = false;
-      	$sunrise = false;
-      	$sunset = false;
-      	$sunrise_to_be_inserted = false;
-      	$sunset_to_be_inserted = false;
-    	} else {
-      	$sunrise_sunset = true;
+      	$sunrise_sunset['on'] = true;
     	}
     	
-    	if ( true === $sunrise_sunset ) {
-      	$sunrise = TkEventWeather_Functions::valid_timestamp( $data->daily->data[0]->sunriseTime );
-      	if ( $sunrise >= $start_time_timestamp ) {
-        	$sunrise_to_be_inserted = true;
-        } else {
-          $sunrise_to_be_inserted = false;
+    	if ( true === $sunrise_sunset['on'] ) {
+      	$sunrise_sunset['sunrise_timestamp'] = TkEventWeather_Functions::valid_timestamp( $api_data->daily->data[0]->sunriseTime );
+      	if ( $sunrise_sunset['sunrise_timestamp'] >= $start_time_timestamp ) {
+        	$sunrise_sunset['sunrise_to_be_inserted'] = true;
         }
       	
-      	$sunset = TkEventWeather_Functions::valid_timestamp( $data->daily->data[0]->sunsetTime );
-      	if ( $end_time_timestamp >= $sunset ) {
-        	$sunset_to_be_inserted = true;
-        } else {
-          $sunset_to_be_inserted = false;
+      	$sunrise_sunset['sunset_timestamp'] = TkEventWeather_Functions::valid_timestamp( $api_data->daily->data[0]->sunsetTime );
+      	if ( $end_time_timestamp >= $sunrise_sunset['sunset_timestamp'] ) {
+        	$sunrise_sunset['sunset_to_be_inserted'] = true;
         }
     	}
     	
-    	$icons = 'climacons';
+    	$template_data['sunrise_sunset'] = $sunrise_sunset;
     	
-    	if ( ! empty( $atts['icons'] ) && 'off' == $atts['icons'] ) {
-      	$icons = '';
+    	
+    	if ( ! empty( $atts['icons'] ) ) {
+      	if ( 'off' == $atts['icons'] ) {
+      	  $icons = '';
+      	} else {
+        	$icons = $atts['icons'];
+      	}
+      } else {
+        $icons = 'climacons_font';
       }
       
       if ( 'climacons' == $icons ) {
+        $icons = 'climacons_font';
+      }
+      
+      // enqueue CSS file if using Climacons Icon Font
+      if ( 'climacons_font' == $icons ) {
         TkEventWeather_Functions::register_climacons_css();
         wp_enqueue_style( 'tkeventw-climacons' );
       }
@@ -1078,7 +1107,7 @@ TK Event Weather JSON Data
       $weather_hourly[$weather_hourly_start_key] = $weather_start_time;
       
       if ( ! empty( $weather_hourly_start ) && ! empty( $weather_hourly_start_key ) ) {
-        foreach ( $data->hourly->data as $key => $value ) {
+        foreach ( $api_data->hourly->data as $key => $value ) {
 
           if( $weather_hourly_start_key > $key ) {
             continue;
@@ -1090,7 +1119,7 @@ TK Event Weather JSON Data
 
           if( $weather_hourly_start_key == $key // not needed but is correct
             && $weather_hourly_end_key >= $key
-            && intval( $weather_start_time->time ) !== intval( $value->time ) // don't re-include $data->current
+            && intval( $weather_start_time->time ) !== intval( $value->time ) // don't re-include $api_data->current
             && intval( $weather_end_time->time ) !== intval( $value->time ) // we'll include it manually in next step
           ) {
             $weather_hourly[$weather_hourly_start_key] = $value;
@@ -1100,123 +1129,35 @@ TK Event Weather JSON Data
       }
       
       // Add End to Hourly
-      $weather_hourly[$weather_hourly_end_key] = $weather_end_time;    	
+      $weather_hourly[$weather_hourly_end_key] = $weather_end_time;
+      
+      $template_data['weather_hourly'] = $weather_hourly;
     	
     	// Get Low and High from Hourly
     	// https://developer.wordpress.org/reference/functions/wp_list_pluck/
-    	$weather_hourly_temps = wp_list_pluck( $weather_hourly, 'temperature' );
+    	$weather_hourly_temperatures = wp_list_pluck( $weather_hourly, 'temperature' );
     	
-    	$weather_hourly_high = max( $weather_hourly_temps );
-    	$weather_hourly_low = min( $weather_hourly_temps );
+    	$template_data['weather_hourly_temperatures'] = $weather_hourly_temperatures;
     	
-    	// Build Hourly Weather output
-    	$output .= '<div class="tk-event-weather-hourly">';
     	
-    	foreach ( $weather_hourly as $key=>$value ) {
-      	$doing_sunrise = false;
-      	$doing_sunset = false;
-      	
-      	if ( true === $sunrise_to_be_inserted && $value->time > $sunrise ) {
-        	$doing_sunrise = true;
-        	$sunrise_to_be_inserted = false; // because we are going to do it right now and not another time
-      	} elseif ( true === $sunset_to_be_inserted && $value->time > $sunset ) {
-        	$doing_sunset = true;
-        	$sunset_to_be_inserted = false; // because we are going to do it right now and not another time
-        } else {
-        	// nothing
-      	}
-      	
-        $display_time = TkEventWeather_Functions::timestamp_to_display ( $value->time );
-      	
-      	if ( empty ( $display_time ) ) {
-        	continue;
-      	}
-      	
-      	if ( true === $doing_sunrise ) {
-        	$output .= sprintf( '<div id="tk-event-weather-sunrise-timestamp-%s" class="tk-event-weather-hourly-sunrise">
-              <span class="tk-event-weather-hourly-time">%s</span>
-              <span class="tk-event-weather-hourly-icon--%s">%s</span>
-            </div>',
-        	  $sunrise,
-        	  TkEventWeather_Functions::timestamp_to_display ( $sunrise ),
-        	  'sunrise',
-        	  TkEventWeather_Functions::icon_html( 'sunrise' )
-          );
-        } elseif ( true === $doing_sunset ) {
-        	$output .= sprintf( '<div id="tk-event-weather-sunset-timestamp-%s" class="tk-event-weather-hourly-sunset">
-              <span class="tk-event-weather-hourly-time">%s</span>
-              <span class="tk-event-weather-hourly-icon--%s">%s</span>
-            </div>',
-        	  $sunset,
-        	  TkEventWeather_Functions::timestamp_to_display ( $sunset ),
-        	  'sunset',
-        	  TkEventWeather_Functions::icon_html( 'sunset' )
-          );
-        } else {
-          // nothing
-        }
-        
-        // if sunrise or sunset timestamp = this hourly weather timestamp, don't display this hour, otherwise do display this hour
-        // Example: Sunset at 6:00pm, don't display the 6pm hourly weather info
-        // Example: Sunset at 5:59pm, do display the 6pm hourly weather info
-        if ( ( $doing_sunrise && $sunrise == $value->time ) || ( $doing_sunset && $sunset == $value->time ) ) {
-          // nothing
-        } else {
-        	$output .= sprintf( '<div id="tk-event-weather-hourly-timestamp-%s" class="tk-event-weather-hourly-hour">
-              <span class="tk-event-weather-hourly-time">%s</span>
-              <span class="tk-event-weather-hourly-icon--%s">%s</span>
-              <span class="tk-event-weather-hourly-temperature">%s</span>
-              <span class="tk-event-weather-hourly-wind-speed">%s</span>
-              <span class="tk-event-weather-hourly-wind-bearing">%s</span>
-            </div>',
-        	  $value->time,
-        	  $display_time,
-        	  $value->icon,
-        	  TkEventWeather_Functions::icon_html( $value->icon ),
-        	  $value->temperature,
-        	  $value->windSpeed,
-        	  $value->windBearing
-          );
-        }
-        
-        // Resets
-        $doing_sunrise = false;
-        $doing_sunset = false;
-        $display_time = '';
+    	$weather_hourly_high = max( $weather_hourly_temperatures );
+    	
+    	$template_data['weather_hourly_high'] = $weather_hourly_high;
 
-    	} // end foreach()
     	
-    	$output .= '</div>';
+    	$weather_hourly_low = min( $weather_hourly_temperatures );
     	
-    	$temperature_units = TkEventWeather_Functions::temperature_units( $data->flags->units );
-    	    	
-    	$output .= '<span class="tk-event-weather-temperature">';
+    	$template_data['weather_hourly_low'] = $weather_hourly_low;
+
     	
-    	$output .= __( 'Event temperature:', 'tk-event-weather' );
-      
-      $output .= ' ';
+    	$temperature_units = TkEventWeather_Functions::temperature_units( $api_data->flags->units );
     	
-    	if ( $weather_hourly_high == $weather_hourly_low ) {
-      	$output .= sprintf( '<span class="tk-event-weather-degrees-same">%s</span><span class="tk-event-weather-degrees">&deg;%s</span>',
-      	  $weather_hourly_low,
-      	  $temperature_units
-        );
-    	} else {
-      	$output .= sprintf( '<span class="tk-event-weather-degrees-low">%s</span><span class="tk-event-weather-temperature-separator">%s</span><span class="tk-event-weather-degrees-high">%s</span><span class="tk-event-weather-temperature-degrees">&deg;%s</span>',
-      	  $weather_hourly_low,
-      	  TkEventWeather_Functions::temperature_separator_html(),
-      	  $weather_hourly_high,
-      	  $temperature_units
-        );
-      }
-    	
-    	$output .= '</span>'; // .tk-event-weather.tk-event-weather-temperature
-    	
-    	// before
-    	
-    	// after
+    	$template_data['temperature_units'] = $temperature_units;
     	
     	// class
+    	$class = sanitize_html_class( $atts['class'] );
+    	
+    	$template_data['template'] = $atts['template'];
     	
       $debug_vars = false;
     	//$debug_vars = WP_DEBUG; // if WP_DEBUG is true, set $debug_vars to true for admins only
@@ -1225,72 +1166,20 @@ TK Event Weather JSON Data
     	}
     	
     	
-    	return $output;
+    	/**
+      	* Start Building Output!!!
+      	* All data should be set by now!!!
+      	*/
     	
-/*
-    	// API RETURNED DATA, LET'S DO STUFF
-    	
-    	$summary = $data->currently->summary;
-    	
-    	$icon = $data->currently->icon;
-    		$icon_list = array(
-    			// JSON value => icon/image to use in HTML output
-    			'clear-day' => 'fa fa-sun-o',
-    			'clear-night' => 'fa fa-moon-o',
-    			'rain' => 'fa fa-umbrella',
-    			'snow' => 'fa fa-tint',
-    			'sleet' => 'fa fa-tint',
-    			'wind' => 'fa fa-send',
-    			'fog' => 'fa fa-shield',
-    			'cloudy' => 'fa fa-cloud',
-    			'partly-cloudy-day' => 'fa fa-cloud',
-    			'partly-cloudy-night' => 'fa fa-star-half',
-    		);
-    		
-    		if(array_key_exists($icon, $icon_list)) {
-    			$icon_code = $icon_list[$icon];
-    		}
-    	
-    	$precip_probability = $data->currently->precipProbability;
-    		$precip_probability = $precip_probability ? round($precip_probability) : '?';
-    	
-    	$temperature = $data->currently->temperature;
-    		$temperature = $temperature ? round($temperature) : '?';
-    	
-    	$feelslike = $data->currently->apparentTemperature;
-    		$feelslike = $feelslike ? round($feelslike) : '?';
-    	
-    	$full_report_text = sprintf('%s, %s%% precip, %s&deg; (feels like %s&deg;)', // %% escapes a single % character
-    		$summary,
-    		$precip_probability,
-    		$temperature,
-    		$feelslike
-    	);
-    	
-    	// BUILD OUTPUT
-    	$output = sprintf('
-    		<span class="weather-api">
-    			<span class="weather-before">
-    				%1$s
-    			</span>
-    			<span class="weather-info">
-    				<i class="%2$s" title="%3$s"></i> %4$s
-    			</span>
-    			<span class="weather-after">
-    				%5$s
-    			</span>
-    		</span>',
-    		$before,
-    		$icon_code,
-    		$full_report_text,
-    		$summary,
-    		$after
-    	);
-    	//plprint($output, 'cp_forecastio_first_child_api');
+    	$output .= '<div class="tk-event-weather-wrapper">';
+      	// https://github.com/GaryJones/Gamajo-Template-Loader/issues/13#issuecomment-196046201
+      	ob_start();
+      	TkEventWeather_Functions::load_template( $template_data['template'], $template_data );
+      	$output .= ob_get_clean();    	
+    	$output .= '</div>'; // .tk-event-weather-wrapper    	
     	
     	return $output;
-
-*/
+    	
     }
  
     // do not comment out -- needed because of extending an abstract class
