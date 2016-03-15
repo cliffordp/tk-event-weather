@@ -11,13 +11,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // make sure we have data to work with!
-if ( empty( $context ) || ! is_array( $context ) ) {
-  //return false;
+if ( empty( $context ) || ! is_object( $context ) ) {
+  return false;
 }
 
-//var_dump($context);
+$template_class = sprintf( 'tk-event-weather-template__%s', $context->template );
 
-$output = sprintf( '<div class="tk-event-weather--%s">', $context->template );
+
+$output = sprintf( '<div class="tk-event-weather-template %s">', $template_class );
+
+$index = 1;
 
 foreach ( $context->weather_hourly as $key=>$value ) {
 	$doing_sunrise = false;
@@ -39,61 +42,68 @@ foreach ( $context->weather_hourly as $key=>$value ) {
   	continue;
 	}
 	
+	$output .= PHP_EOL;
+	
+	$output .= sprintf( '<div id="%1$s__index-%2$d" class="%1$s__item ', $template_class, $index );
+	
 	if ( true === $doing_sunrise ) {
-  	$output .= sprintf( '<div id="tk-event-weather-sunrise-timestamp-%s" class="tk-event-weather-hourly-sunrise">
-        <span class="tk-event-weather-hourly-time">%s</span>
-        <span class="tk-event-weather-hourly-icon--%s">%s</span>
-      </div>',
-  	  $context->sunrise_sunset['sunrise_timestamp'],
+  	$output .= sprintf( 'sunrise">
+      <span class="%1$s__time">%2$s</span>
+      <span class="%1$s__icon sunrise">%3$s</span>',
+      $template_class,
   	  TkEventWeather_Functions::timestamp_to_display ( $context->sunrise_sunset['sunrise_timestamp'] ),
-  	  'sunrise',
   	  TkEventWeather_Functions::icon_html( 'sunrise' )
     );
   } elseif ( true === $doing_sunset ) {
-  	$output .= sprintf( '<div id="tk-event-weather-sunset-timestamp-%s" class="tk-event-weather-hourly-sunset">
-        <span class="tk-event-weather-hourly-time">%s</span>
-        <span class="tk-event-weather-hourly-icon--%s">%s</span>
-      </div>',
-  	  $context->sunrise_sunset['sunset_timestamp'],
+  	$output .= sprintf( 'sunset">
+      <span class="%1$s__time">%2$s</span>
+      <span class="%1$s__icon sunset">%3$s</span>',
+      $template_class,
   	  TkEventWeather_Functions::timestamp_to_display ( $context->sunrise_sunset['sunset_timestamp'] ),
-  	  'sunset',
   	  TkEventWeather_Functions::icon_html( 'sunset' )
     );
   } else {
-    // nothing
+    // if sunrise or sunset timestamp = this hourly weather timestamp, don't display this hour, otherwise do display this hour
+    // Example: Sunset at 6:00pm, don't display the 6pm hourly weather info
+    // Example: Sunset at 5:59pm, do display the 6pm hourly weather info
+    if ( ( $doing_sunrise && $context->sunrise_sunset['sunrise_timestamp'] == $value->time ) || ( $doing_sunset && $context->sunrise_sunset['sunset_timestamp'] == $value->time ) ) {
+      // nothing
+    } else {
+    	$output .= sprintf( '">
+        <span class="%1$s__time">%2$s</span>
+        <span class="%1$s__icon %3$s">%4$s</span>
+        <span class="%1$s__temperature">%5$s%6$s</span>
+        <span class="%1$s__wind-speed">%7$s</span>
+        <span class="%1$s__wind-bearing">%8$s</span>',
+        $template_class,
+    	  $display_time,
+    	  $value->icon,
+    	  TkEventWeather_Functions::icon_html( $value->icon ),
+    	  TkEventWeather_Functions::temperature_to_display( $value->temperature ),
+    	  $context->temperature_units,
+    	  TkEventWeather_Functions::rounded_float_value( $value->windSpeed ),
+    	  $value->windBearing
+      );
+    }
   }
   
-  // if sunrise or sunset timestamp = this hourly weather timestamp, don't display this hour, otherwise do display this hour
-  // Example: Sunset at 6:00pm, don't display the 6pm hourly weather info
-  // Example: Sunset at 5:59pm, do display the 6pm hourly weather info
-  if ( ( $doing_sunrise && $context->sunrise_sunset['sunrise_timestamp'] == $value->time ) || ( $doing_sunset && $context->sunrise_sunset['sunset_timestamp'] == $value->time ) ) {
-    // nothing
-  } else {
-  	$output .= sprintf( '<div id="tk-event-weather-hourly-timestamp-%s" class="tk-event-weather-hourly-hour">
-        <span class="tk-event-weather-hourly-time">%s</span>
-        <span class="tk-event-weather-hourly-icon--%s">%s</span>
-        <span class="tk-event-weather-hourly-temperature">%s</span>
-        <span class="tk-event-weather-hourly-wind-speed">%s</span>
-        <span class="tk-event-weather-hourly-wind-bearing">%s</span>
-      </div>',
-  	  $value->time,
-  	  $display_time,
-  	  $value->icon,
-  	  TkEventWeather_Functions::icon_html( $value->icon ),
-  	  TkEventWeather_Functions::rounded_float_value( $value->temperature ),
-  	  TkEventWeather_Functions::rounded_float_value( $value->windSpeed ),
-  	  $value->windBearing
-    );
-  }
+	$output .= PHP_EOL;
+	
+  $output .= '</div>'; // __item
+  
   
   // Resets
   $doing_sunrise = false;
   $doing_sunset = false;
   $display_time = '';
+  
+  $index++;
 
 } // end foreach()
 
-$output .= '</div>';
+$output .= PHP_EOL;
+	
+$output .= '</div>'; // .tk-event-weather-template
 
 echo $output;
 ?>

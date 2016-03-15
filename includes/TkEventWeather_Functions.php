@@ -30,6 +30,10 @@ class TkEventWeather_Functions {
   
   
   
+  public static function register_tk_event_weather_css() {
+    wp_register_style( 'tk-event-weather', TkEventWeather_FuncSetup::plugin_dir_url_root() . 'css/tk-event-weather.css', array(), null );
+  }
+  
   /**
     *
     * Icons
@@ -743,21 +747,30 @@ class TkEventWeather_Functions {
   
   public static function temperature_units( $input ) {
   	if( empty( $input ) || ! array_key_exists( $input, TkEventWeather_Functions::forecast_io_option_units() ) ) {
-    	$result = apply_filters( 'tk_event_weather_indeterminate_units', '' );
+    	return false;
+  	}
+  	
+  	if( 'us' == $input ) {
+    	$result = __( 'F', 'tk-event-weather' ); //Fahrenheit
   	} else {
-    	if( 'us' == $input ) {
-      	$result = __( 'F', 'tk-event-weather' ); //Fahrenheit
-    	} else {
-      	$result = __( 'C', 'tk-event-weather' ); //Celsius
-    	}
+    	$result = __( 'C', 'tk-event-weather' ); //Celsius
   	}
   	
   	return $result;
   }
   
-  public static function temperature_separator_html() {
-    return wp_kses_post ( apply_filters( 'tk_event_weather_temperature_separator_html', '&ndash;' ) );
+  public static function temperature_to_display( $temperature, $temperature_decimals = 0, $degree = '&deg;' ) {
+  	if( ! is_numeric( $temperature ) ) {
+    	return false;
+  	}
+  	
+  	$result = self::rounded_float_value( $temperature, $temperature_decimals );
+  	
+  	$result .= $degree;
+  	
+  	return $result;
   }
+  
   
   public static function timestamp_to_display( $timestamp = '', $date_format = '' ) {
     // timestamp

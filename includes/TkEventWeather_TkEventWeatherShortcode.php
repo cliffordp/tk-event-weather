@@ -8,7 +8,9 @@
   * FYI: the forecast.io "apparentTemperature" value is the "feels like" temperature
   * icon direction of wind
   * settings page translatable
-  * end time on different date throws fatal at `&& intval( $weather_end_time->time ) !== intval( $value->time )`
+  * "current" / "right now" if event is currently happening
+  * if end time is empty or not same day
+    * end time on different date throws fatal at `&& intval( $weather_end_time->time ) !== intval( $value->time )`
   * handle multi-day events (e.g. Monday 8pm to Tuesday 2am or Monday 8pm to Wednesday 5pm)
   * sanitize valid value for $icons -- add 'demo' option to output all for styling/testing?
   * shortcode arguments for display: hourly, min-max, right now (e.g. if event is currently happening), anything else?
@@ -17,9 +19,9 @@
   * display options (on/off each instead of custom CSS to hide):
     * hourly: temp, wind speed, wind direction, icon, humidity
     * entire event: min-max event temp, advisories
-  * child theme template override
-  * color options for styling SVGs (e.g. color yellow of sun) -- not possible with SVGs because they're flattened (no CSS classes to "fill")
+  * color options for styling SVGs (e.g. color yellow of sun) -- not possible with as-is SVGs because they're flattened (no CSS classes to "fill")
   * allow single time instead of hourly (start + end times) to make shortcode more flexible and also maybe applicable for events without an end time (e.g. The Events Calendar)
+  * all output in BEM method -- https://github.com/google/material-design-lite/wiki/Understanding-BEM
   */
 
 
@@ -1166,17 +1168,21 @@ TK Event Weather JSON Data
     	}
     	
     	
+      TkEventWeather_Functions::register_tk_event_weather_css();
+      wp_enqueue_style( 'tk-event-weather' );
+      
     	/**
       	* Start Building Output!!!
       	* All data should be set by now!!!
       	*/
     	
-    	$output .= '<div class="tk-event-weather-wrapper">';
+    	// cannot do <style> tags inside template because it will break any open div (e.g. wrapper div)
+    	$output .= '<div class="tk-event-weather__wrapper">';
       	// https://github.com/GaryJones/Gamajo-Template-Loader/issues/13#issuecomment-196046201
       	ob_start();
       	TkEventWeather_Functions::load_template( $template_data['template'], $template_data );
       	$output .= ob_get_clean();    	
-    	$output .= '</div>'; // .tk-event-weather-wrapper    	
+    	$output .= '</div>'; // .tk-event-weather--wrapper    	
     	
     	return $output;
     	

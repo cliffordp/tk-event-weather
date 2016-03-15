@@ -11,36 +11,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // make sure we have data to work with!
-if ( empty( $context ) || ! is_array( $context ) ) {
-  //return false;
+if ( empty( $context ) || ! is_object( $context ) ) {
+  return false;
 }
 
-//var_dump($context);
+$template_class = sprintf( 'tk-event-weather-template__%s', $context->template );
 
-$output = sprintf( '<div class="tk-event-weather--%s">', $context->template );
 
-$output .= __( 'Event temperature range:', 'tk-event-weather' );
-
-$output .= ' ';
+$output = sprintf( '<div class="tk-event-weather-template %s">', $template_class );
 
 if ( $context->weather_hourly_high == $context->weather_hourly_low ) {
-	$output .= sprintf( '<span class="tk-event-weather-degrees-same">%s</span><span class="tk-event-weather-degrees">&deg;%s</span>',
-	  TkEventWeather_Functions::rounded_float_value( $context->weather_hourly_low ),
+	$output .= sprintf( '<span class="degrees-same">%s%s</span>',
+	  TkEventWeather_Functions::temperature_to_display( $context->weather_hourly_low ),
 	  $context->temperature_units
   );
 } else {
-	$output .= sprintf( '<span class="tk-event-weather-degrees-low">%s</span><span class="tk-event-weather-temperature-separator">%s</span><span class="tk-event-weather-degrees-high">%s</span><span class="tk-event-weather-temperature-degrees">&deg;%s</span>',
-	  $context->weather_hourly_low,
-	  TkEventWeather_Functions::temperature_separator_html(),
-	  TkEventWeather_Functions::rounded_float_value( $context->weather_hourly_high ),
+	$output .= sprintf( '<span class="degrees-low">%s</span>&ndash;<span class="degrees-high">%s</span>%s',
+	  TkEventWeather_Functions::temperature_to_display( $context->weather_hourly_low, 0, '' ), // no degree symbol
+	  TkEventWeather_Functions::temperature_to_display( $context->weather_hourly_high ),
 	  $context->temperature_units
   );
 }
 
-$output .= '</span>'; // .tk-event-weather.tk-event-weather-temperature
-
-
-$output .= '</div>';
+$output .= PHP_EOL;
+	
+$output .= '</div>'; // .tk-event-weather-template
 
 echo $output;
 ?>
