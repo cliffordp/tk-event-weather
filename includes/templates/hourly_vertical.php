@@ -76,21 +76,27 @@ foreach ( $context->weather_hourly as $key=>$value ) {
             
       $wind_direction = TkEventWeather_Functions::wind_bearing_to_direction( $value->windBearing, false );
       
+      $wind_html = sprintf( '<span class="%1$s__wind" title="%2$s %3$s %4$s">%2$s %3$s</span>',
+        $template_class,
+    	  TkEventWeather_Functions::rounded_float_value( $value->windSpeed ),
+    	  $context->wind_speed_units,
+    	  $wind_direction,
+    	  TkEventWeather_Functions::wind_bearing_to_icon( $wind_bearing )
+      );
+      
+      
     	$output .= sprintf( '">
         <span class="%1$s__time">%2$s</span>
         <span class="%1$s__icon %3$s">%4$s</span>
         <span class="%1$s__temperature">%5$s%6$s</span>
-        <span class="%1$s__wind" title="%7$s %8$s %9$s">%10$s <span class="%1$s__wind-speed" title="%7$s %8$s %9$s">%7$s %8$s</span></span>',
+        %7$s',
         $template_class,
     	  $display_time,
     	  $value->icon,
     	  TkEventWeather_Functions::icon_html( $value->icon ),
     	  TkEventWeather_Functions::temperature_to_display( $value->temperature ),
     	  $context->temperature_units,
-    	  TkEventWeather_Functions::rounded_float_value( $value->windSpeed ),
-    	  $context->wind_speed_units,
-    	  $wind_direction,
-    	  TkEventWeather_Functions::wind_bearing_to_icon( $wind_bearing )
+    	  $wind_html
       );
     }
   }

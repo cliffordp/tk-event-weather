@@ -6,7 +6,6 @@
 
 /** TO DO:
   * FYI: the forecast.io "apparentTemperature" value is the "feels like" temperature
-  * icon direction of wind
   * verify hourly hours are matching up correctly
   * time of day versions of icons (night/day)
     * https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-174607313
@@ -20,9 +19,7 @@
   * handle multi-day events (e.g. Monday 8pm to Tuesday 2am or Monday 8pm to Wednesday 5pm)
   * add 'demo' option to output all icons (e.g. for styling/testing)
   * 12 or 24 hour time format (handled automatically by WP translation?)
-  * display options (on/off each instead of custom CSS to hide):
-    * hourly: temp, wind speed, wind direction, icon, humidity
-    * entire event: min-max event temp, advisories
+  * weather advisories
   * color options for styling SVGs (e.g. yellow sun with gray cloud) -- not possible with as-is SVGs because they're flattened (no CSS classes to "fill")
   * all output in BEM method -- https://github.com/google/material-design-lite/wiki/Understanding-BEM
   */
