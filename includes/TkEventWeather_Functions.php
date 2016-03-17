@@ -28,11 +28,31 @@ class TkEventWeather_Functions {
     $template_loader->get_template_part( $slug, $name, $load );
   }
   
+  public static function valid_display_templates( $prepend_empty = 'false' ) {
+    $result = array(
+      'hourly_horizontal' => __( 'Hourly (Horizontal)', 'tk-event-weather' ),
+      'hourly_vertical'   => __( 'Hourly (Vertical)', 'tk-event-weather' ),
+      'event_low_high'    => __( 'Low-High Temperature', 'tk-event-weather' ),
+    );
+    
+    $custom_display_templates = apply_filters( 'tk_event_weather_custom_display_templates', array() );
+    
+    if ( ! empty( $custom_display_templates ) ) {
+      $result = array_merge( $result, $custom_display_templates );
+    }
+    
+    if ( 'true' == $prepend_empty ) {
+      $result = self::array_prepend_empty( $result );
+    }
+    
+    return $result;
+  }
   
   
   public static function register_tk_event_weather_css() {
     wp_register_style( 'tk-event-weather', TkEventWeather_FuncSetup::plugin_dir_url_root() . 'css/tk-event-weather.css', array(), null );
   }
+  
   
   /**
     *
@@ -192,6 +212,47 @@ class TkEventWeather_Functions {
   //
   // END Forecast.io valid options
   //
+  
+  
+  // to be nice and link to http://tourkick.com/plugins/tk-event-weather/
+  public static function plugin_credit_link() {
+    if ( true === apply_filters( 'tk_event_weather_disable_plugin_credit_link', '' ) ) {
+      return '';
+    }
+    
+    $url = 'http://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-credit-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather';
+    
+    $anchor_text = __( 'TK Event Weather plugin', 'tk-event-weather' );
+    
+    $result = sprintf( '<div class="tk-event-weather__plugin-credit">
+      <a href="%s" target="_blank">%s</a>
+    </div>',
+      $url,
+      $anchor_text
+    );
+    
+    return $result;
+  }
+  
+  // to comply with https://developer.forecast.io/
+  public static function forecast_io_credit_link() {
+    if ( true === apply_filters( 'tk_event_weather_disable_forecast_io_credit_link', '' ) ) {
+      return '';
+    }
+    
+    $url = 'http://forecast.io/';
+    
+    $anchor_text = __( 'Powered by Forecast', 'tk-event-weather' );
+    
+    $result = sprintf( '<div class="tk-event-weather__forecast-io-credit">
+      <a href="%s" target="_blank">%s</a>
+    </div>',
+      $url,
+      $anchor_text
+    );
+    
+    return $result;
+  }
   
   
   // Valid strtotime() relative time
@@ -427,7 +488,22 @@ class TkEventWeather_Functions {
       'partly-cloudy-day',
       'partly-cloudy-night',
       'sunrise',
-      'sunset'
+      'sunset',
+    );
+    
+    if ( 'true' == $prepend_empty ) {
+      $result = self::array_prepend_empty( $result );
+    }
+    
+    return $result;
+  }
+  
+  public static function valid_icon_type( $prepend_empty = 'false' ) {
+    $result = array(
+      'climacons_font',
+      'climacons_svg',
+      //'font_awesome',
+      'off',
     );
     
     if ( 'true' == $prepend_empty ) {
@@ -680,8 +756,28 @@ class TkEventWeather_Functions {
       return '';
     }
     
+    if ( ! in_array( $icon_type, self::valid_icon_type() ) ) {
+      $icon_type = 'climacons_font';
+    }
+    
     $result = '';
     
+		$climacons_font = array(
+			'clear-day'           => 'sun',
+			'clear-night'         => 'moon',
+			'rain'                => 'rain',
+			'snow'                => 'snow',
+			'sleet'               => 'sleet',
+			'wind'                => 'wind',
+			'fog'                 => 'fog',
+			'cloudy'              => 'cloud',
+			'partly-cloudy-day'   => 'cloud sun',
+			'partly-cloudy-night' => 'cloud moon',
+			'sunrise'             => 'sunrise',
+			'sunset'              => 'sunset',
+		);
+		
+    // If you use SVGs, you'll need to add your own styling to make them appear more inline.
     // https://github.com/christiannaths/Climacons-Font/tree/master/SVG
 		$climacons_svg = array(
 			'clear-day'           => self::climacons_svg_sun(),
@@ -698,22 +794,8 @@ class TkEventWeather_Functions {
 			'sunset'              => self::climacons_svg_sunset(),
 		);
 		
-		$climacons_font = array(
-			'clear-day'           => 'sun',
-			'clear-night'         => 'moon',
-			'rain'                => 'rain',
-			'snow'                => 'snow',
-			'sleet'               => 'sleet',
-			'wind'                => 'wind',
-			'fog'                 => 'fog',
-			'cloudy'              => 'cloud',
-			'partly-cloudy-day'   => 'cloud sun',
-			'partly-cloudy-night' => 'cloud moon',
-			'sunrise'             => 'sunrise',
-			'sunset'              => 'sunset',
-		);
-		
-    // Font Awesome (really not usable, plus you will need to add the icon font yourself (e.g. via https://wordpress.org/plugins/better-font-awesome/ )
+    // Font Awesome is really not usable (not enough weather-related icons). Plus, you would need to add the icon font yourself (e.g. via https://wordpress.org/plugins/better-font-awesome/ )
+/*
 		$fa_icons = array(
 			'clear-day'           => 'fa-sun-o',
 			'clear-night'         => 'fa-moon-o',
@@ -728,17 +810,22 @@ class TkEventWeather_Functions {
 			'sunrise'             => 'fa-arrow-up',
 			'sunset'              => 'fa-arrow-down',
 		);
+*/
 		
-    if ( 'climacons_svg' == $icon_type ) {
-      $icon = $climacons_svg[$input];
-      $result = $icon;
-    } elseif ( 'climacons_font' == $icon_type ) {
+    if ( 'climacons_font' == $icon_type ) {
       $icon = $climacons_font[$input];
       $result = sprintf( '<i class="climacon %s"></i>', $icon );
-    } elseif ( 'font-awesome' == $icon_type ) {
+    } elseif ( 'climacons_svg' == $icon_type ) {
+      $icon = $climacons_svg[$input];
+      $result = $icon;
+    }
+    /*
+    elseif ( 'font_awesome' == $icon_type ) {
       $icon = $fa_icons[$input];
       $result = sprintf( '<i class="fa %s"></i>', $icon );
-    } else {
+    }
+    */
+    else {
       // nothing
     }
         
@@ -782,7 +869,7 @@ class TkEventWeather_Functions {
     
     if ( empty ( $date_format ) ) {
       /* translators: hourly display time format, see https://developer.wordpress.org/reference/functions/date_i18n/#comment-972 */
-      $date_format = __( 'g:i a T' );
+      $date_format = __( 'g:i a' );
     }
     
     // return date ( $date_format, $timestamp );

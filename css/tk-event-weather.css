@@ -1,3 +1,11 @@
+/* TK Event Weather and Forecast.io credit links */
+
+.tk-event-weather__plugin-credit,
+.tk-event-weather__forecast-io-credit {
+  text-align: right;
+  font-size: 50%;
+}
+
 /* hourly_vertical */
 
 .tk-event-weather-template__hourly_vertical {
@@ -6,16 +14,16 @@
 
 .tk-event-weather-template__hourly_vertical__item > span { /* column width */
 	display: inline-block;
-	min-width: 40px;
-	text-align: center;
+	min-width: 45px;
 }
 
 .tk-event-weather-template__hourly_vertical__item > span:first-child { /* first column's width */
-	min-width: 130px;
+	min-width: 85px;
 }
 
 .tk-event-weather-template__hourly_vertical__icon {
   font-size: 2em;
+  text-align: center;
   vertical-align: middle;
 }
 
@@ -23,8 +31,7 @@
 .tk-event-weather-template__hourly_horizontal__item {
   display: inline-block;
   text-align: center;
-  min-width: 60px;
-  width: 10%;
+  width: 60px;
 }
 
 .tk-event-weather-template__hourly_horizontal__item > span {

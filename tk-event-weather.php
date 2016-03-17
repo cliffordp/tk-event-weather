@@ -1,10 +1,10 @@
 <?php
 /*
    Plugin Name: TK Event Weather
-   Plugin URI: https://wordpress.org/plugins/tk-event-weather/
+   Plugin URI: http://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
    Version: 1.0
    Author: TourKick (Clifford Paulick)
-   Author URI: http://tourkick.com/
+   Author URI: http://tourkick.com/?utm_source=author-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
    Description: Accurate, reliable, and free weather forecasts for your WordPress events
    Text Domain: tk-event-weather
    License: GPLv3

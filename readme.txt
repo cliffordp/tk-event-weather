@@ -1,11 +1,11 @@
 === TK Event Weather ===
 Contributors: cliffpaulick
-Donate link: http://tourkick.com/pay/
+Donate link: http://tourkick.com/pay/?utm_source=plugin-donate-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
 Tags: calendars, celsius, classes, concerts, events, fahrenheit, forecast, local, meetings, shortcode, tickets, weather
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.3.0
-Tested up to: 4.4.1
+Tested up to: 4.4.2
 Stable tag: trunk
 
 Accurate, reliable, and free weather forecasts for your WordPress events
@@ -27,9 +27,13 @@ Accurate, reliable, and free weather forecasts for your WordPress events
 * Responsive plugin developer
 
 = Paid Add-Ons =
+
+Currently Available:
+
+* [TK Event Weather for The Events Calendar by Modern Tribe](http://tourkick.com/shop/wordpress/tk-event-weather-the-events-calendar/)
+
 I am considering making add-ons for the following event calendars:
 
-* [The Events Calendar by Modern Tribe](https://theeventscalendar.com/)
 * [WP Event Organiser by Stephen Harris](http://wp-event-organiser.com/)
 * [Calendarize it! by RightHere](http://codecanyon.net/item/calendarize-it-for-wordpress/2568439?ref=cliffpaulick)
 * [Events+ by WPMU DEV](https://premium.wpmudev.org/project/events-plus/)
@@ -55,10 +59,10 @@ I'll consider making whichever add-ons I receive the most requests for (and are 
 = Support Me =
 * [Leave a great review](https://wordpress.org/support/view/plugin-reviews/tk-event-weather?rate=5#postform)
 * Buy one of my available paid add-ons or tell me about one you'd be interested in purchasing!
-* [View my other plugins](https://profiles.wordpress.org/cliffpaulick/#content-plugins)
+* [View my other plugins](http://tourkick.com/plugins/)
 * [Hire Me for Customizations](http://tourkick.com/)
 * [Contribute code via GitHub](https://github.com/cliffordp/tk-event-weather)
-* **[Tweet this plugin](https://twitter.com/home?status=I%20love%20the%20free%20TK%20Event%20Weather%20%23WordPress%20plugin%20by%20%40TourKick.%20https%3A//wordpress.org/plugins/tk-event-weather/%20-%20weather%20for%20any%20event!)**
+* **[Tweet this plugin](https://twitter.com/home?status=I%20love%20the%20free%20TK%20Event%20Weather%20%23WordPress%20plugin%20by%20%40TourKick.%20http%3A//tourkick.com/plugins/tk-event-weather/%20-%20weather%20for%20any%20event!)**
 
 == Installation ==
 
@@ -120,5 +124,5 @@ Here are quotes from the [Forecast.io API docs](https://developer.forecast.io/do
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
 
 = Version 1.0 =
-* February 1, 2016
+* April 1, 2016
 * Initial version

@@ -15,7 +15,7 @@ if ( empty( $context ) || ! is_object( $context ) ) {
   return false;
 }
 
-$template_class = sprintf( 'tk-event-weather-template__%s', $context->template );
+$template_class = sanitize_html_class ( sprintf( 'tk-event-weather-template__%s', $context->template ) );
 
 
 $output = sprintf( '<div class="tk-event-weather-template %s">', $template_class );

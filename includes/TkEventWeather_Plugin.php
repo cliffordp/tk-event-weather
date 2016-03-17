@@ -163,6 +163,22 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     				'type'		    => 'password',
     			));
     			
+    			// Display Template
+    			$wp_customize->add_setting( 'tk_event_weather[display_template]', array(
+    				'type'              => 'option',
+    				'capability'        => 'edit_theme_options',
+    				'default'           => '',
+    			));
+    			
+    			$wp_customize->add_control( 'tk_event_weather_display_template_control', array(
+      			'label'       => esc_html__( 'Default Display Template', 'tk-event-weather' ),
+    				'description' => esc_html__( 'Choose your default Display Template. If left blank, default will be "Hourly Horizontal".', 'tk-event-weather' ),
+    				'section'     => self::$customizer_section_id,
+    				'settings'    => 'tk_event_weather[display_template]',
+    				'type'		    => 'select',
+    				'choices'     => TkEventWeather_Functions::valid_display_templates( 'true' ),
+    			));
+    			
     			// Past cutoff days
     			$wp_customize->add_setting( 'tk_event_weather[cutoff_past_days]', array(
     				'type'              => 'option',
@@ -173,7 +189,7 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     			
     			$wp_customize->add_control( 'tk_event_weather_cutoff_past_days_control', array(
       			'label'       => esc_html__( 'Past cutoff (in days)', 'tk-event-weather' ),
-    				'description' => __( 'If datetime is this far in the past, do not output the forecast. Enter zero for "no limit".<br>Example: "30" would disable weather for datetimes older than 30 days from Event Time.<br>Default: 30', 'tk-event-weather' ),
+    				'description' => __( 'If datetime is this far in the past, do not output the forecast. Enter zero for "no limit".<br>Example: "30" would disable weather more than 30 days in the past.<br>Default: 30', 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
     				'settings'    => 'tk_event_weather[cutoff_past_days]',
     				'type'		    => 'text',
@@ -189,7 +205,7 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     			
     			$wp_customize->add_control( 'tk_event_weather_cutoff_future_days_control', array(
       			'label'       => esc_html__( 'Future cutoff (in days)', 'tk-event-weather' ),
-    				'description' => __( 'If datetime is this far in the future, do not output the forecast. Enter zero for "no limit".<br>Example: "365" would disable weather for datetimes more than 1 year after Event Time.<br>Default: 365', 'tk-event-weather' ),
+    				'description' => __( 'If datetime is this far in the future, do not output the forecast. Enter zero for "no limit".<br>Example: "365" would disable weather more than 1 year in the future.<br>Default: 365', 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
     				'settings'    => 'tk_event_weather[cutoff_future_days]',
     				'type'		    => 'text',
@@ -220,11 +236,11 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     			
     			$wp_customize->add_control( 'tk_event_weather_transients_off_control', array(
       			'label'       => esc_html__( 'Disable Transients', 'tk-event-weather' ),
-    				'description' => __( 'The <a href="https://codex.wordpress.org/Transients_API" target="_blank">WordPress Transients API</a> (link opens in new window) is used to reduce repetitive API calls and improve performance. Check this box if you wish to disable using Transients (should only be used for testing).', 'tk-event-weather' ),
+    				'description' => __( 'The <a href="https://codex.wordpress.org/Transients_API" target="_blank">WordPress Transients API</a> (link opens in new window) is used to reduce repetitive API calls and improve performance. Check this box if you wish to disable using Transients (suggested only for testing purposes).', 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
     				'settings'    => 'tk_event_weather[transients_off]',
     				'type'		    => 'checkbox',
-    				'choices'     => array( 'true' => __( 'Off', 'tk-event-weather' ) ),
+    				'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
     			));
     			
     			// Transient expiration in hours
@@ -237,7 +253,7 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     			
     			$wp_customize->add_control( 'tk_event_weather_transients_expiration_hours_control', array(
       			'label'       => esc_html__( 'Transient expiration (in hours)', 'tk-event-weather' ),
-    				'description' => __( 'If stored Forecast.io API data is older than this many hours, pull the API data afresh.<br>Default: 12', 'tk-event-weather' ),
+    				'description' => __( 'If stored Forecast.io API data is older than this many hours, pull fresh weather data from the API.<br>Default: 12', 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
     				'settings'    => 'tk_event_weather[transients_expiration_hours]',
     				'type'		    => 'text',
@@ -252,13 +268,46 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     			
     			$wp_customize->add_control( 'tk_event_weather_sunrise_sunset_off_control', array(
       			'label'       => esc_html__( 'Disable Sunrise/Sunset', 'tk-event-weather' ),
-    				'description' => __( 'Check this box to disable injecting sunrise and sunset times into the hourly weather view.', 'tk-event-weather' ),
+    				'description' => __( 'Check this box to disable including sunrise and sunset times into the hourly weather views.', 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
     				'settings'    => 'tk_event_weather[sunrise_sunset_off]',
     				'type'		    => 'checkbox',
-    				'choices'     => array( 'true' => __( 'Off', 'tk-event-weather' ) ),
+    				'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
     			));
     			
+    			// Disable Plugin Credit Link
+    			$wp_customize->add_setting( 'tk_event_weather[plugin_credit_link_off]', array(
+    				'type'              => 'option',
+    				'capability'        => 'edit_theme_options',
+    				'default'           => '',
+    			));
+    			
+    			$wp_customize->add_control( 'tk_event_weather_plugin_credit_link_off_control', array(
+      			'label'       => esc_html__( 'Disable display of the plugin credit link', 'tk-event-weather' ),
+    				'description' => __( "Check this box to disable linking to the TK Event Weather plugin's home page.", 'tk-event-weather' ),
+    				'section'     => self::$customizer_section_id,
+    				'settings'    => 'tk_event_weather[plugin_credit_link_off]',
+    				'type'		    => 'checkbox',
+    				'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
+    			));
+    			
+    			// Disable Forecast.io Credit Link
+    			$wp_customize->add_setting( 'tk_event_weather[forecast_io_credit_link_off]', array(
+    				'type'              => 'option',
+    				'capability'        => 'edit_theme_options',
+    				'default'           => '',
+    			));
+    			
+    			$wp_customize->add_control( 'tk_event_weather_forecast_io_credit_link_off_control', array(
+      			'label'       => esc_html__( 'Disable display of the Forecast.io credit link', 'tk-event-weather' ),
+    				'description' => __( "Check this box to disable linking to Forecast.io<br>You should not check this box without permission from Forecast.io, per their Terms of Use.", 'tk-event-weather' ),
+    				'section'     => self::$customizer_section_id,
+    				'settings'    => 'tk_event_weather[forecast_io_credit_link_off]',
+    				'type'		    => 'checkbox',
+    				'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
+    			));
+    			
+
 /*
     			// Icons
     			$wp_customize->add_setting( 'tk_event_weather[icons]', array(
@@ -269,17 +318,14 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     			
     			$wp_customize->add_control( 'tk_event_weather_icons_control', array(
       			'label'       => esc_html__( 'Icons settings', 'tk-event-weather' ),
-    				'description' => __( 'Check this box to disable injecting sunrise and sunset times into the hourly weather view.', 'tk-event-weather' ),
+    				'description' => __( '', 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
     				'settings'    => 'tk_event_weather[sunrise_sunset_off]',
     				'type'		    => 'radio',
-    				'choices'     => array(
-    				  'climacons'     => __( 'Climacons (Default)', 'tk-event-weather' ),
-    				  'font-awesome'  => __( 'Font Awesome', 'tk-event-weather' ),
-    				  'off'           => __( 'Disable Icons', 'tk-event-weather' ),
-    				),
+    				'choices'     => TkEventWeather_Functions::valid_icon_type( 'true' ),
     			));
 */
+
     			
     } // end customizer_options()
 

@@ -7,20 +7,20 @@
 /** TO DO:
   * FYI: the forecast.io "apparentTemperature" value is the "feels like" temperature
   * icon direction of wind
-  * settings page translatable
+  * verify hourly hours are matching up correctly
+  * force debug report to be in English (i.e. not translatable)
+  * add Debug Mode to output JSON, plugin settings, filters/actions in use, disable transients
   * "current" / "right now" if event is currently happening
   * if end time is empty or not same day
     * end time on different date throws fatal at `&& intval( $weather_end_time->time ) !== intval( $value->time )`
+  * allow single time instead of hourly (start + end times) to make shortcode more flexible and also maybe applicable for events without an end time (e.g. The Events Calendar)
   * handle multi-day events (e.g. Monday 8pm to Tuesday 2am or Monday 8pm to Wednesday 5pm)
-  * sanitize valid value for $icons -- add 'demo' option to output all for styling/testing?
-  * shortcode arguments for display: hourly, min-max, right now (e.g. if event is currently happening), anything else?
-  * 12 or 24 hour time format
-  * timezone display on/off
+  * add 'demo' option to output all icons (e.g. for styling/testing)
+  * 12 or 24 hour time format (handled automatically by WP translation?)
   * display options (on/off each instead of custom CSS to hide):
     * hourly: temp, wind speed, wind direction, icon, humidity
     * entire event: min-max event temp, advisories
-  * color options for styling SVGs (e.g. color yellow of sun) -- not possible with as-is SVGs because they're flattened (no CSS classes to "fill")
-  * allow single time instead of hourly (start + end times) to make shortcode more flexible and also maybe applicable for events without an end time (e.g. The Events Calendar)
+  * color options for styling SVGs (e.g. yellow sun with gray cloud) -- not possible with as-is SVGs because they're flattened (no CSS classes to "fill")
   * all output in BEM method -- https://github.com/google/material-design-lite/wiki/Understanding-BEM
   */
 
@@ -48,6 +48,8 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
     	} else {
       	$api_key_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'forecast_io_api_key' );
       	
+      	$display_template_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'display_template' );
+      	
       	$cutoff_past_days_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'cutoff_past_days', 30 );
       	$cutoff_future_days_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'cutoff_future_days', 365 );
       	
@@ -59,7 +61,10 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
       	$sunrise_sunset_off_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'sunrise_sunset_off' );
       	
         //$icons_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'icons' );
-
+        
+      	$plugin_credit_link_off_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'plugin_credit_link_off' );
+      	$forecast_io_credit_link_off_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'forecast_io_credit_link_off' );
+      	
       }
       
       /*
@@ -71,36 +76,38 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
        */
     	// Attributes
     	$defaults = array(
-      	'api_key'                 => $api_key_option,
-      	'post_id'                 => get_the_ID(), // The ID of the current post
+      	'api_key'                       => $api_key_option,
+      	'post_id'                       => get_the_ID(), // The ID of the current post
       	// if lat_long is used, will override individual latitude and longitude arguments if all 3 are supplied
-      	'lat_long'                => '', // manually entered
-      	'lat_long_custom_field'   => '', // get custom field value
-      	// separate latitude
-      	'lat'                     => '', // manually entered
-      	'lat_custom_field'        => '', // get custom field value
-      	// separate longitude
-      	'long'                    => '', // manually entered
-      	'long_custom_field'       => '', // get custom field value
+      	'lat_long'                      => '', // manually entered
+      	'lat_long_custom_field'         => '', // get custom field value
+      	// separate latitude            
+      	'lat'                           => '', // manually entered
+      	'lat_custom_field'              => '', // get custom field value
+      	// separate longitude           
+      	'long'                          => '', // manually entered
+      	'long_custom_field'             => '', // get custom field value
       	// time (ISO 8601 or Unix Timestamp)
-      	'start_time'              => '', // manually entered
-      	'start_time_custom_field' => '', // get custom field value
-      	'end_time'                => '', // manually entered
-      	'end_time_custom_field'   => '', // get custom field value
+      	'start_time'                    => '', // manually entered
+      	'start_time_custom_field'       => '', // get custom field value
+      	'end_time'                      => '', // manually entered
+      	'end_time_custom_field'         => '', // get custom field value
       	// time constraints in strtotime relative dates
-      	'cutoff_past'             => $cutoff_past_days_option,
-      	'cutoff_future'           => $cutoff_future_days_option,
+      	'cutoff_past'                   => $cutoff_past_days_option,
+      	'cutoff_future'                 => $cutoff_future_days_option,
       	// API options -- see https://developer.forecast.io/docs/v2
-      	'units'                   => '', // default/fallback is $units_default
-      	'exclude'                 => '', // comma-separated. Default/fallback is $exclude_default
-      	'transients_off'          => $transients_off_option, // "true" is the only valid value
-      	'transients_expiration'   => $transients_expiration_hours_option, // "true" is only valid value
-      	// Display Customizations
-      	'sunrise_sunset_off'      => $sunrise_sunset_off_option, // "true" is the only valid value
-      	'icons'                   => 'climacons_font', // "off", "climacons_svg", "climacons_font", or "font-awesome" ???
+      	'units'                         => '', // default/fallback is $units_default
+      	'exclude'                       => '', // comma-separated. Default/fallback is $exclude_default
+      	'transients_off'                => $transients_off_option, // "true" is the only valid value
+      	'transients_expiration'         => $transients_expiration_hours_option,
+      	// Display Customizations       
+      	'sunrise_sunset_off'            => $sunrise_sunset_off_option, // "true" is the only valid value
+      	'icons'                         => '',
+      	'plugin_credit_link_off'        => $plugin_credit_link_off_option, // "true" is the only valid value
+      	'forecast_io_credit_link_off'   => $forecast_io_credit_link_off_option, // "true" is the only valid value
       	// HTML
-      	'class'                   => '', // custom class
-      	'template'                => 'event_low_high', // event_low_high, hourly_horizontal, hourly_vertical
+      	'class'                         => '', // custom class
+      	'template'                      => $display_template_option,
     	);
     	
     	$atts = shortcode_atts( $defaults, $atts, 'tk-event-weather' );
@@ -1083,25 +1090,25 @@ TK Event Weather JSON Data
     	$template_data['sunrise_sunset'] = $sunrise_sunset;
     	
     	
-    	if ( ! empty( $atts['icons'] ) ) {
-      	if ( 'off' == $atts['icons'] ) {
-      	  $icons = '';
-      	} else {
-        	$icons = $atts['icons'];
-      	}
-      } else {
-        $icons = 'climacons_font';
-      }
-      
+    	// Icons
+    	$icons = $atts['icons'];
+    	
       if ( 'climacons' == $icons ) {
         $icons = 'climacons_font';
       }
+      
+    	if ( empty( $icons ) || ! in_array( $icons, TkEventWeather_Functions::valid_icon_type() ) ) {
+      	$icons = 'climacons_font';
+    	}      
       
       // enqueue CSS file if using Climacons Icon Font
       if ( 'climacons_font' == $icons ) {
         TkEventWeather_Functions::register_climacons_css();
         wp_enqueue_style( 'tkeventw-climacons' );
       }
+      
+      
+      // Hourly Weather
       
       $weather_hourly = array();
       
@@ -1159,7 +1166,13 @@ TK Event Weather JSON Data
     	// class
     	$class = sanitize_html_class( $atts['class'] );
     	
-    	$template_data['template'] = $atts['template'];
+    	$display_template = $atts['template'];
+    	
+    	if ( empty( $display_template ) ) {
+      	$display_template = 'hourly_horizontal';
+    	}
+    	
+    	$template_data['template'] = $display_template;
     	
       $debug_vars = false;
     	//$debug_vars = WP_DEBUG; // if WP_DEBUG is true, set $debug_vars to true for admins only
@@ -1178,10 +1191,20 @@ TK Event Weather JSON Data
     	
     	// cannot do <style> tags inside template because it will break any open div (e.g. wrapper div)
     	$output .= '<div class="tk-event-weather__wrapper">';
+    	  
       	// https://github.com/GaryJones/Gamajo-Template-Loader/issues/13#issuecomment-196046201
       	ob_start();
-      	TkEventWeather_Functions::load_template( $template_data['template'], $template_data );
-      	$output .= ob_get_clean();    	
+      	TkEventWeather_Functions::load_template( $display_template, $template_data );
+      	$output .= ob_get_clean();
+      
+        if ( empty( $atts['plugin_credit_link_off'] ) ) {
+          $output .= TkEventWeather_Functions::plugin_credit_link();
+        }
+        
+        if ( empty( $atts['forecast_io_credit_link_off'] ) ) {
+          $output .= TkEventWeather_Functions::forecast_io_credit_link();
+        }
+      
     	$output .= '</div>'; // .tk-event-weather--wrapper    	
     	
     	return $output;
