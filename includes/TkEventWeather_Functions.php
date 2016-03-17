@@ -865,7 +865,7 @@ class TkEventWeather_Functions {
     
     
     if ( 'climacons_font' == $icon_type ) {
-      $result = sprintf( '<i style="-ms-transform: rotate(%1$ddeg); -webkit-transform: rotate(%1$ddeg); transform: rotate(%1$ddeg);" class="tk-event-weather__wind-bearing-icon climacon compass north"></i>', $input );
+      $result = sprintf( '<i style="-ms-transform: rotate(%1$ddeg); -webkit-transform: rotate(%1$ddeg); transform: rotate(%1$ddeg);" class="tk-event-weather__wind-direction-icon climacon compass north"></i>', $input );
     } elseif ( 'climacons_svg' == $icon_type ) {
       $result = $climacons_svg;
     } else {
@@ -929,14 +929,15 @@ class TkEventWeather_Functions {
   
   
   /**
-    *
+    * 
+    * https://en.wikipedia.org/wiki/Cardinal_direction
     * https://en.wikipedia.org/wiki/Points_of_the_compass
     * http://stackoverflow.com/questions/7490660/converting-wind-direction-in-angles-to-text-words
     * http://climate.umn.edu/snow_fence/components/winddirectionanddegreeswithouttable3.htm
     *
   **/
   // required to be an integer
-  public static function wind_bearing_to_direction( $input, $precision = 8 ) {
+  public static function wind_bearing_to_direction( $input, $direction_initials = true, $precision = 8 ) {
   	if( ! is_integer( $input ) ) { // not empty() because of allowable Zero
     	return false;
   	}
@@ -1015,6 +1016,44 @@ class TkEventWeather_Functions {
     	} else {
       	// should not happen
     	}
+    }
+    
+    if ( false === boolval( $direction_initials ) ) {
+      if ( 'N' == $result ) {
+        $result = __( 'north', 'tk-event-weather' );
+      } elseif ( 'NNE' == $result ) {
+        $result = __( 'north-northeast', 'tk-event-weather' );
+      } elseif ( 'NE' == $result ) {
+        $result = __( 'northeast', 'tk-event-weather' );
+      } elseif ( 'ENE' == $result ) {
+        $result = __( 'east-northeast', 'tk-event-weather' );
+      } elseif ( 'E' == $result ) {
+        $result = __( 'east', 'tk-event-weather' );
+      } elseif ( 'ESE' == $result ) {
+        $result = __( 'east-southeast', 'tk-event-weather' );
+      } elseif ( 'SE' == $result ) {
+        $result = __( 'southeast', 'tk-event-weather' );
+      } elseif ( 'SSE' == $result ) {
+        $result = __( 'south-southeast', 'tk-event-weather' );
+      } elseif ( 'S' == $result ) {
+        $result = __( 'south', 'tk-event-weather' );
+      } elseif ( 'SSW' == $result ) {
+        $result = __( 'south-southwest', 'tk-event-weather' );
+      } elseif ( 'SW' == $result ) {
+        $result = __( 'southwest', 'tk-event-weather' );
+      } elseif ( 'WSW' == $result ) {
+        $result = __( 'west-southwest', 'tk-event-weather' );
+      } elseif ( 'W' == $result ) {
+        $result = __( 'west', 'tk-event-weather' );
+      } elseif ( 'WNW' == $result ) {
+        $result = __( 'west-northwest', 'tk-event-weather' );
+      } elseif ( 'NW' == $result ) {
+        $result = __( 'northwest', 'tk-event-weather' );
+      } elseif ( 'NNW' == $result ) {
+        $result = __( 'north-northwest', 'tk-event-weather' );
+      } else {
+        // should not happen
+      }
     }
   	
   	return $result;

@@ -14,9 +14,11 @@
 }
 
 
-.tk-event-weather__wind-bearing-icon {
-  font-size: 2em;
+.tk-event-weather__wind-direction-icon {
   display: inline-block; /* so icon rotation works */
+  font-size: 2em;
+  text-align: center;
+  vertical-align: middle;
 }
 
 
