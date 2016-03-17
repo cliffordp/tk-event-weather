@@ -8,6 +8,9 @@
   * FYI: the forecast.io "apparentTemperature" value is the "feels like" temperature
   * icon direction of wind
   * verify hourly hours are matching up correctly
+  * time of day versions of icons (night/day)
+    * https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-174607313
+    * https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-178440095
   * force debug report to be in English (i.e. not translatable)
   * add Debug Mode to output JSON, plugin settings, filters/actions in use, disable transients
   * "current" / "right now" if event is currently happening
@@ -72,7 +75,6 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
        * api_key
        * lat/long
        * start time
-       * end time
        */
     	// Attributes
     	$defaults = array(
@@ -1163,6 +1165,10 @@ TK Event Weather JSON Data
     	
     	$template_data['temperature_units'] = $temperature_units;
     	
+    	$wind_speed_units = TkEventWeather_Functions::wind_speed_units( $api_data->flags->units );
+    	
+    	$template_data['wind_speed_units'] = $wind_speed_units;
+      
     	// class
     	$class = sanitize_html_class( $atts['class'] );
     	

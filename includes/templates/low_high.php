@@ -2,7 +2,7 @@
 /**
  * Template: Event Low to High (plain text)
  *
- * Override this template in your own theme by creating a file at [your-child-theme]/tk-event-weather/event_low_high.php
+ * Override this template in your own theme by creating a file at [your-child-theme]/tk-event-weather/low_high.php
  *
  */
 

@@ -36,7 +36,7 @@ foreach ( $context->weather_hourly as $key=>$value ) {
   	// nothing
 	}
 	
-  $display_time = TkEventWeather_Functions::timestamp_to_display ( $value->time, __( 'ga' ) );
+  $display_time = TkEventWeather_Functions::timestamp_to_display ( $value->time );
 	
 	if ( empty ( $display_time ) ) {
   	continue;
@@ -74,12 +74,13 @@ foreach ( $context->weather_hourly as $key=>$value ) {
     	$output .= sprintf( '">
         <span class="%1$s__time">%2$s</span>
         <span class="%1$s__icon %3$s">%4$s</span>
-        <span class="%1$s__temperature">%5$s</span>',
+        <span class="%1$s__temperature">%5$s%6$s</span>',
         $template_class,
     	  $display_time,
     	  $value->icon,
     	  TkEventWeather_Functions::icon_html( $value->icon ),
-    	  TkEventWeather_Functions::temperature_to_display( $value->temperature )
+    	  TkEventWeather_Functions::temperature_to_display( $value->temperature ),
+    	  $context->temperature_units
       );
     }
   }
