@@ -6,15 +6,19 @@
 
 /** TO DO:
   * FYI: the forecast.io "apparentTemperature" value is the "feels like" temperature
-  * verify hourly hours are matching up correctly
+  * add_action() next to wp_enqueue_style ???
+  * verify all timestamps get ran through timestamp cleanup method
+    * truncate seconds off all timestamps?
+  * use more data from API, like 'summary' text as a title element somewhere
+  * hours match up correctly, but if you enter a datetime of 4pm EDT(-4) and your WP is set to Central Time(-5), start_time="2016-04-01T16:30:00-04:00" will actually output the "display time" of "3pm" because 4pm EDT is 3pm CDT
+    * date_i18n() true or false?
+    * use API's timezone data to output local times instead of WordPress times
   * time of day versions of icons (night/day)
     * https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-174607313
     * https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-178440095
   * force debug report to be in English (i.e. not translatable)
   * add Debug Mode to output JSON, plugin settings, filters/actions in use, disable transients
   * "current" / "right now" if event is currently happening
-  * if end time is empty or not same day
-    * end time on different date throws fatal at `&& intval( $weather_end_time->time ) !== intval( $value->time )`
   * allow single time instead of hourly (start + end times) to make shortcode more flexible and also maybe applicable for events without an end time (e.g. The Events Calendar)
   * handle multi-day events (e.g. Monday 8pm to Tuesday 2am or Monday 8pm to Wednesday 5pm)
   * add 'demo' option to output all icons (e.g. for styling/testing)
@@ -209,14 +213,21 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
         }
       }
       
-    	if( '' == $start_time ) {
+    	if( empty( $start_time_timestamp ) ) {
       	return TkEventWeather_Functions::invalid_shortcode_message( 'Please enter a valid Start Time format' );
     	}
     	
     	$template_data['start_time_timestamp'] = $start_time_timestamp;
     	
+    	
+    	$weather_first_hour_timestamp = TkEventWeather_Functions::timestamp_truncate_minutes( $start_time_timestamp );
+    	
+    	$template_data['weather_first_hour_timestamp'] = $weather_first_hour_timestamp;
+    	
+    	
+    	
     	// cutoff_past
-    	// strtotime date relative to $start_time_timestamp
+    	// strtotime date relative to $weather_first_hour_timestamp
     	if ( ! empty( $atts['cutoff_past'] ) ) {
     	  $cutoff_past = $atts['cutoff_past'];
     	} else {
@@ -237,14 +248,14 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
       
       $min_timestamp = TkEventWeather_Functions::valid_timestamp ( $min_timestamp );
       
-      if( ! empty( $min_timestamp ) && '' != $start_time_timestamp ) {
-        if( $min_timestamp > $start_time_timestamp ) {
+      if( ! empty( $min_timestamp ) && '' != $weather_first_hour_timestamp ) {
+        if( $min_timestamp > $weather_first_hour_timestamp ) {
       	  return TkEventWeather_Functions::invalid_shortcode_message( 'Event Start Time needs to be more recent than the Past Cutoff Time' );
         }
       }
       
       // max 60 years in the past, per API docs
-      if( strtotime( '-60 years' ) > $start_time_timestamp ) {
+      if( strtotime( '-60 years' ) > $weather_first_hour_timestamp ) {
     	  return TkEventWeather_Functions::invalid_shortcode_message( 'Event Start Time needs to be more recent than 60 years in the past, per Forecast.io API docs,' );
       }
       
@@ -263,7 +274,7 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
         if ( true === TkEventWeather_Functions::valid_iso_8601_date_time( $end_time, 'bool' ) ) {
           $end_time = TkEventWeather_Functions::valid_iso_8601_date_time( $end_time );
           $end_time_iso_8601 = $end_time;
-          $end_time_timestamp = date( 'U', strtotime( $end_time ) );
+          $end_time_timestamp = TkEventWeather_Functions::valid_timestamp( date( 'U', strtotime( $end_time ) ) ); // date() returns a string
         }
         // check timestamp
         elseif ( true === TkEventWeather_Functions::valid_timestamp( $end_time, 'bool' ) ) {
@@ -277,16 +288,36 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
         }
       }
       
-    	if( '' == $end_time ) {
+    	if( '' == $end_time_timestamp ) {
       	return TkEventWeather_Functions::invalid_shortcode_message( 'Please enter a valid End Time format' );
     	}
     	
     	// if Event Start and End times are the same
-    	if( $start_time_timestamp == $end_time_timestamp ) {
+    	if( $weather_first_hour_timestamp == $end_time_timestamp ) {
       	return TkEventWeather_Functions::invalid_shortcode_message( 'Please make sure Event Start Time and Event End Time are not the same' );
     	}
     	
     	$template_data['end_time_timestamp'] = $end_time_timestamp;
+    	
+    	
+    	/**
+      	* $weather_last_hour_timestamp helps with setting 'sunset_to_be_inserted'
+      	* 
+      	* if event ends at 7:52pm, set $weather_last_hour_timestamp to 8pm
+        * if event ends at 7:00:00pm, set $weather_last_hour_timestamp to 7pm
+        * 
+        **/
+    	$end_time_hour_timestamp = TkEventWeather_Functions::timestamp_truncate_minutes( $end_time_timestamp ); // e.g. 7pm instead of 7:52pm
+    	$end_time_hour_timestamp_plus_one_hour = 3600 + $end_time_hour_timestamp; // e.g. 8pm
+    	
+    	if ( $end_time_timestamp == $end_time_hour_timestamp ) { // e.g. event ends at 7:00:00
+      	$weather_last_hour_timestamp = $end_time_hour_timestamp;
+    	} else {
+      	$weather_last_hour_timestamp = $end_time_hour_timestamp_plus_one_hour;
+    	}
+    	
+    	$template_data['weather_last_hour_timestamp'] = $weather_last_hour_timestamp;
+    	
     	
     	//
     	// cutoff_future
@@ -313,18 +344,18 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
       
       if( ! empty( $max_timestamp ) && '' != $end_time_timestamp ) {
         if( $end_time_timestamp > $max_timestamp ) {
-      	  return TkEventWeather_Functions::invalid_shortcode_message( 'Future Cutoff Time needs to be further in the future than Event Time' );
+      	  return TkEventWeather_Functions::invalid_shortcode_message( 'Future Cutoff Time needs to be further in the future than Event End Time' );
         }
       }
       
       // max 10 years future, per API docs
       if( $end_time_timestamp > strtotime( '+10 years' ) ) {
-    	  return TkEventWeather_Functions::invalid_shortcode_message( 'Event Time needs to be more recent than 60 years in the past, per Forecast.io API docs,' );
+    	  return TkEventWeather_Functions::invalid_shortcode_message( 'Event End Time needs to be less than 10 years in the future, per Forecast.io API docs,' );
       }
       
       
       //
-      // $start_time_timestamp is equal to or greater than $min_timestamp and $end_time_timestamp is less than or equal to $max_timestamp
+      // $weather_first_hour_timestamp is equal to or greater than $min_timestamp and $end_time_timestamp is less than or equal to $max_timestamp
       // or $min_timestamp and/or $max_timestamp were set to zero (i.e. no limits)
       // so continue...
       //
@@ -405,7 +436,7 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
     	    // first 6 (assuming period is in first 5, getting first 6 will result in 5 valid characters for transient name
         // longitude (after comma)
     	  substr( strstr( $latitude_longitude, ',', false ), 0, 6 ), // does not require PHP 5.3.0+
-    	  substr( $start_time_timestamp, -5, 5 ) // last 5 of Start Time timestamp
+    	  substr( $weather_first_hour_timestamp, -5, 5 ) // last 5 of Start Time timestamp
     	  //substr( $end_time_timestamp, -5, 5 ) // last 5 of End Time timestamp
     	  // noticed in testing sometimes leading zero(s) get truncated, possibly due to sanitize_key()... but, as long as it is consistent we are ok.
       );
@@ -976,7 +1007,7 @@ TK Event Weather JSON Data
     		$request_uri = sprintf( 'https://api.forecast.io/forecast/%s/%s,%s',
     			$api_key,
     			$latitude_longitude,
-    			$start_time
+    			$start_time_timestamp
     		);
     		
     		$request_uri_query_args = array();
@@ -1026,44 +1057,45 @@ TK Event Weather JSON Data
     	$output .= sprintf( '<!--%1$sTK Event Weather JSON Data%1$s%2$s%1$s-->%1$s', PHP_EOL, json_encode( $api_data, JSON_PRETTY_PRINT ) ); // requires PHP 5.4
     	
     	
-    	// Build Weather data that we'll use
+    	// Build Weather data that we'll use    	
     	
-    	// Start Time Weather
-    	$weather_start_time = $api_data->currently;
-    	
+    	// https://developer.wordpress.org/reference/functions/wp_list_pluck/
+      $api_data_houly_hours = wp_list_pluck( $api_data->hourly->data, 'time' );
+      
       
     	// End Time Weather
-      foreach ( $api_data->hourly->data as $key => $value ) {
-        if( intval( $value->time ) >= intval( $end_time_timestamp ) ) {
-          $weather_end_time = $value;
+      foreach ( $api_data_houly_hours as $key => $value ) {
+        if( intval( $value ) >= intval( $end_time_timestamp ) ) {
           $weather_hourly_end_key = $key;
           break;
         }
       }
       
       // if none, just get last hour of the day (e.g. if Event End Time is next day 2am, just get 11pm same day as Event Start Time (not perfect but may be better than 2nd API call)
-      if ( empty( $weather_end_time ) ) {
-        $weather_end_time = array_slice( $api_data->hourly->data, -1, 1, true );
-        $weather_hourly_end_key = key( $weather_end_time );
+      if ( ! isset( $weather_hourly_end_key ) ) { // need to allow for zero due to numeric array
+        $weather_hourly_end_key = key( end( $api_data_houly_hours ) );
       }
       
-      if( empty( $weather_end_time ) ) {
+      if( ! isset( $weather_hourly_end_key ) ) { // need to allow for zero due to numeric array
         return TkEventWeather_Functions::invalid_shortcode_message( 'Event End Time is out of range. Please troubleshoot' );
       }
-            
-    	// First hourly data at/after Start Time
-      foreach ( $api_data->hourly->data as $key => $value ) {
-        if( intval( $value->time ) >= intval( $start_time_timestamp ) ) {
-          $weather_hourly_start = $value;
-          $weather_hourly_start_key = $key; // bookmark for when we pull hourly weather
+      
+      
+    	// First hour to start pulling for Hourly Data      
+      foreach ( $api_data_houly_hours as $key => $value ) {
+        if( intval( $value ) == intval( $weather_first_hour_timestamp ) ) {
+          $weather_hourly_start_key = $key; // so we know where to start when pulling hourly weather
           break;
         }
       }
       
+      
       $sunrise_sunset = array(
         'on'                      => false,
         'sunrise_timestamp'       => false,
+        'sunrise_hour_timestamp'  => false,
         'sunset_timestamp'        => false,
+        'sunset_hour_timestamp'   => false,
         'sunrise_to_be_inserted'  => false,
         'sunset_to_be_inserted'   => false,
       );
@@ -1076,16 +1108,18 @@ TK Event Weather JSON Data
     	
     	if ( true === $sunrise_sunset['on'] ) {
       	$sunrise_sunset['sunrise_timestamp'] = TkEventWeather_Functions::valid_timestamp( $api_data->daily->data[0]->sunriseTime );
-      	if ( $sunrise_sunset['sunrise_timestamp'] >= $start_time_timestamp ) {
+      	$sunrise_sunset['sunrise_hour_timestamp'] = TkEventWeather_Functions::timestamp_truncate_minutes( $sunrise_sunset['sunrise_timestamp'] );
+      	if ( $sunrise_sunset['sunrise_timestamp'] >= $weather_first_hour_timestamp ) {
         	$sunrise_sunset['sunrise_to_be_inserted'] = true;
         }
       	
       	$sunrise_sunset['sunset_timestamp'] = TkEventWeather_Functions::valid_timestamp( $api_data->daily->data[0]->sunsetTime );
-      	if ( $end_time_timestamp >= $sunrise_sunset['sunset_timestamp'] ) {
+      	$sunrise_sunset['sunset_hour_timestamp'] = TkEventWeather_Functions::timestamp_truncate_minutes( $sunrise_sunset['sunset_timestamp'] );
+      	if ( $weather_last_hour_timestamp >= $sunrise_sunset['sunset_timestamp'] ) {
         	$sunrise_sunset['sunset_to_be_inserted'] = true;
         }
     	}
-    	
+    	    	
     	$template_data['sunrise_sunset'] = $sunrise_sunset;
     	
     	
@@ -1108,36 +1142,27 @@ TK Event Weather JSON Data
       
       
       // Hourly Weather
-      
+      // any internal pointers to reset first?
+            
       $weather_hourly = array();
       
-      // Add Start to Hourly (might be at 45 min in the hour though)
-      $weather_hourly[$weather_hourly_start_key] = $weather_start_time;
+      $index = $weather_hourly_start_key;
       
-      if ( ! empty( $weather_hourly_start ) && ! empty( $weather_hourly_start_key ) ) {
+      if ( is_integer( $index ) ) {
         foreach ( $api_data->hourly->data as $key => $value ) {
 
-          if( $weather_hourly_start_key > $key ) {
-            continue;
-          }
-
-          if( $key > $weather_hourly_start_key ) {
+          if( $key > $weather_hourly_end_key ) {
             break;
           }
-
-          if( $weather_hourly_start_key == $key // not needed but is correct
-            && $weather_hourly_end_key >= $key
-            && intval( $weather_start_time->time ) !== intval( $value->time ) // don't re-include $api_data->current
-            && intval( $weather_end_time->time ) !== intval( $value->time ) // we'll include it manually in next step
-          ) {
-            $weather_hourly[$weather_hourly_start_key] = $value;
-            $weather_hourly_start_key++;
+          
+          if( $index == $key ) {
+            $weather_hourly[$index] = $value;
+            $index++;
           }
         }
       }
       
-      // Add End to Hourly
-      $weather_hourly[$weather_hourly_end_key] = $weather_end_time;
+      //$weather_hourly = TkEventWeather_Functions::sort_multidim_array_by_sub_key( $weather_hourly, 'time' );
       
       $template_data['weather_hourly'] = $weather_hourly;
     	
@@ -1171,11 +1196,15 @@ TK Event Weather JSON Data
     	
     	$display_template = $atts['template'];
     	
-    	if ( empty( $display_template ) ) {
+    	if ( ! array_key_exists( $display_template, TkEventWeather_Functions::valid_display_templates() ) ) {
       	$display_template = 'hourly_horizontal';
     	}
     	
     	$template_data['template'] = $display_template;
+    	
+    	$template_class_name = TkEventWeather_Functions::template_class_name( $display_template );
+    	
+    	$template_data['template_class_name'] = $template_class_name;
     	
       $debug_vars = false;
     	//$debug_vars = WP_DEBUG; // if WP_DEBUG is true, set $debug_vars to true for admins only
@@ -1185,7 +1214,7 @@ TK Event Weather JSON Data
     	
     	
       TkEventWeather_Functions::register_tk_event_weather_css();
-      wp_enqueue_style( 'tk-event-weather' );
+      wp_enqueue_style( 'tk-event-weather' );      
       
     	/**
       	* Start Building Output!!!
@@ -1194,7 +1223,11 @@ TK Event Weather JSON Data
     	
     	// cannot do <style> tags inside template because it will break any open div (e.g. wrapper div)
     	$output .= '<div class="tk-event-weather__wrapper">';
-    	  
+      $output .= PHP_EOL;
+      
+      $output .= sprintf( '<div class="tk-event-weather-template %s">', $template_data['template_class_name'] );
+      $output .= PHP_EOL;
+      
       	// https://github.com/GaryJones/Gamajo-Template-Loader/issues/13#issuecomment-196046201
       	ob_start();
       	TkEventWeather_Functions::load_template( $display_template, $template_data );
@@ -1208,8 +1241,12 @@ TK Event Weather JSON Data
           $output .= TkEventWeather_Functions::forecast_io_credit_link();
         }
       
-    	$output .= '</div>'; // .tk-event-weather--wrapper    	
-    	
+    	$output .= '</div>'; // .tk-event-weather-template
+      $output .= PHP_EOL;
+      
+    	$output .= '</div>'; // .tk-event-weather--wrapper
+      $output .= PHP_EOL;
+      
     	return $output;
     	
     }

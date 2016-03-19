@@ -1,18 +1,15 @@
+.tk-event-weather__wrapper {
+  line-height: 1;
+  margin-bottom: 2em;
+}
+
 /* TK Event Weather and Forecast.io credit links */
 
 .tk-event-weather__plugin-credit,
 .tk-event-weather__forecast-io-credit {
+  line-height: 1.5;
   font-size: 50%;
 }
-
-.tk-event-weather__plugin-credit {
-  margin-top: 1em; /* like 0.5em because font-size is 50% */
-}
-
-.tk-event-weather__forecast-io-credit {
-  margin-bottom: 4em; /* like 2em because font-size is 50% */
-}
-
 
 .tk-event-weather__wind-direction-icon {
   display: inline-block; /* so icon rotation works */
@@ -23,34 +20,30 @@
 
 
 /* hourly_horizontal */
-.tk-event-weather-template__hourly_horizontal__item {
+.tk-event-weather__wrapper .template-hourly_horizontal__item {
   display: inline-block;
   text-align: center;
   width: 60px;
+  margin-bottom: 10px; /* in case wraps to multiple line display and for credit links */
 }
 
-.tk-event-weather-template__hourly_horizontal__item > span {
+.tk-event-weather__wrapper .template-hourly_horizontal__item > span {
   display: block;
 }
 
-.tk-event-weather-template__hourly_horizontal__icon {
+.tk-event-weather__wrapper .template-hourly_horizontal__icon {
   font-size: 2em;
-  margin: -6px auto -18px;
 }
 
 
 /* hourly_vertical */
 
-.tk-event-weather-template__hourly_vertical {
-	line-height: 1;
-}
-
-.tk-event-weather-template__hourly_vertical__item > span { /* column width */
+.tk-event-weather__wrapper .template-hourly_vertical__item > span {
 	display: inline-block;
 	min-width: 50px;
 }
 
-.tk-event-weather-template__hourly_vertical__icon {
+.tk-event-weather__wrapper .template-hourly_vertical__icon {
   font-size: 2em;
   text-align: center;
   vertical-align: middle;

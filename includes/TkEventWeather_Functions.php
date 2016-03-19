@@ -279,6 +279,31 @@ class TkEventWeather_Functions {
     return preg_replace( '/\s+/', '', $input );
   }
   
+  // in case wanting to add sunrise/sunset to the hourly weather data and then re-sort by 'time' key -- but not used so commented out
+  // adapted from http://www.firsttube.com/read/sorting-a-multi-dimensional-array-with-php/
+/*
+  public static function sort_multidim_array_by_sub_key( $multidim_array, $sub_key ) {
+    // first check if we have a multidimensional array
+    if ( count( $multidim_array ) == count( $multidim_array, COUNT_RECURSIVE ) ) {
+      return false;
+    } else {
+      $a = $multidim_array;
+    }
+    
+  	foreach( $a as $k => $v ) {
+  		$b[$k] = strtolower( $v[$subkey] );
+  	}
+  	
+  	asort( $b );
+  	
+  	foreach( $b as $key => $val ) {
+  		$c[] = $a[$key];
+  	}
+  	return $c;
+  }
+*/
+  
+  
   /**
     * Verify string is valid latitude,longitude
     * 
@@ -317,25 +342,26 @@ class TkEventWeather_Functions {
     }
   }
   
+  /**
+    * if valid timestamp, returns integer timestamp
+    * or returns boolean if $return_format = 'bool' and is valid timestamp
+    * else returns empty string
+    */
   public static function valid_timestamp( $input, $return_format = '' ) {
-    $result = self::remove_all_whitespace( $input );
+    $result = self::remove_all_whitespace( $input ); // converts to string
+    
+    if ( is_numeric( $result ) ) {
+      $result = intval( $result ); // convert to integer
+    }
     
     if ( ! empty( $return_format ) && 'bool' != $return_format ) {
       $return_format = '';
     }
     
     // is valid timestamp
-    if ( is_numeric( $result ) && (int) $result == $result && date( 'U', $result ) == $result ) {
-    // any count of 0-9 numbers with optional leading minus sign
-    // if( 1 == preg_match( '/^[-]?\d*$/', $result ) ) {
-      
-      // regex technically allows "-0" so just remove the minus sign
-      // if( '-0' == $result ) {
-        // $result = '0';
-      // }
-      
+    if ( is_int( $result ) && date( 'U', $result ) == intval ( $result ) ) {      
       if( '' == $return_format ) {
-        return $result;
+        return intval( $result );
       } else {
         return true;
       }
@@ -1059,6 +1085,22 @@ class TkEventWeather_Functions {
   	return $result;
   }
   
+  // e.g. 4:45pm -> 4:00pm
+  public static function timestamp_truncate_minutes( $timestamp = '' ) {
+    // timestamp
+    if ( false === self::valid_timestamp( $timestamp, 'bool' ) ) {
+      return false;
+    } else {
+      // modulus
+      // 1 hour = 3600 seconds
+      // e.g. 2:30 --> 30 minutes = 1800 seconds --> $timestamp = $timestamp - 1800;
+      $timestamp -= $timestamp % 3600;
+      
+      return $timestamp;
+    }
+  }
+  
+  
   public static function timestamp_to_display( $timestamp = '', $date_format = '' ) {
     // timestamp
     if ( false === self::valid_timestamp( $timestamp, 'bool' ) ) {
@@ -1073,8 +1115,35 @@ class TkEventWeather_Functions {
     }
     
     // return date ( $date_format, $timestamp );
-    return date_i18n ( $date_format, $timestamp, false );
+    return date_i18n ( $date_format, $timestamp, false ); // should it be TRUE?
   }
   
+  public static function template_class_name( $template_name = '' ) {
+    $result = '';
+    
+    if ( array_key_exists( $template_name, self::valid_display_templates() ) ) {
+      $result = sanitize_html_class ( sprintf( 'template-%s', $template_name ) );
+    }
+    
+    return $result;
+  }
+  
+  // does NOT close the opening DIV tag
+  // could add optional argument to customize element (div, span, etc)
+  public static function template_start_of_each_item( $template_class_name = '', $index = '' ) {
+    $result = '<div class="';
+    
+    $template_class_name = sanitize_html_class( $template_class_name );
+    
+    if ( ! empty( $template_class_name ) && is_integer( $index ) ) {
+      $result = sprintf( '<div id="%1$s__index-%2$d" class="%1$s__item', $template_class_name, $index );
+    } elseif ( ! empty( $template_class_name ) && ! is_integer( $index ) ) {
+      $result = sprintf( '<div id="%1$s" class="%1$s__item ', $template_class_name );
+    } else {
+      // nothing to do
+    }
+    
+    return $result;
+  }
   
 }
