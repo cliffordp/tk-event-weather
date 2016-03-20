@@ -222,6 +222,21 @@ class TkEventWeather_Functions {
   //
   
   
+  // GMT Offset options
+  public static function valid_gmt_offset_types( $prepend_empty = 'false' ) {
+    $result = array(
+      'api'       => __( 'From API (i.e. Location-specific)', 'tk-event-weather' ),
+      'wordpress' => __( 'From WordPress General Settings', 'tk-event-weather' ),
+    );
+    
+    if ( 'true' == $prepend_empty ) {
+      $result = self::array_prepend_empty( $result );
+    }
+    
+    return $result;
+  }
+  
+  
   // to be nice and link to http://tourkick.com/plugins/tk-event-weather/
   public static function plugin_credit_link() {
     if ( true === apply_filters( 'tk_event_weather_disable_plugin_credit_link', '' ) ) {
@@ -1109,13 +1124,21 @@ class TkEventWeather_Functions {
   }
   
   
-  public static function timestamp_to_display( $timestamp = '', $date_format = '' ) {
+  public static function timestamp_to_display( $timestamp = '', $gmt_offset = '', $date_format = '' ) {
     // timestamp
     if ( false === self::valid_timestamp( $timestamp, 'bool' ) ) {
       return '';
-    } else {
-      $timestamp = $timestamp + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
     }
+    
+    
+    if ( is_numeric ( $gmt_offset ) ) {
+      $gmt_offset = floatval( $gmt_offset );
+    } else {
+      $gmt_offset = get_option( 'gmt_offset' );
+    }
+    
+    $timestamp = $timestamp + ( $gmt_offset * HOUR_IN_SECONDS ); // becomes a float
+    $timestamp = intval( $timestamp );
     
     if ( empty ( $date_format ) ) {
       /* translators: hourly display time format, see https://developer.wordpress.org/reference/functions/date_i18n/#comment-972 */
@@ -1123,7 +1146,7 @@ class TkEventWeather_Functions {
     }
     
     // return date ( $date_format, $timestamp );
-    return date_i18n ( $date_format, $timestamp, false ); // should it be TRUE?
+    return date_i18n ( $date_format, $timestamp, false ); // false means use UTC -- to use PHP date(). true means use GMT -- to use PHP gmdate().
   }
   
   public static function template_class_name( $template_name = '' ) {

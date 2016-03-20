@@ -227,20 +227,20 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     				'choices'     => TkEventWeather_Functions::forecast_io_option_units( 'true' ),
     			));
     			
-    			// Disable transients
-    			$wp_customize->add_setting( 'tk_event_weather[transients_off]', array(
+    			// GMT Offset Type
+    			$wp_customize->add_setting( 'tk_event_weather[gmt_offset_type]', array(
     				'type'              => 'option',
     				'capability'        => 'edit_theme_options',
     				'default'           => '',
     			));
     			
-    			$wp_customize->add_control( 'tk_event_weather_transients_off_control', array(
-      			'label'       => esc_html__( 'Disable Transients', 'tk-event-weather' ),
-    				'description' => __( 'The <a href="https://codex.wordpress.org/Transients_API" target="_blank">WordPress Transients API</a> (link opens in new window) is used to reduce repetitive API calls and improve performance. Check this box if you wish to disable using Transients (suggested only for testing purposes).', 'tk-event-weather' ),
+    			$wp_customize->add_control( 'tk_event_weather_gmt_offset_type_control', array(
+      			'label'       => esc_html__( 'GMT Offset Type', 'tk-event-weather' ),
+    				'description' => __( "In which time zone should hourly times be displayed?<br><strong>From API</strong> means times will be displayed per location. For example, if an event on your site is in New York City, the weather times get displayed in New York City time even if your WordPress time zone is set to Honolulu, Hawaii or UTC-10.<br><strong>From Wordpress</strong> means all weather times display in your WordPress time zone. From the example above, the event in New York City would have its weather displayed in Honolulu time.<br>Default: From API", 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
-    				'settings'    => 'tk_event_weather[transients_off]',
-    				'type'		    => 'checkbox',
-    				'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
+    				'settings'    => 'tk_event_weather[gmt_offset_type]',
+    				'type'		    => 'select',
+    				'choices'     => TkEventWeather_Functions::valid_gmt_offset_types( 'true' ),
     			));
     			
     			// Transient expiration in hours
@@ -257,6 +257,22 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     				'section'     => self::$customizer_section_id,
     				'settings'    => 'tk_event_weather[transients_expiration_hours]',
     				'type'		    => 'text',
+    			));
+    			
+    			// Disable transients
+    			$wp_customize->add_setting( 'tk_event_weather[transients_off]', array(
+    				'type'              => 'option',
+    				'capability'        => 'edit_theme_options',
+    				'default'           => '',
+    			));
+    			
+    			$wp_customize->add_control( 'tk_event_weather_transients_off_control', array(
+      			'label'       => esc_html__( 'Disable Transients', 'tk-event-weather' ),
+    				'description' => __( 'The <a href="https://codex.wordpress.org/Transients_API" target="_blank">WordPress Transients API</a> (link opens in new window) is used to reduce repetitive API calls and improve performance. Check this box if you wish to disable using Transients (suggested only for testing purposes).', 'tk-event-weather' ),
+    				'section'     => self::$customizer_section_id,
+    				'settings'    => 'tk_event_weather[transients_off]',
+    				'type'		    => 'checkbox',
+    				'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
     			));
     			
     			// Disable Sunrise/Sunset
@@ -321,7 +337,7 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     				'description' => __( '', 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
     				'settings'    => 'tk_event_weather[sunrise_sunset_off]',
-    				'type'		    => 'radio',
+    				'type'		    => 'select',
     				'choices'     => TkEventWeather_Functions::valid_icon_type( 'true' ),
     			));
 */

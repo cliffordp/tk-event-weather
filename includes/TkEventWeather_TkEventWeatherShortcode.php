@@ -10,9 +10,7 @@
   * verify all timestamps get ran through timestamp cleanup method
     * truncate seconds off all timestamps?
   * use more data from API, like 'summary' text as a title element somewhere
-  * hours match up correctly, but if you enter a datetime of 4pm EDT(-4) and your WP is set to Central Time(-5), start_time="2016-04-01T16:30:00-04:00" will actually output the "display time" of "3pm" because 4pm EDT is 3pm CDT
-    * date_i18n() true or false?
-    * use API's timezone data to output local times instead of WordPress times
+  * handling of time zone offsets that aren't full hours -- e.g. Eucla Australia is UTC+8:45 -- https://en.wikipedia.org/wiki/List_of_UTC_time_offsets#UTC.2B08:45.2C_H.2A -- currently works well enough probably but outputs '4am' instead of '4:45am' -- does it really need to be fixed?
   * time of day versions of icons (night/day)
     * https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-174607313
     * https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-178440095
@@ -64,6 +62,8 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
       	$transients_off_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'transients_off' );
       	$transients_expiration_hours_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'transients_expiration_hours', 12 );
       	
+      	$gmt_offset_type_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'gmt_offset_type' );
+      	
       	$sunrise_sunset_off_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'sunrise_sunset_off' );
       	
         //$icons_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'icons' );
@@ -101,11 +101,13 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
       	'cutoff_past'                   => $cutoff_past_days_option,
       	'cutoff_future'                 => $cutoff_future_days_option,
       	// API options -- see https://developer.forecast.io/docs/v2
-      	'units'                         => '', // default/fallback is $units_default
       	'exclude'                       => '', // comma-separated. Default/fallback is $exclude_default
       	'transients_off'                => $transients_off_option, // "true" is the only valid value
       	'transients_expiration'         => $transients_expiration_hours_option,
       	// Display Customizations       
+      	'units'                         => '', // default/fallback is $units_default
+      	'gmt_offset_type'               => $gmt_offset_type_option,
+          // could add a gmt_offset_hours sort of parameter to allow manually outputting as '-5'
       	'sunrise_sunset_off'            => $sunrise_sunset_off_option, // "true" is the only valid value
       	'icons'                         => '',
       	'plugin_credit_link_off'        => $plugin_credit_link_off_option, // "true" is the only valid value
@@ -1092,6 +1094,27 @@ TK Event Weather JSON Data
       }
       
       
+      
+      // GMT Offset -- only use is when displaying a timestamp
+      $gmt_offset = TkEventWeather_Functions::remove_all_whitespace( strtolower( $atts['gmt_offset_type'] ) );
+      
+      if ( 'wp' == $gmt_offset ) {
+        $gmt_offset = 'wordpress';
+      }
+      
+      if ( ! array_key_exists( $gmt_offset, TkEventWeather_Functions::valid_gmt_offset_types() ) ) {
+        $gmt_offset = 'api';
+      }
+      
+      $gmt_offset_hours = '';
+      
+      if ( 'api' == $gmt_offset ) {
+        $gmt_offset_hours = $api_data->offset;
+      }
+      
+      $template_data['gmt_offset_hours'] = $gmt_offset_hours;
+      
+      
       $sunrise_sunset = array(
         'on'                      => false,
         'sunrise_timestamp'       => false,
@@ -1196,7 +1219,7 @@ TK Event Weather JSON Data
     	// class
     	$class = sanitize_html_class( $atts['class'] );
     	
-    	$display_template = $atts['template'];
+    	$display_template = TkEventWeather_Functions::remove_all_whitespace( strtolower( $atts['template'] ) );
     	
     	if ( ! array_key_exists( $display_template, TkEventWeather_Functions::valid_display_templates() ) ) {
       	$display_template = 'hourly_horizontal';
