@@ -1144,9 +1144,9 @@ class TkEventWeather_Functions {
     $template_class_name = sanitize_html_class( $template_class_name );
     
     if ( ! empty( $template_class_name ) && is_integer( $index ) ) {
-      $result = sprintf( '<div id="%1$s__index-%2$d" class="%1$s__item', $template_class_name, $index );
+      $result = sprintf( '<div class="%1$s__index-%2$d %1$s__item', $template_class_name, $index );
     } elseif ( ! empty( $template_class_name ) && ! is_integer( $index ) ) {
-      $result = sprintf( '<div id="%1$s" class="%1$s__item ', $template_class_name );
+      $result = sprintf( '<div class="%1$s %1$s__item ', $template_class_name );
     } else {
       // nothing to do
     }
