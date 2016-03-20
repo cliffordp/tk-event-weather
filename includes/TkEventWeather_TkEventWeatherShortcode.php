@@ -36,8 +36,10 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
         
     private static $addedAlready = false;
     
-    public static $shortcode_name = 'tk-event-weather'; // must be public
-    
+    // must be public
+    public static function shortcode_name() {
+      return TkEventWeather_FuncSetup::$shortcode_name;
+    }
     
     public function handleShortcode($atts) {
       

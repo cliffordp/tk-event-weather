@@ -82,9 +82,10 @@ add_action('plugins_loadedi','TkEventWeather_i18n_init');
 // If it is successful, continue with initialization for this plugin
 if (TkEventWeather_PhpVersionCheck()) {
     // Only load and run the init function if we know PHP version can parse it
-    include_once('includes/tk-event-weather_init.php');
+    include_once('includes/TkEventWeather_init.php');
     TkEventWeather_init(__FILE__);
 }
 
 
+// Required for Template Loader. Also used elsewhere.
 define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) ); // e.g. /Users/cmp/Documents/git/GitHub/tk-event-weather/

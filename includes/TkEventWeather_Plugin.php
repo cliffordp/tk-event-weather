@@ -90,7 +90,7 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
         
         include_once( 'TkEventWeather_TkEventWeatherShortcode.php' );
         $sc = new TkEventWeather_TkEventWeatherShortcode();
-        $sc->register( $sc::$shortcode_name );
+        $sc->register( TkEventWeather_FuncSetup::$shortcode_name );
 
 
         // Register AJAX hooks
@@ -140,7 +140,7 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     		$wp_customize->add_section( self::$customizer_section_id,
     			array(
     				'title'       => $this->getPluginDisplayName(),
-    				'description' => esc_html__( 'Plugin options and settings', 'tk-event-weather' ),
+    				'description' => __( "Set this plugin's default <a href='https://codex.wordpress.org/Shortcode_API' target='_blank'>shortcode</a> arguments (link opens in new window). Since the plugin operates as a shortcode, you may override the defaults you set here on a per-shortcode basis.", 'tk-event-weather' ),
     				//'priority'		=> 12,
     				//'panel'			=> 'tk_event_weather_panel',
     			)
@@ -220,7 +220,7 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     			
     			$wp_customize->add_control( 'tk_event_weather_forecast_io_units_control', array(
       			'label'       => esc_html__( 'Units', 'tk-event-weather' ),
-    				'description' => esc_html__( 'Although it is recommended to leave this as "Auto", you may choose to force returning the weather data in specific units.', 'tk-event-weather' ),
+    				'description' => __( 'Although it is recommended to leave this as "Auto", you may choose to force returning the weather data in specific units.<br>Reference: <a href="https://developer.forecast.io/docs/v2#options" target="_blank">Forecast.io API Docs > Options</a> (link opens in new window)', 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
     				'settings'    => 'tk_event_weather[forecast_io_units]',
     				'type'		    => 'select',

@@ -124,29 +124,37 @@ class TkEventWeather_Functions {
     return $all_capabilities;
   }
   
-  public static function invalid_shortcode_message( $input = '', $capability = 'edit_theme_options', $shortcode_name = 'tk-event-weather' ) {
+  public static function invalid_shortcode_message( $input = '', $capability = 'edit_theme_options', $shortcode_name = '' ) {
     $capability = apply_filters ( 'tk_event_weather_shortcode_msg_cap', $capability );
     
     if( ! in_array( $capability, self::all_valid_wp_capabilities() ) ) {
       $capability = 'edit_theme_options';
     }
     
+    if ( empty( $shortcode_name ) ) {
+      $shortcode_name = TkEventWeather_FuncSetup::$shortcode_name;
+    }
+    
+    if ( empty( $shortcode_name ) ) {
+      return sprintf( __( 'Invalid Shortcode Name used in %s.', 'tk-event-weather' ), 'invalid_shortcode_message()' );
+    }
+    
     // escape single apostrophes
     $error_reason = str_replace( "'", "\'", $input );
     
     if( ! empty( $error_reason ) ) {
-      $message = sprintf( '%s for the `%s` shortcode to work correctly.', $error_reason, $shortcode_name );
+      $message = sprintf( __( '%s for the `%s` shortcode to work correctly.', 'tk-event-weather' ), $error_reason, $shortcode_name );
     } else {
-      $message = sprintf( 'Invalid or incomplete usage of the `%s` shortcode.', $shortcode_name );
+      $message = sprintf( __( 'Invalid or incomplete usage of the `%s` shortcode.', 'tk-event-weather' ), $shortcode_name );
     }
     
-    $message = sprintf( '%s (Error message only displayed to users with the `%s` capability.)', $message, $capability );
+    $message = sprintf( __( '%s (Error message only displayed to users with the `%s` capability.)', 'tk-event-weather' ), $message, $capability );
     
     $result = '';
   	if( current_user_can( $capability ) ) {
     	$result .= sprintf( '<span class="%s">%s</span>',
     	  sanitize_html_class( strtolower( $shortcode_name ) ),
-    	  esc_html__( $message, 'tk-event-weather' ) // probably wrong way to do i18n translation so test and possibly fix
+    	  esc_html ( $message )
       );
   	}
   	

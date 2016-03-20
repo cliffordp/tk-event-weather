@@ -3,6 +3,8 @@
 class TkEventWeather_FuncSetup {
   // all variables and methods should be 'static'
   
+  public static $shortcode_name = 'tk_event_weather'; // doesn't really allow for array, as possible per http://plugin.michael-simpson.com/?page_id=39, but we only have one shortcode in this entire plugin
+  
   public static $transient_name_prepend = 'tkeventw';
   
   // https://wordpress.org/about/requirements/
