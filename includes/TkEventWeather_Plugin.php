@@ -227,20 +227,20 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     				'choices'     => TkEventWeather_Functions::forecast_io_option_units( 'true' ),
     			));
     			
-    			// GMT Offset Type
-    			$wp_customize->add_setting( 'tk_event_weather[gmt_offset_type]', array(
+    			// UTC Offset Type
+    			$wp_customize->add_setting( 'tk_event_weather[utc_offset_type]', array(
     				'type'              => 'option',
     				'capability'        => 'edit_theme_options',
     				'default'           => '',
     			));
     			
-    			$wp_customize->add_control( 'tk_event_weather_gmt_offset_type_control', array(
-      			'label'       => esc_html__( 'GMT Offset Type', 'tk-event-weather' ),
+    			$wp_customize->add_control( 'tk_event_weather_utc_offset_type_control', array(
+      			'label'       => esc_html__( 'UTC Offset Type', 'tk-event-weather' ),
     				'description' => __( "In which time zone should hourly times be displayed?<br><strong>From API</strong> means times will be displayed per location. For example, if an event on your site is in New York City, the weather times get displayed in New York City time even if your WordPress time zone is set to Honolulu, Hawaii or UTC-10.<br><strong>From Wordpress</strong> means all weather times display in your WordPress time zone. From the example above, the event in New York City would have its weather displayed in Honolulu time.<br>Default: From API", 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
-    				'settings'    => 'tk_event_weather[gmt_offset_type]',
+    				'settings'    => 'tk_event_weather[utc_offset_type]',
     				'type'		    => 'select',
-    				'choices'     => TkEventWeather_Functions::valid_gmt_offset_types( 'true' ),
+    				'choices'     => TkEventWeather_Functions::valid_utc_offset_types( 'true' ),
     			));
     			
     			// Transient expiration in hours

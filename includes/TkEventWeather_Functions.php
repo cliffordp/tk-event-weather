@@ -222,8 +222,8 @@ class TkEventWeather_Functions {
   //
   
   
-  // GMT Offset options
-  public static function valid_gmt_offset_types( $prepend_empty = 'false' ) {
+  // UTC Offset options
+  public static function valid_utc_offset_types( $prepend_empty = 'false' ) {
     $result = array(
       'api'       => __( 'From API (i.e. Location-specific)', 'tk-event-weather' ),
       'wordpress' => __( 'From WordPress General Settings', 'tk-event-weather' ),
@@ -408,13 +408,13 @@ class TkEventWeather_Functions {
     
     // is valid ISO 8601 time (i.e. we do not want valid ISO 8601 Duration, Time Interval, etc.)
     // API requires [YYYY]-[MM]-[DD]T[HH]:[MM]:[SS] -- https://en.wikipedia.org/wiki/ISO_8601#Combined_date_and_time_representations
-    // with an optional time zone formatted as Z for GMT time or {+,-}[HH]:[MM] (with or without separating colon) for an offset in hours or minutes
+    // with an optional time zone formatted as Z for UTC time or {+,-}[HH]:[MM] (with or without separating colon) for an offset in hours or minutes
     // For the latter format, if no timezone is present, local time (at the provided latitude and longitude) is assumed.
 /*
     @link https://regex101.com/r/mL0xZ4/1
     Should match ISO 8601 datetime for Forecast.io API:
     [YYYY]-[MM]-[DD]T[HH]:[MM]:[SS]
-    with an optional time zone formatted as Z for GMT time or {+,-}[HH]:[MM] (with or without separating colon) for an offset
+    with an optional time zone formatted as Z for UTC time or {+,-}[HH]:[MM] (with or without separating colon) for an offset
     
     Does Match:
     2008-09-15T15:53:00
@@ -1124,20 +1124,20 @@ class TkEventWeather_Functions {
   }
   
   
-  public static function timestamp_to_display( $timestamp = '', $gmt_offset = '', $date_format = '' ) {
+  public static function timestamp_to_display( $timestamp = '', $utc_offset = '', $date_format = '' ) {
     // timestamp
     if ( false === self::valid_timestamp( $timestamp, 'bool' ) ) {
       return '';
     }
     
     
-    if ( is_numeric ( $gmt_offset ) ) {
-      $gmt_offset = floatval( $gmt_offset );
+    if ( is_numeric ( $utc_offset ) ) {
+      $utc_offset = floatval( $utc_offset );
     } else {
-      $gmt_offset = get_option( 'gmt_offset' );
+      $utc_offset = get_option( 'gmt_offset' );
     }
     
-    $timestamp = $timestamp + ( $gmt_offset * HOUR_IN_SECONDS ); // becomes a float
+    $timestamp = $timestamp + ( $utc_offset * HOUR_IN_SECONDS ); // becomes a float
     $timestamp = intval( $timestamp );
     
     if ( empty ( $date_format ) ) {

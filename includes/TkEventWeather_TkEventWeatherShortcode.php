@@ -62,7 +62,7 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
       	$transients_off_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'transients_off' );
       	$transients_expiration_hours_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'transients_expiration_hours', 12 );
       	
-      	$gmt_offset_type_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'gmt_offset_type' );
+      	$utc_offset_type_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'utc_offset_type' );
       	
       	$sunrise_sunset_off_option = TkEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'sunrise_sunset_off' );
       	
@@ -106,8 +106,8 @@ class TkEventWeather_TkEventWeatherShortcode extends TkEventWeather_ShortCodeScr
       	'transients_expiration'         => $transients_expiration_hours_option,
       	// Display Customizations       
       	'units'                         => '', // default/fallback is $units_default
-      	'gmt_offset_type'               => $gmt_offset_type_option,
-          // could add a gmt_offset_hours sort of parameter to allow manually outputting as '-5'
+      	'utc_offset_type'               => $utc_offset_type_option,
+          // could add a utc_offset_hours sort of parameter to allow manually outputting as '-5'
       	'sunrise_sunset_off'            => $sunrise_sunset_off_option, // "true" is the only valid value
       	'icons'                         => '',
       	'plugin_credit_link_off'        => $plugin_credit_link_off_option, // "true" is the only valid value
@@ -1095,24 +1095,24 @@ TK Event Weather JSON Data
       
       
       
-      // GMT Offset -- only use is when displaying a timestamp
-      $gmt_offset = TkEventWeather_Functions::remove_all_whitespace( strtolower( $atts['gmt_offset_type'] ) );
+      // UTC Offset -- only use is when displaying a timestamp
+      $utc_offset = TkEventWeather_Functions::remove_all_whitespace( strtolower( $atts['utc_offset_type'] ) );
       
-      if ( 'wp' == $gmt_offset ) {
-        $gmt_offset = 'wordpress';
+      if ( 'wp' == $utc_offset ) {
+        $utc_offset = 'wordpress';
       }
       
-      if ( ! array_key_exists( $gmt_offset, TkEventWeather_Functions::valid_gmt_offset_types() ) ) {
-        $gmt_offset = 'api';
+      if ( ! array_key_exists( $utc_offset, TkEventWeather_Functions::valid_utc_offset_types() ) ) {
+        $utc_offset = 'api';
       }
       
-      $gmt_offset_hours = '';
+      $utc_offset_hours = '';
       
-      if ( 'api' == $gmt_offset ) {
-        $gmt_offset_hours = $api_data->offset;
+      if ( 'api' == $utc_offset ) {
+        $utc_offset_hours = $api_data->offset;
       }
       
-      $template_data['gmt_offset_hours'] = $gmt_offset_hours;
+      $template_data['utc_offset_hours'] = $utc_offset_hours;
       
       
       $sunrise_sunset = array(
