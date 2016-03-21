@@ -945,6 +945,10 @@ class TkEventWeather_Functions {
   	
   	$result = self::rounded_float_value( $temperature, $temperature_decimals );
   	
+  	if ( ! empty( $degree ) ) {
+    	$degree = sprintf( '<span class="degree-symbol">%s</span>', $degree );
+  	}
+  	
   	$result .= $degree;
   	
   	return $result;

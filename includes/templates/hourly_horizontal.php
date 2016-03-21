@@ -39,12 +39,13 @@ foreach ( $context->weather_hourly as $key => $value ) {
     	
     	$output .= sprintf( '">
         <span data-timestamp="%1$d" class="%2$s__time">%3$s</span>
-        <span class="%2$s__icon %4$s">%5$s</span>
-        <span class="%2$s__temperature">%6$s%7$s</span>',
+        <span class="%2$s__icon %4$s" title="%5$s">%6$s</span>
+        <span class="%2$s__temperature">%7$s%8$s</span>',
         $value->time,
         $context->template_class_name,
     	  $display_time,
     	  $value->icon,
+    	  $value->summary,
     	  TkEventWeather_Functions::icon_html( $value->icon ),
     	  TkEventWeather_Functions::temperature_to_display( $value->temperature ),
     	  $context->temperature_units
