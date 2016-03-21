@@ -5,7 +5,7 @@
    Version: 1.0
    Author: TourKick (Clifford Paulick)
    Author URI: http://tourkick.com/?utm_source=author-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
-   Description: Accurate, reliable, and free weather forecasts for your WordPress events
+   Description: Display beautiful, accurate, and free weather forecasts between a start and end time on the same day. Perfect for event calendars.
    Text Domain: tk-event-weather
    License: GPLv3
    License URI: http://www.gnu.org/licenses/gpl-3.0.html

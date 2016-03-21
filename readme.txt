@@ -8,15 +8,15 @@ Requires at least: 4.3.0
 Tested up to: 4.4.2
 Stable tag: trunk
 
-Accurate, reliable, and free weather forecasts for your WordPress events
+Display beautiful, accurate, and free weather forecasts between a start and end time on the same day. Perfect for event calendars.
 
 == Description ==
 
-Accurate, reliable, and free weather forecasts for your WordPress events
+Display beautiful, accurate, and free weather forecasts between a start and end time on the same day. Perfect for event calendars.
 
 = Highlights =
 
-* Registers the `[tk-event-weather]` shortcode for use anywhere on your site (not just for your site calendar's event-specific information) so its usage is very flexible as long as there is a valid Forecast.io API key, latitude, longitude, and time (will output for _right now_ if no time is given)
+* Registers the `[tk_event_weather]` shortcode for use anywhere on your site (not just for your site calendar's event-specific information) so its usage is very flexible as long as there is a valid Forecast.io API key, latitude, longitude, and time (will output for _right now_ if no time is given)
 * Uses the Forecast.io API to provide you with an accurate, reliable (typically 99.9% uptime), and free (or low cost if over the daily free API calls limit) weather forecast
 * Uses WordPress' Transients API to minimize Forecast.io API calls (i.e. does not call the Forecast.io API on every page load) to increase page load time and save you money (or keep you from hitting the daily free limit)
 * Internationalized / translatable (translations not provided)
@@ -78,7 +78,7 @@ After automatically or manually installing to wp-content/plugins/:
 
 = What shortcodes are available? =
 
-`[tk-event-weather]`
+`[tk_event_weather]`
 
 = What are some shortcode examples? =
 
@@ -86,15 +86,15 @@ After automatically or manually installing to wp-content/plugins/:
 
 A) with single Latitude/Longitude shortcode argument and ISO 8601 datetime format
 
-`[tk-event-weather lat_long="36.281445,-75.794662" start_time="2016-02-01T16:30:00-05:00" end_time="2016-02-01T21:45:00-05:00"]`
+`[tk_event_weather lat_long="36.281445,-75.794662" start_time="2016-02-01T16:30:00-05:00" end_time="2016-02-01T21:45:00-05:00"]`
 
 B) or separate shortcode arguments for Latitude and Longitude
 
-`[tk-event-weather lat="36.281445" long="-75.794662" start_time="2016-02-01T16:30:00-05:00" end_time="2016-02-01T21:45:00-05:00"]`
+`[tk_event_weather lat="36.281445" long="-75.794662" start_time="2016-02-01T16:30:00-05:00" end_time="2016-02-01T21:45:00-05:00"]`
 
 C) or with Unix timestamps
 
-`[tk-event-weather lat_long="36.281445,-75.794662" start_time="1454362200" end_time="1454381100"]`
+`[tk_event_weather lat_long="36.281445,-75.794662" start_time="1454362200" end_time="1454381100"]`
 
 = Will this plugin work with my theme? =
 
