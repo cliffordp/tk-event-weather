@@ -19,15 +19,15 @@ $output = '';
 
 if ( $context->weather_hourly_high == $context->weather_hourly_low ) {
 	$output .= sprintf( '<span class="degrees-same">%s%s</span>',
-	  TkEventWeather_Functions::temperature_to_display( $context->weather_hourly_low ),
+	  TkEventWeather__Functions::temperature_to_display( $context->weather_hourly_low ),
 	  $context->temperature_units
   );
 } else {
 	$output .= sprintf( '<span class="temperature-low">%s</span>
 	  <span class="temperature-separator">&ndash;</span>
 	  <span class="temperature-high">%s</span><span class="temperature-units">%s</span>',
-	  TkEventWeather_Functions::temperature_to_display( $context->weather_hourly_low, 0, '' ), // no degree symbol
-	  TkEventWeather_Functions::temperature_to_display( $context->weather_hourly_high ),
+	  TkEventWeather__Functions::temperature_to_display( $context->weather_hourly_low, 0, '' ), // no degree symbol
+	  TkEventWeather__Functions::temperature_to_display( $context->weather_hourly_high ),
 	  $context->temperature_units
   );
 }

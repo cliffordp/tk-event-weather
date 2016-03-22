@@ -19,7 +19,7 @@
     If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-include_once('TkEventWeather_ShortCodeLoader.php');
+include_once('TkEventWeather__ShortCodeLoader.php');
 
 /**
  * Adapted from this excellent article:
@@ -28,7 +28,7 @@ include_once('TkEventWeather_ShortCodeLoader.php');
  * The idea is you have a shortcode that needs a script loaded, but you only
  * want to load it if the shortcode is actually called.
  */
-abstract class TkEventWeather_ShortCodeScriptLoader extends TkEventWeather_ShortCodeLoader {
+abstract class TkEventWeather__ShortCodeScriptLoader extends TkEventWeather__ShortCodeLoader {
 
     var $doAddScript;
 

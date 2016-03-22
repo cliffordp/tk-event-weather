@@ -2,10 +2,10 @@
 
 // e.g. https://plugins.trac.wordpress.org/browser/form-to-post/trunk/FormToPost_Plugin.php
 
-include_once('TkEventWeather_LifeCycle.php');
-require_once('TkEventWeather_Functions.php');
+include_once('TkEventWeather__LifeCycle.php');
+require_once('TkEventWeather__Functions.php');
 
-class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
+class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
     
     private static $customizer_flag = 'tk_event_weather';
     
@@ -88,9 +88,9 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
         // Register short codes
         // http://plugin.michael-simpson.com/?page_id=39
         
-        include_once( 'TkEventWeather_TkEventWeatherShortcode.php' );
-        $sc = new TkEventWeather_TkEventWeatherShortcode();
-        $sc->register( TkEventWeather_FuncSetup::$shortcode_name );
+        include_once( 'TkEventWeather__TkEventWeatherShortcode.php' );
+        $sc = new TkEventWeather__TkEventWeatherShortcode();
+        $sc->register( TkEventWeather__FuncSetup::$shortcode_name );
 
 
         // Register AJAX hooks
@@ -176,7 +176,7 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     				'section'     => self::$customizer_section_id,
     				'settings'    => 'tk_event_weather[display_template]',
     				'type'		    => 'select',
-    				'choices'     => TkEventWeather_Functions::valid_display_templates( 'true' ),
+    				'choices'     => TkEventWeather__Functions::valid_display_templates( 'true' ),
     			));
     			
     			// Past cutoff days
@@ -224,7 +224,7 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     				'section'     => self::$customizer_section_id,
     				'settings'    => 'tk_event_weather[forecast_io_units]',
     				'type'		    => 'select',
-    				'choices'     => TkEventWeather_Functions::forecast_io_option_units( 'true' ),
+    				'choices'     => TkEventWeather__Functions::forecast_io_option_units( 'true' ),
     			));
     			
     			// UTC Offset Type
@@ -240,7 +240,7 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     				'section'     => self::$customizer_section_id,
     				'settings'    => 'tk_event_weather[utc_offset_type]',
     				'type'		    => 'select',
-    				'choices'     => TkEventWeather_Functions::valid_utc_offset_types( 'true' ),
+    				'choices'     => TkEventWeather__Functions::valid_utc_offset_types( 'true' ),
     			));
     			
     			// Transient expiration in hours
@@ -338,7 +338,7 @@ class TkEventWeather_Plugin extends TkEventWeather_LifeCycle {
     				'section'     => self::$customizer_section_id,
     				'settings'    => 'tk_event_weather[sunrise_sunset_off]',
     				'type'		    => 'select',
-    				'choices'     => TkEventWeather_Functions::valid_icon_type( 'true' ),
+    				'choices'     => TkEventWeather__Functions::valid_icon_type( 'true' ),
     			));
 */
 

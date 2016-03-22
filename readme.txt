@@ -19,8 +19,8 @@ Display beautiful, accurate, and free weather forecasts between a start and end 
 * Registers the `[tk_event_weather]` shortcode for use anywhere on your site (not just for your site calendar's event-specific information) so its usage is very flexible as long as there is a valid Forecast.io API key, latitude, longitude, and time (will output for _right now_ if no time is given)
 * Uses the Forecast.io API to provide you with an accurate, reliable (typically 99.9% uptime), and free (or low cost if over the daily free API calls limit) weather forecast
 * Uses WordPress' Transients API to minimize Forecast.io API calls (i.e. does not call the Forecast.io API on every page load) to increase page load time and save you money (or keep you from hitting the daily free limit)
-* Internationalized / translatable (translations not provided)
 * Returns temperature (fahrenheit or celsius) in units local to the given latitude and longitude (with optional override to force display in one or the other)
+* Internationalized / translatable (translations not provided)
 * No WP_DEBUG messages
 * Optimized loading of assets and Forecast.io API calls
 * Actions and Filters available for developers and advanced customizations
@@ -43,6 +43,7 @@ Additional add-on ideas:
 
 * Geolocate user to display weather for user's current location (i.e. no specific latitude or longitude shortcode arguments)
 * Styling (custom colors, possibly custom icons)
+* Advanced templates/views
 
 I'll consider making whichever add-ons I receive the most requests for (and are technically feasible) so please [share your request](http://tourkick.com/contact/?topic=website)!
 
@@ -54,7 +55,7 @@ I'll consider making whichever add-ons I receive the most requests for (and are 
 * The Forecast.io [Terms of Use](https://developer.forecast.io/terms_of_use.txt) states, "Any public or user-facing application or service made using the Forecast API must prominently display the message "Powered by Forecast" wherever data from the Forecast API is displayed. This message must, if possible, open a link to http://forecast.io/ when clicked or touched."
 * This plugin's output will automatically add a compliant link; however, there is a setting to disable outputting this link. This is because your site may not be a "public or user-facing application" (although it probably is) or because you've emailed to the address in their Terms of Use to request (and have been approved for) their extremely-affordable *white-label* account.
 * This plugin and its author are not affiliated with or endorsed by Forecast.io or The Dark Sky Company, LLC.
-* This plugin's Readme may contain affiliate links.
+* This plugin may contain affiliate links.
 
 = Support Me =
 * [Leave a great review](https://wordpress.org/support/view/plugin-reviews/tk-event-weather?rate=5#postform)

@@ -1,9 +1,9 @@
 <?php
 
-require_once('TkEventWeather_FuncSetup.php');
-require_once('TkEventWeather_TemplateLoader.php');
+require_once('TkEventWeather__FuncSetup.php');
+require_once('TkEventWeather__TemplateLoader.php');
 
-class TkEventWeather_Functions {
+class TkEventWeather__Functions {
   // all variables and methods should be 'static'
     
   public static function plugin_options() {
@@ -19,7 +19,7 @@ class TkEventWeather_Functions {
     */
   
   public static function new_template_loader() {
-    return new TkEventWeather_TemplateLoader();
+    return new TkEventWeather__TemplateLoader();
   }
   
   public static function load_template( $slug, $data = array(), $name = null, $load = true ) {
@@ -50,7 +50,7 @@ class TkEventWeather_Functions {
   
   
   public static function register_tk_event_weather_css() {
-    wp_register_style( 'tk-event-weather', TkEventWeather_FuncSetup::plugin_dir_url_root() . 'css/tk-event-weather.css', array(), null );
+    wp_register_style( 'tk-event-weather', TkEventWeather__FuncSetup::plugin_dir_url_root() . 'css/tk-event-weather.css', array(), null );
   }
   
   
@@ -65,7 +65,7 @@ class TkEventWeather_Functions {
   // https://github.com/christiannaths/Climacons-Font/blob/master/webfont/demo.html
   //
   public static function register_climacons_css() {
-    wp_register_style( 'tkeventw-climacons', TkEventWeather_FuncSetup::plugin_dir_url_vendor() . 'climacons/climacons-font.css', array(), null );
+    wp_register_style( 'tkeventw-climacons', TkEventWeather__FuncSetup::plugin_dir_url_vendor() . 'climacons/climacons-font.css', array(), null );
   }
   
   
@@ -132,7 +132,7 @@ class TkEventWeather_Functions {
     }
     
     if ( empty( $shortcode_name ) ) {
-      $shortcode_name = TkEventWeather_FuncSetup::$shortcode_name;
+      $shortcode_name = TkEventWeather__FuncSetup::$shortcode_name;
     }
     
     if ( empty( $shortcode_name ) ) {

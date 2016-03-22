@@ -19,9 +19,9 @@
     If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-include_once('TkEventWeather_OptionsManager.php');
+include_once('TkEventWeather__OptionsManager.php');
 
-class TkEventWeather_InstallIndicator extends TkEventWeather_OptionsManager {
+class TkEventWeather__InstallIndicator extends TkEventWeather__OptionsManager {
 
     const optionInstalled = '_installed';
     const optionVersion = '_version';
@@ -106,7 +106,7 @@ class TkEventWeather_InstallIndicator extends TkEventWeather_OptionsManager {
      * @link https://developer.wordpress.org/reference/functions/plugin_dir_path/
      */
     protected function getPluginDir() {
-        return TkEventWeather_FuncSetup::plugin_dir_url_root();
+        return TkEventWeather__FuncSetup::plugin_dir_url_root();
     }
 
     /**

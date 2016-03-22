@@ -19,9 +19,9 @@
     If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-include_once('TkEventWeather_InstallIndicator.php');
+include_once('TkEventWeather__InstallIndicator.php');
 
-class TkEventWeather_LifeCycle extends TkEventWeather_InstallIndicator {
+class TkEventWeather__LifeCycle extends TkEventWeather__InstallIndicator {
 
     public function install() {
 
