@@ -1092,6 +1092,18 @@ public 'flags' =>
       
       $api_data_houly_hours_keys = array_keys( $api_data_houly_hours );
       
+    	// First hour to start pulling for Hourly Data
+      foreach ( $api_data_houly_hours as $key => $value ) {
+        if( intval( $value ) == intval( $weather_first_hour_timestamp ) ) {
+          $weather_hourly_start_key = $key; // so we know where to start when pulling hourly weather
+          break;
+        }
+      }
+      
+      // Protect against odd hourly weather scenarios like location only having data from midnight to 8am and event start time is 9am
+      if( ! isset( $weather_hourly_start_key ) ) { // need to allow for zero due to numeric array
+        return TkEventWeather__Functions::invalid_shortcode_message( 'Event Start Time error. API did not return enough hourly data. Please troubleshoot' );
+      }
       
     	// End Time Weather
       foreach ( $api_data_houly_hours as $key => $value ) {
@@ -1109,16 +1121,6 @@ public 'flags' =>
       if( ! isset( $weather_hourly_end_key ) ) { // need to allow for zero due to numeric array
         return TkEventWeather__Functions::invalid_shortcode_message( 'Event End Time is out of range. Please troubleshoot' );
       }
-      
-      
-    	// First hour to start pulling for Hourly Data      
-      foreach ( $api_data_houly_hours as $key => $value ) {
-        if( intval( $value ) == intval( $weather_first_hour_timestamp ) ) {
-          $weather_hourly_start_key = $key; // so we know where to start when pulling hourly weather
-          break;
-        }
-      }
-      
       
       
       // UTC Offset -- only use is when displaying a timestamp

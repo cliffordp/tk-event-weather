@@ -24,7 +24,7 @@ class TkEventWeather__Functions {
   
   public static function load_template( $slug, $data = array(), $name = null, $load = true ) {
     $template_loader = self::new_template_loader();
-    $template_loader->set_template_data( $data, 'context' );
+    $template_loader->set_template_data( $data, 'context' ); // passed-through data becomes accessible as $context->piece_of_data within template
     $template_loader->get_template_part( $slug, $name, $load );
   }
   
