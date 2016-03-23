@@ -1266,8 +1266,8 @@ public 'flags' =>
     	}
     	
     	
-      TkEventWeather__Functions::register_tk_event_weather_css();
-      wp_enqueue_style( 'tk-event-weather' );      
+      TkEventWeather__Functions::register_css();
+      wp_enqueue_style( sanitize_html_class( TkEventWeather__FuncSetup::shortcode_name_hyphenated() ) );
       
     	/**
       	* Start Building Output!!!

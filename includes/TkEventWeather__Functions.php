@@ -7,7 +7,11 @@ class TkEventWeather__Functions {
   // all variables and methods should be 'static'
     
   public static function plugin_options() {
-    return get_option( 'tk_event_weather' );
+    if ( ! empty( get_option( 'tk_event_weather' ) ) ) {
+      return get_option( 'tk_event_weather' );
+    } else {
+      return false;
+    }
   }
   
   /**
@@ -49,8 +53,8 @@ class TkEventWeather__Functions {
   }
   
   
-  public static function register_tk_event_weather_css() {
-    wp_register_style( 'tk-event-weather', TkEventWeather__FuncSetup::plugin_dir_url_root() . 'css/tk-event-weather.css', array(), null );
+  public static function register_css() {
+    wp_register_style( TkEventWeather__FuncSetup::shortcode_name_hyphenated(), TkEventWeather__FuncSetup::plugin_dir_url_root() . 'css/tk-event-weather.css', array(), null );
   }
   
   
@@ -124,23 +128,17 @@ class TkEventWeather__Functions {
     return $all_capabilities;
   }
   
-  public static function invalid_shortcode_message( $input = '', $capability = 'edit_theme_options', $shortcode_name = '' ) {
+  public static function invalid_shortcode_message( $input = '', $capability = 'edit_theme_options' ) {
     $capability = apply_filters ( 'tk_event_weather_shortcode_msg_cap', $capability );
     
     if( ! in_array( $capability, self::all_valid_wp_capabilities() ) ) {
       $capability = 'edit_theme_options';
     }
-    
-    if ( empty( $shortcode_name ) ) {
-      $shortcode_name = TkEventWeather__FuncSetup::$shortcode_name;
-    }
-    
-    if ( empty( $shortcode_name ) ) {
-      return sprintf( __( 'Invalid Shortcode Name used in %s.', 'tk-event-weather' ), 'invalid_shortcode_message()' );
-    }
-    
+        
     // escape single apostrophes
     $error_reason = str_replace( "'", "\'", $input );
+    
+    $shortcode_name = TkEventWeather__FuncSetup::$shortcode_name;
     
     if( ! empty( $error_reason ) ) {
       $message = sprintf( __( '%s for the `%s` shortcode to work correctly.', 'tk-event-weather' ), $error_reason, $shortcode_name );
@@ -153,7 +151,7 @@ class TkEventWeather__Functions {
     $result = '';
   	if( current_user_can( $capability ) ) {
     	$result .= sprintf( '<span class="%s">%s</span>',
-    	  sanitize_html_class( strtolower( $shortcode_name ) ),
+    	  self::shortcode_error_class_name(),
     	  esc_html ( $message )
       );
   	}
@@ -1175,6 +1173,11 @@ class TkEventWeather__Functions {
       $result = sanitize_html_class ( sprintf( 'template-%s', $template_name ) );
     }
     
+    return $result;
+  }
+  
+  public static function shortcode_error_class_name() {
+    $result = sanitize_html_class( strtolower( TkEventWeather__FuncSetup::$shortcode_name ) ) . '__error';
     return $result;
   }
   
