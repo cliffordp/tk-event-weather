@@ -8,7 +8,7 @@
   * FYI: the forecast.io "apparentTemperature" value is the "feels like" temperature
   * add_action() next to wp_enqueue_style ???
   * verify all timestamps get ran through timestamp cleanup method
-    * truncate seconds off all timestamps?
+    * truncate seconds off all timestamps? -- avoid 10pm hour + 10pm sunset, like http://cl.ly/430H1J0p2R07
   * use more data from API, like 'summary' text as a title element somewhere
   * handling of time zone offsets that aren't full hours -- e.g. Eucla Australia is UTC+8:45 -- https://en.wikipedia.org/wiki/List_of_UTC_time_offsets#UTC.2B08:45.2C_H.2A -- currently works well enough probably but outputs '4am' instead of '4:45am' -- does it really need to be fixed?
   * time of day versions of icons (night/day)
@@ -18,12 +18,14 @@
   * add Debug Mode to output JSON, plugin settings, filters/actions in use, disable transients
   * "current" / "right now" if event is currently happening
   * allow single time instead of hourly (start + end times) to make shortcode more flexible and also maybe applicable for events without an end time (e.g. The Events Calendar)
+  * end time just pick last hour of day if end time is out of bounds
   * handle multi-day events (e.g. Monday 8pm to Tuesday 2am or Monday 8pm to Wednesday 5pm)
   * add 'demo' option to output all icons (e.g. for styling/testing)
   * 12 or 24 hour time format (handled automatically by WP translation?)
   * weather advisories
   * color options for styling SVGs (e.g. yellow sun with gray cloud) -- not possible with as-is SVGs because they're flattened (no CSS classes to "fill")
   * all output in BEM method -- https://github.com/google/material-design-lite/wiki/Understanding-BEM
+  * styling for shortcode error messages
   */
 
 
@@ -162,7 +164,6 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
     	
     	// if no lat,long yet then build via separate lat and long
     	if ( empty ( $latitude_longitude ) ) {
-        
         // latitude
       	if ( ! empty ( $atts['lat'] ) ) {
       	  $latitude = $atts['lat'];
@@ -1011,7 +1012,8 @@ TK Event Weather JSON Data
     		$request_uri = sprintf( 'https://api.forecast.io/forecast/%s/%s,%s',
     			$api_key,
     			$latitude_longitude,
-    			$start_time_timestamp
+    			//$start_time_timestamp
+    			$start_time_iso_8601
     		);
     		
     		$request_uri_query_args = array();
@@ -1030,7 +1032,7 @@ TK Event Weather JSON Data
     		// @link https://codex.wordpress.org/Function_Reference/esc_url_raw
     		// @link https://developer.wordpress.org/reference/functions/wp_safe_remote_get/
         $request = wp_safe_remote_get( esc_url_raw( $request_uri ) );
-                
+        
     		// @link https://developer.wordpress.org/reference/functions/wp_remote_retrieve_body/
     		$body = wp_remote_retrieve_body( $request );
     		
@@ -1047,6 +1049,10 @@ TK Event Weather JSON Data
     		if( ! empty( $api_data->error ) ) {
           return TkEventWeather__Functions::invalid_shortcode_message( 'Forecast.io API responded with an error: ' . $api_data->error . ' - Please troubleshoot' );
     		}
+    		
+    		if( empty( $api_data->hourly->data ) ) {
+          return TkEventWeather__Functions::invalid_shortcode_message( 'Forecast.io API responded but without hourly data. Please troubleshoot' );
+    		}
         
         if( true === $transients ) {
           $transients_expiration_hours = absint( $atts['transients_expiration'] );
@@ -1057,6 +1063,24 @@ TK Event Weather JSON Data
         }
     	}
     	
+/*
+  Example var_dump($request) when bad data, like https://api.forecast.io/forecast/___API_KEY___/0.000000,0.000000,1466199900?exclude=minutely
+object(stdClass)[100]
+public 'latitude' => int 0
+public 'longitude' => int 0
+public 'timezone' => string 'Etc/GMT' (length=7)
+public 'offset' => int 0
+public 'currently' => 
+  object(stdClass)[677]
+    public 'time' => int 1466199900
+public 'flags' => 
+  object(stdClass)[96]
+    public 'sources' => 
+      array (size=0)
+        empty
+    public 'units' => string 'us' (length=2)
+*/
+    	
     	// now $api_data is set for sure (better be to have gotten this far)
     	$output .= sprintf( '<!--%1$sTK Event Weather JSON Data%1$s%2$s%1$s-->%1$s', PHP_EOL, json_encode( $api_data, JSON_PRETTY_PRINT ) ); // requires PHP 5.4
     	
@@ -1065,6 +1089,8 @@ TK Event Weather JSON Data
     	
     	// https://developer.wordpress.org/reference/functions/wp_list_pluck/
       $api_data_houly_hours = wp_list_pluck( $api_data->hourly->data, 'time' );
+      
+      $api_data_houly_hours_keys = array_keys( $api_data_houly_hours );
       
       
     	// End Time Weather
@@ -1077,7 +1103,7 @@ TK Event Weather JSON Data
       
       // if none, just get last hour of the day (e.g. if Event End Time is next day 2am, just get 11pm same day as Event Start Time (not perfect but may be better than 2nd API call)
       if ( ! isset( $weather_hourly_end_key ) ) { // need to allow for zero due to numeric array
-        $weather_hourly_end_key = key( end( $api_data_houly_hours ) );
+        $weather_hourly_end_key = end ( $api_data_houly_hours_keys );
       }
       
       if( ! isset( $weather_hourly_end_key ) ) { // need to allow for zero due to numeric array

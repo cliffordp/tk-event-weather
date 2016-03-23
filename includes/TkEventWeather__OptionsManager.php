@@ -563,7 +563,19 @@ class TkEventWeather__OptionsManager {
             		foreach ( $plugin_options as $key=>$option ) {
             				?>
             				<tr>
-            					<td><?php echo esc_html( $key ); ?></td>
+            					<td><?php echo esc_html( 'Core - ' . $key ); ?></td>
+            					<td><?php echo esc_html( $option ); ?></td>
+            				</tr>
+            				<?php
+            		}
+            		
+            		// allow add-ons to output their settings too
+            		$addon_plugin_options = apply_filters( 'tk_event_weather_add_on_plugin_options_array', array() );
+
+            		foreach ( $addon_plugin_options as $key=>$option ) {
+            				?>
+            				<tr>
+            					<td><?php echo esc_html( 'Addon - ' . $key ); ?></td>
             					<td><?php echo esc_html( $option ); ?></td>
             				</tr>
             				<?php

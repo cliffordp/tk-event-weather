@@ -35,13 +35,12 @@ $TkEventWeather__minimalRequiredPhpVersion = '5.0';
 
 /**
  * Check the PHP version and give a useful error message if the user's version is less than the required version
- * @return boolean true if version check passed. If false, triggers an error which WP will handle, by displaying
- * an error message on the Admin page
+ * @return boolean true if version check passed. If false, triggers an error which WP will handle, by displaying an error message on the Admin page
  */
 function TkEventWeather__noticePhpVersionWrong() {
     global $TkEventWeather__minimalRequiredPhpVersion;
     echo '<div class="updated fade">' .
-      __('Error: plugin "TK Event Weather" requires a newer version of PHP to be running.',  'tk-event-weather').
+      __('Error: plugin "TK Event Weather" requires a newer version of PHP to be running.', 'tk-event-weather').
             '<br/>' . __('Minimal version of PHP required: ', 'tk-event-weather') . '<strong>' . $TkEventWeather__minimalRequiredPhpVersion . '</strong>' .
             '<br/>' . __('Your server\'s PHP version: ', 'tk-event-weather') . '<strong>' . phpversion() . '</strong>' .
          '</div>';

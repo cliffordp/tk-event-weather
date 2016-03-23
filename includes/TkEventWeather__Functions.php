@@ -329,6 +329,7 @@ class TkEventWeather__Functions {
   
   /**
     * Verify string is valid latitude,longitude
+    * Forecast.io does not allow certain lat,long -- such as 0,0
     * 
     * @since 1.0.0
     * 
@@ -341,26 +342,40 @@ class TkEventWeather__Functions {
     * @return $result If valid returns string or bool true, based on $return_format. If invalid, returns '' string or bool false, based on $return_format.
     */
   public static function valid_lat_long( $input, $return_format = '' ) {
-    $result = self::remove_all_whitespace ( $input );
+    $input = self::remove_all_whitespace ( $input );
     
     if ( ! empty( $return_format ) && 'bool' != $return_format ) {
       $return_format = '';
     }
     
-    // is valid lat,long
-    if( 1 == preg_match( '/^([-+]?[1-8]?\d(?:\.\d+)?|90(?:\.0+)?),\s*([-+]?(?:180(?:\.0+)?|(?:(?:1[0-7]\d)|(?:[1-9]?\d))(?:\.\d+)?))$/', $result ) ) {
-      if( '' == $return_format ) {
-        return $result;
-      } else {
-        return true;
-      }
-    }
-    // is NOT valid
-    else {
+    // is not valid lat,long FORMAT
+    if( empty( preg_match( '/^([-+]?[1-8]?\d(?:\.\d+)?|90(?:\.0+)?),\s*([-+]?(?:180(?:\.0+)?|(?:(?:1[0-7]\d)|(?:[1-9]?\d))(?:\.\d+)?))$/', $input ) ) ) {
       if ( '' == $return_format ) {
         return '';
       } else {
         return false;
+      }
+    }
+    
+    // separate lat,long
+    $lat_long_array = explode( ',', $input );
+    $latitude = floatval( $lat_long_array[0] );
+    $longitude = floatval( $lat_long_array[1] );
+    
+    // is not valid Forecast.io lat or long
+    if(
+      empty( $latitude ) && empty( $longitude ) // e.g. 0.0000,0.0000
+    ) {
+      if ( '' == $return_format ) {
+        return '';
+      } else {
+        return false;
+      }
+    } else {
+      if ( '' == $return_format ) {
+        return $input;
+      } else {
+        return true;
       }
     }
   }
