@@ -31,6 +31,9 @@
     If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
+define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) ); // e.g. /Users/cmp/Documents/git/GitHub/tk-event-weather/
+define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_URL', plugin_dir_url( __FILE__ ) );  // e.g. http://some.site/wp-content/plugins/tk-event-weather/
+
 $TkEventWeather__minimalRequiredPhpVersion = '5.0';
 
 /**
@@ -85,7 +88,3 @@ if (TkEventWeather__PhpVersionCheck()) {
     include_once('includes/TkEventWeather__init.php');
     TkEventWeather__init(__FILE__);
 }
-
-
-// Required for Template Loader. Also used elsewhere.
-define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) ); // e.g. /Users/cmp/Documents/git/GitHub/tk-event-weather/
