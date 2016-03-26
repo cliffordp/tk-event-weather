@@ -31,6 +31,35 @@
     If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
+
+
+
+/** TO DO:
+  * FYI: the forecast.io "apparentTemperature" value is the "feels like" temperature
+  * add_action() next to wp_enqueue_style ???
+  * verify all timestamps get ran through timestamp cleanup method
+    * truncate seconds off all timestamps? -- avoid 10pm hour + 10pm sunset, like http://cl.ly/430H1J0p2R07
+  * use more data from API, like 'summary' text as a title element somewhere
+  * handling of time zone offsets that aren't full hours -- e.g. Eucla Australia is UTC+8:45 -- https://en.wikipedia.org/wiki/List_of_UTC_time_offsets#UTC.2B08:45.2C_H.2A -- currently works well enough probably but outputs '4am' instead of '4:45am' -- does it really need to be fixed?
+  * time of day versions of icons (night/day)
+    * https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-174607313
+    * https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-178440095
+  * force debug report to be in English (i.e. not translatable)
+  * add Debug Mode to output JSON, plugin settings, filters/actions in use, disable transients
+  * "current" / "right now" if event is currently happening
+  * allow single time instead of hourly (start + end times) to make shortcode more flexible and also maybe applicable for events without an end time (e.g. The Events Calendar)
+  * end time just pick last hour of day if end time is out of bounds
+  * handle multi-day events (e.g. Monday 8pm to Tuesday 2am or Monday 8pm to Wednesday 5pm)
+  * add 'demo' option to output all icons (e.g. for styling/testing)
+  * 12 or 24 hour time format (handled automatically by WP translation?)
+  * weather advisories
+  * color options for styling SVGs (e.g. yellow sun with gray cloud) -- not possible with as-is SVGs because they're flattened (no CSS classes to "fill")
+  * all output in BEM method -- https://github.com/google/material-design-lite/wiki/Understanding-BEM
+  * styling for shortcode error messages
+  * Customizer link to Section if no add-on (make button filterable)
+  */
+
+
 $TkEventWeather__minimalRequiredPhpVersion = '5.0';
 
 /**
