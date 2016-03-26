@@ -88,7 +88,7 @@ class TkEventWeather__InstallIndicator extends TkEventWeather__OptionsManager {
      */
     public function getPluginHeaderValue($key) {
         // Read the string from the comment header of the main plugin file
-        $data = file_get_contents($this->getPluginDir() . DIRECTORY_SEPARATOR . $this->getMainPluginFileName());
+        $data = file_get_contents( $this->getPluginDir() . $this->getMainPluginFileName() );
         $match = array();
         preg_match('/' . $key . ':\s*(\S+)/', $data, $match);
         if (count($match) >= 1) {
@@ -106,7 +106,7 @@ class TkEventWeather__InstallIndicator extends TkEventWeather__OptionsManager {
      * @link https://developer.wordpress.org/reference/functions/plugin_dir_path/
      */
     protected function getPluginDir() {
-        return TkEventWeather__FuncSetup::plugin_dir_url_root();
+        return TkEventWeather__FuncSetup::plugin_dir_path_root();
     }
 
     /**

@@ -50,14 +50,13 @@ class TkEventWeather__FuncSetup {
     *
     */
   
-  // https://developer.wordpress.org/reference/functions/plugin_dir_url/ does respect HTTPS and does include trailing slash
-  public static function plugin_dir_url_includes() {
-    return plugin_dir_url( __FILE__ ); // e.g. http://example.com/wp-content/plugins/tk-event-weather/includes/
+  public static function plugin_dir_url_root() {
+    return TK_EVENT_WEATHER_PLUGIN_ROOT_URL; // from root plugin file
   }
   
-  public static function plugin_dir_url_root() {
-    // remove "includes/" from end of string (requires escaping the last backslash)
-    return preg_replace( '/(includes\/$)/', '', self::plugin_dir_url_includes() ); // e.g. http://example.com/wp-content/plugins/tk-event-weather/
+  public static function plugin_dir_url_includes() {
+  // https://developer.wordpress.org/reference/functions/plugin_dir_url/ does respect HTTPS and does include trailing slash
+    return self::plugin_dir_url_root() . 'includes/'; // e.g. http://example.com/wp-content/plugins/tk-event-weather/includes/
   }
   
   public static function plugin_dir_url_vendor() {

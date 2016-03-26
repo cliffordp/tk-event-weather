@@ -60,6 +60,12 @@
   */
 
 
+// Required for Template Loader. Also used elsewhere.
+define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) ); // e.g. /.../.../example-com/wp-content/plugins/tk-event-weather/
+
+// added for consistency to match DIR
+define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_URL', plugin_dir_url( __FILE__ ) ); // e.g. http://example.com/wp-content/plugins/tk-event-weather/includes/
+
 $TkEventWeather__minimalRequiredPhpVersion = '5.0';
 
 /**
@@ -113,7 +119,3 @@ if (TkEventWeather__PhpVersionCheck()) {
     include_once('includes/TkEventWeather__init.php');
     TkEventWeather__init(__FILE__);
 }
-
-
-// Required for Template Loader. Also used elsewhere.
-define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) ); // e.g. /Users/cmp/Documents/git/GitHub/tk-event-weather/
