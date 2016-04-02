@@ -21,7 +21,7 @@
 
 function TkEventWeather__init($file) {
 
-    require_once('TkEventWeather__Plugin.php');
+    require_once( 'Plugin.php' );
     $aPlugin = new TkEventWeather__Plugin();
 
     // Install the plugin

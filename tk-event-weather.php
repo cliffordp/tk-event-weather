@@ -116,6 +116,6 @@ add_action('plugins_loadedi','TkEventWeather__i18n_init');
 // If it is successful, continue with initialization for this plugin
 if (TkEventWeather__PhpVersionCheck()) {
     // Only load and run the init function if we know PHP version can parse it
-    include_once('includes/TkEventWeather__init.php');
+    include_once('includes/init.php');
     TkEventWeather__init(__FILE__);
 }

@@ -2,8 +2,8 @@
 
 // e.g. https://plugins.trac.wordpress.org/browser/form-to-post/trunk/FormToPost_Plugin.php
 
-include_once('TkEventWeather__LifeCycle.php');
-require_once('TkEventWeather__Functions.php');
+include_once( 'LifeCycle.php' );
+require_once( 'Functions.php' );
 
 class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
     
@@ -91,7 +91,7 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
         // Register short codes
         // http://plugin.michael-simpson.com/?page_id=39
         
-        include_once( 'TkEventWeather__TkEventWeatherShortcode.php' );
+        include_once( 'TkEventWeatherShortcode.php' );
         $sc = new TkEventWeather__TkEventWeatherShortcode();
         $sc->register( TkEventWeather__FuncSetup::$shortcode_name );
 

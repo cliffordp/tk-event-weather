@@ -19,7 +19,7 @@
     If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-include_once('TkEventWeather__OptionsManager.php');
+include_once( 'OptionsManager.php' );
 
 class TkEventWeather__InstallIndicator extends TkEventWeather__OptionsManager {
 

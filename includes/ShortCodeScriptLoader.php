@@ -19,7 +19,7 @@
     If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-include_once('TkEventWeather__ShortCodeLoader.php');
+include_once( 'ShortCodeLoader.php' );
 
 /**
  * Adapted from this excellent article:

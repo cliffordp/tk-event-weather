@@ -3,8 +3,8 @@
 // Option 3 from http://plugin.michael-simpson.com/?page_id=39
 
 
-include_once('TkEventWeather__ShortCodeScriptLoader.php');
-require_once('TkEventWeather__Functions.php');
+include_once( 'ShortCodeScriptLoader.php' );
+require_once( 'Functions.php' );
 
 class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeScriptLoader {
         
@@ -994,6 +994,7 @@ TK Event Weather JSON Data
     		if( ! empty( $units ) ) {
       		$request_uri_query_args['units'] = $units;
     		}
+    		
     		if( ! empty( $exclude ) ) {
       		$request_uri_query_args['exclude'] = $exclude;
     		}

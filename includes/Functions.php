@@ -1,7 +1,7 @@
 <?php
 
-require_once('TkEventWeather__FuncSetup.php');
-require_once('TkEventWeather__TemplateLoader.php');
+require_once( 'FuncSetup.php' );
+require_once( 'TemplateLoader.php' );
 
 class TkEventWeather__Functions {
   // all variables and methods should be 'static'

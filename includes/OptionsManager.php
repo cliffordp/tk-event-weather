@@ -19,7 +19,7 @@
     If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-require_once('TkEventWeather__Functions.php');
+require_once( 'Functions.php' );
 
 class TkEventWeather__OptionsManager {
 
