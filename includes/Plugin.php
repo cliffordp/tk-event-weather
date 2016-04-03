@@ -118,8 +118,12 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
   		// auto-open the panel
   		$url = add_query_arg( 'autofocus[panel]', self::$customizer_panel_id, $url );
   		
-  		// auto-open the section
-  		// $url = add_query_arg( 'autofocus[section]', self::$customizer_section_id, $url );
+  		$link_to_core_section = apply_filters( 'tk_event_weather_customizer_link_to_core_section', true );
+  		
+      if ( true === $link_to_core_section ) {
+    		// auto-open the Core Settings section within the panel
+    		$url = add_query_arg( 'autofocus[section]', self::$customizer_section_id, $url );
+      }
   		
   		return $url;
   	}

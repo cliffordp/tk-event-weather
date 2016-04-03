@@ -35,11 +35,12 @@
 
 
 /** TO DO:
-  * FYI: the forecast.io "apparentTemperature" value is the "feels like" temperature
   * add_action() next to wp_enqueue_style ???
   * verify all timestamps get ran through timestamp cleanup method
     * truncate seconds off all timestamps? -- avoid 10pm hour + 10pm sunset, like http://cl.ly/430H1J0p2R07
   * use more data from API, like 'summary' text as a title element somewhere
+    * the forecast.io "apparentTemperature" value is the "feels like" temperature
+    * inspiration from http://darkskyapp.com/
   * handling of time zone offsets that aren't full hours -- e.g. Eucla Australia is UTC+8:45 -- https://en.wikipedia.org/wiki/List_of_UTC_time_offsets#UTC.2B08:45.2C_H.2A -- currently works well enough probably but outputs '4am' instead of '4:45am' -- does it really need to be fixed?
   * time of day versions of icons (night/day)
     * https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-174607313
@@ -56,7 +57,6 @@
   * color options for styling SVGs (e.g. yellow sun with gray cloud) -- not possible with as-is SVGs because they're flattened (no CSS classes to "fill")
   * all output in BEM method -- https://github.com/google/material-design-lite/wiki/Understanding-BEM
   * styling for shortcode error messages
-  * Customizer link to Section if no add-on (make button filterable)
   */
 
 
