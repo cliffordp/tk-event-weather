@@ -44,7 +44,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
       	
         //$icons_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'icons' );
         
-      	$plugin_credit_link_off_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'plugin_credit_link_off' );
+      	$plugin_credit_link_on_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'plugin_credit_link_on' );
       	$forecast_io_credit_link_off_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'forecast_io_credit_link_off' );
       	
       }
@@ -86,8 +86,8 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
           // could add a utc_offset_hours sort of parameter to allow manually outputting as '-5'
       	'sunrise_sunset_off'            => $sunrise_sunset_off_option, // "true" is the only valid value
       	'icons'                         => '',
-      	'plugin_credit_link_off'        => $plugin_credit_link_off_option, // "true" is the only valid value
-      	'forecast_io_credit_link_off'   => $forecast_io_credit_link_off_option, // "true" is the only valid value
+      	'plugin_credit_link_on'         => $plugin_credit_link_on_option, // "true" is the only valid value
+      	'forecast_io_credit_link_off'   => $forecast_io_credit_link_off_option, // anything !empty()
       	// HTML
       	'class'                         => '', // custom class
       	'template'                      => $display_template_option,
@@ -1263,7 +1263,7 @@ public 'flags' =>
       	TkEventWeather__Functions::load_template( $display_template, $template_data );
       	$output .= ob_get_clean();
       
-        if ( empty( $atts['plugin_credit_link_off'] ) ) {
+        if ( 'true' == $atts['plugin_credit_link_on'] ) {
           $output .= TkEventWeather__Functions::plugin_credit_link();
         }
         

@@ -298,19 +298,19 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
     			));
     			
     			// Disable Plugin Credit Link
-    			$wp_customize->add_setting( self::$customizer_flag . '[plugin_credit_link_off]', array(
+    			$wp_customize->add_setting( self::$customizer_flag . '[plugin_credit_link_on]', array(
     				'type'              => 'option',
     				'capability'        => 'edit_theme_options',
     				'default'           => '',
     			));
     			
-    			$wp_customize->add_control( self::$customizer_flag . '_plugin_credit_link_off_control', array(
-      			'label'       => esc_html__( 'Disable display of the plugin credit link', 'tk-event-weather' ),
-    				'description' => __( "Check this box to disable linking to the TK Event Weather plugin's home page.", 'tk-event-weather' ),
+    			$wp_customize->add_control( self::$customizer_flag . '_plugin_credit_link_on_control', array(
+      			'label'       => esc_html__( 'Enable display of the plugin credit link', 'tk-event-weather' ),
+    				'description' => __( "<strong>Check this box to turn on</strong> linking to the TK Event Weather plugin's home page. <strong>We sure appreciate it!</strong>", 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
-    				'settings'    => self::$customizer_flag . '[plugin_credit_link_off]',
+    				'settings'    => self::$customizer_flag . '[plugin_credit_link_on]',
     				'type'		    => 'checkbox',
-    				'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
+    				'choices'     => array( 'true' => __( 'Enable', 'tk-event-weather' ) ),
     			));
     			
     			// Disable Forecast.io Credit Link
