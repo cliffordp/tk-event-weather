@@ -560,7 +560,7 @@ class TkEventWeather__OptionsManager {
             		<?php
             		$plugin_options = TkEventWeather__Functions::plugin_options();
                 
-                if ( ! empty( $plugin_options ) ) {
+                if ( ! empty( $plugin_options ) && is_array( $plugin_options ) ) {
               		foreach ( $plugin_options as $key=>$option ) {
               				?>
               				<tr>
@@ -574,7 +574,7 @@ class TkEventWeather__OptionsManager {
             		// allow add-ons to output their settings too
             		$addon_plugin_options = apply_filters( 'tk_event_weather_add_on_plugin_options_array', array() );
 
-                if ( ! empty( $addon_plugin_options ) ) {
+                if ( ! empty( $addon_plugin_options ) && is_array( $addon_plugin_options ) ) {
               		foreach ( $addon_plugin_options as $key=>$option ) {
               				?>
               				<tr>
