@@ -237,10 +237,6 @@ class TkEventWeather__Functions {
   
   // to be nice and link to http://tourkick.com/plugins/tk-event-weather/
   public static function plugin_credit_link() {
-    if ( true === apply_filters( 'tk_event_weather_disable_plugin_credit_link', '' ) ) {
-      return '';
-    }
-    
     $url = 'http://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-credit-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather';
     
     $anchor_text = __( 'TK Event Weather plugin', 'tk-event-weather' );
@@ -257,10 +253,6 @@ class TkEventWeather__Functions {
   
   // to comply with https://developer.forecast.io/
   public static function forecast_io_credit_link() {
-    if ( true === apply_filters( 'tk_event_weather_disable_forecast_io_credit_link', '' ) ) {
-      return '';
-    }
-    
     $url = 'http://forecast.io/';
     
     $anchor_text = __( 'Powered by Forecast', 'tk-event-weather' );
