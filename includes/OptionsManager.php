@@ -215,9 +215,30 @@ class TkEventWeather__OptionsManager {
         
         // HTML for the page
         $settingsGroup = get_class($this) . '-settings-group';
+        
         ?>
+        
+                
         <div class="wrap">
             <h1><?php echo $this->getPluginDisplayName(); echo ' '; _e( 'Settings', 'tk-event-weather' ); ?></h1>
+            
+            
+        <?php
+          // Greeting Box        
+        ?>
+        <div style="width: 80%; padding: 20px; margin: 20px; background-color: #fff;">
+        <?php 
+          $tourkick_logo = TkEventWeather__FuncSetup::plugin_dir_url_images() . 'tourkick-logo-square-300.png';
+          $tourkick_logo = printf( '<a href="http://tourkick.com/" target="_blank"><img style="float: left; margin: 5px 40px 10px 10px;" width="100" height="100" src="%s"></a>', $tourkick_logo );
+        ?>
+          <h2><a href="http://b.tourkick.com/tkeventw-rate-5-stars" target="_blank">Leave a Review</a></h2>
+          <br>
+          <h2>Find me online: <a href="http://b.tourkick.com/twitter-follow-tourkick" target="_blank">Twitter</a> | <a href="http://b.tourkick.com/facebook-tourkick" target="_blank">Facebook</a> | <a href="http://b.tourkick.com/cliffpaulick-w-org-profile-plugins" target="_blank">WordPress Profile</a> | <a href="http://bit.ly/tourkick-com" target="_blank">Website</a></h2>
+        </div>
+        
+        
+        
+            
             <?php
               $active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'options';
             ?>
