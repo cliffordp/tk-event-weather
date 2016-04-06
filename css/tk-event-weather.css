@@ -23,7 +23,7 @@
 .tk-event-weather__wrapper .template-hourly_horizontal__item {
   display: inline-block;
   text-align: center;
-  width: 60px;
+  width: 70px;
   margin-bottom: 10px; /* in case wraps to multiple line display and for credit links */
 }
 
