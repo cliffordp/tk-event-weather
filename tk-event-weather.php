@@ -66,6 +66,15 @@ define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) ); // e.
 // added for consistency to match DIR
 define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_URL', plugin_dir_url( __FILE__ ) ); // e.g. http://example.com/wp-content/plugins/tk-event-weather/includes/
 
+// used for adding Settings link to plugins.php
+// https://developer.wordpress.org/reference/functions/plugin_basename/
+define( 'TK_EVENT_WEATHER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) ); // e.g. tk-event-weather/tk-event-weather.php
+
+
+
+
+
+
 $TkEventWeather__minimalRequiredPhpVersion = '5.0';
 
 /**

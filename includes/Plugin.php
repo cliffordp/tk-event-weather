@@ -84,6 +84,12 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
         //        wp_enqueue_script('my-script', plugins_url('/js/my-script.js', __FILE__));
 
 
+        // Add settings link in plugins.php list
+        if ( defined( 'TK_EVENT_WEATHER_PLUGIN_BASENAME' ) ) {
+          $plugin = TK_EVENT_WEATHER_PLUGIN_BASENAME;
+          add_filter( "plugin_action_links_$plugin", array( $this, 'add_plugins_list_settings_link' ) );
+        }
+
         add_action( 'customize_register', array( $this, 'customizer_options' ) );
         
         add_filter( 'tk_event_weather_customizer_link', array( $this, 'customizer_options_link' ), 20 );
@@ -104,6 +110,15 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
     //
     // Start of Cliff's custom functions
     //
+    
+    function add_plugins_list_settings_link( $links ) {
+      $settings_link = sprintf( '<a href="options-general.php?page=%s">%s</a>', $this->getSettingsSlug(), __( 'Settings', 'tk-event-weather' ) );
+      
+      array_unshift( $links, $settings_link );
+      
+      return $links;
+    }
+
     
   	// Reference: https://github.com/cliffordp/mdl-shortcodes/blob/master/inc/class-mdl-shortcodes.php
   	public static function customizer_options_link(){
