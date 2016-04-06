@@ -258,26 +258,18 @@ class TkEventWeather__OptionsManager {
             </p>
             <br><br>
             <?php
+              /**
+                * Commented out until method exists to return a string for direct URL to re-prompt anonymous users with opt-in -- https://github.com/Freemius/wordpress-sdk/issues/42
+                * because connect_again() doesn't return a string to be used like this (as-is will re-prompt anonymous users every time they visit the plugin's settings page)
+                * and because Edit Freemius Settings button (then click Delete All Accounts button) is only for my development/testing, not for users
+                *
               if ( ! empty ( tk_event_weather_freemius()->is_anonymous() ) ) {
-            ?>
-                <p>
-                    <a href="<?php echo tk_event_weather_freemius()->connect_again(); ?>" class="button-secondary">
-                      <?php _e( 'Connect to Freemius!', 'tk-event-weather' ) ?>
-                    </a>
-                </p>
-            <?php
+                printf ( '<p><a href="%s" class="button-secondary">%s</a></p>', tk_event_weather_freemius()->connect_again(), __( 'Connect to Freemius!', 'tk-event-weather' ) );
               } else {
-            ?>
-            <p>
-                <a href="<?php
-                    // maybe https://developer.wordpress.org/reference/functions/network_admin_url/ ?
-                    echo admin_url( 'admin.php?page=freemius' );
-                    ?>" class="button-secondary">
-                  <?php _e( 'Edit Freemius Settings', 'tk-event-weather' ) ?>
-                </a>
-            </p>
-            <?php
+                // maybe https://developer.wordpress.org/reference/functions/network_admin_url/ ?
+                printf ( '<p><a href="%s" class="button-secondary">%s</a></p>', admin_url( 'admin.php?page=freemius' ), __( 'Edit Freemius Settings', 'tk-event-weather' ) );
                 } // freemius is_anonymous()
+              */
               } // options tab
               elseif( $active_tab == 'help' ) {
                 // modified from https://github.com/woothemes/woocommerce/blob/master/includes/admin/views/html-admin-page-status-report.php

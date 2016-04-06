@@ -53,11 +53,27 @@
   * handle multi-day events (e.g. Monday 8pm to Tuesday 2am or Monday 8pm to Wednesday 5pm)
   * add 'demo' option to output all icons (e.g. for styling/testing)
   * 12 or 24 hour time format (handled automatically by WP translation?)
-  * weather advisories
+  * weather advisories (only happen in real-time so probably not)
   * color options for styling SVGs (e.g. yellow sun with gray cloud) -- not possible with as-is SVGs because they're flattened (no CSS classes to "fill")
   * all output in BEM method -- https://github.com/google/material-design-lite/wiki/Understanding-BEM
   * styling for shortcode error messages
   */
+
+
+
+
+/**
+  * Defines
+  */
+// Required for Template Loader. Also used elsewhere.
+define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) ); // e.g. /.../.../example-com/wp-content/plugins/tk-event-weather/
+
+// added for consistency to match DIR
+define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_URL', plugin_dir_url( __FILE__ ) ); // e.g. http://example.com/wp-content/plugins/tk-event-weather/includes/
+
+// used for adding Settings link to plugins.php
+// https://developer.wordpress.org/reference/functions/plugin_basename/
+define( 'TK_EVENT_WEATHER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) ); // e.g. tk-event-weather/tk-event-weather.php
 
 
 
@@ -106,8 +122,7 @@ function tk_event_weather_freemius_custom_connect_message(
   $freemius_link
 ) {
   return sprintf(
-      __fs( 'hey-x' ) . '<br><br>' . __( 'I am', 'tk-event-weather' ) . ' Clifford Paulick, ' .
-      __( 'the author of this <strong>%2$s</strong> plugin.<br><br>Sharing some data about how this site uses my plugin will greatly help me continue improving it.<br><br>Data will be sent to %5$s (a highly-trusted vendor) and will <em>not</em> slow down your site.<br><br>%2$s will work just fine if you skip this, but I really would appreciate you allowing it!', 'tk-event-weather' ),
+      __fs( 'hey-x' ) . '<br><br>' . __( 'The <strong>%2$s</strong> plugin is ready to go! Want to help make %2$s more awesome? Securely share some data to get the best experience and stay informed.', 'tk-event-weather' ),
       $user_first_name,
       $plugin_title,
       '<strong>' . $user_login . '</strong>',
@@ -121,18 +136,12 @@ tk_event_weather_freemius()->add_filter( 'connect_message_on_update', 'tk_event_
 
 
 
-/**
-  * Defines
-  */
-// Required for Template Loader. Also used elsewhere.
-define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) ); // e.g. /.../.../example-com/wp-content/plugins/tk-event-weather/
+function tk_event_weather_freemius_plugin_icon(){
+  return TK_EVENT_WEATHER_PLUGIN_ROOT_DIR . 'images/icon.svg';
+}
 
-// added for consistency to match DIR
-define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_URL', plugin_dir_url( __FILE__ ) ); // e.g. http://example.com/wp-content/plugins/tk-event-weather/includes/
+tk_event_weather_freemius()->add_filter( 'plugin_icon', 'tk_event_weather_freemius_plugin_icon' );
 
-// used for adding Settings link to plugins.php
-// https://developer.wordpress.org/reference/functions/plugin_basename/
-define( 'TK_EVENT_WEATHER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) ); // e.g. tk-event-weather/tk-event-weather.php
 
 
 
