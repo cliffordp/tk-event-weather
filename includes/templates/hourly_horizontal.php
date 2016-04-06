@@ -101,6 +101,7 @@ foreach ( $context->weather_hourly as $key => $value ) {
   	$output .= sprintf( ' sunset">
       <span data-timestamp="%1$d" class="%2$s__time">%3$s</span>
       <span class="%2$s__icon sunset">%4$s</span>
+      <span>&nbsp;</span>
       <span>&nbsp;</span>',
       $context->sunrise_sunset['sunset_timestamp'],
       $context->template_class_name,
