@@ -60,6 +60,70 @@
   */
 
 
+
+// Implement Freemius
+//
+// Create a helper function for easy SDK access.
+function tk_event_weather_freemius() {
+    global $tk_event_weather_freemius;
+
+    if ( ! isset( $tk_event_weather_freemius ) ) {
+        // Include Freemius SDK.
+        require_once dirname(__FILE__) . '/includes/vendor/freemius/start.php';
+
+        $tk_event_weather_freemius = fs_dynamic_init( array(
+            'id'                => '240',
+            'slug'              => 'tk-event-weather',
+            'public_key'        => 'pk_b6902fc0051f10b5e36bea21fb0e7',
+            'is_premium'        => false,
+            'has_addons'        => true,
+            'has_paid_plans'    => false,
+            'menu'              => array(
+                'slug'       => 'TkEventWeather__PluginSettings',
+                'parent'     => array(
+                    'slug' => 'options-general.php',
+                ),
+            ),
+        ) );
+    }
+
+    return $tk_event_weather_freemius;
+}
+
+// Init Freemius.
+tk_event_weather_freemius();
+//
+//
+
+
+// Freemius: customize the new user message
+function tk_event_weather_freemius_custom_connect_message(
+  $message,
+  $user_first_name,
+  $plugin_title,
+  $user_login,
+  $site_link,
+  $freemius_link
+) {
+  return sprintf(
+      __fs( 'hey-x' ) . '<br><br>' . __( 'I am', 'tk-event-weather' ) . ' Clifford Paulick, ' .
+      __( 'the author of this <strong>%2$s</strong> plugin.<br><br>Sharing some data about how this site uses my plugin will greatly help me continue improving it.<br><br>Data will be sent to %5$s (a highly-trusted vendor) and will <em>not</em> slow down your site.<br><br>%2$s will work just fine if you skip this, but I really would appreciate you allowing it!', 'tk-event-weather' ),
+      $user_first_name,
+      $plugin_title,
+      '<strong>' . $user_login . '</strong>',
+      $site_link,
+      $freemius_link
+  );
+}
+
+tk_event_weather_freemius()->add_filter( 'connect_message_on_update', 'tk_event_weather_freemius_custom_connect_message', 10, 6 );
+
+
+
+
+/**
+  * Defines
+  */
 // Required for Template Loader. Also used elsewhere.
 define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) ); // e.g. /.../.../example-com/wp-content/plugins/tk-event-weather/
 
@@ -101,6 +165,8 @@ function TkEventWeather__PhpVersionCheck() {
 }
 
 
+
+// old code?
 /**
  * Initialize internationalization (i18n) for this plugin.
  * References:
@@ -108,10 +174,12 @@ function TkEventWeather__PhpVersionCheck() {
  *      http://www.wdmac.com/how-to-create-a-po-language-translation#more-631
  * @return void
  */
+/*
 function TkEventWeather__i18n_init() {
     $pluginDir = dirname(plugin_basename(__FILE__));
     load_plugin_textdomain('tk-event-weather', false, $pluginDir . '/languages/');
 }
+*/
 
 
 //////////////////////////////////

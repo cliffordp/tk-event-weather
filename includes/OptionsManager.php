@@ -256,8 +256,30 @@ class TkEventWeather__OptionsManager {
                   <?php _e( 'Edit Plugin Settings in WP Customizer', 'tk-event-weather' ) ?>
                 </a>
             </p>
+            <br><br>
             <?php
-              } elseif( $active_tab == 'help' ) {
+              if ( ! empty ( tk_event_weather_freemius()->is_anonymous() ) ) {
+            ?>
+                <p>
+                    <a href="<?php echo tk_event_weather_freemius()->connect_again(); ?>" class="button-secondary">
+                      <?php _e( 'Connect to Freemius!', 'tk-event-weather' ) ?>
+                    </a>
+                </p>
+            <?php
+              } else {
+            ?>
+            <p>
+                <a href="<?php
+                    // maybe https://developer.wordpress.org/reference/functions/network_admin_url/ ?
+                    echo admin_url( 'admin.php?page=freemius' );
+                    ?>" class="button-secondary">
+                  <?php _e( 'Edit Freemius Settings', 'tk-event-weather' ) ?>
+                </a>
+            </p>
+            <?php
+                } // freemius is_anonymous()
+              } // options tab
+              elseif( $active_tab == 'help' ) {
                 // modified from https://github.com/woothemes/woocommerce/blob/master/includes/admin/views/html-admin-page-status-report.php
                 // reference (outdated screenshots): https://docs.woothemes.com/document/understanding-the-woocommerce-system-status-report/
             ?>
