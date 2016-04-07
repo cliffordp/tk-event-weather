@@ -220,8 +220,7 @@ class TkEventWeather__OptionsManager {
         
                 
         <div class="wrap">
-            <h1><?php echo $this->getPluginDisplayName(); echo ' '; _e( 'Settings', 'tk-event-weather' ); ?></h1>
-            
+          <h1><?php echo $this->getPluginDisplayName(); echo ' '; _e( 'Settings', 'tk-event-weather' ); ?></h1>
             
         <?php
           // Greeting Box        

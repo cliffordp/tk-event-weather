@@ -116,8 +116,6 @@ function tk_event_weather_freemius() {
 
 // Init Freemius.
 tk_event_weather_freemius();
-//
-//
 
 
 // Freemius: customize the new user message
@@ -138,16 +136,12 @@ function tk_event_weather_freemius_custom_connect_message(
       $freemius_link
   );
 }
-
 tk_event_weather_freemius()->add_filter( 'connect_message_on_update', 'tk_event_weather_freemius_custom_connect_message', 10, 6 );
-
-
 
 
 function tk_event_weather_freemius_plugin_icon(){
   return TK_EVENT_WEATHER_PLUGIN_ROOT_DIR . 'images/icon.svg';
 }
-
 tk_event_weather_freemius()->add_filter( 'plugin_icon', 'tk_event_weather_freemius_plugin_icon' );
 
 

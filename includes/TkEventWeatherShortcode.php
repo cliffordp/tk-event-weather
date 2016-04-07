@@ -47,6 +47,8 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
       	$plugin_credit_link_on_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'plugin_credit_link_on' );
       	$forecast_io_credit_link_off_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'forecast_io_credit_link_off' );
       	
+      	$debug_on_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'debug_on' );
+      	
       }
       
       /*
@@ -91,6 +93,8 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
       	// HTML
       	'class'                         => '', // custom class
       	'template'                      => $display_template_option,
+      	// Debug Mode
+      	'debug_on'                      => $debug_on_option, // anything !empty()
     	);
     	
     	$atts = shortcode_atts( $defaults, $atts, 'tk-event-weather' );
@@ -98,6 +102,8 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
     	// extract( $atts ); // convert each array item to individual variable
     	
     	// Code
+    	
+    	$debug = boolval( $atts['debug_on'] );
     	
     	// @link https://developer.wordpress.org/reference/functions/sanitize_key/
     	$api_key = sanitize_key( $atts['api_key'] );
@@ -432,7 +438,6 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
       
     	if( ! empty( $atts['transients_off'] )
     	  && 'true' == $atts['transients_off']
-    	  // or if WP_DEBUG ???
       ) {
       	$transients = false;
     	} else {
@@ -1057,7 +1062,9 @@ public 'flags' =>
 */
     	
     	// now $api_data is set for sure (better be to have gotten this far)
-    	$output .= sprintf( '<!--%1$sTK Event Weather JSON Data%1$s%2$s%1$s-->%1$s', PHP_EOL, json_encode( $api_data, JSON_PRETTY_PRINT ) ); // requires PHP 5.4
+    	if ( ! empty( $debug ) ) {
+      	$output .= sprintf( '<!--%1$sTK Event Weather JSON Data%1$s%2$s%1$s-->%1$s', PHP_EOL, json_encode( $api_data, JSON_PRETTY_PRINT ) ); // requires PHP 5.4
+      }
     	
     	
     	// Build Weather data that we'll use    	
@@ -1236,10 +1243,9 @@ public 'flags' =>
     	
     	$template_data['template_class_name'] = $template_class_name;
     	
-      $debug_vars = false;
-    	//$debug_vars = WP_DEBUG; // if WP_DEBUG is true, set $debug_vars to true for admins only
-    	if ( ! empty( $debug_vars ) && current_user_can( 'edit_theme_options' ) ) { // admins only
-      	var_dump( get_defined_vars() );
+    	// if Debug Mode is true, set $debug_vars to true for admins only
+    	if ( ! empty( $debug ) && current_user_can( 'edit_theme_options' ) ) {
+      	// var_dump( get_defined_vars() ); // uncomment if you REALLY want to display this information
     	}
     	
     	

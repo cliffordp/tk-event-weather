@@ -349,6 +349,23 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
     			));
     			
 
+    			// Enable Debug Mode
+    			$wp_customize->add_setting( self::$customizer_flag . '[debug_on]', array(
+    				'type'              => 'option',
+    				'capability'        => 'edit_theme_options',
+    				'default'           => '',
+    			));
+    			
+    			$wp_customize->add_control( self::$customizer_flag . '_debug_on_control', array(
+      			'label'       => esc_html__( 'Enable Debug Mode for this plugin', 'tk-event-weather' ),
+    				'description' => esc_html__( 'Prints extra information to the page only for Administrators.', 'tk-event-weather' ),
+    				'section'     => self::$customizer_section_id,
+    				'settings'    => self::$customizer_flag . '[debug_on]',
+    				'type'		    => 'checkbox',
+    				'choices'     => array( 'true' => __( 'Enable', 'tk-event-weather' ) ),
+    			));
+    			
+
 /*
     			// Icons
     			$wp_customize->add_setting( self::$customizer_flag . '[icons]', array(
