@@ -54,11 +54,18 @@
   * add 'demo' option to output all icons (e.g. for styling/testing)
   * 12 or 24 hour time format (handled automatically by WP translation?)
   * weather advisories (only happen in real-time so probably not)
+    * so remove/EXCLUDE alerts!
   * color options for styling SVGs (e.g. yellow sun with gray cloud) -- not possible with as-is SVGs because they're flattened (no CSS classes to "fill")
   * all output in BEM method -- https://github.com/google/material-design-lite/wiki/Understanding-BEM
   * styling for shortcode error messages
   */
 
+
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 
 
@@ -75,7 +82,8 @@ define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_URL', plugin_dir_url( __FILE__ ) ); // e.g
 // https://developer.wordpress.org/reference/functions/plugin_basename/
 define( 'TK_EVENT_WEATHER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) ); // e.g. tk-event-weather/tk-event-weather.php
 
-
+// used by core plugin and by add-on implementations of Freemius
+define( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE', dirname(__FILE__) . '/includes/vendor/freemius/start.php' );
 
 // Implement Freemius
 //
@@ -83,9 +91,9 @@ define( 'TK_EVENT_WEATHER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) ); // e.
 function tk_event_weather_freemius() {
     global $tk_event_weather_freemius;
 
-    if ( ! isset( $tk_event_weather_freemius ) ) {
+    if ( ! isset( $tk_event_weather_freemius ) && defined( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE' ) ) {
         // Include Freemius SDK.
-        require_once dirname(__FILE__) . '/includes/vendor/freemius/start.php';
+        require_once TK_EVENT_WEATHER_FREEMIUS_START_FILE;
 
         $tk_event_weather_freemius = fs_dynamic_init( array(
             'id'                => '240',
@@ -195,8 +203,9 @@ function TkEventWeather__i18n_init() {
 // Run initialization
 /////////////////////////////////
 
+// old code (goes with above)?
 // Initialize i18n
-add_action('plugins_loadedi','TkEventWeather__i18n_init');
+// add_action('plugins_loaded','TkEventWeather__i18n_init');
 
 // Run the version check.
 // If it is successful, continue with initialization for this plugin
