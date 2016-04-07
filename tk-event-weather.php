@@ -35,7 +35,7 @@
 
 
 /** TO DO:
-  * add_action() next to wp_enqueue_style ???
+  * add_action() next to wp_enqueue_style
   * verify all timestamps get ran through timestamp cleanup method
     * truncate seconds off all timestamps? -- avoid 10pm hour + 10pm sunset, like http://cl.ly/430H1J0p2R07
   * use more data from API, like 'summary' text as a title element somewhere
@@ -46,18 +46,16 @@
     * https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-174607313
     * https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-178440095
   * force debug report to be in English (i.e. not translatable)
-  * add Debug Mode to output JSON, plugin settings, filters/actions in use, disable transients
+  * Debug Mode enhancements: plugin settings, filters/actions in use
   * "current" / "right now" if event is currently happening
   * allow single time instead of hourly (start + end times) to make shortcode more flexible and also maybe applicable for events without an end time (e.g. The Events Calendar)
   * end time just pick last hour of day if end time is out of bounds
   * handle multi-day events (e.g. Monday 8pm to Tuesday 2am or Monday 8pm to Wednesday 5pm)
   * add 'demo' option to output all icons (e.g. for styling/testing)
   * 12 or 24 hour time format (handled automatically by WP translation?)
-  * weather advisories (only happen in real-time so probably not)
-    * so remove/EXCLUDE alerts!
+  * weather advisory alerts (only happen in real-time so probably not going to happen)
   * color options for styling SVGs (e.g. yellow sun with gray cloud) -- not possible with as-is SVGs because they're flattened (no CSS classes to "fill")
   * all output in BEM method -- https://github.com/google/material-design-lite/wiki/Understanding-BEM
-  * styling for shortcode error messages
   */
 
 

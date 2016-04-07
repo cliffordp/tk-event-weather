@@ -150,7 +150,7 @@ class TkEventWeather__Functions {
     
     $result = '';
   	if( current_user_can( $capability ) ) {
-    	$result .= sprintf( '<span class="%s">%s</span>',
+    	$result .= sprintf( '<div class="%s">%s</div>',
     	  self::shortcode_error_class_name(),
     	  esc_html ( $message )
       );

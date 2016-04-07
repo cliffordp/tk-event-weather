@@ -358,7 +358,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
     	// exclude
     	$exclude = '';
     	
-    	$exclude_default = apply_filters( 'tk_event_weather_forecast_io_exclude_default', 'minutely' );
+    	$exclude_default = apply_filters( 'tk_event_weather_forecast_io_exclude_default', 'minutely,alerts' );
     	
     	// shortcode argument's value
     	$exclude_arg = TkEventWeather__Functions::remove_all_whitespace( strtolower( $atts['exclude'] ) );
