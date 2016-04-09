@@ -7,7 +7,7 @@
  * @link      http://github.com/GaryJones/Gamajo-Template-Loader
  * @copyright 2013 Gary Jones
  * @license   GPL-2.0+
- * @version   1.2.0-dev
+ * @version   1.2.0
  */
 
 if ( ! class_exists( 'Gamajo_Template_Loader' ) ) {
@@ -35,7 +35,7 @@ if ( ! class_exists( 'Gamajo_Template_Loader' ) ) {
 		/**
 		 * Directory name where custom templates for this plugin should be found in the theme.
 		 *
-		 * e.g. 'your-plugin-templates'
+		 * For example: 'your-plugin-templates'.
 		 *
 		 * @since 1.0.0
 		 *
@@ -54,7 +54,7 @@ if ( ! class_exists( 'Gamajo_Template_Loader' ) ) {
 		 *
 		 * @var string
 		 */
-		protected $plugin_directory;
+		protected $plugin_directory = 'YOUR_PLUGIN_DIR';
 
 		/**
 		 * Directory name where templates are found in this plugin.
@@ -91,7 +91,8 @@ if ( ! class_exists( 'Gamajo_Template_Loader' ) ) {
 		 */
 		public function get_template_part( $slug, $name = null, $load = true ) {
 			// Execute code for this part.
-			do_action( 'get_template_part_' . $this->filter_prefix . '_' . $slug, $slug, $name );
+      // do_action( 'get_template_part_' . $slug, $slug, $name );
+      do_action( 'get_template_part_' . $this->filter_prefix . '_' . $slug, $slug, $name );
 			// https://github.com/GaryJones/Gamajo-Template-Loader/pull/25
 
 			// Get files names of templates, for given slug and name.
