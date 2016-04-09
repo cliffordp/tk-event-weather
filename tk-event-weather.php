@@ -35,6 +35,7 @@
 
 
 /** TO DO:
+  * lower-case 'TkEventWeather__PluginSettings'
   * add_action() next to wp_enqueue_style
   * verify all timestamps get ran through timestamp cleanup method
     * truncate seconds off all timestamps? -- avoid 10pm hour + 10pm sunset, like http://cl.ly/430H1J0p2R07

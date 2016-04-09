@@ -991,8 +991,8 @@ TK Event Weather JSON Data
     		$request_uri = sprintf( 'https://api.forecast.io/forecast/%s/%s,%s',
     			$api_key,
     			$latitude_longitude,
-    			//$start_time_timestamp
-    			$start_time_iso_8601
+    			$start_time_timestamp
+    			// $start_time_iso_8601
     		);
     		
     		$request_uri_query_args = array();
