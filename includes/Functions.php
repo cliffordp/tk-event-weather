@@ -7,8 +7,9 @@ class TkEventWeather__Functions {
   // all variables and methods should be 'static'
     
   public static function plugin_options() {
-    if ( ! empty( get_option( 'tk_event_weather' ) ) ) {
-      return get_option( 'tk_event_weather' );
+	  $plugin_options = get_option( 'tk_event_weather' );
+    if ( ! empty( $plugin_options ) ) {
+      return $plugin_options;
     } else {
       return false;
     }
@@ -339,7 +340,8 @@ class TkEventWeather__Functions {
     }
     
     // is not valid lat,long FORMAT
-    if( empty( preg_match( '/^([-+]?[1-8]?\d(?:\.\d+)?|90(?:\.0+)?),\s*([-+]?(?:180(?:\.0+)?|(?:(?:1[0-7]\d)|(?:[1-9]?\d))(?:\.\d+)?))$/', $input ) ) ) {
+	  $match = preg_match( '/^([-+]?[1-8]?\d(?:\.\d+)?|90(?:\.0+)?),\s*([-+]?(?:180(?:\.0+)?|(?:(?:1[0-7]\d)|(?:[1-9]?\d))(?:\.\d+)?))$/', $input );
+    if( empty( $match ) ) {
       if ( '' == $return_format ) {
         return '';
       } else {
