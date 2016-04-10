@@ -33,4 +33,3 @@ if ( $context->weather_hourly_high == $context->weather_hourly_low ) {
 }
 
 echo $output;
-?>

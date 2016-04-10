@@ -118,4 +118,3 @@ foreach ( $context->weather_hourly as $key => $value ) {
 } // end foreach()
 
 echo $output;
-?>
