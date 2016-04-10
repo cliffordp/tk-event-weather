@@ -228,7 +228,7 @@ class TkEventWeather__OptionsManager {
         <div style="width: 80%; padding: 20px; margin: 20px; background-color: #fff;">
         <?php 
           $tourkick_logo = TkEventWeather__FuncSetup::plugin_dir_url_images() . 'tourkick-logo-square-300.png';
-          $tourkick_logo = printf( '<a href="http://tourkick.com/" target="_blank"><img style="float: left; margin: 5px 40px 10px 10px;" width="100" height="100" src="%s"></a>', $tourkick_logo );
+          printf( '<a href="http://tourkick.com/" target="_blank"><img style="float: left; margin: 5px 40px 10px 10px;" width="100" height="100" src="%s"></a>', $tourkick_logo );
         ?>
           <h2><a href="http://b.tourkick.com/tkeventw-rate-5-stars" target="_blank">Leave a Review</a></h2>
           <br>
@@ -743,8 +743,7 @@ class TkEventWeather__OptionsManager {
             			}
             		});
             		try {
-            			jQuery( '#debug-report' ).slideDown();
-            			jQuery( '#debug-report' ).find( 'textarea' ).val( '`' + report + '`' ).focus().select();
+            			jQuery( '#debug-report' ).slideDown().find( 'textarea' ).val( '`' + report + '`' ).focus().select();
             			jQuery( this ).fadeOut();
             			return false;
             		} catch ( e ) {

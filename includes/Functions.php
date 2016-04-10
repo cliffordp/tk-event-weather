@@ -167,8 +167,6 @@ class TkEventWeather__Functions {
     
     $input = floatval( $input );
     
-    $result = '';
-    
   	$decimals = intval( $decimals );
   	if ( 0 > $decimals ) {
     	$decimals = 0;
@@ -923,7 +921,7 @@ class TkEventWeather__Functions {
     if ( 'climacons_font' == $icon_type ) {
       $result = sprintf( '<i style="-ms-transform: rotate(%1$ddeg); -webkit-transform: rotate(%1$ddeg); transform: rotate(%1$ddeg);" class="tk-event-weather__wind-direction-icon climacon compass north"></i>', $input );
     } elseif ( 'climacons_svg' == $icon_type ) {
-      $result = $climacons_svg;
+      // $result = $climacons_svg;
     } else {
       // nothing
     }
@@ -1016,6 +1014,10 @@ class TkEventWeather__Functions {
     	$bearing_index = $input / 22.5;
   	}
   	
+  	if ( ! isset( $bearing_index ) ) {
+	  	return false;
+  	}
+  	
     $bearing_index = intval ( round ( $bearing_index ) );
     
     if ( 8 == $precision ) {
@@ -1038,9 +1040,7 @@ class TkEventWeather__Functions {
     	} else {
       	// should not happen
     	}
-    }
-  	
-  	if ( 16 == $precision ) {
+    } elseif ( 16 == $precision ) {
     	if ( 16 == $bearing_index || 0 == $bearing_index ) {
       	$result = __( 'N', 'tk-event-weather' );
     	} elseif ( 1 == $bearing_index ) {
@@ -1076,6 +1076,8 @@ class TkEventWeather__Functions {
     	} else {
       	// should not happen
     	}
+    } else {
+	    //
     }
     
     if ( false === boolval( $direction_initials ) ) {
@@ -1148,7 +1150,7 @@ class TkEventWeather__Functions {
       $utc_offset = get_option( 'gmt_offset' );
     }
     
-    $timestamp = $timestamp + ( $utc_offset * HOUR_IN_SECONDS ); // becomes a float
+    $timestamp = intval( $timestamp ) + ( intval( $utc_offset ) * intval( HOUR_IN_SECONDS ) ); // becomes a float
     $timestamp = intval( $timestamp );
     
     if ( empty ( $date_format ) ) {

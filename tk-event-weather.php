@@ -90,7 +90,7 @@ define( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE', dirname(__FILE__) . '/includes/v
 function tk_event_weather_freemius() {
     global $tk_event_weather_freemius;
 
-    if ( ! isset( $tk_event_weather_freemius ) && defined( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE' ) ) {
+    if ( ! isset( $tk_event_weather_freemius ) && defined( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE' ) && file_exists( TK_EVENT_WEATHER_FREEMIUS_START_FILE ) ) {
         // Include Freemius SDK.
         require_once TK_EVENT_WEATHER_FREEMIUS_START_FILE;
 
