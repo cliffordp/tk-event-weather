@@ -124,9 +124,11 @@ class TkEventWeather__LifeCycle extends TkEventWeather__InstallIndicator {
     /**
      * @return string Slug name for the URL to the Setting page
      * (i.e. the page for setting options)
+     *
+     * Lower case to increase compatibility with Freemius and general standards
      */
     protected function getSettingsSlug() {
-        return get_class($this) . 'Settings';
+        return strtolower( get_class($this) . 'Settings' );
     }
 
     protected function addSettingsSubMenuPageToPluginsMenu() {

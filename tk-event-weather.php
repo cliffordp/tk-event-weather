@@ -102,7 +102,7 @@ function tk_event_weather_freemius() {
             'has_addons'        => true,
             'has_paid_plans'    => false,
             'menu'              => array(
-                'slug'       => 'TkEventWeather__PluginSettings',
+                'slug'       => 'tkeventweather__pluginsettings',
                 'parent'     => array(
                     'slug' => 'options-general.php',
                 ),
