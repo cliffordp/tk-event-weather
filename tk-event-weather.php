@@ -2,7 +2,7 @@
 /*
    Plugin Name: TK Event Weather
    Plugin URI: http://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
-   Version: 1.0
+   Version: 1.1
    Author: TourKick (Clifford Paulick)
    Author URI: http://tourkick.com/?utm_source=author-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
    Description: Display beautiful, accurate, and free weather forecasts between a start and end time on the same day. Perfect for event calendars.
@@ -132,7 +132,7 @@ function tk_event_weather_freemius_custom_connect_message(
       $freemius_link
   );
 }
-tk_event_weather_freemius()->add_filter( 'connect_message_on_update', 'tk_event_weather_freemius_custom_connect_message', 10, 6 );
+tk_event_weather_freemius()->add_filter( 'connect_message', 'tk_event_weather_freemius_custom_connect_message', 10, 6 );
 
 
 function tk_event_weather_freemius_plugin_icon(){
