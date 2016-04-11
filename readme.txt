@@ -119,7 +119,23 @@ Here are quotes from the [Forecast.io API docs](https://developer.forecast.io/do
 * "This API is backed by a wide range of data sources, which are aggregated together statistically to provide the most accurate forecast possible for a given location."
 
 == Screenshots ==
-1. Caption here
+1. Plugin settings screen with convenient link to plugin options in the WordPress Customizer
+
+2. Plugin options screenshot 1 of 3
+
+3. Plugin options screenshot 2 of 3
+
+4. Plugin options screenshot 3 of 3
+
+5. Example output from the "min-max / low-high" template (excluding heading text)
+
+6. Example output from the "Hourly Vertical" template (excluding heading text)
+
+7. Example output from the "Hourly Horizontal" template (excluding heading text)
+
+8. Example output to Administrators when an invalid shortcode argument is used. Points out which argument was invalid.
+
+9. A view of the Freemius links to your Freemius Account, the plugin Contact Us form, the WordPress.org Support Forum, and easy access to paid add-ons.
 
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
