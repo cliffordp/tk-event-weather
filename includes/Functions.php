@@ -1132,7 +1132,7 @@ class TkEventWeather__Functions {
       // e.g. 2:30 --> 30 minutes = 1800 seconds --> $timestamp = $timestamp - 1800;
       $timestamp -= $timestamp % 3600;
       
-      return $timestamp;
+      return self::valid_timestamp( $timestamp );
     }
   }
   
@@ -1151,7 +1151,7 @@ class TkEventWeather__Functions {
     }
     
     $timestamp = intval( $timestamp ) + ( intval( $utc_offset ) * intval( HOUR_IN_SECONDS ) ); // becomes a float
-    $timestamp = intval( $timestamp );
+    $timestamp = self::valid_timestamp( $timestamp );
     
     if ( empty ( $date_format ) ) {
       /* translators: hourly display time format, see https://developer.wordpress.org/reference/functions/date_i18n/#comment-972 */

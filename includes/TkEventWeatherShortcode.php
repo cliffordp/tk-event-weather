@@ -197,10 +197,12 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
           $start_time = '';
         }
       }
-      
-    	if( empty( $start_time_timestamp ) ) {
+	
+	    $start_time_timestamp = TkEventWeather__Functions::valid_timestamp( $start_time_timestamp );
+	    
+      if( empty( $start_time_timestamp ) ) {
       	return TkEventWeather__Functions::invalid_shortcode_message( 'Please enter a valid Start Time format' );
-    	}
+      }
     	
     	$template_data['start_time_timestamp'] = $start_time_timestamp;
     	
@@ -231,7 +233,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
         }
       }
       
-      $min_timestamp = TkEventWeather__Functions::valid_timestamp ( $min_timestamp );
+      $min_timestamp = TkEventWeather__Functions::valid_timestamp( $min_timestamp );
       
       if( ! empty( $min_timestamp ) && '' != $weather_first_hour_timestamp ) {
         if( $min_timestamp > $weather_first_hour_timestamp ) {
@@ -272,10 +274,12 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
           $end_time = '';
         }
       }
+	    
+	    $end_time_timestamp = TkEventWeather__Functions::valid_timestamp( $end_time_timestamp );
       
-    	if( '' == $end_time_timestamp ) {
+      if( '' == $end_time_timestamp ) {
       	return TkEventWeather__Functions::invalid_shortcode_message( 'Please enter a valid End Time format' );
-    	}
+      }
     	
     	// if Event Start and End times are the same
     	if( $weather_first_hour_timestamp == $end_time_timestamp ) {
@@ -301,7 +305,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
       	$weather_last_hour_timestamp = $end_time_hour_timestamp_plus_one_hour;
     	}
     	
-    	$template_data['weather_last_hour_timestamp'] = $weather_last_hour_timestamp;
+    	$template_data['weather_last_hour_timestamp'] = TkEventWeather__Functions::valid_timestamp( $weather_last_hour_timestamp );
     	
     	
     	//
@@ -325,7 +329,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
         }
       }
       
-      $max_timestamp = TkEventWeather__Functions::valid_timestamp ( $max_timestamp );
+      $max_timestamp = TkEventWeather__Functions::valid_timestamp( $max_timestamp );
       
       if( ! empty( $max_timestamp ) && '' != $end_time_timestamp ) {
         if( $end_time_timestamp > $max_timestamp ) {

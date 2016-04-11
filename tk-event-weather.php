@@ -34,7 +34,6 @@
 
 
 
-  * verify all timestamps get ran through timestamp cleanup method
 /** TODO:
   * truncate seconds off all timestamps? -- avoid 10pm hour + 10pm sunset, like http://cl.ly/430H1J0p2R07
   * use more data from API, like 'summary' text as a title element somewhere
