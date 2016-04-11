@@ -225,14 +225,35 @@ class TkEventWeather__OptionsManager {
         <?php
           // Greeting Box        
         ?>
-        <div style="width: 80%; padding: 20px; margin: 20px; background-color: #fff;">
+        <div style="width: 80%; padding: 20px; margin: 20px; background-color: #fff; font-size: 120%;">
         <?php 
           $tourkick_logo = TkEventWeather__FuncSetup::plugin_dir_url_images() . 'tourkick-logo-square-300.png';
           printf( '<a href="http://tourkick.com/" target="_blank"><img style="float: left; margin: 5px 40px 10px 10px;" width="100" height="100" src="%s"></a>', $tourkick_logo );
         ?>
-          <h2><a href="http://b.tourkick.com/tkeventw-rate-5-stars" target="_blank">Leave a Review</a></h2>
+	          <?php
+		        if ( ! empty( tk_event_weather_freemius()->addon_url( '' ) ) ) {
+			  ?>
+			  <p style="font-size: 120%;">
+			  <?php
+			        printf( esc_html__( 'Check out the %sTK Event Weather add-on plugins%s to automatically integrate with popular WordPress calendars!', 'tk-event-weather' ),
+			          '<a href="' . tk_event_weather_freemius()->addon_url( '' ) . '">',
+			          '</a>'
+					);
+		      ?>
+	          <ul style="list-style: disc; list-style-position: inside;">
+		          <li>TK Event Weather for The Events Calendar by Modern Tribe</li>
+	          </ul>
+          </p>
+		  <?php
+		  	}
+		  ?>
           <br>
-          <h2>Find me online: <a href="http://b.tourkick.com/twitter-follow-tourkick" target="_blank">Twitter</a> | <a href="http://b.tourkick.com/facebook-tourkick" target="_blank">Facebook</a> | <a href="http://b.tourkick.com/cliffpaulick-w-org-profile-plugins" target="_blank">WordPress Profile</a> | <a href="http://bit.ly/tourkick-com" target="_blank">Website</a></h2>
+          <p>
+	          <a href="http://b.tourkick.com/tkeventw-rate-5-stars" target="_blank"><?php esc_html_e( 'Share your 5-Star Review on WordPress.org', 'tk-event-weather' ); ?></a>
+	      </p>
+          <p>
+		  	  <a href="http://b.tourkick.com/github-tk-event-weather" target="_blank">Contribute via GitHub</a>	      </p>
+          <p><?php esc_html_e( 'Find me online', 'tk-event-weather' ); ?>: <a href="http://b.tourkick.com/twitter-follow-tourkick" target="_blank">Twitter</a> | <a href="http://b.tourkick.com/facebook-tourkick" target="_blank">Facebook</a> | <a href="http://b.tourkick.com/cliffpaulick-w-org-profile-plugins" target="_blank">WordPress Profile</a> | <a href="http://b.tourkick.com/tourkick-com" target="_blank">Website</a></p>
         </div>
         
         
