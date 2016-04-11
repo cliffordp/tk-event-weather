@@ -16,7 +16,7 @@ Display beautiful, accurate, and free weather forecasts between a start and end 
 
 = Highlights =
 
-* Registers the `[tk_event_weather]` shortcode for use anywhere on your site (not just for your site calendar's event-specific information) so its usage is very flexible as long as there is a valid Forecast.io API key, latitude, longitude, and time (will output for _right now_ if no time is given)
+* Registers the `[tk_event_weather]` shortcode for use anywhere on your site (not just for your site calendar's event-specific information) so its usage is very flexible as long as there is a valid Forecast.io API key, latitude, longitude, and time (timestamp or ISO 8601 format)
 * Uses the Forecast.io API to provide you with an accurate, reliable (typically 99.9% uptime), and free (or low cost if over the daily free API calls limit) weather forecast
 * Uses WordPress' Transients API to minimize Forecast.io API calls (i.e. does not call the Forecast.io API on every page load) to increase page load time and save you money (or keep you from hitting the daily free limit)
 * Returns temperature (fahrenheit or celsius) in units local to the given latitude and longitude (with optional override to force display in one or the other)
@@ -45,11 +45,11 @@ Additional add-on ideas:
 * Styling (custom colors, possibly custom icons)
 * Advanced templates/views
 
-I'll consider making whichever add-ons I receive the most requests for (and are technically feasible) so please [share your request](http://tourkick.com/contact/?topic=website)!
+I'll consider making whichever add-ons I receive the most requests for (and are technically feasible) so please share your request via the plugin settings' built-in Feature Request form!
 
 = Notes =
 * You'll need to register for a free [Forecast.io API key](https://developer.forecast.io/)
-* As of January 2016, Forecast.io allows up to 1,000 free API calls per day. The cost for additional API calls is $0.0001 per API call (or $1 per 10,000 requests).
+* As of April 2016, Forecast.io allows up to 1,000 free API calls per day. The cost for additional API calls is $0.0001 per API call (or $1 per 10,000 requests).
 * You'll need to enter your billing information at Forecast.io if you want to ensure your API access isn't cut off after 1,000 API calls per day.
 * If you're out of API calls for the day and you haven't entered billing information, the plugin will "fail gracefully" (does not display errors to non-Administrators).
 * The Forecast.io [Terms of Use](https://developer.forecast.io/terms_of_use.txt) states, "Any public or user-facing application or service made using the Forecast API must prominently display the message "Powered by Forecast" wherever data from the Forecast API is displayed. This message must, if possible, open a link to http://forecast.io/ when clicked or touched."
@@ -106,7 +106,7 @@ This plugin will work with any properly-coded WordPress theme. Free styling / cu
 
 This plugin requires WordPress version 4.3.0 or later. It is always recommended to use the latest version of WordPress for compatibility, performance, and security reasons.
 
-This plugin may not work properly with PHP versions earlier than 5.4. You should meet or exceed the (WordPress recommended software specs)[https://wordpress.org/about/requirements/] for best performance and security.
+This plugin may not work properly with PHP versions earlier than 5.4. You should meet or exceed the [WordPress recommended software specs](https://wordpress.org/about/requirements/) for best performance and security.
 
 Any of this plugin's add-ons for specific event calendars would require the latest version of each add-on plugin and each event calendar plugin.
 

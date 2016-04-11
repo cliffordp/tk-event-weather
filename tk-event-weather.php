@@ -47,6 +47,7 @@
   * Debug Mode enhancements: plugin settings, filters/actions in use
   * "current" / "right now" if event is currently happening
   * allow single time instead of hourly (start + end times) to make shortcode more flexible and also maybe applicable for events without an end time (e.g. The Events Calendar)
+  	* could also enable "right now" time if not entered
   * end time just pick last hour of day if end time is out of bounds
   * handle multi-day events (e.g. Monday 8pm to Tuesday 2am or Monday 8pm to Wednesday 5pm) -- would be multiple API calls in 1 shortcode -- maybe make it an option
   * add 'demo' option to output all icons (e.g. for styling/testing)
