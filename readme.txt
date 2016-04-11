@@ -84,7 +84,7 @@ After automatically or manually installing to wp-content/plugins/:
 
 = What are some shortcode examples? =
 
-1) Weather for the White House on Feb 1 at 4:30pm Eastern Time:
+1) Weather for the White House on Feb 1, 2016, at 4:30pm Eastern Time:
 
 A) with single Latitude/Longitude shortcode argument and ISO 8601 datetime format
 
