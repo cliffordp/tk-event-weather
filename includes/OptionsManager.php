@@ -231,7 +231,8 @@ class TkEventWeather__OptionsManager {
           printf( '<a href="http://tourkick.com/" target="_blank"><img style="float: left; margin: 5px 40px 10px 10px;" width="100" height="100" src="%s"></a>', $tourkick_logo );
         ?>
 	          <?php
-		        if ( ! empty( tk_event_weather_freemius()->addon_url( '' ) ) ) {
+		        $addons_url = tk_event_weather_freemius()->addon_url( '' );
+		        if ( ! empty( $addons_url ) ) {
 			  ?>
 			  <p style="font-size: 120%;">
 			  <?php
