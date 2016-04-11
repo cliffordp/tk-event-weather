@@ -329,7 +329,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
       
       if( ! empty( $max_timestamp ) && '' != $end_time_timestamp ) {
         if( $end_time_timestamp > $max_timestamp ) {
-      	  return TkEventWeather__Functions::invalid_shortcode_message( 'Future Cutoff Time needs to be further in the future than Event End Time' );
+      	  return TkEventWeather__Functions::invalid_shortcode_message( 'Event End Time needs to be more recent than Future Cutoff Time' );
         }
       }
       
