@@ -125,5 +125,5 @@ Here are quotes from the [Forecast.io API docs](https://developer.forecast.io/do
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
 
 = Version 1.0 =
-* April 1, 2016
+* April 11, 2016
 * Initial version
