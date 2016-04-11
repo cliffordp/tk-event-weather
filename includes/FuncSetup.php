@@ -19,7 +19,7 @@ class TkEventWeather__FuncSetup {
   
   public static $min_allowed_version_wordpress = '4.3.0';
   
-  public static $support_email_address = 'tko+support-tk-event-weather@tourkick.com';
+  public static $support_email_address = 'tko+tkeventw@tourkick.com';
   
   /**
     *
