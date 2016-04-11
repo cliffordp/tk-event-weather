@@ -6,7 +6,7 @@ License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.3.0
 Tested up to: 4.4.2
-Stable tag: trunk
+Stable tag: v1.0
 
 Display beautiful, accurate, and free weather forecasts between a start and end time on the same day. Perfect for event calendars.
 
