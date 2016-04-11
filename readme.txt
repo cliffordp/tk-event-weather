@@ -55,6 +55,7 @@ I'll consider making whichever add-ons I receive the most requests for (and are 
 * The Forecast.io [Terms of Use](https://developer.forecast.io/terms_of_use.txt) states, "Any public or user-facing application or service made using the Forecast API must prominently display the message "Powered by Forecast" wherever data from the Forecast API is displayed. This message must, if possible, open a link to http://forecast.io/ when clicked or touched."
 * This plugin's output will automatically add a compliant link; however, there is a setting to disable outputting this link. This is because your site may not be a "public or user-facing application" (although it probably is) or because you've emailed to the address in their Terms of Use to request (and have been approved for) their extremely-affordable *white-label* account.
 * This plugin and its author are not affiliated with or endorsed by Forecast.io or The Dark Sky Company, LLC.
+* This plugin utilizes [Freemius](https://freemius.com/wordpress/). All data collected via Freemius will be available to both Freemius and this plugin's author to be used in responsible ways. By opting-in to Freemius, you'll help us learn how we can make this plugin better and possibly communicate with you regarding the plugin's development.
 * This plugin may contain affiliate links.
 
 = Support Me =
