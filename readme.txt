@@ -5,8 +5,8 @@ Tags: calendars, celsius, classes, concerts, events, fahrenheit, forecast, local
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.3.0
-Tested up to: 4.4.2
-Stable tag: v1.0
+Tested up to: 4.5
+Stable tag: 1.1
 
 Display beautiful, accurate, and free weather forecasts between a start and end time on the same day. Perfect for event calendars.
 
@@ -140,6 +140,10 @@ Here are quotes from the [Forecast.io API docs](https://developer.forecast.io/do
 
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
+
+= Version 1.1 =
+* April 11, 2016
+* Fix for Freemius welcome message
 
 = Version 1.0 =
 * April 11, 2016
