@@ -6,7 +6,7 @@ License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.3.0
 Tested up to: 4.5
-Stable tag: 1.1
+Stable tag: 1.1.1
 
 Display beautiful, accurate, and free weather forecasts between a start and end time on the same day. Perfect for event calendars.
 
@@ -84,19 +84,19 @@ After automatically or manually installing to wp-content/plugins/:
 
 = What are some shortcode examples? =
 
-1) Weather for the White House on Feb 1, 2016, at 4:30pm Eastern Time:
+1) Weather for the White House on February 1, 2016, from 4:30pm&ndash;9:45pm Eastern Time:
 
 A) with single Latitude/Longitude shortcode argument and ISO 8601 datetime format
 
-`[tk_event_weather lat_long="36.281445,-75.794662" start_time="2016-02-01T16:30:00-05:00" end_time="2016-02-01T21:45:00-05:00"]`
+`[tk_event_weather lat_long="38.897676,-77.03653" start_time="2016-02-01T16:30:00-05:00" end_time="2016-02-01T21:45:00-05:00"]`
 
 B) or separate shortcode arguments for Latitude and Longitude
 
-`[tk_event_weather lat="36.281445" long="-75.794662" start_time="2016-02-01T16:30:00-05:00" end_time="2016-02-01T21:45:00-05:00"]`
+`[tk_event_weather lat="38.897676" long="-77.03653" start_time="2016-02-01T16:30:00-05:00" end_time="2016-02-01T21:45:00-05:00"]`
 
 C) or with Unix timestamps
 
-`[tk_event_weather lat_long="36.281445,-75.794662" start_time="1454362200" end_time="1454381100"]`
+`[tk_event_weather lat_long="38.897676,-77.03653" start_time="1454362200" end_time="1454381100"]`
 
 = Will this plugin work with my theme? =
 
