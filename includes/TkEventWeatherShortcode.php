@@ -101,6 +101,14 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
     	
     	// extract( $atts ); // convert each array item to individual variable
     	
+		
+		// load CSS file for Administrators so error messages get styled even if there are no valid shortcodes on page
+		// if non-Administrator and no valid shortcode, CSS file will not load
+		if ( current_user_can( 'edit_theme_options' ) ) {
+			TkEventWeather__Functions::register_css();
+			wp_enqueue_style( sanitize_html_class( TkEventWeather__FuncSetup::shortcode_name_hyphenated() ) );
+		}
+	  	
     	// Code
     	
     	$debug = boolval( $atts['debug_on'] );

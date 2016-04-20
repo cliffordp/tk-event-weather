@@ -141,6 +141,8 @@ Here are quotes from the [Forecast.io API docs](https://developer.forecast.io/do
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
 
+= Version 1.1.1 =
+* Always load shortcode's CSS file for Administrators so shortcode error messages get styled.
 = Version 1.1 =
 * April 11, 2016
 * Fix for Freemius welcome message
