@@ -262,10 +262,12 @@ class TkEventWeather__OptionsManager {
             
             <?php
               $active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'options';
+              $active_tab = wp_kses_post( esc_attr( $active_tab ) );
             ?>
             <h2 class="nav-tab-wrapper">
-              <a href="<?php printf( '?page=%s&tab=options', $this->getSettingsSlug() ); ?>" class="nav-tab <?php echo $active_tab == 'options' ? 'nav-tab-active' : ''; ?>">Options</a>
-              <a href="<?php printf( '?page=%s&tab=help', $this->getSettingsSlug() ); ?>" class="nav-tab <?php echo $active_tab == 'help' ? 'nav-tab-active' : ''; ?>">Help</a>
+              <a href="<?php printf( '?page=%s&tab=options', $this->getSettingsSlug() ); ?>" class="nav-tab <?php echo $active_tab == 'options' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Options', 'tk-event-weather' ); ?></a>
+              <a href="<?php printf( '?page=%s&tab=tools', $this->getSettingsSlug() ); ?>" class="nav-tab <?php echo $active_tab == 'tools' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Tools', 'tk-event-weather' ); ?></a>
+              <a href="<?php printf( '?page=%s&tab=help', $this->getSettingsSlug() ); ?>" class="nav-tab <?php echo $active_tab == 'help' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Help', 'tk-event-weather' ); ?></a>
             </h2>
             <?php
               if( $active_tab == 'options' ) {
@@ -292,6 +294,27 @@ class TkEventWeather__OptionsManager {
                 } // freemius is_anonymous()
               */
               } // options tab
+              elseif( $active_tab == 'tools' ) {
+            ?>
+            <h2><?php _e( 'Shortcode Examples', 'tk-event-weather' ); ?></h2>
+            <p><?php _e( 'Multiple ways to display the weather for the White House on February 1, 2016, from 4:30pm&ndash;9:45pm Eastern Time', 'tk-event-weather' ); ?>:</p>
+            <div style="margin-left: 20px;">
+				<?php esc_html_e( 'A) with single Latitude/Longitude shortcode argument and ISO 8601 datetime format', 'tk-event-weather' ); ?>:
+					<ul style="list-style-type:disc; list-style-position: inside;"><li>[tk_event_weather lat_long="38.897676,-77.03653" start_time="2016-02-01T16:30:00-05:00" end_time="2016-02-01T21:45:00-05:00"]</li></ul>
+				<?php esc_html_e( 'B) or separate shortcode arguments for Latitude and Longitude', 'tk-event-weather' ); ?>:
+					<ul style="list-style-type:disc; list-style-position: inside;"><li>[tk_event_weather lat="38.897676" long="-77.03653" start_time="2016-02-01T16:30:00-05:00" end_time="2016-02-01T21:45:00-05:00"]</li></ul>
+				<?php esc_html_e( 'C) or with Unix timestamps', 'tk-event-weather' ); ?>:
+					<ul style="list-style-type:disc; list-style-position: inside;"><li>[tk_event_weather lat_long="38.897676,-77.03653" start_time="1454362200" end_time="1454381100"]</li></ul>
+            </div>
+            <br>
+            <h2><?php _e( 'Find Latitude Longitude', 'tk-event-weather' ); ?></h2>
+            <p><?php _e( 'To help you find the Latitude and Longitude of a location to use in your shortcode', 'tk-event-weather' ); ?>:</p>
+			<iframe style="text-align: center; margin-left: 10%; margin-right: 10%; width: 80%; min-width: 300px;" name="Google Maps API Geocoder Tool" src="http://b.tourkick.com/google-maps-geocoder" height="575" width="800">
+			  <p>Your browser does not support iframes. Please visit the <a href="http://b.tourkick.com/google-maps-geocoder" target="_blank">Google Maps API Geocoder Tool</a> directly.</p>
+			</iframe>
+            <br><br>
+            <?php
+              } // docs tab
               elseif( $active_tab == 'help' ) {
                 // modified from https://github.com/woothemes/woocommerce/blob/master/includes/admin/views/html-admin-page-status-report.php
                 // reference (outdated screenshots): https://docs.woothemes.com/document/understanding-the-woocommerce-system-status-report/
