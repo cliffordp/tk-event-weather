@@ -18,11 +18,11 @@ Display beautiful, accurate, and free weather forecasts between a start and end 
 
 * Registers the `[tk_event_weather]` shortcode for use anywhere on your site (not just for your site calendar's event-specific information) so its usage is very flexible as long as there is a valid Forecast.io API key, latitude, longitude, and time (timestamp or ISO 8601 format)
 * Uses the Forecast.io API to provide you with an accurate, reliable (typically 99.9% uptime), and free (or low cost if over the daily free API calls limit) weather forecast
-* Uses WordPress' Transients API to minimize Forecast.io API calls (i.e. does not call the Forecast.io API on every page load) to increase page load time and save you money (or keep you from hitting the daily free limit)
+* Uses WordPress' Transients API to minimize Forecast.io API and Google Maps Geocoding API calls (i.e. does not call the APIs on every page load) to increase page load time and save you money (or keep you from hitting the free limits)
 * Returns temperature (fahrenheit or celsius) in units local to the given latitude and longitude (with optional override to force display in one or the other)
 * Internationalized / translatable (translations not provided)
 * No WP_DEBUG messages
-* Optimized loading of assets and Forecast.io API calls
+* Optimized loading of assets and Forecast.io API and Google Maps Geocoding API calls
 * Actions and Filters available for developers and advanced customizations
 * Responsive plugin developer
 
@@ -151,9 +151,9 @@ Here are quotes from the [Forecast.io API docs](https://developer.forecast.io/do
 
 = Version 1.2.0 =
 * April 26, 2016
-* New "location" shortcode argument to enable use of Google Maps API to retrieve latitude and longitude automatically (subject to API usage limitations or may require a Google Maps Geocoding API key).
+* New "location" shortcode argument to enable use of Google Maps Geocoding API to retrieve latitude and longitude automatically (subject to API usage limitations or may require a Google Maps Geocoding API key).
 * New "Tools" tab in plugin's settings page to use Google Maps lookup without being subject to API usage limitations (enter an address, get the coordinates, manually paste them into wherever you're using the shortcode).
-* Tools tab also includes shortcode examples (just for convenience) and Google Maps API credits and disclaimers.
+* Tools tab includes shortcode examples (just for convenience) and Google Maps attribution and Terms.
 * Always load shortcode's CSS file for Administrators so shortcode error messages get styled.
 * New version of Freemius now allows Add-on Trials without needing to enter a credit card (only for users who have Allowed tracking and have confirmed their email address).
 
