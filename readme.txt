@@ -6,7 +6,7 @@ License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.3.0
 Tested up to: 4.5
-Stable tag: 1.1
+Stable tag: 1.2.0
 
 Display beautiful, accurate, and free weather forecasts between a start and end time on the same day. Perfect for event calendars.
 
@@ -98,6 +98,14 @@ C) or with Unix timestamps
 
 `[tk_event_weather lat_long="38.897676,-77.03653" start_time="1454362200" end_time="1454381100"]`
 
+D) Just like Example A but with Location shortcode argument (a Place name) -- available since version 1.2.0
+
+`[tk_event_weather location="The White House" start_time="1454362200" end_time="1454381100"]`
+
+E) Just like Example D but with Location shortcode argument (a full address) -- available since version 1.2.0
+
+`[tk_event_weather location="1600 Pennsylvania Ave NW, Washington, DC 20500, USA" start_time="1454362200" end_time="1454381100"]`
+
 = Will this plugin work with my theme? =
 
 This plugin will work with any properly-coded WordPress theme. Free styling / customization help to integrate with your theme is not available from the plugin author.
@@ -140,6 +148,14 @@ Here are quotes from the [Forecast.io API docs](https://developer.forecast.io/do
 
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
+
+= Version 1.2.0 =
+* April 26, 2016
+* New "location" shortcode argument to enable use of Google Maps API to retrieve latitude and longitude automatically (subject to API usage limitations or may require a Google Maps Geocoding API key).
+* New "Tools" tab in plugin's settings page to use Google Maps lookup without being subject to API usage limitations (enter an address, get the coordinates, manually paste them into wherever you're using the shortcode).
+* Tools tab also includes shortcode examples (just for convenience) and Google Maps API credits and disclaimers.
+* Always load shortcode's CSS file for Administrators so shortcode error messages get styled.
+* New version of Freemius now allows Add-on Trials without needing to enter a credit card (only for users who have Allowed tracking and have confirmed their email address).
 
 = Version 1.1 =
 * April 11, 2016
