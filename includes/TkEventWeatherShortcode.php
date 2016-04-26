@@ -436,33 +436,10 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
     	  //substr( $end_time_timestamp, -5, 5 ) // last 5 of End Time timestamp
     	  // noticed in testing sometimes leading zero(s) get truncated, possibly due to sanitize_key()... but, as long as it is consistent we are ok.
       );
-      
-      // make sure no period, comma (e.g. from lat/long) or other unfriendly characters for the transients database field
-      // @link https://codex.wordpress.org/Function_Reference/sanitize_key
-      $transient_name = sanitize_key( $transient_name );
-      
-      // dashes to underscores
-      $transient_name = str_replace( '-', '_', $transient_name );
-      
-    	// MUST keep transient names to 40 characters or less or will silently fail
-    	$transient_name = substr( $transient_name, 0, 39 );
-      
-    	if( ! empty( $atts['transients_off'] )
-    	  && 'true' == $atts['transients_off']
-      ) {
-      	$transients = false;
-    	} else {
-      	$transients = true;
-    	}
-    	
-    	// if false === $transients, don't USE EXISTING or SET NEW transient for this API call
-    	
-    	if ( false === $transients ) {
-      	delete_transient( $transient_name );
-      	$transient_value = '';
-    	} else {
-      	$transient_value = get_transient( $transient_name ); // false if not there, which will be the case if "time" == time()
-    	}
+	  	
+	  	$transient_name = TkEventWeather__Functions::sanitize_transient_name( $transient_name );
+	  	
+	  	$transient_value = TkEventWeather__Functions::transient_get_or_delete( $transient_name, $transients );
     	
     	
     	

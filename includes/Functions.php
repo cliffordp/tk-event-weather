@@ -290,6 +290,50 @@ class TkEventWeather__Functions {
   public static function remove_all_whitespace( $input ) {
     return preg_replace( '/\s+/', '', $input );
   }
+  	
+  	
+	public static function sanitize_transient_name( $input = '' ) {
+		$result = self::remove_all_whitespace( $input );
+		
+		// make sure no period, comma (e.g. from lat/long) or other unfriendly characters for the transients database field
+		$result = sanitize_key( $result );
+		
+		// dashes to underscores
+		$result = str_replace( '-', '_', $result );
+		
+		// "Must be 172 characters or fewer in length." per https://developer.wordpress.org/reference/functions/set_transient/
+		// also see https://core.trac.wordpress.org/ticket/15058
+		// But older versions of WordPress used to have a 40 character limit or would silently fail
+		// so if someone is using this plugin with an old version of WordPress, transients just will not be set (not ideal but they should update)
+		$result = substr( $result, 0, 171 );
+
+		
+		return $result;
+	}
+  	
+  	
+  	// if transients are ON/TRUE, return transient value
+  	// if transients are OFF/FALSE, delete transient
+  	// if transients are ON/TRUE but no value, delete transient
+	public static function transient_get_or_delete( $transient_name, $transients_on = true ) {
+		if ( ! isset( $transient_name ) || ! is_bool( $transients_on ) ) {
+			return false;
+		}
+		
+		if ( false === $transients_on ) {
+			delete_transient( $transient_name );
+			$result = '';
+		} else {
+			$result = get_transient( $transient_name );
+		}
+		
+		if ( empty( $result ) ) {
+			delete_transient( $transient_name );
+			return false;
+		}
+		
+		return $result;
+	}
   
   // in case wanting to add sunrise/sunset to the hourly weather data and then re-sort by 'time' key -- but not used so commented out
   // adapted from http://www.firsttube.com/read/sorting-a-multi-dimensional-array-with-php/
