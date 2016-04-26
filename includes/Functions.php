@@ -292,6 +292,17 @@ class TkEventWeather__Functions {
   }
   	
   	
+  	// same as https://developer.wordpress.org/reference/functions/sanitize_key/ except without strlolower()
+  	// used for Google Maps Geocoding API Keys
+	public static function sanitize_key_allow_uppercase( $input = '' ) {
+		$result = self::remove_all_whitespace( $input );
+		
+		$result = preg_replace( '/[^A-Za-z0-9_\-]/', '', $result );
+		
+		return $result;
+	}
+  	
+  	
 	public static function sanitize_transient_name( $input = '' ) {
 		$result = self::remove_all_whitespace( $input );
 		

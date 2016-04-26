@@ -27,6 +27,8 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
       	return TkEventWeather__Functions::invalid_shortcode_message( 'Please complete the initial setup' );
     	} else {
       	$api_key_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'forecast_io_api_key' );
+	  	
+      	$gmaps_api_key_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'google_maps_api_key' );
       	
       	$display_template_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'display_template' );
       	
@@ -60,8 +62,9 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
     	// Attributes
     	$defaults = array(
       	'api_key'                       => $api_key_option,
+      	'gmaps_api_key'                 => $gmaps_api_key_option,
       	'post_id'                       => get_the_ID(), // The ID of the current post
-      	// if lat_long is used, will override individual latitude and longitude arguments if all 3 are supplied
+      	// if lat_long argument is used, it will override the 2 individual latitude and longitude arguments if all 3 arguments exist.
       	'lat_long'                      => '', // manually entered
       	'lat_long_custom_field'         => '', // get custom field value
       	// separate latitude            
@@ -70,6 +73,9 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
       	// separate longitude           
       	'long'                          => '', // manually entered
       	'long_custom_field'             => '', // get custom field value
+      	// location/address -- to be geocoded by Google Maps
+      	'location'						=> '', // manually entered
+      	'location_custom_field'         => '', // get custom field value
       	// time (ISO 8601 or Unix Timestamp)
       	'start_time'                    => '', // manually entered
       	'start_time_custom_field'       => '', // get custom field value
@@ -113,11 +119,22 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
     	
     	$debug = boolval( $atts['debug_on'] );
     	
+    	
+		// if false === $transients, clear existing and set new transients
+		if( ! empty( $atts['transients_off'] )
+			&& 'true' == $atts['transients_off']
+		) {
+			$transients = false;
+		} else {
+			$transients = true;
+		}
+		
+    	
     	// @link https://developer.wordpress.org/reference/functions/sanitize_key/
     	$api_key = sanitize_key( $atts['api_key'] );
     	
     	if( empty( $api_key ) ) {
-        return TkEventWeather__Functions::invalid_shortcode_message( 'Please enter your Forecast.io API Key' );
+        	return TkEventWeather__Functions::invalid_shortcode_message( 'Please enter your Forecast.io API Key' );
     	}
     	
     	// manually entered override custom field
@@ -152,27 +169,236 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
     	
     	// if no lat,long yet then build via separate lat and long
     	if ( empty ( $latitude_longitude ) ) {
-        // latitude
-      	if ( ! empty ( $atts['lat'] ) ) {
-      	  $latitude = $atts['lat'];
-      	} elseif ( ! empty( $post_id ) && ! empty( $atts['lat_custom_field'] ) ) {
-        	$latitude = get_post_meta ( $post_id, $atts['lat_custom_field'], true );
-      	}
-      	
-        // longitude
-      	if ( ! empty ( $atts['long'] ) ) {
-      	  $longitude = $atts['long'];
-      	} elseif ( ! empty( $post_id ) && ! empty( $atts['long_custom_field'] ) ) {
-        	$longitude = get_post_meta ( $post_id, $atts['long_custom_field'], true );
-      	}
-      	
-      	// build comma-separated $latitude_longitude
-      	$latitude_longitude = sprintf( '%F,%F', $latitude, $longitude );
-      	$latitude_longitude = TkEventWeather__Functions::valid_lat_long( $latitude_longitude );
+	        // latitude
+	      	if ( ! empty ( $atts['lat'] ) ) {
+	      	  $latitude = $atts['lat'];
+	      	} elseif ( ! empty( $post_id ) && ! empty( $atts['lat_custom_field'] ) ) {
+	        	$latitude = get_post_meta ( $post_id, $atts['lat_custom_field'], true );
+	      	}
+	      	
+	        // longitude
+	      	if ( ! empty ( $atts['long'] ) ) {
+	      	  $longitude = $atts['long'];
+	      	} elseif ( ! empty( $post_id ) && ! empty( $atts['long_custom_field'] ) ) {
+	        	$longitude = get_post_meta ( $post_id, $atts['long_custom_field'], true );
+	      	}
+	      	
+	      	// build comma-separated $latitude_longitude
+	      	$latitude_longitude = sprintf( '%F,%F', $latitude, $longitude );
+	      	$latitude_longitude = TkEventWeather__Functions::valid_lat_long( $latitude_longitude );
     	}
-
+		
+		
+		// Fetch from Google Maps Geocoding API
+	    $location = '';
+	    $location_api_data = '';
+	    
     	if( empty( $latitude_longitude ) ) {
-      	return TkEventWeather__Functions::invalid_shortcode_message( 'Please enter valid Latitude and Longitude coordinates' );
+	    	
+	      	if ( ! empty ( $atts['location'] ) ) {
+	      	  $location = $atts['location'];
+	      	} elseif ( ! empty( $post_id ) && ! empty( $atts['location_custom_field'] ) ) {
+	        	$location = get_post_meta ( $post_id, $atts['location_custom_field'], true );
+	      	}
+			
+			$location = trim( $location );
+	    }
+	    
+		// Google Maps Transient
+		if ( ! empty( $location ) ) {
+	    	// build transient
+	    	$location_transient_name = sprintf( '%s_gmaps_%s',
+				TkEventWeather__FuncSetup::$transient_name_prepend,
+				TkEventWeather__Functions::remove_all_whitespace( $location )
+			);
+				
+			$location_transient_name = TkEventWeather__Functions::sanitize_transient_name( $location_transient_name );
+			$location_transient_value = TkEventWeather__Functions::transient_get_or_delete( $location_transient_name, $transients );
+			
+			if ( ! empty( $location_transient_value ) ) {
+				if ( ! is_object( $location_transient_value ) || is_wp_error( $location_transient_value ) ) {
+					$location_transient_value = '';
+					delete_transient( $location_transient_name );
+				}
+			}
+			
+			if ( ! empty( $location_transient_value ) ) {
+				$location_api_data = $location_transient_value;
+			} else {
+				// make an API call
+				$location_request_uri = sprintf( 'https://maps.googleapis.com/maps/api/geocode/json?address=%s', urlencode( $location ) );
+				
+				$location_request_uri_query_args = array();
+				
+				$gmaps_api_key = TkEventWeather__Functions::sanitize_key_allow_uppercase( $atts['gmaps_api_key'] );
+				if ( ! empty( $gmaps_api_key ) ) {
+					$location_request_uri_query_args['key'] = urlencode( $gmaps_api_key );
+				}
+	    		if ( ! empty( $location_request_uri_query_args ) ) {
+	      			$location_request_uri = add_query_arg( $location_request_uri_query_args, $location_request_uri );
+		  		}
+		  		
+		        $location_request = wp_safe_remote_get( esc_url_raw( $location_request_uri ) );
+		        
+		        if ( is_wp_error( $location_request ) ) {
+		          return TkEventWeather__Functions::invalid_shortcode_message( 'Google Maps Geocoding API request sent but resulted in a WordPress Error. Please troubleshoot' );
+		        }
+		        
+	    		// @link https://developer.wordpress.org/reference/functions/wp_remote_retrieve_body/
+	    		$location_body = wp_remote_retrieve_body( $location_request );
+		    		
+		        if( empty( $location_body ) ) {
+		          return TkEventWeather__Functions::invalid_shortcode_message( 'Google Maps Geocoding API request sent but nothing received. Please troubleshoot' );
+		        }
+		        
+		        $location_api_data = json_decode( $location_body );
+		        
+		        if( empty( $location_api_data ) ) {
+		          return TkEventWeather__Functions::invalid_shortcode_message( 'Google Maps Geocoding API response received but some sort of data inconsistency. Please troubleshoot' );
+		        }
+				
+				// inside here because if using transient, $location_request will not be set
+				if ( ! empty( $debug ) ) {
+					$output .= sprintf( '<!--%1$sTK Event Weather -- Google Maps Geocoding API -- Request URI%1$s%2$s%1$s-->%1$s', PHP_EOL, $location_request_uri );
+				}
+/* Example Debug Output:
+<!--
+TK Event Weather -- Google Maps Geocoding API -- Request URI
+https://maps.googleapis.com/maps/api/geocode/json?address=The+White+House
+-->
+*/
+			}
+			
+			// do stuff with Google Maps Geocoding API data
+			
+			// see https://developers.google.com/maps/documentation/geocoding/intro#StatusCodes
+			if ( 'OK' != $location_api_data->status ) {
+				return TkEventWeather__Functions::invalid_shortcode_message( 'The Google Maps Geocoding API resulted in an error: ' . $location_api_data->status . '. See https://developers.google.com/maps/documentation/geocoding/intro#StatusCodes' );
+			}
+			
+			if ( ! empty ( $location_api_data->results[0]->geometry->location->lat ) ) {
+				$latitude = $location_api_data->results[0]->geometry->location->lat;
+				$longitude = $location_api_data->results[0]->geometry->location->lng;
+			}
+			
+			// build comma-separated $latitude_longitude
+			$latitude_longitude = sprintf( '%F,%F', $latitude, $longitude );
+			$latitude_longitude = TkEventWeather__Functions::valid_lat_long( $latitude_longitude );
+			
+			// now $api_data is set for sure (better be to have gotten this far)
+			if ( ! empty( $debug ) ) {
+				$output .= sprintf( '<!--%1$sTK Event Weather -- Google Maps Geocoding API -- JSON Data%1$s%2$s%1$s-->%1$s', PHP_EOL, json_encode( $location_api_data, JSON_PRETTY_PRINT ) ); // requires PHP 5.4
+			}
+			
+/* Example Debug Output:
+<!--
+TK Event Weather -- Google Maps Geocoding API -- JSON Data
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "The White House",
+                    "short_name": "The White House",
+                    "types": [
+                        "point_of_interest",
+                        "establishment"
+                    ]
+                },
+                {
+                    "long_name": "1600",
+                    "short_name": "1600",
+                    "types": [
+                        "street_number"
+                    ]
+                },
+                {
+                    "long_name": "Pennsylvania Avenue Northwest",
+                    "short_name": "Pennsylvania Ave NW",
+                    "types": [
+                        "route"
+                    ]
+                },
+                {
+                    "long_name": "Northwest Washington",
+                    "short_name": "Northwest Washington",
+                    "types": [
+                        "neighborhood",
+                        "political"
+                    ]
+                },
+                {
+                    "long_name": "Washington",
+                    "short_name": "Washington",
+                    "types": [
+                        "locality",
+                        "political"
+                    ]
+                },
+                {
+                    "long_name": "District of Columbia",
+                    "short_name": "DC",
+                    "types": [
+                        "administrative_area_level_1",
+                        "political"
+                    ]
+                },
+                {
+                    "long_name": "United States",
+                    "short_name": "US",
+                    "types": [
+                        "country",
+                        "political"
+                    ]
+                },
+                {
+                    "long_name": "20500",
+                    "short_name": "20500",
+                    "types": [
+                        "postal_code"
+                    ]
+                }
+            ],
+            "formatted_address": "The White House, 1600 Pennsylvania Ave NW, Washington, DC 20500, USA",
+            "geometry": {
+                "location": {
+                    "lat": 38.8976763,
+                    "lng": -77.0365298
+                },
+                "location_type": "APPROXIMATE",
+                "viewport": {
+                    "northeast": {
+                        "lat": 38.899025280291,
+                        "lng": -77.035180819709
+                    },
+                    "southwest": {
+                        "lat": 38.896327319708,
+                        "lng": -77.037878780292
+                    }
+                }
+            },
+            "partial_match": true,
+            "place_id": "ChIJ37HL3ry3t4kRv3YLbdhpWXE",
+            "types": [
+                "point_of_interest",
+                "establishment"
+            ]
+        }
+    ],
+    "status": "OK"
+}
+-->
+*/
+			// set transient if API call resulted in usable data
+	        if( true === $transients
+	        	&& ! empty( $latitude_longitude ) // API resulted in usable data
+	        ) {
+	          set_transient( $location_transient_name, $location_api_data, 30 * DAY_IN_SECONDS ); // allowed to store for up to 30 calendar days, per https://developers.google.com/maps/terms#10-license-restrictions
+	        }
+		}
+	    
+    	if( empty( $latitude_longitude ) ) {
+			return TkEventWeather__Functions::invalid_shortcode_message( 'Please enter valid Latitude and Longitude coordinates (or a Location that Google Maps can get coordinates for)' );
     	}
     	
     	$template_data['latitude_longitude'] = $latitude_longitude;
@@ -489,464 +715,6 @@ TK Event Weather JSON Data
 -->
 
 
-https://api.forecast.io/forecast/_______API_KEY_______/36.281445,-75.794662,2016-02-01T16:30:00-05:00?units=auto&exclude=alerts,flags,minutely
-
-<!--
-TK Event Weather JSON Data
-{
-    "latitude": 36.281445,
-    "longitude": -75.794662,
-    "timezone": "America\/New_York",
-    "offset": -5,
-    "currently": {
-        "time": 1454362200,
-        "summary": "Clear",
-        "icon": "clear-day",
-        "precipIntensity": 0.0008,
-        "precipProbability": 0.01,
-        "precipType": "rain",
-        "temperature": 59.97,
-        "apparentTemperature": 59.97,
-        "dewPoint": 53.86,
-        "humidity": 0.8,
-        "windSpeed": 10.45,
-        "windBearing": 233,
-        "cloudCover": 0.21,
-        "pressure": 1013.48,
-        "ozone": 285.89
-    },
-    "hourly": {
-        "summary": "Partly cloudy in the evening.",
-        "icon": "partly-cloudy-night",
-        "data": [
-            {
-                "time": 1454302800,
-                "summary": "Clear",
-                "icon": "clear-night",
-                "precipIntensity": 0,
-                "precipProbability": 0,
-                "temperature": 47.57,
-                "apparentTemperature": 44.68,
-                "dewPoint": 44.67,
-                "humidity": 0.9,
-                "windSpeed": 6.19,
-                "windBearing": 222,
-                "cloudCover": 0,
-                "pressure": 1016.87,
-                "ozone": 318.03
-            },
-            {
-                "time": 1454306400,
-                "summary": "Clear",
-                "icon": "clear-night",
-                "precipIntensity": 0,
-                "precipProbability": 0,
-                "temperature": 47.23,
-                "apparentTemperature": 44.25,
-                "dewPoint": 44.62,
-                "humidity": 0.91,
-                "windSpeed": 6.22,
-                "windBearing": 222,
-                "cloudCover": 0,
-                "pressure": 1016.58,
-                "ozone": 317.5
-            },
-            {
-                "time": 1454310000,
-                "summary": "Clear",
-                "icon": "clear-night",
-                "precipIntensity": 0,
-                "precipProbability": 0,
-                "temperature": 47.14,
-                "apparentTemperature": 44.04,
-                "dewPoint": 44.88,
-                "humidity": 0.92,
-                "windSpeed": 6.41,
-                "windBearing": 224,
-                "cloudCover": 0,
-                "pressure": 1016.35,
-                "ozone": 316.39
-            },
-            {
-                "time": 1454313600,
-                "summary": "Clear",
-                "icon": "clear-night",
-                "precipIntensity": 0,
-                "precipProbability": 0,
-                "temperature": 47.13,
-                "apparentTemperature": 43.87,
-                "dewPoint": 45.24,
-                "humidity": 0.93,
-                "windSpeed": 6.71,
-                "windBearing": 227,
-                "cloudCover": 0,
-                "pressure": 1016.17,
-                "ozone": 315.02
-            },
-            {
-                "time": 1454317200,
-                "summary": "Clear",
-                "icon": "clear-night",
-                "precipIntensity": 0,
-                "precipProbability": 0,
-                "temperature": 47.1,
-                "apparentTemperature": 43.68,
-                "dewPoint": 45.46,
-                "humidity": 0.94,
-                "windSpeed": 7.04,
-                "windBearing": 229,
-                "cloudCover": 0,
-                "pressure": 1016.08,
-                "ozone": 313.5
-            },
-            {
-                "time": 1454320800,
-                "summary": "Clear",
-                "icon": "clear-night",
-                "precipIntensity": 0,
-                "precipProbability": 0,
-                "temperature": 46.85,
-                "apparentTemperature": 43.27,
-                "dewPoint": 45.3,
-                "humidity": 0.94,
-                "windSpeed": 7.24,
-                "windBearing": 228,
-                "cloudCover": 0,
-                "pressure": 1016.13,
-                "ozone": 312.01
-            },
-            {
-                "time": 1454324400,
-                "summary": "Clear",
-                "icon": "clear-night",
-                "precipIntensity": 0,
-                "precipProbability": 0,
-                "temperature": 46.63,
-                "apparentTemperature": 42.92,
-                "dewPoint": 45.03,
-                "humidity": 0.94,
-                "windSpeed": 7.44,
-                "windBearing": 228,
-                "cloudCover": 0,
-                "pressure": 1016.27,
-                "ozone": 310.37
-            },
-            {
-                "time": 1454328000,
-                "summary": "Clear",
-                "icon": "clear-night",
-                "precipIntensity": 0,
-                "precipProbability": 0,
-                "temperature": 47.15,
-                "apparentTemperature": 43.31,
-                "dewPoint": 45.25,
-                "humidity": 0.93,
-                "windSpeed": 7.95,
-                "windBearing": 228,
-                "cloudCover": 0,
-                "pressure": 1016.39,
-                "ozone": 308.2
-            },
-            {
-                "time": 1454331600,
-                "summary": "Clear",
-                "icon": "clear-day",
-                "precipIntensity": 0,
-                "precipProbability": 0,
-                "temperature": 48.9,
-                "apparentTemperature": 45.08,
-                "dewPoint": 46.26,
-                "humidity": 0.91,
-                "windSpeed": 8.88,
-                "windBearing": 229,
-                "cloudCover": 0,
-                "pressure": 1016.52,
-                "ozone": 305.1
-            },
-            {
-                "time": 1454335200,
-                "summary": "Clear",
-                "icon": "clear-day",
-                "precipIntensity": 0,
-                "precipProbability": 0,
-                "temperature": 51.39,
-                "apparentTemperature": 51.39,
-                "dewPoint": 47.67,
-                "humidity": 0.87,
-                "windSpeed": 9.96,
-                "windBearing": 230,
-                "cloudCover": 0,
-                "pressure": 1016.63,
-                "ozone": 301.47
-            },
-            {
-                "time": 1454338800,
-                "summary": "Clear",
-                "icon": "clear-day",
-                "precipIntensity": 0,
-                "precipProbability": 0,
-                "temperature": 53.94,
-                "apparentTemperature": 53.94,
-                "dewPoint": 49.15,
-                "humidity": 0.84,
-                "windSpeed": 10.98,
-                "windBearing": 231,
-                "cloudCover": 0,
-                "pressure": 1016.48,
-                "ozone": 298.1
-            },
-            {
-                "time": 1454342400,
-                "summary": "Clear",
-                "icon": "clear-day",
-                "precipIntensity": 0,
-                "precipProbability": 0,
-                "temperature": 56.44,
-                "apparentTemperature": 56.44,
-                "dewPoint": 50.73,
-                "humidity": 0.81,
-                "windSpeed": 12.07,
-                "windBearing": 231,
-                "cloudCover": 0,
-                "pressure": 1015.88,
-                "ozone": 295.19
-            },
-            {
-                "time": 1454346000,
-                "summary": "Clear",
-                "icon": "clear-day",
-                "precipIntensity": 0,
-                "precipProbability": 0,
-                "temperature": 58.83,
-                "apparentTemperature": 58.83,
-                "dewPoint": 52.32,
-                "humidity": 0.79,
-                "windSpeed": 13.09,
-                "windBearing": 231,
-                "cloudCover": 0,
-                "pressure": 1015.09,
-                "ozone": 292.54
-            },
-            {
-                "time": 1454349600,
-                "summary": "Clear",
-                "icon": "clear-day",
-                "precipIntensity": 0,
-                "precipProbability": 0,
-                "temperature": 60.49,
-                "apparentTemperature": 60.49,
-                "dewPoint": 53.45,
-                "humidity": 0.78,
-                "windSpeed": 13.51,
-                "windBearing": 231,
-                "cloudCover": 0,
-                "pressure": 1014.43,
-                "ozone": 290.3
-            },
-            {
-                "time": 1454353200,
-                "summary": "Clear",
-                "icon": "clear-day",
-                "precipIntensity": 0,
-                "precipProbability": 0,
-                "temperature": 61.2,
-                "apparentTemperature": 61.2,
-                "dewPoint": 53.95,
-                "humidity": 0.77,
-                "windSpeed": 12.94,
-                "windBearing": 232,
-                "cloudCover": 0.03,
-                "pressure": 1013.94,
-                "ozone": 288.55
-            },
-            {
-                "time": 1454356800,
-                "summary": "Clear",
-                "icon": "clear-day",
-                "precipIntensity": 0,
-                "precipProbability": 0,
-                "temperature": 61.2,
-                "apparentTemperature": 61.2,
-                "dewPoint": 54.04,
-                "humidity": 0.77,
-                "windSpeed": 11.75,
-                "windBearing": 233,
-                "cloudCover": 0.08,
-                "pressure": 1013.55,
-                "ozone": 287.21
-            },
-            {
-                "time": 1454360400,
-                "summary": "Clear",
-                "icon": "clear-day",
-                "precipIntensity": 0.0008,
-                "precipProbability": 0.01,
-                "precipType": "rain",
-                "temperature": 60.59,
-                "apparentTemperature": 60.59,
-                "dewPoint": 53.92,
-                "humidity": 0.79,
-                "windSpeed": 10.7,
-                "windBearing": 234,
-                "cloudCover": 0.15,
-                "pressure": 1013.38,
-                "ozone": 286.2
-            },
-            {
-                "time": 1454364000,
-                "summary": "Partly Cloudy",
-                "icon": "partly-cloudy-day",
-                "precipIntensity": 0.0009,
-                "precipProbability": 0.01,
-                "precipType": "rain",
-                "temperature": 59.36,
-                "apparentTemperature": 59.36,
-                "dewPoint": 53.79,
-                "humidity": 0.82,
-                "windSpeed": 10.2,
-                "windBearing": 233,
-                "cloudCover": 0.26,
-                "pressure": 1013.57,
-                "ozone": 285.57
-            },
-            {
-                "time": 1454367600,
-                "summary": "Partly Cloudy",
-                "icon": "partly-cloudy-night",
-                "precipIntensity": 0.0009,
-                "precipProbability": 0.01,
-                "precipType": "rain",
-                "temperature": 57.79,
-                "apparentTemperature": 57.79,
-                "dewPoint": 53.57,
-                "humidity": 0.86,
-                "windSpeed": 9.89,
-                "windBearing": 230,
-                "cloudCover": 0.39,
-                "pressure": 1014.02,
-                "ozone": 285.27
-            },
-            {
-                "time": 1454371200,
-                "summary": "Partly Cloudy",
-                "icon": "partly-cloudy-night",
-                "precipIntensity": 0.001,
-                "precipProbability": 0.01,
-                "precipType": "rain",
-                "temperature": 56.47,
-                "apparentTemperature": 56.47,
-                "dewPoint": 53.29,
-                "humidity": 0.89,
-                "windSpeed": 9.5,
-                "windBearing": 229,
-                "cloudCover": 0.46,
-                "pressure": 1014.44,
-                "ozone": 285
-            },
-            {
-                "time": 1454374800,
-                "summary": "Partly Cloudy",
-                "icon": "partly-cloudy-night",
-                "precipIntensity": 0.0012,
-                "precipProbability": 0.02,
-                "precipType": "rain",
-                "temperature": 55.67,
-                "apparentTemperature": 55.67,
-                "dewPoint": 53.05,
-                "humidity": 0.91,
-                "windSpeed": 8.88,
-                "windBearing": 232,
-                "cloudCover": 0.39,
-                "pressure": 1014.77,
-                "ozone": 284.73
-            },
-            {
-                "time": 1454378400,
-                "summary": "Partly Cloudy",
-                "icon": "partly-cloudy-night",
-                "precipIntensity": 0.0013,
-                "precipProbability": 0.02,
-                "precipType": "rain",
-                "temperature": 55.11,
-                "apparentTemperature": 55.11,
-                "dewPoint": 52.84,
-                "humidity": 0.92,
-                "windSpeed": 8.2,
-                "windBearing": 237,
-                "cloudCover": 0.25,
-                "pressure": 1015.08,
-                "ozone": 284.5
-            },
-            {
-                "time": 1454382000,
-                "summary": "Clear",
-                "icon": "clear-night",
-                "precipIntensity": 0.0014,
-                "precipProbability": 0.03,
-                "precipType": "rain",
-                "temperature": 54.72,
-                "apparentTemperature": 54.72,
-                "dewPoint": 52.7,
-                "humidity": 0.93,
-                "windSpeed": 7.64,
-                "windBearing": 242,
-                "cloudCover": 0.18,
-                "pressure": 1015.31,
-                "ozone": 284.1
-            },
-            {
-                "time": 1454385600,
-                "summary": "Partly Cloudy",
-                "icon": "partly-cloudy-night",
-                "precipIntensity": 0.0012,
-                "precipProbability": 0.02,
-                "precipType": "rain",
-                "temperature": 54.64,
-                "apparentTemperature": 54.64,
-                "dewPoint": 52.72,
-                "humidity": 0.93,
-                "windSpeed": 7.31,
-                "windBearing": 245,
-                "cloudCover": 0.28,
-                "pressure": 1015.41,
-                "ozone": 283.3
-            }
-        ]
-    },
-    "daily": {
-        "data": [
-            {
-                "time": 1454302800,
-                "summary": "Partly cloudy starting in the evening.",
-                "icon": "partly-cloudy-night",
-                "sunriseTime": 1454328362,
-                "sunsetTime": 1454365792,
-                "moonPhase": 0.77,
-                "precipIntensity": 0.0005,
-                "precipIntensityMax": 0.0014,
-                "precipIntensityMaxTime": 1454382000,
-                "precipProbability": 0.03,
-                "precipType": "rain",
-                "temperatureMin": 46.63,
-                "temperatureMinTime": 1454324400,
-                "temperatureMax": 61.2,
-                "temperatureMaxTime": 1454353200,
-                "apparentTemperatureMin": 42.92,
-                "apparentTemperatureMinTime": 1454324400,
-                "apparentTemperatureMax": 61.2,
-                "apparentTemperatureMaxTime": 1454353200,
-                "dewPoint": 49.75,
-                "humidity": 0.87,
-                "windSpeed": 9.17,
-                "windBearing": 231,
-                "cloudCover": 0.1,
-                "pressure": 1015.39,
-                "ozone": 297.84
-            }
-        ]
-    }
-}
--->
 
 
 
@@ -985,21 +753,26 @@ TK Event Weather JSON Data
     		
     		$request_uri_query_args = array();
     		if( ! empty( $units ) ) {
-      		$request_uri_query_args['units'] = $units;
+      			$request_uri_query_args['units'] = $units;
     		}
     		
     		if( ! empty( $exclude ) ) {
-      		$request_uri_query_args['exclude'] = $exclude;
+      			$request_uri_query_args['exclude'] = $exclude;
     		}
     		
     		if( ! empty( $request_uri_query_args ) ) {
-      		$request_uri = add_query_arg( $request_uri_query_args, $request_uri );
-        }
+      			$request_uri = add_query_arg( $request_uri_query_args, $request_uri );
+	  		}
         
     		// GET STUFF FROM API
     		// @link https://codex.wordpress.org/Function_Reference/esc_url_raw
     		// @link https://developer.wordpress.org/reference/functions/wp_safe_remote_get/
         $request = wp_safe_remote_get( esc_url_raw( $request_uri ) );
+        
+        // @link https://developer.wordpress.org/reference/functions/is_wp_error/
+        if ( is_wp_error( $request ) ) {
+          return TkEventWeather__Functions::invalid_shortcode_message( 'Forecast.io API request sent but resulted in a WordPress Error. Please troubleshoot' );
+        }
         
     		// @link https://developer.wordpress.org/reference/functions/wp_remote_retrieve_body/
     		$body = wp_remote_retrieve_body( $request );
@@ -1022,6 +795,17 @@ TK Event Weather JSON Data
           return TkEventWeather__Functions::invalid_shortcode_message( 'Forecast.io API responded but without hourly data. Please troubleshoot' );
     		}
         
+		// inside here because if using transient, $request will not be set
+		if ( ! empty( $debug ) ) {
+			$output .= sprintf( '<!--%1$sTK Event Weather -- Forecast.io API -- Request URI%1$s%2$s%1$s-->%1$s', PHP_EOL, $request_uri );
+		}
+/* Example Debug Output:
+<!--
+TK Event Weather -- Forecast.io API -- Request URI
+https://api.forecast.io/forecast/___API_KEY___/38.897676,-77.036530,1464604200?units=auto&exclude=minutely,alerts
+-->
+*/
+		
         if( true === $transients ) {
           $transients_expiration_hours = absint( $atts['transients_expiration'] );
           if ( 0 >= $transients_expiration_hours ) {
@@ -1051,10 +835,651 @@ public 'flags' =>
     	
     	// now $api_data is set for sure (better be to have gotten this far)
     	if ( ! empty( $debug ) ) {
-      	$output .= sprintf( '<!--%1$sTK Event Weather JSON Data%1$s%2$s%1$s-->%1$s', PHP_EOL, json_encode( $api_data, JSON_PRETTY_PRINT ) ); // requires PHP 5.4
+			$output .= sprintf( '<!--%1$sTK Event Weather -- Forecast.io API -- JSON Data%1$s%2$s%1$s-->%1$s', PHP_EOL, json_encode( $api_data, JSON_PRETTY_PRINT ) ); // requires PHP 5.4
       }
     	
-    	
+/* Example Debug Output:
+<!--
+TK Event Weather -- Forecast.io API -- JSON Data
+{
+    "latitude": 38.897676,
+    "longitude": -77.03653,
+    "timezone": "America\/New_York",
+    "offset": -4,
+    "currently": {
+        "time": 1464604200,
+        "summary": "Partly Cloudy",
+        "icon": "partly-cloudy-day",
+        "precipType": "rain",
+        "temperature": 65.66,
+        "temperatureError": 6.32,
+        "apparentTemperature": 65.66,
+        "dewPoint": 58.39,
+        "dewPointError": 5,
+        "humidity": 0.77,
+        "humidityError": 0.14,
+        "windSpeed": 4.08,
+        "windSpeedError": 4.12,
+        "windBearing": 234,
+        "windBearingError": 45.29,
+        "visibility": 9.46,
+        "visibilityError": 6.28,
+        "cloudCover": 0.58,
+        "cloudCoverError": 0.4,
+        "pressure": 1015.95,
+        "pressureError": 5.5
+    },
+    "hourly": {
+        "summary": "Mostly cloudy throughout the day.",
+        "icon": "partly-cloudy-day",
+        "data": [
+            {
+                "time": 1464580800,
+                "summary": "Partly Cloudy",
+                "icon": "partly-cloudy-night",
+                "precipType": "rain",
+                "temperature": 69.52,
+                "temperatureError": 4.89,
+                "apparentTemperature": 69.52,
+                "dewPoint": 59.34,
+                "dewPointError": 4.05,
+                "humidity": 0.7,
+                "humidityError": 0.1,
+                "windSpeed": 4.37,
+                "windSpeedError": 3.09,
+                "windBearing": 193,
+                "windBearingError": 35.28,
+                "visibility": 10,
+                "visibilityError": 4.97,
+                "cloudCover": 0.55,
+                "cloudCoverError": 0.28,
+                "pressure": 1015.86,
+                "pressureError": 5.51
+            },
+            {
+                "time": 1464584400,
+                "summary": "Partly Cloudy",
+                "icon": "partly-cloudy-night",
+                "precipType": "rain",
+                "temperature": 68.56,
+                "temperatureError": 4.88,
+                "apparentTemperature": 68.56,
+                "dewPoint": 59.29,
+                "dewPointError": 3.85,
+                "humidity": 0.72,
+                "humidityError": 0.1,
+                "windSpeed": 4.62,
+                "windSpeedError": 3.12,
+                "windBearing": 205,
+                "windBearingError": 34.05,
+                "visibility": 10,
+                "visibilityError": 4.87,
+                "cloudCover": 0.54,
+                "cloudCoverError": 0.29,
+                "pressure": 1015.76,
+                "pressureError": 5.51
+            },
+            {
+                "time": 1464588000,
+                "summary": "Partly Cloudy",
+                "icon": "partly-cloudy-night",
+                "precipType": "rain",
+                "temperature": 67.67,
+                "temperatureError": 5.04,
+                "apparentTemperature": 67.67,
+                "dewPoint": 59.2,
+                "dewPointError": 3.86,
+                "humidity": 0.74,
+                "humidityError": 0.1,
+                "windSpeed": 4.63,
+                "windSpeedError": 3.24,
+                "windBearing": 218,
+                "windBearingError": 35,
+                "visibility": 10,
+                "visibilityError": 4.95,
+                "cloudCover": 0.54,
+                "cloudCoverError": 0.31,
+                "pressure": 1015.6,
+                "pressureError": 5.51
+            },
+            {
+                "time": 1464591600,
+                "summary": "Partly Cloudy",
+                "icon": "partly-cloudy-night",
+                "precipType": "rain",
+                "temperature": 66.85,
+                "temperatureError": 5.31,
+                "apparentTemperature": 66.85,
+                "dewPoint": 59.05,
+                "dewPointError": 4.03,
+                "humidity": 0.76,
+                "humidityError": 0.11,
+                "windSpeed": 4.45,
+                "windSpeedError": 3.43,
+                "windBearing": 226,
+                "windBearingError": 37.58,
+                "visibility": 10,
+                "visibilityError": 5.16,
+                "cloudCover": 0.54,
+                "cloudCoverError": 0.33,
+                "pressure": 1015.47,
+                "pressureError": 5.51
+            },
+            {
+                "time": 1464595200,
+                "summary": "Partly Cloudy",
+                "icon": "partly-cloudy-night",
+                "precipType": "rain",
+                "temperature": 66.14,
+                "temperatureError": 5.63,
+                "apparentTemperature": 66.14,
+                "dewPoint": 58.86,
+                "dewPointError": 4.28,
+                "humidity": 0.77,
+                "humidityError": 0.12,
+                "windSpeed": 4.28,
+                "windSpeedError": 3.65,
+                "windBearing": 230,
+                "windBearingError": 40.47,
+                "visibility": 10,
+                "visibilityError": 5.47,
+                "cloudCover": 0.55,
+                "cloudCoverError": 0.36,
+                "pressure": 1015.43,
+                "pressureError": 5.5
+            },
+            {
+                "time": 1464598800,
+                "summary": "Partly Cloudy",
+                "icon": "partly-cloudy-night",
+                "precipType": "rain",
+                "temperature": 65.65,
+                "temperatureError": 5.95,
+                "apparentTemperature": 65.65,
+                "dewPoint": 58.65,
+                "dewPointError": 4.57,
+                "humidity": 0.78,
+                "humidityError": 0.13,
+                "windSpeed": 4.13,
+                "windSpeedError": 3.87,
+                "windBearing": 233,
+                "windBearingError": 43.12,
+                "visibility": 9.87,
+                "visibilityError": 5.81,
+                "cloudCover": 0.56,
+                "cloudCoverError": 0.39,
+                "pressure": 1015.54,
+                "pressureError": 5.5
+            },
+            {
+                "time": 1464602400,
+                "summary": "Partly Cloudy",
+                "icon": "partly-cloudy-day",
+                "precipType": "rain",
+                "temperature": 65.5,
+                "temperatureError": 6.22,
+                "apparentTemperature": 65.5,
+                "dewPoint": 58.46,
+                "dewPointError": 4.86,
+                "humidity": 0.78,
+                "humidityError": 0.13,
+                "windSpeed": 4.05,
+                "windSpeedError": 4.05,
+                "windBearing": 234,
+                "windBearingError": 45.05,
+                "visibility": 9.56,
+                "visibilityError": 6.14,
+                "cloudCover": 0.57,
+                "cloudCoverError": 0.4,
+                "pressure": 1015.78,
+                "pressureError": 5.5
+            },
+            {
+                "time": 1464606000,
+                "summary": "Partly Cloudy",
+                "icon": "partly-cloudy-day",
+                "precipType": "rain",
+                "temperature": 65.82,
+                "temperatureError": 6.42,
+                "apparentTemperature": 65.82,
+                "dewPoint": 58.33,
+                "dewPointError": 5.15,
+                "humidity": 0.77,
+                "humidityError": 0.14,
+                "windSpeed": 4.12,
+                "windSpeedError": 4.2,
+                "windBearing": 234,
+                "windBearingError": 45.53,
+                "visibility": 9.35,
+                "visibilityError": 6.42,
+                "cloudCover": 0.59,
+                "cloudCoverError": 0.4,
+                "pressure": 1016.12,
+                "pressureError": 5.5
+            },
+            {
+                "time": 1464609600,
+                "summary": "Mostly Cloudy",
+                "icon": "partly-cloudy-day",
+                "precipType": "rain",
+                "temperature": 66.67,
+                "temperatureError": 6.56,
+                "apparentTemperature": 66.67,
+                "dewPoint": 58.27,
+                "dewPointError": 5.48,
+                "humidity": 0.74,
+                "humidityError": 0.14,
+                "windSpeed": 4.58,
+                "windSpeedError": 4.29,
+                "windBearing": 231,
+                "windBearingError": 43.15,
+                "visibility": 9.3,
+                "visibilityError": 6.64,
+                "cloudCover": 0.61,
+                "cloudCoverError": 0.4,
+                "pressure": 1016.48,
+                "pressureError": 5.5
+            },
+            {
+                "time": 1464613200,
+                "summary": "Mostly Cloudy",
+                "icon": "partly-cloudy-day",
+                "precipType": "rain",
+                "temperature": 68.07,
+                "temperatureError": 6.67,
+                "apparentTemperature": 68.07,
+                "dewPoint": 58.26,
+                "dewPointError": 5.88,
+                "humidity": 0.71,
+                "humidityError": 0.15,
+                "windSpeed": 6.02,
+                "windSpeedError": 4.36,
+                "windBearing": 234,
+                "windBearingError": 35.88,
+                "visibility": 9.48,
+                "visibilityError": 6.81,
+                "cloudCover": 0.62,
+                "cloudCoverError": 0.38,
+                "pressure": 1016.77,
+                "pressureError": 5.5
+            },
+            {
+                "time": 1464616800,
+                "summary": "Mostly Cloudy",
+                "icon": "partly-cloudy-day",
+                "precipType": "rain",
+                "temperature": 69.93,
+                "temperatureError": 6.78,
+                "apparentTemperature": 69.93,
+                "dewPoint": 58.24,
+                "dewPointError": 6.42,
+                "humidity": 0.66,
+                "humidityError": 0.15,
+                "windSpeed": 6.84,
+                "windSpeedError": 4.41,
+                "windBearing": 241,
+                "windBearingError": 32.79,
+                "visibility": 9.87,
+                "visibilityError": 6.94,
+                "cloudCover": 0.64,
+                "cloudCoverError": 0.37,
+                "pressure": 1016.89,
+                "pressureError": 5.5
+            },
+            {
+                "time": 1464620400,
+                "summary": "Mostly Cloudy",
+                "icon": "partly-cloudy-day",
+                "precipType": "rain",
+                "temperature": 72.07,
+                "temperatureError": 6.92,
+                "apparentTemperature": 72.07,
+                "dewPoint": 58.16,
+                "dewPointError": 7.14,
+                "humidity": 0.62,
+                "humidityError": 0.15,
+                "windSpeed": 7.48,
+                "windSpeedError": 4.46,
+                "windBearing": 243,
+                "windBearingError": 30.78,
+                "visibility": 10,
+                "visibilityError": 7.07,
+                "cloudCover": 0.65,
+                "cloudCoverError": 0.35,
+                "pressure": 1016.8,
+                "pressureError": 5.5
+            },
+            {
+                "time": 1464624000,
+                "summary": "Mostly Cloudy",
+                "icon": "partly-cloudy-day",
+                "precipType": "rain",
+                "temperature": 74.26,
+                "temperatureError": 7.11,
+                "apparentTemperature": 74.26,
+                "dewPoint": 57.96,
+                "dewPointError": 8.07,
+                "humidity": 0.57,
+                "humidityError": 0.16,
+                "windSpeed": 8.09,
+                "windSpeedError": 4.52,
+                "windBearing": 244,
+                "windBearingError": 29.16,
+                "visibility": 10,
+                "visibilityError": 7.21,
+                "cloudCover": 0.66,
+                "cloudCoverError": 0.34,
+                "pressure": 1016.51,
+                "pressureError": 5.5
+            },
+            {
+                "time": 1464627600,
+                "summary": "Mostly Cloudy",
+                "icon": "partly-cloudy-day",
+                "precipType": "rain",
+                "temperature": 76.22,
+                "temperatureError": 7.33,
+                "apparentTemperature": 76.22,
+                "dewPoint": 57.69,
+                "dewPointError": 9.14,
+                "humidity": 0.53,
+                "humidityError": 0.17,
+                "windSpeed": 8.57,
+                "windSpeedError": 4.58,
+                "windBearing": 243,
+                "windBearingError": 28.13,
+                "visibility": 10,
+                "visibilityError": 7.37,
+                "cloudCover": 0.66,
+                "cloudCoverError": 0.33,
+                "pressure": 1016.05,
+                "pressureError": 5.5
+            },
+            {
+                "time": 1464631200,
+                "summary": "Mostly Cloudy",
+                "icon": "partly-cloudy-day",
+                "precipType": "rain",
+                "temperature": 77.74,
+                "temperatureError": 7.54,
+                "apparentTemperature": 77.74,
+                "dewPoint": 57.46,
+                "dewPointError": 10.19,
+                "humidity": 0.5,
+                "humidityError": 0.18,
+                "windSpeed": 8.84,
+                "windSpeedError": 4.64,
+                "windBearing": 240,
+                "windBearingError": 27.69,
+                "visibility": 10,
+                "visibilityError": 7.52,
+                "cloudCover": 0.66,
+                "cloudCoverError": 0.34,
+                "pressure": 1015.52,
+                "pressureError": 5.5
+            },
+            {
+                "time": 1464634800,
+                "summary": "Mostly Cloudy",
+                "icon": "partly-cloudy-day",
+                "precipType": "rain",
+                "temperature": 78.65,
+                "temperatureError": 7.71,
+                "apparentTemperature": 78.65,
+                "dewPoint": 57.39,
+                "dewPointError": 10.97,
+                "humidity": 0.48,
+                "humidityError": 0.18,
+                "windSpeed": 8.87,
+                "windSpeedError": 4.67,
+                "windBearing": 235,
+                "windBearingError": 27.78,
+                "visibility": 10,
+                "visibilityError": 7.63,
+                "cloudCover": 0.66,
+                "cloudCoverError": 0.35,
+                "pressure": 1015.01,
+                "pressureError": 5.5
+            },
+            {
+                "time": 1464638400,
+                "summary": "Mostly Cloudy",
+                "icon": "partly-cloudy-day",
+                "precipType": "rain",
+                "temperature": 78.87,
+                "temperatureError": 7.76,
+                "apparentTemperature": 78.87,
+                "dewPoint": 57.56,
+                "dewPointError": 11.22,
+                "humidity": 0.48,
+                "humidityError": 0.19,
+                "windSpeed": 8.63,
+                "windSpeedError": 4.65,
+                "windBearing": 228,
+                "windBearingError": 28.31,
+                "visibility": 10,
+                "visibilityError": 7.67,
+                "cloudCover": 0.65,
+                "cloudCoverError": 0.35,
+                "pressure": 1014.64,
+                "pressureError": 5.5
+            },
+            {
+                "time": 1464642000,
+                "summary": "Mostly Cloudy",
+                "icon": "partly-cloudy-day",
+                "precipType": "rain",
+                "temperature": 78.45,
+                "temperatureError": 7.66,
+                "apparentTemperature": 78.45,
+                "dewPoint": 57.93,
+                "dewPointError": 10.84,
+                "humidity": 0.49,
+                "humidityError": 0.18,
+                "windSpeed": 8.13,
+                "windSpeedError": 4.56,
+                "windBearing": 219,
+                "windBearingError": 29.27,
+                "visibility": 10,
+                "visibilityError": 7.6,
+                "cloudCover": 0.64,
+                "cloudCoverError": 0.36,
+                "pressure": 1014.46,
+                "pressureError": 5.5
+            },
+            {
+                "time": 1464645600,
+                "summary": "Mostly Cloudy",
+                "icon": "partly-cloudy-day",
+                "precipType": "rain",
+                "temperature": 77.5,
+                "temperatureError": 7.39,
+                "apparentTemperature": 77.5,
+                "dewPoint": 58.4,
+                "dewPointError": 9.94,
+                "humidity": 0.52,
+                "humidityError": 0.18,
+                "windSpeed": 7.42,
+                "windSpeedError": 4.38,
+                "windBearing": 208,
+                "windBearingError": 30.58,
+                "visibility": 10,
+                "visibilityError": 7.39,
+                "cloudCover": 0.63,
+                "cloudCoverError": 0.35,
+                "pressure": 1014.5,
+                "pressureError": 5.51
+            },
+            {
+                "time": 1464649200,
+                "summary": "Mostly Cloudy",
+                "icon": "partly-cloudy-day",
+                "precipType": "rain",
+                "temperature": 76.21,
+                "temperatureError": 6.98,
+                "apparentTemperature": 76.21,
+                "dewPoint": 58.84,
+                "dewPointError": 8.73,
+                "humidity": 0.55,
+                "humidityError": 0.17,
+                "windSpeed": 6.69,
+                "windSpeedError": 4.15,
+                "windBearing": 198,
+                "windBearingError": 31.77,
+                "visibility": 10,
+                "visibilityError": 7.04,
+                "cloudCover": 0.61,
+                "cloudCoverError": 0.34,
+                "pressure": 1014.72,
+                "pressureError": 5.51
+            },
+            {
+                "time": 1464652800,
+                "summary": "Mostly Cloudy",
+                "icon": "partly-cloudy-day",
+                "precipType": "rain",
+                "temperature": 74.76,
+                "temperatureError": 6.46,
+                "apparentTemperature": 74.76,
+                "dewPoint": 59.18,
+                "dewPointError": 7.44,
+                "humidity": 0.58,
+                "humidityError": 0.15,
+                "windSpeed": 6.09,
+                "windSpeedError": 3.87,
+                "windBearing": 191,
+                "windBearingError": 32.41,
+                "visibility": 10,
+                "visibilityError": 6.59,
+                "cloudCover": 0.6,
+                "cloudCoverError": 0.33,
+                "pressure": 1015.06,
+                "pressureError": 5.51
+            },
+            {
+                "time": 1464656400,
+                "summary": "Partly Cloudy",
+                "icon": "partly-cloudy-night",
+                "precipType": "rain",
+                "temperature": 73.31,
+                "temperatureError": 5.92,
+                "apparentTemperature": 73.31,
+                "dewPoint": 59.41,
+                "dewPointError": 6.25,
+                "humidity": 0.62,
+                "humidityError": 0.14,
+                "windSpeed": 5.66,
+                "windSpeedError": 3.58,
+                "windBearing": 187,
+                "windBearingError": 32.32,
+                "visibility": 10,
+                "visibilityError": 6.1,
+                "cloudCover": 0.58,
+                "cloudCoverError": 0.31,
+                "pressure": 1015.41,
+                "pressureError": 5.51
+            },
+            {
+                "time": 1464660000,
+                "summary": "Partly Cloudy",
+                "icon": "partly-cloudy-night",
+                "precipType": "rain",
+                "temperature": 71.97,
+                "temperatureError": 5.43,
+                "apparentTemperature": 71.97,
+                "dewPoint": 59.53,
+                "dewPointError": 5.25,
+                "humidity": 0.65,
+                "humidityError": 0.12,
+                "windSpeed": 5.41,
+                "windSpeedError": 3.33,
+                "windBearing": 187,
+                "windBearingError": 31.62,
+                "visibility": 10,
+                "visibilityError": 5.62,
+                "cloudCover": 0.57,
+                "cloudCoverError": 0.29,
+                "pressure": 1015.7,
+                "pressureError": 5.52
+            },
+            {
+                "time": 1464663600,
+                "summary": "Partly Cloudy",
+                "icon": "partly-cloudy-night",
+                "precipType": "rain",
+                "temperature": 70.78,
+                "temperatureError": 5.06,
+                "apparentTemperature": 70.78,
+                "dewPoint": 59.58,
+                "dewPointError": 4.5,
+                "humidity": 0.68,
+                "humidityError": 0.11,
+                "windSpeed": 5.32,
+                "windSpeedError": 3.16,
+                "windBearing": 188,
+                "windBearingError": 30.7,
+                "visibility": 10,
+                "visibilityError": 5.22,
+                "cloudCover": 0.55,
+                "cloudCoverError": 0.28,
+                "pressure": 1015.87,
+                "pressureError": 5.52
+            }
+        ]
+    },
+    "daily": {
+        "data": [
+            {
+                "time": 1464580800,
+                "summary": "Mostly cloudy throughout the day.",
+                "icon": "partly-cloudy-day",
+                "sunriseTime": 1464601606,
+                "sunsetTime": 1464654461,
+                "moonPhase": 0.8,
+                "precipType": "rain",
+                "temperatureMin": 65.5,
+                "temperatureMinError": 6.22,
+                "temperatureMinTime": 1464602400,
+                "temperatureMax": 78.87,
+                "temperatureMaxError": 7.76,
+                "temperatureMaxTime": 1464638400,
+                "apparentTemperatureMin": 65.5,
+                "apparentTemperatureMinTime": 1464602400,
+                "apparentTemperatureMax": 78.87,
+                "apparentTemperatureMaxTime": 1464638400,
+                "dewPoint": 58.54,
+                "dewPointError": 7.19,
+                "humidity": 0.64,
+                "humidityError": 0.15,
+                "windSpeed": 5.78,
+                "windSpeedError": 4.05,
+                "windBearing": 222,
+                "windBearingError": 34.98,
+                "visibility": 10,
+                "visibilityError": 6.49,
+                "cloudCover": 0.6,
+                "cloudCoverError": 0.34,
+                "pressure": 1015.67,
+                "pressureError": 5.5
+            }
+        ]
+    },
+    "flags": {
+        "sources": [
+            "isd"
+        ],
+        "isd-stations": [
+            "724050-13743",
+            "997314-99999",
+            "999999-13710",
+            "999999-13751",
+            "999999-93725"
+        ],
+        "units": "us"
+    }
+}
+-->
+*/    	
     	// Build Weather data that we'll use    	
     	
     	// https://developer.wordpress.org/reference/functions/wp_list_pluck/

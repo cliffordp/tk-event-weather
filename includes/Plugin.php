@@ -172,6 +172,23 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
     				'type'		    => 'password',
     			));
     			
+    			// Google Maps API Key
+    			// e.g. AIza...URyTxC0w
+    			$wp_customize->add_setting( self::$customizer_flag . '[google_maps_api_key]', array(
+    				'type'              => 'option',
+    				'capability'        => 'edit_theme_options',
+    				'default'           => '',
+    				// 'sanitize_callback' => 'sanitize_key', // cannot use this because need to allow uppercase
+    			));
+    			
+    			$wp_customize->add_control( self::$customizer_flag . '_google_maps_api_key_control', array(
+      			'label'       => esc_html__( 'Google Maps Geocoding API Key', 'tk-event-weather' ),
+    				'description' => __( 'Most users will NOT need a <a href="https://developers.google.com/maps/documentation/geocoding/get-api-key" target="_blank">Google Maps Geocoding API Key</a> (link opens in new window) to use the <strong>location</strong> shortcode argument. However, if you want or need to use one, enter it here. When creating an API key: for "Where will you be calling the API from?", choose "Web server (e.g. node.js, Tomcat)".<br>Important Terms are documentend in the Tools tab of the plugin settings page.', 'tk-event-weather' ),
+    				'section'     => self::$customizer_section_id,
+    				'settings'    => self::$customizer_flag . '[google_maps_api_key]',
+    				'type'		    => 'password',
+    			));
+    			
     			// Display Template
     			$wp_customize->add_setting( self::$customizer_flag . '[display_template]', array(
     				'type'              => 'option',
@@ -261,8 +278,8 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
     			));
     			
     			$wp_customize->add_control( self::$customizer_flag . '_transients_expiration_hours_control', array(
-      			'label'       => esc_html__( 'Transient expiration (in hours)', 'tk-event-weather' ),
-    				'description' => __( 'If stored Forecast.io API data is older than this many hours, pull fresh weather data from the API.<br>Default: 12', 'tk-event-weather' ),
+      			'label'       => esc_html__( 'Forecast.io transient expiration (in hours)', 'tk-event-weather' ),
+    				'description' => __( 'If stored Forecast.io API data is older than this many hours, pull fresh weather data from the API.<br>Default: 12<br>Note: Google Maps Geocoding API transients are always set to 30 days.', 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
     				'settings'    => self::$customizer_flag . '[transients_expiration_hours]',
     				'type'		    => 'text',
@@ -277,7 +294,7 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
     			
     			$wp_customize->add_control( self::$customizer_flag . '_transients_off_control', array(
       			'label'       => esc_html__( 'Disable Transients', 'tk-event-weather' ),
-    				'description' => __( 'The <a href="https://codex.wordpress.org/Transients_API" target="_blank">WordPress Transients API</a> (link opens in new window) is used to reduce repetitive API calls and improve performance. Check this box if you wish to disable using Transients (suggested only for testing purposes).', 'tk-event-weather' ),
+    				'description' => __( 'The <a href="https://codex.wordpress.org/Transients_API" target="_blank">WordPress Transients API</a> (link opens in new window) is used to reduce repetitive API calls and improve performance. Check this box if you wish to disable using Transients (suggested only for testing purposes).<br>Note: Applies to both Forecast.io and Google Maps Geocoding API transients.', 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
     				'settings'    => self::$customizer_flag . '[transients_off]',
     				'type'		    => 'checkbox',
@@ -342,7 +359,7 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
     			
     			$wp_customize->add_control( self::$customizer_flag . '_debug_on_control', array(
       			'label'       => esc_html__( 'Enable Debug Mode for this plugin', 'tk-event-weather' ),
-    				'description' => esc_html__( 'Prints extra information to the page only for Administrators.', 'tk-event-weather' ),
+    				'description' => __( 'Prints extra information to the page only for Administrators.<br>Warning: Likely exposes your API key(s) to all Administrators.', 'tk-event-weather' ),
     				'section'     => self::$customizer_section_id,
     				'settings'    => self::$customizer_flag . '[debug_on]',
     				'type'		    => 'checkbox',

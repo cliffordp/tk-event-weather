@@ -305,10 +305,25 @@ class TkEventWeather__OptionsManager {
 					<ul style="list-style-type:disc; list-style-position: inside;"><li>[tk_event_weather lat="38.897676" long="-77.03653" start_time="2016-02-01T16:30:00-05:00" end_time="2016-02-01T21:45:00-05:00"]</li></ul>
 				<?php esc_html_e( 'C) or with Unix timestamps', 'tk-event-weather' ); ?>:
 					<ul style="list-style-type:disc; list-style-position: inside;"><li>[tk_event_weather lat_long="38.897676,-77.03653" start_time="1454362200" end_time="1454381100"]</li></ul>
+				<?php esc_html_e( 'D) Just like Example A but with Location shortcode argument (a Place name)', 'tk-event-weather' ); ?>:
+					<ul style="list-style-type:disc; list-style-position: inside;"><li>[tk_event_weather location="The White House" start_time="1454362200" end_time="1454381100"]</li></ul>
+				<?php esc_html_e( 'E) Just like Example D but with Location shortcode argument (a full address)', 'tk-event-weather' ); ?>:
+					<ul style="list-style-type:disc; list-style-position: inside;"><li>[tk_event_weather location="1600 Pennsylvania Ave NW, Washington, DC 20500, USA" start_time="1454362200" end_time="1454381100"]</li></ul>
             </div>
             <br>
-            <h2><?php _e( 'Find Latitude Longitude', 'tk-event-weather' ); ?></h2>
-            <p><?php _e( 'To help you find the Latitude and Longitude of a location to use in your shortcode by doing a Google Maps lookup without API usage limitations&mdash;type an address or place name, get the coordinates, manually paste them into wherever you are using the shortcode', 'tk-event-weather' ); ?>:</p>
+            <h2><?php _e( 'Google Maps', 'tk-event-weather' ); ?></h2>
+            <p style="font-style: italic;"><?php printf( __( 'By using Google Maps, including the %slocation%s shortcode argument, you are agreeing to be bound by %s (link opens in new window).', 'tk-event-weather' ),
+	            '<strong>',
+	            '</strong>',
+	            '<a href="https://developers.google.com/maps/terms" target="_blank">Google\'s Terms of Service</a>'
+				);
+			?></p>
+            <p><?php _e( 'Powered by Google.', 'tk-event-weather' ); ?></p>
+            <h2><?php _e( 'Geocoding&mdash;Find Latitude and Longitude Coordinates', 'tk-event-weather' ); ?></h2>
+            <p><?php printf( __( 'To help you find the Latitude and Longitude of a location to use in your shortcode, you may do a Google Maps lookup here without %sAPI usage limitations%s (link opens in new window). Type an address or place name, get the coordinates, manually paste them into wherever you are using the shortcode', 'tk-event-weather' ),
+	            '<a href="https://developers.google.com/maps/faq#usage-limits" target="_blank">',
+	            '</a>'
+	            ); ?>:</p>
 			<iframe style="text-align: center; margin-left: 10%; margin-right: 10%; width: 80%; min-width: 300px;" name="Google Maps API Geocoder Tool" src="http://b.tourkick.com/google-maps-geocoder" height="575" width="800">
 			  <p>Your browser does not support iframes. Please visit the <a href="http://b.tourkick.com/google-maps-geocoder" target="_blank">Google Maps API Geocoder Tool</a> directly.</p>
 			</iframe>
