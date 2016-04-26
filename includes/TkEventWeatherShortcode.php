@@ -423,10 +423,9 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
     	// @link https://codex.wordpress.org/Easier_Expression_of_Time_Constants
     	
     	// build transient
-    	$transient_name = sprintf( '%s_%d_%s_%s_%s_%s_%d',
+    	$transient_name = sprintf( '%s_fio_%s_%s_%s_%s_%d',
     	  TkEventWeather__FuncSetup::$transient_name_prepend,
-    	  $post_id,
-    	  substr( $units, 0, 2 ), // e.g. 'auto' becomes 'au'
+    	  $units,
     	  $exclude_for_transient,
     	  // latitude (before comma)
     	  substr( strstr( $latitude_longitude, ',', true ), 0, 6 ), // requires PHP 5.3.0+
