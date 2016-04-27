@@ -117,7 +117,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 	  	
     	// Code
     	
-    	$debug = boolval( $atts['debug_on'] );
+    	$debug = (bool) $atts['debug_on'];
     	
     	
 		// if false === $transients, clear existing and set new transients

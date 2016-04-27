@@ -2,7 +2,7 @@
 /*
    Plugin Name: TK Event Weather
    Plugin URI: http://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
-   Version: 1.2.0
+   Version: 1.2.1
    Author: TourKick (Clifford Paulick)
    Author URI: http://tourkick.com/?utm_source=author-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
    Description: Display beautiful, accurate, and free weather forecasts between a start and end time on the same day. Perfect for event calendars.
@@ -35,6 +35,9 @@
 
 
 /** TODO:
+  * look into https://developer.wordpress.org/plugins/the-basics/uninstall-methods/
+    * why it currently states "will also delete its data"
+    * should we add an option to "delete its data" on uninstall?
   * truncate seconds off all timestamps? -- avoid 10pm hour + 10pm sunset, like http://cl.ly/430H1J0p2R07
   * use more data from API, like 'summary' text as a title element somewhere
     * the forecast.io "apparentTemperature" value is the "feels like" temperature

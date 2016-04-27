@@ -5,7 +5,7 @@ License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.3.0
 Tested up to: 4.5.1
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 
 Display beautiful, accurate, and free weather forecasts between a start and end time on the same day. Perfect for event calendars.
 
@@ -33,6 +33,8 @@ Currently Available:
 
 I am considering making add-ons for the following event calendars:
 
+* [Events Manager by Marcus Sykes](https://wordpress.org/plugins/events-manager/) - 100,000+ active installs
+* [All-in-One Event Calendar by Timely](https://wordpress.org/plugins/all-in-one-event-calendar/) - 100,000+ active installs
 * [Simple Calendar by Moonstone Media](https://wordpress.org/plugins/google-calendar-events/) - 70,000+ active installs
 * [Spider Event Calendar by WebDorado](https://wordpress.org/plugins/spider-event-calendar/) - 30,000+ active installs
 * [Event Calendar WD by WebDorado](https://wordpress.org/plugins/event-calendar-wd/) - 10,000+ active installs
@@ -151,6 +153,10 @@ Here are quotes from the [Forecast.io API docs](https://developer.forecast.io/do
 
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
+
+= Version 1.2.1 =
+* April 27, 2016
+* Remove usage of boolval() because it's only available in PHP 5.5.0+ and this plugin currently only requires PHP 5.0.
 
 = Version 1.2.0 =
 * April 26, 2016

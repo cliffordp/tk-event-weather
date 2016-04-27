@@ -1135,7 +1135,7 @@ class TkEventWeather__Functions {
 	    //
     }
     
-    if ( false === boolval( $direction_initials ) ) {
+    if ( false === (bool) $direction_initials ) {
       if ( 'N' == $result ) {
         $result = __( 'north', 'tk-event-weather' );
       } elseif ( 'NNE' == $result ) {
