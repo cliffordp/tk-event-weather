@@ -1,6 +1,5 @@
 === TK Event Weather ===
 Contributors: cliffpaulick
-Donate link: http://tourkick.com/pay/?utm_source=plugin-donate-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
 Tags: calendars, celsius, classes, concerts, events, fahrenheit, forecast, local, meetings, shortcode, tickets, weather
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
