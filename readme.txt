@@ -4,7 +4,7 @@ Tags: calendars, celsius, classes, concerts, events, fahrenheit, forecast, local
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.3.0
-Tested up to: 4.5
+Tested up to: 4.5.1
 Stable tag: 1.2.0
 
 Display beautiful, accurate, and free weather forecasts between a start and end time on the same day. Perfect for event calendars.
@@ -29,14 +29,18 @@ Display beautiful, accurate, and free weather forecasts between a start and end 
 
 Currently Available:
 
-* [TK Event Weather for The Events Calendar by Modern Tribe](http://tourkick.com/shop/wordpress/tk-event-weather-the-events-calendar/)
+* [TK Event Weather for The Events Calendar by Modern Tribe](http://tourkick.com/shop/wordpress/tk-event-weather-the-events-calendar/) - 400,000+ active installs
 
 I am considering making add-ons for the following event calendars:
 
-* [WP Event Organiser by Stephen Harris](http://wp-event-organiser.com/)
-* [Calendarize it! by RightHere](http://codecanyon.net/item/calendarize-it-for-wordpress/2568439?ref=cliffpaulick)
-* [Events+ by WPMU DEV](https://premium.wpmudev.org/project/events-plus/)
-* [Appointment+ by WPMU DEV](https://premium.wpmudev.org/project/appointments-plus/)
+* [Simple Calendar by Moonstone Media](https://wordpress.org/plugins/google-calendar-events/) - 70,000+ active installs
+* [Spider Event Calendar by WebDorado](https://wordpress.org/plugins/spider-event-calendar/) - 30,000+ active installs
+* [Event Calendar WD by WebDorado](https://wordpress.org/plugins/event-calendar-wd/) - 10,000+ active installs
+* [Event Organiser by Stephen Harris](https://wordpress.org/plugins/event-organiser/) - 30,000+ active installs
+* [Calendarize it! by RightHere](http://codecanyon.net/item/calendarize-it-for-wordpress/2568439?ref=cliffpaulick) - 6,600+ sales
+* [Appointment+ by WPMU DEV](https://premium.wpmudev.org/project/appointments-plus/) - 91,000+ downloads
+* [Events+ by WPMU DEV](https://premium.wpmudev.org/project/events-plus/) - 75,000+ downloads
+* [Event Espresso](https://eventespresso.com/third-party-addons/) - 2,000+ active installs of EE4 Decaf
 
 Additional add-on ideas:
 
