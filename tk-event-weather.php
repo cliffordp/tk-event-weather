@@ -35,28 +35,31 @@
 
 
 /** TODO:
-  * look into https://developer.wordpress.org/plugins/the-basics/uninstall-methods/
-    * why it currently states "will also delete its data"
-    * should we add an option to "delete its data" on uninstall?
-  * truncate seconds off all timestamps? -- avoid 10pm hour + 10pm sunset, like http://cl.ly/430H1J0p2R07
-  * use more data from API, like 'summary' text as a title element somewhere
-    * the forecast.io "apparentTemperature" value is the "feels like" temperature
-    * inspiration from http://darkskyapp.com/
-  * handling of time zone offsets that aren't full hours -- e.g. Eucla Australia is UTC+8:45 -- https://en.wikipedia.org/wiki/List_of_UTC_time_offsets#UTC.2B08:45.2C_H.2A -- currently works well enough probably but outputs '4am' instead of '4:45am' -- does it really need to be fixed?
-  * time of day versions of icons (night/day)
-    * https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-174607313
-    * https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-178440095
-  * force debug report to be in English (i.e. not translatable)
-  * Debug Mode enhancements: plugin settings, filters/actions in use
-  * "current" / "right now" if event is currently happening
-  * allow single time instead of hourly (start + end times) to make shortcode more flexible and also maybe applicable for events without an end time (e.g. The Events Calendar)
-  	* could also enable "right now" time if not entered
-  * end time just pick last hour of day if end time is out of bounds
-  * handle multi-day events (e.g. Monday 8pm to Tuesday 2am or Monday 8pm to Wednesday 5pm) -- would be multiple API calls in 1 shortcode -- maybe make it an option
-  * add 'demo' option to output all icons (e.g. for styling/testing)
-  * 12 or 24 hour time format (handled automatically by WP translation?)
-  * weather advisory alerts (only happen in real-time so probably not going to happen)
-  * color options for styling SVGs (e.g. yellow sun with gray cloud) -- not possible with as-is SVGs because they're flattened (no CSS classes to "fill")
+  - cutoff_past_days sanitize callback of 'absint' doesn't allow blanks (i.e. reset to plugin's default setting)
+  - add title/hover information to sunrise/sunset icons
+  - add Customizer option to input a Post ID to default to when viewing the customizer from the plugin's Settings Button (could auto-set it if an Event exists)
+  - look into https://developer.wordpress.org/plugins/the-basics/uninstall-methods/
+    - why it currently states "will also delete its data"
+    - should we add an option to "delete its data" on uninstall?
+  - truncate seconds off all timestamps? -- avoid 10pm hour + 10pm sunset, like http://cl.ly/430H1J0p2R07
+  - use more data from API, like 'summary' text as a title element somewhere
+    - the forecast.io "apparentTemperature" value is the "feels like" temperature
+    - inspiration from http://darkskyapp.com/
+  - handling of time zone offsets that aren't full hours -- e.g. Eucla Australia is UTC+8:45 -- https://en.wikipedia.org/wiki/List_of_UTC_time_offsets#UTC.2B08:45.2C_H.2A -- currently works well enough probably but outputs '4am' instead of '4:45am' -- does it really need to be fixed?
+  - time of day versions of icons (night/day)
+    - https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-174607313
+    - https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-178440095
+  - force debug report to be in English (i.e. not translatable)
+  - Debug Mode enhancements: plugin settings, filters/actions in use
+  - "current" / "right now" if event is currently happening
+  - allow single time instead of hourly (start + end times) to make shortcode more flexible and also maybe applicable for events without an end time (e.g. The Events Calendar)
+  	- could also enable "right now" time if not entered
+  - end time just pick last hour of day if end time is out of bounds
+  - handle multi-day events (e.g. Monday 8pm to Tuesday 2am or Monday 8pm to Wednesday 5pm) -- would be multiple API calls in 1 shortcode -- maybe make it an option
+  - add 'demo' option to output all icons (e.g. for styling/testing)
+  - 12 or 24 hour time format (handled automatically by WP translation?)
+  - weather advisory alerts (only happen in real-time so probably not going to happen)
+  - color options for styling SVGs (e.g. yellow sun with gray cloud) -- not possible with as-is SVGs because they're flattened (no CSS classes to "fill")
   */
 
 
