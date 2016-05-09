@@ -81,11 +81,12 @@ foreach ( $context->weather_hourly as $key => $value ) {
   	
   	$output .= sprintf( ' sunrise">
       <span data-timestamp="%1$d" class="%2$s__time">%3$s</span>
-      <span class="%2$s__icon sunrise">%4$s</span>
+      <span class="%2$s__icon sunrise" title="%4$s">%5$s</span>
       <span>&nbsp;</span>',
       $context->sunrise_sunset['sunrise_timestamp'],
       $context->template_class_name,
   	  TkEventWeather__Functions::timestamp_to_display ( $context->sunrise_sunset['sunrise_timestamp'], $context->utc_offset_hours, __( 'g:i' ) ),
+  	  __( 'Sunrise', 'tk-event-weather' ),
   	  TkEventWeather__Functions::icon_html( 'sunrise' )
     );
     
@@ -99,11 +100,12 @@ foreach ( $context->weather_hourly as $key => $value ) {
   	
   	$output .= sprintf( ' sunset">
       <span data-timestamp="%1$d" class="%2$s__time">%3$s</span>
-      <span class="%2$s__icon sunset">%4$s</span>
+      <span class="%2$s__icon sunset" title="%4$s">%5$s</span>
       <span>&nbsp;</span>',
       $context->sunrise_sunset['sunset_timestamp'],
       $context->template_class_name,
   	  TkEventWeather__Functions::timestamp_to_display ( $context->sunrise_sunset['sunset_timestamp'], $context->utc_offset_hours, __( 'g:i' ) ),
+  	  __( 'Sunset', 'tk-event-weather' ),
   	  TkEventWeather__Functions::icon_html( 'sunset' )
     );
     

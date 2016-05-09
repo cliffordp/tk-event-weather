@@ -37,7 +37,6 @@
 /** TODO:
   - sign up for newsletter
   - add TK's TOS and PP links to Freemius
-  - add title/hover information to sunrise/sunset icons
   - add Customizer option to input a Post ID to default to when viewing the customizer from the plugin's Settings Button (could auto-set it if an Event exists)
   - look into https://developer.wordpress.org/plugins/the-basics/uninstall-methods/
     - why it currently states "will also delete its data"
