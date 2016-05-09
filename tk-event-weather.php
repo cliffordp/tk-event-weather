@@ -89,7 +89,7 @@ define( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE', dirname(__FILE__) . '/includes/v
 
 function tk_event_weather_terms_agreement_text() {
 	return sprintf( __( 'By using this plugin, you agree to %s and %s Terms.', 'tk-event-weather' ),
-		'<a target="_blank" href="http://tourkick.com/terms/">TourKick\'s</a>',
+		'<a target="_blank" href="http://tourkick.com/terms/?utm_source=terms_agreement_text&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather">TourKick\'s</a>',
 		'<a target="_blank" href="https://freemius.com/terms/">Freemius\'</a>'
 	);
 }
