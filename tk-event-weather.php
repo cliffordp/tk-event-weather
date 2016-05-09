@@ -36,7 +36,6 @@
 
 /** TODO:
   - sign up for newsletter
-  - add TK's TOS and PP links to Freemius
   - add Customizer option to input a Post ID to default to when viewing the customizer from the plugin's Settings Button (could auto-set it if an Event exists)
   - look into https://developer.wordpress.org/plugins/the-basics/uninstall-methods/
     - why it currently states "will also delete its data"
@@ -87,6 +86,14 @@ define( 'TK_EVENT_WEATHER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) ); // e.
 // used by core plugin and by add-on implementations of Freemius
 define( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE', dirname(__FILE__) . '/includes/vendor/freemius/start.php' );
 
+
+function tk_event_weather_terms_agreement_text() {
+	return sprintf( __( 'By using this plugin, you agree to %s and %s Terms.', 'tk-event-weather' ),
+		'<a target="_blank" href="http://tourkick.com/terms/">TourKick\'s</a>',
+		'<a target="_blank" href="https://freemius.com/terms/">Freemius\'</a>'
+	);
+}
+
 // Implement Freemius
 //
 // Create a helper function for easy SDK access.
@@ -129,7 +136,7 @@ function tk_event_weather_freemius_custom_connect_message(
   $site_link,
   $freemius_link
 ) {
-  return sprintf(
+  $tk_custom_message = sprintf(
       __fs( 'hey-x' ) . '<br><br>' . __( 'The <strong>%2$s</strong> plugin is ready to go! Want to help make %2$s more awesome? Securely share some data to get the best experience and stay informed.', 'tk-event-weather' ),
       $user_first_name,
       $plugin_title,
@@ -137,6 +144,10 @@ function tk_event_weather_freemius_custom_connect_message(
       $site_link,
       $freemius_link
   );
+  
+  $tk_custom_message .= '<br><small>' . tk_event_weather_terms_agreement_text() . '</small>';
+  
+  return $tk_custom_message;
 }
 tk_event_weather_freemius()->add_filter( 'connect_message', 'tk_event_weather_freemius_custom_connect_message', 10, 6 );
 
