@@ -450,9 +450,9 @@ TK Event Weather -- Google Maps Geocoding API -- JSON Data
     	// cutoff_past
     	// strtotime date relative to $weather_first_hour_timestamp
     	if ( ! empty( $atts['cutoff_past'] ) ) {
-    	  $cutoff_past = $atts['cutoff_past'];
+    		$cutoff_past = $atts['cutoff_past'];
     	} else {
-      	$cutoff_past = '';
+			$cutoff_past = '';
     	}
     	
       if ( empty( $cutoff_past ) ) { // not set or set to zero (which means "no limit" per plugin option)
@@ -546,9 +546,9 @@ TK Event Weather -- Google Maps Geocoding API -- JSON Data
     	// cutoff_future
     	// strtotime date relative to $end_time_timestamp
     	if ( ! empty( $atts['cutoff_future'] ) ) {
-    	  $cutoff_future = $atts['cutoff_future'];
+    		$cutoff_future = $atts['cutoff_future'];
     	} else {
-      	$cutoff_future = '';
+      		$cutoff_future = '';
     	}
     	
       if ( empty( $cutoff_future ) ) { // not set or set to zero (which means "no limit" per plugin option)
@@ -1658,7 +1658,7 @@ TK Event Weather -- Forecast.io API -- JSON Data
     	
     	// if Debug Mode is true, set $debug_vars to true for admins only
     	if ( ! empty( $debug ) && current_user_can( 'edit_theme_options' ) ) {
-      	// var_dump( get_defined_vars() ); // uncomment if you REALLY want to display this information
+			// var_dump( get_defined_vars() ); // uncomment if you REALLY want to display this information
     	}
     	
     	

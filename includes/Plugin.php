@@ -210,7 +210,7 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
     				'type'              => 'option',
     				'capability'        => 'edit_theme_options',
     				'default'           => '',
-    				'sanitize_callback' => 'absint',
+    				'sanitize_callback' => array( 'TkEventWeather__Functions', 'sanitize_absint_allow_blank' ),
     			));
     			
     			$wp_customize->add_control( self::$customizer_flag . '_cutoff_past_days_control', array(
@@ -226,7 +226,7 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
     				'type'              => 'option',
     				'capability'        => 'edit_theme_options',
     				'default'           => '',
-    				'sanitize_callback' => 'absint',
+    				'sanitize_callback' => array( 'TkEventWeather__Functions', 'sanitize_absint_allow_blank' ),
     			));
     			
     			$wp_customize->add_control( self::$customizer_flag . '_cutoff_future_days_control', array(
@@ -274,7 +274,7 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
     				'type'              => 'option',
     				'capability'        => 'edit_theme_options',
     				'default'           => '',
-    				'sanitize_callback' => 'absint',
+    				'sanitize_callback' => array( 'TkEventWeather__Functions', 'sanitize_absint_allow_blank' ),
     			));
     			
     			$wp_customize->add_control( self::$customizer_flag . '_transients_expiration_hours_control', array(

@@ -35,7 +35,8 @@
 
 
 /** TODO:
-  - cutoff_past_days sanitize callback of 'absint' doesn't allow blanks (i.e. reset to plugin's default setting)
+  - sign up for newsletter
+  - add TK's TOS and PP links to Freemius
   - add title/hover information to sunrise/sunset icons
   - add Customizer option to input a Post ID to default to when viewing the customizer from the plugin's Settings Button (could auto-set it if an Event exists)
   - look into https://developer.wordpress.org/plugins/the-basics/uninstall-methods/

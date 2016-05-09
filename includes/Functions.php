@@ -87,6 +87,7 @@ class TkEventWeather__Functions {
     if( ! is_array( $array )
       || empty( $array )
       || ! isset( $array[$key] ) // use instead of array_key_exists()
+      || '' === $array[$key] // to allow resetting an option back to its blank default
     ) {
       $result = $fallback;
     } else {
@@ -290,6 +291,17 @@ class TkEventWeather__Functions {
   public static function remove_all_whitespace( $input ) {
     return preg_replace( '/\s+/', '', $input );
   }
+  	
+  	
+	public static function sanitize_absint_allow_blank( $input ) {
+		if ( 0 === $input || '0' === $input ) {
+			return 0;
+		} elseif ( 0 === absint( $input ) ) {
+			return '';
+		} else {
+			return absint( $input );
+		}
+	}
   	
   	
   	// same as https://developer.wordpress.org/reference/functions/sanitize_key/ except without strlolower()
