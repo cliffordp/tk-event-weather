@@ -4,8 +4,8 @@ Tags: calendars, celsius, classes, concerts, events, fahrenheit, forecast, local
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.3.0
-Tested up to: 4.5.1
-Stable tag: 1.2.1
+Tested up to: 4.5.2
+Stable tag: 1.2.2
 
 Display beautiful, accurate, and free weather forecasts between a start and end time on the same day. Perfect for event calendars.
 
@@ -153,6 +153,13 @@ Here are quotes from the [Forecast.io API docs](https://developer.forecast.io/do
 
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
+
+= Version 1.2.2 =
+* May 9, 2016
+* Added Title text to sunrise and sunset icons (text displays on hover, like other icons' Title text) in both Horizontal and Vertical templates.
+* Add-on updates can now be detected and automatically updated (updated to Freemius v1.1.8.1).
+* Plugin settings that allow numerical entry (e.g. Past Cutoff Days) can now be "blanked out" back to their defaults. Fixes issue of blank out resulting in zero value (unlimited days) due to absint() evaluating to zero for blank text input.
+* Added links to TourKick's (my) and Freemius' (vendor) Terms (includes Privacy Policies) and "By using this plugin, you agree to these Terms" sort of text at the Freemius opt-in page and the plugin settings greet box area.
 
 = Version 1.2.1 =
 * April 27, 2016
