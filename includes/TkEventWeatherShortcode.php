@@ -517,7 +517,12 @@ TK Event Weather -- Google Maps Geocoding API -- JSON Data
     	
     	// if Event Start and End times are the same
     	if( $weather_first_hour_timestamp == $end_time_timestamp ) {
-      	return TkEventWeather__Functions::invalid_shortcode_message( 'Please make sure Event Start Time and Event End Time are not the same' );
+      		return TkEventWeather__Functions::invalid_shortcode_message( 'Please make sure Event Start Time and Event End Time are not the same' );
+    	}
+    	
+    	// if Event End time is before Start time
+    	if( $weather_first_hour_timestamp > $end_time_timestamp ) {
+      		return TkEventWeather__Functions::invalid_shortcode_message( 'Event Start Time must be earlier than Event End Time' );
     	}
     	
     	$template_data['end_time_timestamp'] = $end_time_timestamp;
