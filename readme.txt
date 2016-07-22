@@ -156,6 +156,10 @@ Here are quotes from the [Forecast.io API docs](https://developer.forecast.io/do
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
 
+= Version 1.2.3.1 =
+* July 22, 2016
+* Version bump
+
 = Version 1.2.3 =
 * July 22, 2016
 * Added extra data validation check for when shortcode's Event End Time is earlier than the Event Start Time.
