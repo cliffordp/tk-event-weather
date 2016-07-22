@@ -4,14 +4,14 @@ Tags: calendars, celsius, classes, concerts, events, fahrenheit, forecast, local
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.3.0
-Tested up to: 4.5.2
-Stable tag: 1.2.2
+Tested up to: 4.6
+Stable tag: 1.2.3
 
-Display beautiful, accurate, and free weather forecasts between a start and end time on the same day. Perfect for event calendars.
+Display beautiful, accurate, and free hourly weather forecasts between a start and end time on the same day. Perfect for event calendars.
 
 == Description ==
 
-Display beautiful, accurate, and free weather forecasts between a start and end time on the same day. Perfect for event calendars.
+Display beautiful, accurate, and free hourly weather forecasts between a start and end time on the same day. Perfect for event calendars. Includes sunrise, sunset, temperature, wind speed and direction, and is very customizable.
 
 = Highlights =
 
@@ -37,11 +37,13 @@ I am considering making add-ons for the following event calendars:
 * [All-in-One Event Calendar by Timely](https://wordpress.org/plugins/all-in-one-event-calendar/) - 100,000+ active installs
 * [Simple Calendar by Moonstone Media](https://wordpress.org/plugins/google-calendar-events/) - 70,000+ active installs
 * [Spider Event Calendar by WebDorado](https://wordpress.org/plugins/spider-event-calendar/) - 30,000+ active installs
-* [Event Calendar WD by WebDorado](https://wordpress.org/plugins/event-calendar-wd/) - 10,000+ active installs
+* [My Calendar by Joe Dolson](https://wordpress.org/plugins/my-calendar/) - 30,000+ active installs
 * [Event Organiser by Stephen Harris](https://wordpress.org/plugins/event-organiser/) - 30,000+ active installs
-* [Calendarize it! by RightHere](http://codecanyon.net/item/calendarize-it-for-wordpress/2568439?ref=cliffpaulick) - 6,600+ sales
-* [Appointment+ by WPMU DEV](https://premium.wpmudev.org/project/appointments-plus/) - 91,000+ downloads
-* [Events+ by WPMU DEV](https://premium.wpmudev.org/project/events-plus/) - 75,000+ downloads
+* [EventOn by ashanjay](https://codecanyon.net/item/eventon-wordpress-event-calendar-plugin/1211017?ref=cliffpaulick) - 21,000+ sales
+* [Event Calendar WD by WebDorado](https://wordpress.org/plugins/event-calendar-wd/) - 10,000+ active installs
+* [Calendarize it! by RightHere](http://codecanyon.net/item/calendarize-it-for-wordpress/2568439?ref=cliffpaulick) - 7,000+ sales
+* [Appointment+ by WPMU DEV](https://premium.wpmudev.org/project/appointments-plus/) - 97,000+ downloads
+* [Events+ by WPMU DEV](https://premium.wpmudev.org/project/events-plus/) - 77,000+ downloads
 * [Event Espresso](https://eventespresso.com/third-party-addons/) - 2,000+ active installs of EE4 Decaf
 
 Additional add-on ideas:
@@ -153,6 +155,10 @@ Here are quotes from the [Forecast.io API docs](https://developer.forecast.io/do
 
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
+
+= Version 1.2.3 =
+* July 22, 2016
+* Added extra data validation check for when shortcode's Event End Time is earlier than the Event Start Time.
 
 = Version 1.2.2 =
 * May 9, 2016
