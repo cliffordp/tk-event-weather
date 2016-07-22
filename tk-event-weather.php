@@ -117,7 +117,6 @@ function tk_event_weather_freemius() {
                     'slug' => 'options-general.php',
                 ),
             ),
-            'secret_key' => 'sk_n.:w-n$(!5TA=%Zw5Zo8?<06n_l}s',
         ) );
     }
 
