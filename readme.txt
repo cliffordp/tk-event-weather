@@ -5,7 +5,7 @@ License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.3.0
 Tested up to: 4.6
-Stable tag: 1.2.3.2
+Stable tag: 1.2.3.3
 
 Display beautiful, accurate, and free hourly weather forecasts between a start and end time on the same day. Perfect for event calendars.
 
@@ -113,6 +113,14 @@ E) Just like Example D but with Location shortcode argument (a full address) -- 
 
 `[tk_event_weather location="1600 Pennsylvania Ave NW, Washington, DC 20500, USA" start_time="1454362200" end_time="1454381100"]`
 
+F) Displaying more than one day in a sequence (multiple API calls but appear all together), [like this screenshot](https://cl.ly/1X430L0g0z2c)
+`[tk_event_weather lat_long='28.5549259,-81.3342398' start_time='2016-08-27T22:00:00-04:00' end_time='2016-08-27T23:59:00-04:00' class='tkeventw-myclass']
+
+[tk_event_weather lat_long='28.5549259,-81.3342398' start_time='2016-08-28T00:00:00-04:00' end_time='2016-08-28T04:30:00-04:00' class='tkeventw-myclass' forecast_io_credit_link_off='true']`
+
+And then add some custom CSS, like this:
+`.tkeventw-myclass { display: inline-block; vertical-align: top; }`
+
 = Will this plugin work with my theme? =
 
 This plugin will work with any properly-coded WordPress theme. Free styling / customization help to integrate with your theme is not available from the plugin author.
@@ -155,6 +163,11 @@ Here are quotes from the [Forecast.io API docs](https://developer.forecast.io/do
 
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
+
+= Version 1.2.3.3 =
+* August 24, 2016
+* Fix `class` shortcode parameter (existed before but was not implemented into the output)
+* Update Freemius SDK from v1.1.9 to v1.2.0
 
 = Version 1.2.3.2 =
 * July 22, 2016
