@@ -1648,6 +1648,9 @@ TK Event Weather -- Forecast.io API -- JSON Data
       
     	// class
     	$class = sanitize_html_class( $atts['class'] );
+    	if ( ! empty( $class ) ) {
+	    	$class = ' ' . $class;
+    	}
     	
     	$display_template = TkEventWeather__Functions::remove_all_whitespace( strtolower( $atts['template'] ) );
     	
@@ -1676,10 +1679,14 @@ TK Event Weather -- Forecast.io API -- JSON Data
       	*/
     	
     	// cannot do <style> tags inside template because it will break any open div (e.g. wrapper div)
-    	$output .= '<div class="tk-event-weather__wrapper">';
+    	$output .= sprintf( '<div class="tk-event-weather__wrapper%s">',
+    		$class
+    	);
       $output .= PHP_EOL;
       
-      $output .= sprintf( '<div class="tk-event-weather-template %s">', $template_data['template_class_name'] );
+      $output .= sprintf( '<div class="tk-event-weather-template %s">',
+      	$template_data['template_class_name']
+      );
       $output .= PHP_EOL;
       
       	// https://github.com/GaryJones/Gamajo-Template-Loader/issues/13#issuecomment-196046201
