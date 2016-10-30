@@ -36,13 +36,17 @@
 
 /** TODO:
 	- sign up for newsletter
+	- refresh screenshots
+	- delete TkEventWeather__Plugin::$customizer_flag array keys like ^forecast_io%
+	- https://github.com/cliffordp/tk-event-weather/issues/9 -- Add option to query weather API for more than a single day for events that span more than 1 calendar day. NOTE: for the current version of the weather API, each calendar day costs 1 API request. For example, an event spanning Jan 1 at 10pm through Jan 3 at 7am will cost 3 API calls. -- maybe make it an option
+	- Add option for text to display before shortcode output.
 	- add Customizer option to input a Post ID to default to when viewing the customizer from the plugin's Settings Button (could auto-set it if an Event exists)
 	- look into https://developer.wordpress.org/plugins/the-basics/uninstall-methods/
 		- why it currently states "will also delete its data"
 		- should we add an option to "delete its data" on uninstall?
 	- truncate seconds off all timestamps? -- avoid 10pm hour + 10pm sunset, like http://cl.ly/430H1J0p2R07
 	- use more data from API, like 'summary' text as a title element somewhere
-		- the forecast.io "apparentTemperature" value is the "feels like" temperature
+		- the Dark Sky API "apparentTemperature" value is the "feels like" temperature
 		- inspiration from http://darkskyapp.com/
 	- handling of time zone offsets that aren't full hours -- e.g. Eucla Australia is UTC+8:45 -- https://en.wikipedia.org/wiki/List_of_UTC_time_offsets#UTC.2B08:45.2C_H.2A -- currently works well enough probably but outputs '4am' instead of '4:45am' -- does it really need to be fixed?
 	- time of day versions of icons (night/day)
@@ -54,7 +58,6 @@
 	- allow single time instead of hourly (start + end times) to make shortcode more flexible and also maybe applicable for events without an end time (e.g. The Events Calendar)
 		- could also enable "right now" time if not entered
 	- end time just pick last hour of day if end time is out of bounds
-	- handle multi-day events (e.g. Monday 8pm to Tuesday 2am or Monday 8pm to Wednesday 5pm) -- would be multiple API calls in 1 shortcode -- maybe make it an option
 	- add 'demo' option to output all icons (e.g. for styling/testing)
 	- 12 or 24 hour time format (handled automatically by WP translation?)
 	- weather advisory alerts (only happen in real-time so probably not going to happen)

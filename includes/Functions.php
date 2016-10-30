@@ -16,12 +16,12 @@ class TkEventWeather__Functions {
 	}
 	
 	/**
-		*
-		* Views / Templates
-		* Reference: https://pippinsplugins.com/template-file-loaders-plugins/
-		* Reference: https://github.com/GaryJones/Gamajo-Template-Loader/tree/template-data
-		*
-		*/
+	*
+	* Views / Templates
+	* Reference: https://pippinsplugins.com/template-file-loaders-plugins/
+	* Reference: https://github.com/GaryJones/Gamajo-Template-Loader/tree/template-data
+	*
+	*/
 	
 	public static function new_template_loader() {
 		return new TkEventWeather__TemplateLoader();
@@ -178,17 +178,17 @@ class TkEventWeather__Functions {
 		return $result;
 	}
 	
-	// START Forecast.io valid options
-	// @link https://developer.forecast.io/docs/v2
+	// START Dark Sky valid options
+	// @link https://darksky.net/dev/docs
 	
 	// may select only one per API call
-	public static function forecast_io_option_units( $prepend_empty = 'false' ) {
+	public static function darksky_option_units( $prepend_empty = 'false' ) {
 		$result = array(
 			'auto'	=> __( 'Auto (Default)', 'tk-event-weather' ),
-			'ca'		=> __( 'Canada', 'tk-event-weather' ),
-			'si'		=> __( 'SI (International System of Units)', 'tk-event-weather' ),
+			'ca'	=> __( 'Canada', 'tk-event-weather' ),
+			'si'	=> __( 'SI (International System of Units)', 'tk-event-weather' ),
 			'uk2'	=> __( 'UK', 'tk-event-weather' ),
-			'us'		=> __( 'USA', 'tk-event-weather' ),
+			'us'	=> __( 'USA', 'tk-event-weather' ),
 		);
 		
 		if ( 'true' == $prepend_empty ) {
@@ -199,14 +199,14 @@ class TkEventWeather__Functions {
 	}
 	
 	// may select one or multiple (but not all since that would be valid but return no data)
-	public static function forecast_io_option_exclude( $prepend_empty = 'false' ) {
+	public static function darksky_option_exclude( $prepend_empty = 'false' ) {
 		$result = array(
 			'currently'	=> __( 'Currently', 'tk-event-weather' ),
 			'minutely'	=> __( 'Minutely', 'tk-event-weather' ),
-			'hourly'		=> __( 'Hourly', 'tk-event-weather' ),
-			'daily'			=> __( 'Daily', 'tk-event-weather' ),
-			'alerts'		=> __( 'Alerts', 'tk-event-weather' ),
-			'flags'			=> __( 'Flags', 'tk-event-weather' ),
+			'hourly'	=> __( 'Hourly', 'tk-event-weather' ),
+			'daily'		=> __( 'Daily', 'tk-event-weather' ),
+			'alerts'	=> __( 'Alerts', 'tk-event-weather' ),
+			'flags'		=> __( 'Flags', 'tk-event-weather' ),
 		);
 		
 		if ( 'true' == $prepend_empty ) {
@@ -216,14 +216,14 @@ class TkEventWeather__Functions {
 		return $result;
 	}
 	//
-	// END Forecast.io valid options
+	// END Dark Sky valid options
 	//
 	
 	
 	// UTC Offset options
 	public static function valid_utc_offset_types( $prepend_empty = 'false' ) {
 		$result = array(
-			'api'			=> __( 'From API (i.e. Location-specific)', 'tk-event-weather' ),
+			'api'		=> __( 'From API (i.e. Location-specific)', 'tk-event-weather' ),
 			'wordpress' => __( 'From WordPress General Settings', 'tk-event-weather' ),
 		);
 		
@@ -251,13 +251,13 @@ class TkEventWeather__Functions {
 		return $result;
 	}
 	
-	// to comply with https://developer.forecast.io/
-	public static function forecast_io_credit_link() {
-		$url = 'http://forecast.io/';
+	// to comply with https://developer.darksky.net/
+	public static function darksky_credit_link() {
+		$url = 'https://darksky.net/poweredby/';
 		
-		$anchor_text = __( 'Powered by Forecast', 'tk-event-weather' );
+		$anchor_text = __( 'Powered by Dark Sky', 'tk-event-weather' );
 		
-		$result = sprintf( '<div class="tk-event-weather__forecast-io-credit">
+		$result = sprintf( '<div class="tk-event-weather__dark-sky-credit">
 			<a href="%s" target="_blank">%s</a>
 		</div>',
 			$url,
@@ -273,11 +273,11 @@ class TkEventWeather__Functions {
 	// @link http://php.net/manual/en/datetime.formats.relative.php -- plural "s" is optional for all except "weeks" so just used plural for all
 	public static function valid_strtotime_units( $prepend_empty = 'false' ) {
 		$result = array(
-			'hours'	=> __( 'Hours', 'tk-event-weather' ),
-			'days'	=> __( 'Days (Default)', 'tk-event-weather' ),
-			'weeks'	=> __( 'Weeks', 'tk-event-weather' ),
-			'months' => __( 'Months', 'tk-event-weather' ),
-			'years'	=> __( 'Years', 'tk-event-weather' ),
+			'hours'		=> __( 'Hours', 'tk-event-weather' ),
+			'days'		=> __( 'Days (Default)', 'tk-event-weather' ),
+			'weeks'		=> __( 'Weeks', 'tk-event-weather' ),
+			'months'	=> __( 'Months', 'tk-event-weather' ),
+			'years'		=> __( 'Years', 'tk-event-weather' ),
 		);
 		
 		if ( 'true' == $prepend_empty ) {
@@ -385,7 +385,7 @@ class TkEventWeather__Functions {
 	
 	/**
 		* Verify string is valid latitude,longitude
-		* Forecast.io does not allow certain lat,long -- such as 0,0
+		* Dark Sky does not allow certain lat,long -- such as 0,0
 		* 
 		* @since 1.0.0
 		* 
@@ -419,7 +419,7 @@ class TkEventWeather__Functions {
 		$latitude = floatval( $lat_long_array[0] );
 		$longitude = floatval( $lat_long_array[1] );
 		
-		// is not valid Forecast.io lat or long
+		// is not valid Dark Sky lat or long
 		if(
 			empty( $latitude ) && empty( $longitude ) // e.g. 0.0000,0.0000
 		) {
@@ -484,7 +484,7 @@ class TkEventWeather__Functions {
 		// For the latter format, if no timezone is present, local time (at the provided latitude and longitude) is assumed.
 /*
 		@link https://regex101.com/r/mL0xZ4/1
-		Should match ISO 8601 datetime for Forecast.io API:
+		Should match ISO 8601 datetime for Dark Sky API:
 		[YYYY]-[MM]-[DD]T[HH]:[MM]:[SS]
 		with an optional time zone formatted as Z for UTC time or {+,-}[HH]:[MM] (with or without separating colon) for an offset
 		
@@ -997,7 +997,7 @@ class TkEventWeather__Functions {
 	}
 		
 	public static function temperature_units( $input ) {
-		if( empty( $input ) || ! array_key_exists( $input, self::forecast_io_option_units() ) ) {
+		if( empty( $input ) || ! array_key_exists( $input, self::darksky_option_units() ) ) {
 			return false;
 		}
 		
@@ -1037,7 +1037,7 @@ class TkEventWeather__Functions {
 		*
 	**/
 	public static function wind_speed_units( $input ) {
-		if ( empty( $input ) || ! array_key_exists( $input, self::forecast_io_option_units() ) ) {
+		if ( empty( $input ) || ! array_key_exists( $input, self::darksky_option_units() ) ) {
 			return false;
 		}
 		

@@ -26,7 +26,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 			if( empty( $plugin_options ) ) {
 				return TkEventWeather__Functions::invalid_shortcode_message( 'Please complete the initial setup' );
 			} else {
-				$api_key_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'forecast_io_api_key' );
+				$api_key_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'darksky_api_key' );
 			
 				$gmaps_api_key_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'google_maps_api_key' );
 				
@@ -35,7 +35,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 				$cutoff_past_days_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'cutoff_past_days', 30 );
 				$cutoff_future_days_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'cutoff_future_days', 365 );
 				
-				$units_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'forecast_io_units', 'auto' );
+				$units_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'darksky_units', 'auto' );
 				
 				$transients_off_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'transients_off' );
 				$transients_expiration_hours_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'transients_expiration_hours', 12 );
@@ -47,7 +47,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 				//$icons_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'icons' );
 				
 				$plugin_credit_link_on_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'plugin_credit_link_on' );
-				$forecast_io_credit_link_off_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'forecast_io_credit_link_off' );
+				$darksky_credit_link_off_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'darksky_credit_link_off' );
 				
 				$debug_on_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'debug_on' );
 				
@@ -84,7 +84,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 				// time constraints in strtotime relative dates
 				'cutoff_past'									=> $cutoff_past_days_option,
 				'cutoff_future'								=> $cutoff_future_days_option,
-				// API options -- see https://developer.forecast.io/docs/v2
+				// API options -- see https://darksky.net/dev/docs/time-machine
 				'exclude'											=> '', // comma-separated. Default/fallback is $exclude_default
 				'transients_off'								=> $transients_off_option, // "true" is the only valid value
 				'transients_expiration'				=> $transients_expiration_hours_option,
@@ -95,7 +95,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 				'sunrise_sunset_off'						=> $sunrise_sunset_off_option, // "true" is the only valid value
 				'icons'												=> '',
 				'plugin_credit_link_on'				=> $plugin_credit_link_on_option, // "true" is the only valid value
-				'forecast_io_credit_link_off'	=> $forecast_io_credit_link_off_option, // anything !empty()
+				'darksky_credit_link_off'	=> $darksky_credit_link_off_option, // anything !empty()
 				// HTML
 				'class'												=> '', // custom class
 				'template'											=> $display_template_option,
@@ -134,7 +134,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 			$api_key = sanitize_key( $atts['api_key'] );
 			
 			if( empty( $api_key ) ) {
-					return TkEventWeather__Functions::invalid_shortcode_message( 'Please enter your Forecast.io API Key' );
+					return TkEventWeather__Functions::invalid_shortcode_message( 'Please enter your Dark Sky API Key' );
 			}
 			
 			// manually entered override custom field
@@ -151,7 +151,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 			
 			$template_data['post_id'] = $post_id;
 			
-			// the variable to send to Forecast.io API -- to be built via the code below
+			// the variable to send to Dark Sky API -- to be built via the code below
 			$latitude_longitude = '';
 			
 			// only used temporarily if separate lat and long need to be combined into $latitude_longitude
@@ -477,7 +477,7 @@ TK Event Weather -- Google Maps Geocoding API -- JSON Data
 			
 			// max 60 years in the past, per API docs
 			if( strtotime( '-60 years' ) > $weather_first_hour_timestamp ) {
-				return TkEventWeather__Functions::invalid_shortcode_message( 'Event Start Time needs to be more recent than 60 years in the past, per Forecast.io API docs,' );
+				return TkEventWeather__Functions::invalid_shortcode_message( 'Event Start Time needs to be more recent than 60 years in the past, per Dark Sky API docs,' );
 			}
 			
 			// End Time
@@ -578,7 +578,7 @@ TK Event Weather -- Google Maps Geocoding API -- JSON Data
 			
 			// max 10 years future, per API docs
 			if( $end_time_timestamp > strtotime( '+10 years' ) ) {
-				return TkEventWeather__Functions::invalid_shortcode_message( 'Event End Time needs to be less than 10 years in the future, per Forecast.io API docs,' );
+				return TkEventWeather__Functions::invalid_shortcode_message( 'Event End Time needs to be less than 10 years in the future, per Dark Sky API docs,' );
 			}
 			
 			
@@ -592,16 +592,16 @@ TK Event Weather -- Google Maps Geocoding API -- JSON Data
 			// units
 			$units = TkEventWeather__Functions::remove_all_whitespace( strtolower( $atts['units'] ) );
 			
-			$units_default = apply_filters( 'tk_event_weather_forecast_io_units_default', $units_option );
+			$units_default = apply_filters( 'tk_event_weather_darksky_units_default', $units_option );
 			
-			if( ! array_key_exists( $units, TkEventWeather__Functions::forecast_io_option_units() ) ) {
+			if( ! array_key_exists( $units, TkEventWeather__Functions::darksky_option_units() ) ) {
 				$units = $units_default;
 			}
 			
 			// exclude
 			$exclude = '';
 			
-			$exclude_default = apply_filters( 'tk_event_weather_forecast_io_exclude_default', 'minutely,alerts' );
+			$exclude_default = apply_filters( 'tk_event_weather_darksky_exclude_default', 'minutely,alerts' );
 			
 			// shortcode argument's value
 			$exclude_arg = TkEventWeather__Functions::remove_all_whitespace( strtolower( $atts['exclude'] ) );
@@ -615,7 +615,7 @@ TK Event Weather -- Google Maps Geocoding API -- JSON Data
 				
 				if( is_array( $exclude_arg_array ) ) {
 					sort( $exclude_arg_array );
-					$possible_excludes = TkEventWeather__Functions::forecast_io_option_exclude();
+					$possible_excludes = TkEventWeather__Functions::darksky_option_exclude();
 					
 					foreach ( $exclude_arg_array as $key => $value ) {
 						// if valid 'exclude' then keep it, else ignore it
@@ -676,7 +676,7 @@ TK Event Weather -- Google Maps Geocoding API -- JSON Data
 			
 			
 			// Make API call if nothing from Transients
-			// e.g. https://api.forecast.io/forecast/APIKEY/LATITUDE,LONGITUDE,TIME
+			// e.g. https://api.darksky.net/forecast/APIKEY/LATITUDE,LONGITUDE,TIME
 			// if invalid API key, returns 400 Bad Request
 			// API does not want any querying wrapped in brackets, as may be shown in the documentation -- brackets indicates OPTIONAL parameters, not to actually wrap in brackets for your request
 			// 
@@ -688,9 +688,9 @@ TK Event Weather -- Google Maps Geocoding API -- JSON Data
 			* Example:
 			* Weather for the White House on Feb 1 at 4:30pm Eastern Time (as of 2016-01-25T03:01:09-06:00)
 			* API call in ISO 8601 format
-			* https://api.forecast.io/forecast/_______API_KEY_______/36.281445,-75.794662,2016-02-01T16:30:00-05:00?units=auto&exclude=alerts,daily,flags,hourly,minutely
+			* https://api.darksky.net/forecast/_______API_KEY_______/36.281445,-75.794662,2016-02-01T16:30:00-05:00?units=auto&exclude=alerts,daily,flags,hourly,minutely
 			* API call in Unix Timestamp format (same result)
-			* https://api.forecast.io/forecast/_______API_KEY_______/36.281445,-75.794662,1454362200?units=auto&exclude=alerts,daily,flags,hourly,minutely
+			* https://api.darksky.net/forecast/_______API_KEY_______/36.281445,-75.794662,1454362200?units=auto&exclude=alerts,daily,flags,hourly,minutely
 			* result:
 <!--
 TK Event Weather JSON Data
@@ -749,7 +749,7 @@ TK Event Weather JSON Data
 			if ( empty( $api_data ) ) {
 				delete_transient( $transient_name ); // delete any expired transient by this name
 				
-				$request_uri = sprintf( 'https://api.forecast.io/forecast/%s/%s,%s',
+				$request_uri = sprintf( 'https://api.darksky.net/forecast/%s/%s,%s',
 					$api_key,
 					$latitude_longitude,
 					$start_time_timestamp
@@ -776,38 +776,38 @@ TK Event Weather JSON Data
 				
 				// @link https://developer.wordpress.org/reference/functions/is_wp_error/
 				if ( is_wp_error( $request ) ) {
-					return TkEventWeather__Functions::invalid_shortcode_message( 'Forecast.io API request sent but resulted in a WordPress Error. Please troubleshoot' );
+					return TkEventWeather__Functions::invalid_shortcode_message( 'Dark Sky API request sent but resulted in a WordPress Error. Please troubleshoot' );
 				}
 				
 				// @link https://developer.wordpress.org/reference/functions/wp_remote_retrieve_body/
 				$body = wp_remote_retrieve_body( $request );
 				
 				if( empty( $body ) ) {
-					return TkEventWeather__Functions::invalid_shortcode_message( 'Forecast.io API request sent but nothing received. Please troubleshoot' );
+					return TkEventWeather__Functions::invalid_shortcode_message( 'Dark Sky API request sent but nothing received. Please troubleshoot' );
 				}
 				
 				$api_data = json_decode( $body );
 				
 				if( empty( $api_data ) ) {
-					return TkEventWeather__Functions::invalid_shortcode_message( 'Forecast.io API response received but some sort of data inconsistency. Please troubleshoot' );
+					return TkEventWeather__Functions::invalid_shortcode_message( 'Dark Sky API response received but some sort of data inconsistency. Please troubleshoot' );
 				}
 				
 				if( ! empty( $api_data->error ) ) {
-					return TkEventWeather__Functions::invalid_shortcode_message( 'Forecast.io API responded with an error: ' . $api_data->error . ' - Please troubleshoot' );
+					return TkEventWeather__Functions::invalid_shortcode_message( 'Dark Sky API responded with an error: ' . $api_data->error . ' - Please troubleshoot' );
 				}
 				
 				if( empty( $api_data->hourly->data ) ) {
-					return TkEventWeather__Functions::invalid_shortcode_message( 'Forecast.io API responded but without hourly data. Please troubleshoot' );
+					return TkEventWeather__Functions::invalid_shortcode_message( 'Dark Sky API responded but without hourly data. Please troubleshoot' );
 				}
 				
 		// inside here because if using transient, $request will not be set
 		if ( ! empty( $debug ) ) {
-			$output .= sprintf( '<!--%1$sTK Event Weather -- Forecast.io API -- Request URI%1$s%2$s%1$s-->%1$s', PHP_EOL, $request_uri );
+			$output .= sprintf( '<!--%1$sTK Event Weather -- Dark Sky API -- Request URI%1$s%2$s%1$s-->%1$s', PHP_EOL, $request_uri );
 		}
 /* Example Debug Output:
 <!--
-TK Event Weather -- Forecast.io API -- Request URI
-https://api.forecast.io/forecast/___API_KEY___/38.897676,-77.036530,1464604200?units=auto&exclude=minutely,alerts
+TK Event Weather -- Dark Sky API -- Request URI
+https://api.darksky.net/forecast/___API_KEY___/38.897676,-77.036530,1464604200?units=auto&exclude=minutely,alerts
 -->
 */
 		
@@ -821,7 +821,7 @@ https://api.forecast.io/forecast/___API_KEY___/38.897676,-77.036530,1464604200?u
 			}
 			
 /*
-	Example var_dump($request) when bad data, like https://api.forecast.io/forecast/___API_KEY___/0.000000,0.000000,1466199900?exclude=minutely
+	Example var_dump($request) when bad data, like https://api.darksky.net/forecast/___API_KEY___/0.000000,0.000000,1466199900?exclude=minutely
 object(stdClass)[100]
 public 'latitude' => int 0
 public 'longitude' => int 0
@@ -840,12 +840,12 @@ public 'flags' =>
 			
 			// now $api_data is set for sure (better be to have gotten this far)
 			if ( ! empty( $debug ) ) {
-			$output .= sprintf( '<!--%1$sTK Event Weather -- Forecast.io API -- JSON Data%1$s%2$s%1$s-->%1$s', PHP_EOL, json_encode( $api_data, JSON_PRETTY_PRINT ) ); // requires PHP 5.4
+			$output .= sprintf( '<!--%1$sTK Event Weather -- Dark Sky API -- JSON Data%1$s%2$s%1$s-->%1$s', PHP_EOL, json_encode( $api_data, JSON_PRETTY_PRINT ) ); // requires PHP 5.4
 			}
 			
 /* Example Debug Output:
 <!--
-TK Event Weather -- Forecast.io API -- JSON Data
+TK Event Weather -- Dark Sky API -- JSON Data
 {
 		"latitude": 38.897676,
 		"longitude": -77.03653,
@@ -1698,8 +1698,8 @@ TK Event Weather -- Forecast.io API -- JSON Data
 					$output .= TkEventWeather__Functions::plugin_credit_link();
 				}
 				
-				if ( empty( $atts['forecast_io_credit_link_off'] ) ) {
-					$output .= TkEventWeather__Functions::forecast_io_credit_link();
+				if ( empty( $atts['darksky_credit_link_off'] ) ) {
+					$output .= TkEventWeather__Functions::darksky_credit_link();
 				}
 			
 			$output .= '</div>'; // .tk-event-weather-template

@@ -11,10 +11,10 @@
   margin: 2em auto;
 }
 
-/* TK Event Weather and Forecast.io credit links */
+/* TK Event Weather and Dark Sky credit links */
 
 .tk-event-weather__plugin-credit,
-.tk-event-weather__forecast-io-credit {
+.tk-event-weather__dark-sky-credit {
   line-height: 1.5;
   font-size: 50%;
 }

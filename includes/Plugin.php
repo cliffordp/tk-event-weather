@@ -155,20 +155,20 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 					)
 				);
 					
-					// Forecast.io API Key
-					// https://developer.wordpress.org/reference/functions/sanitize_key/ -- Lowercase alphanumeric characters, dashes and underscores are allowed. -- which matches Forecast.io's API Key pattern
-					$wp_customize->add_setting( self::$customizer_flag . '[forecast_io_api_key]', array(
+					// Dark Sky API Key
+					// https://developer.wordpress.org/reference/functions/sanitize_key/ -- Lowercase alphanumeric characters, dashes and underscores are allowed. -- which matches Dark Sky's API Key pattern
+					$wp_customize->add_setting( self::$customizer_flag . '[darksky_api_key]', array(
 						'type'							=> 'option',
 						'capability'				=> 'edit_theme_options',
 						'default'					=> '',
 						'sanitize_callback' => 'sanitize_key',
 					));
 					
-					$wp_customize->add_control( self::$customizer_flag . '_forecast_io_api_key_control', array(
-						'label'			=> esc_html__( 'Forecast.io API Key', 'tk-event-weather' ),
-						'description' => __( 'Enter your <a href="https://developer.forecast.io/" target="_blank">Forecast.io API Key</a> (link opens in new window)', 'tk-event-weather' ),
+					$wp_customize->add_control( self::$customizer_flag . '_darksky_api_key_control', array(
+						'label'			=> esc_html__( 'Dark Sky API Key', 'tk-event-weather' ),
+						'description' => __( 'Enter your <a href="https://darksky.net/dev/" target="_blank">Dark Sky API Key</a> (link opens in new window)', 'tk-event-weather' ),
 						'section'		=> self::$customizer_section_id,
-						'settings'		=> self::$customizer_flag . '[forecast_io_api_key]',
+						'settings'		=> self::$customizer_flag . '[darksky_api_key]',
 						'type'				=> 'password',
 					));
 					
@@ -238,19 +238,19 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 					));
 					
 					// Units
-					$wp_customize->add_setting( self::$customizer_flag . '[forecast_io_units]', array(
+					$wp_customize->add_setting( self::$customizer_flag . '[darksky_units]', array(
 						'type'							=> 'option',
 						'capability'				=> 'edit_theme_options',
 						'default'					=> '',
 					));
 					
-					$wp_customize->add_control( self::$customizer_flag . '_forecast_io_units_control', array(
+					$wp_customize->add_control( self::$customizer_flag . '_darksky_units_control', array(
 						'label'			=> esc_html__( 'Units', 'tk-event-weather' ),
-						'description' => __( 'Although it is recommended to leave this as "Auto", you may choose to force returning the weather data in specific units.<br>Reference: <a href="https://developer.forecast.io/docs/v2#options" target="_blank">Forecast.io API Docs > Options</a> (link opens in new window)', 'tk-event-weather' ),
+						'description' => __( 'Although it is recommended to leave this as "Auto", you may choose to force returning the weather data in specific units.<br>Reference: <a href="https://darksky.net/dev/docs/time-machine" target="_blank">Dark Sky API Docs > Options</a> (link opens in new window)', 'tk-event-weather' ),
 						'section'		=> self::$customizer_section_id,
-						'settings'		=> self::$customizer_flag . '[forecast_io_units]',
+						'settings'		=> self::$customizer_flag . '[darksky_units]',
 						'type'				=> 'select',
-						'choices'		=> TkEventWeather__Functions::forecast_io_option_units( 'true' ),
+						'choices'		=> TkEventWeather__Functions::darksky_option_units( 'true' ),
 					));
 					
 					// UTC Offset Type
@@ -278,8 +278,8 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 					));
 					
 					$wp_customize->add_control( self::$customizer_flag . '_transients_expiration_hours_control', array(
-						'label'			=> esc_html__( 'Forecast.io transient expiration (in hours)', 'tk-event-weather' ),
-						'description' => __( 'If stored Forecast.io API data is older than this many hours, pull fresh weather data from the API.<br>Default: 12<br>Note: Google Maps Geocoding API transients are always set to 30 days.', 'tk-event-weather' ),
+						'label'			=> esc_html__( 'Dark Sky transient expiration (in hours)', 'tk-event-weather' ),
+						'description' => __( 'If stored Dark Sky API data is older than this many hours, pull fresh weather data from the API.<br>Default: 12<br>Note: Google Maps Geocoding API transients are always set to 30 days.', 'tk-event-weather' ),
 						'section'		=> self::$customizer_section_id,
 						'settings'		=> self::$customizer_flag . '[transients_expiration_hours]',
 						'type'				=> 'text',
@@ -294,7 +294,7 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 					
 					$wp_customize->add_control( self::$customizer_flag . '_transients_off_control', array(
 						'label'			=> esc_html__( 'Disable Transients', 'tk-event-weather' ),
-						'description' => __( 'The <a href="https://codex.wordpress.org/Transients_API" target="_blank">WordPress Transients API</a> (link opens in new window) is used to reduce repetitive API calls and improve performance. Check this box if you wish to disable using Transients (suggested only for testing purposes).<br>Note: Applies to both Forecast.io and Google Maps Geocoding API transients.', 'tk-event-weather' ),
+						'description' => __( 'The <a href="https://codex.wordpress.org/Transients_API" target="_blank">WordPress Transients API</a> (link opens in new window) is used to reduce repetitive API calls and improve performance. Check this box if you wish to disable using Transients (suggested only for testing purposes).<br>Note: Applies to both Dark Sky and Google Maps Geocoding API transients.', 'tk-event-weather' ),
 						'section'		=> self::$customizer_section_id,
 						'settings'		=> self::$customizer_flag . '[transients_off]',
 						'type'				=> 'checkbox',
@@ -333,18 +333,18 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 						'choices'		=> array( 'true' => __( 'Enable', 'tk-event-weather' ) ),
 					));
 					
-					// Disable Forecast.io Credit Link
-					$wp_customize->add_setting( self::$customizer_flag . '[forecast_io_credit_link_off]', array(
+					// Disable Dark Sky Credit Link
+					$wp_customize->add_setting( self::$customizer_flag . '[darksky_credit_link_off]', array(
 						'type'							=> 'option',
 						'capability'				=> 'edit_theme_options',
 						'default'					=> '',
 					));
 					
-					$wp_customize->add_control( self::$customizer_flag . '_forecast_io_credit_link_off_control', array(
-						'label'			=> esc_html__( 'Disable display of the Forecast.io credit link', 'tk-event-weather' ),
-						'description' => __( "Check this box to disable linking to Forecast.io<br>You should not check this box without permission from Forecast.io, per their Terms of Use.", 'tk-event-weather' ),
+					$wp_customize->add_control( self::$customizer_flag . '_darksky_credit_link_off_control', array(
+						'label'			=> esc_html__( 'Disable display of the Dark Sky credit link', 'tk-event-weather' ),
+						'description' => __( "Check this box to disable linking to Dark Sky<br>You should not check this box without permission from Dark Sky, per their Terms of Use.", 'tk-event-weather' ),
 						'section'		=> self::$customizer_section_id,
-						'settings'		=> self::$customizer_flag . '[forecast_io_credit_link_off]',
+						'settings'		=> self::$customizer_flag . '[darksky_credit_link_off]',
 						'type'				=> 'checkbox',
 						'choices'		=> array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
 					));
