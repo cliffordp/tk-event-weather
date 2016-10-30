@@ -12,24 +12,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // make sure we have data to work with!
 if ( empty( $context ) || ! is_object( $context ) ) {
-  return false;
+	return false;
 }
 
 $output = '';
 
 if ( $context->weather_hourly_high == $context->weather_hourly_low ) {
 	$output .= sprintf( '<span class="degrees-same">%s%s</span>',
-	  TkEventWeather__Functions::temperature_to_display( $context->weather_hourly_low ),
-	  $context->temperature_units
-  );
+		TkEventWeather__Functions::temperature_to_display( $context->weather_hourly_low ),
+		$context->temperature_units
+	);
 } else {
 	$output .= sprintf( '<span class="temperature-low">%s</span>
-	  <span class="temperature-separator">&ndash;</span>
-	  <span class="temperature-high">%s</span><span class="temperature-units">%s</span>',
-	  TkEventWeather__Functions::temperature_to_display( $context->weather_hourly_low, 0, '' ), // no degree symbol
-	  TkEventWeather__Functions::temperature_to_display( $context->weather_hourly_high ),
-	  $context->temperature_units
-  );
+		<span class="temperature-separator">&ndash;</span>
+		<span class="temperature-high">%s</span><span class="temperature-units">%s</span>',
+		TkEventWeather__Functions::temperature_to_display( $context->weather_hourly_low, 0, '' ), // no degree symbol
+		TkEventWeather__Functions::temperature_to_display( $context->weather_hourly_high ),
+		$context->temperature_units
+	);
 }
 
 echo $output;
