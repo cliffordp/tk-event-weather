@@ -5,7 +5,7 @@ License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.3.0
 Tested up to: 4.7
-Stable tag: 1.2.5
+Stable tag: 1.2.6
 
 Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 
@@ -30,10 +30,10 @@ Display beautiful, accurate, and free hourly weather forecasts between a start a
 Currently Available:
 
 * [TK Event Weather for The Events Calendar by Modern Tribe](http://tourkick.com/shop/wordpress/tk-event-weather-the-events-calendar/) - 400,000+ active installs
+* [Events Manager by Marcus Sykes](http://tourkick.com/shop/wordpress/tk-event-weather-events-manager/) - 100,000+ active installs
 
 I am considering making add-ons for the following event calendars:
 
-* [Events Manager by Marcus Sykes](https://wordpress.org/plugins/events-manager/) - 100,000+ active installs
 * [All-in-One Event Calendar by Timely](https://wordpress.org/plugins/all-in-one-event-calendar/) - 100,000+ active installs
 * [Simple Calendar by Moonstone Media](https://wordpress.org/plugins/google-calendar-events/) - 70,000+ active installs
 * [Spider Event Calendar by WebDorado](https://wordpress.org/plugins/spider-event-calendar/) - 30,000+ active installs
@@ -166,6 +166,11 @@ Here are quotes from the [Dark Sky API docs](https://darksky.net/dev/docs/source
 
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
+
+= Version 1.2.6 =
+* January 4, 2017
+* Added support for <a href="https://make.wordpress.org/core/2016/11/10/visible-edit-shortcuts-in-the-customizer-preview/" target="_blank">Visible Edit Shortcuts in the WP Customizer</a>
+* Released <a href="http://tourkick.com/shop/wordpress/tk-event-weather-events-manager/" target="_blank">TK Event Weather for Events Manager</a>
 
 = Version 1.2.5 =
 * January 3, 2017

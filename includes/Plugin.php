@@ -127,19 +127,45 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 			return $url;
 		}
 		
+		public static function customizer_edit_shortcut_setting(){
+			// Always start at Dark Sky API Key if not entered
+			if ( empty( TkEventWeather__Functions::array_get_value_by_key ( TkEventWeather__Functions::plugin_options(), 'darksky_api_key' ) ) ) {
+				$setting = self::$customizer_flag . '[darksky_api_key]';
+				
+				// purposefully not filterable
+				return $setting;
+			}
+			
+			// default to Display Template
+			$setting = self::$customizer_flag . '[display_template]';
+			
+			return apply_filters( 'tk_event_weather_customizer_edit_shortcut_setting', $setting );
+		}
+		
 		/**
 		* Add plugin options to Customizer
 		* See: https://developer.wordpress.org/themes/advanced-topics/customizer-api/
 		*/
-		public function customizer_options( $wp_customize ) {
-				
+		public function customizer_options( WP_Customize_Manager $wp_customize ) {
+			
+			// Add Edit Shortcuts
+			// https://developer.wordpress.org/themes/advanced-topics/customizer-api/#selective-refresh-fast-accurate-updates
+			$wp_customize->selective_refresh->add_partial( self::customizer_edit_shortcut_setting(), array(
+				'selector'				=> '.tk-event-weather__wrapper',
+				'container_inclusive'	=> true,
+				'render_callback'		=> function() {
+					// purposefully not set because the setting is dynamic
+					// will just refresh it all, which is what we want anyway
+				},
+				// 'fallback_refresh'		=> true,
+			) );
 
 				// Customizer Panel
 				$wp_customize->add_panel(
 					self::$customizer_panel_id,
 					array(
-						'title'				=> $this->getPluginDisplayName(),
-						'description'	=> esc_html__('Plugin options and settings', 'tk-event-weather'),
+						'title'			=> $this->getPluginDisplayName(),
+						'description'	=> esc_html__( 'Plugin options and settings', 'tk-event-weather' ),
 						//'priority'		=> 10,
 					)
 				);
