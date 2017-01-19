@@ -220,12 +220,18 @@ class TkEventWeather__Functions {
 	//
 	
 	
-	// UTC Offset options
-	public static function valid_utc_offset_types( $prepend_empty = 'false' ) {
+	// Time Zone Sources options
+	public static function valid_timezone_sources( $prepend_empty = 'false' ) {
+		
 		$result = array(
 			'api'		=> __( 'From API (i.e. Location-specific)', 'tk-event-weather' ),
 			'wordpress' => __( 'From WordPress General Settings', 'tk-event-weather' ),
 		);
+		
+		// do not give WordPress option if option is not set
+		if ( empty( get_option( 'timezone_string' ) ) ) {
+			unset( $result['wordpress'] );
+		}
 		
 		if ( 'true' == $prepend_empty ) {
 			$result = self::array_prepend_empty( $result );
@@ -481,7 +487,7 @@ class TkEventWeather__Functions {
 		// is valid ISO 8601 time (i.e. we do not want valid ISO 8601 Duration, Time Interval, etc.)
 		// API requires [YYYY]-[MM]-[DD]T[HH]:[MM]:[SS] -- https://en.wikipedia.org/wiki/ISO_8601#Combined_date_and_time_representations
 		// with an optional time zone formatted as Z for UTC time or {+,-}[HH]:[MM] (with or without separating colon) for an offset in hours or minutes
-		// For the latter format, if no timezone is present, local time (at the provided latitude and longitude) is assumed.
+		// For the latter format, if no time zone is present, local time (at the provided latitude and longitude) is assumed.
 /*
 		@link https://regex101.com/r/mL0xZ4/1
 		Should match ISO 8601 datetime for Dark Sky API:
@@ -520,81 +526,7 @@ class TkEventWeather__Functions {
 			}
 		}
 	}
-	
-	
-	
-	/**
-	 * Check if a string is a valid PHP timezone
-	 *
-	 * timezone_identifiers_list() requires PHP >= 5.2
-	 *
-	 * @param string $input
-	 * @return bool
-	* @link http://www.pontikis.net/tip/?id=28
-	 */
-/*
-	public static function valid_php_timezone_string( $input = '' ) {
-		if ( empty ( $input ) || ! in_array( $input, timezone_identifiers_list() ) ) {
-			$result = false;
-		} else {
-			$result = true;
-		}
 		
-	  return $result;
-	}
-*/
-	
-	
-	
-	/**
-	* Returns the timezone string for a site, even if it's set to a UTC offset
-	*
-	* Adapted from http://www.php.net/manual/en/function.timezone-name-from-abbr.php#89155
-	*
-	* @link https://www.skyverge.com/blog/down-the-rabbit-hole-wordpress-and-timezones/
-	* @return string valid PHP timezone string
-	*/
-/*
-	public static function wp_get_timezone_string() {
- 
-		// if site timezone string exists, return it
-		if ( $timezone = get_option( 'timezone_string' ) ) {
-			return $timezone;
-		}
- 
-		// get UTC offset, if it is not set then return UTC
-		$utc_offset = get_option( 'gmt_offset', 0 );
-		
-		if ( 0 === $utc_offset ) {
-			return 'UTC';
-		}
- 
-		// adjust UTC offset from hours to seconds
-		$utc_offset *= 3600;
- 
-		// attempt to guess the timezone string from the UTC offset
-		if ( $timezone = timezone_name_from_abbr( '', $utc_offset, 0 ) ) {
-			return $timezone;
-		}
- 
-		// last try, guess timezone string manually
-		$is_dst = date( 'I' );
- 
-		foreach ( timezone_abbreviations_list() as $abbr ) {
-			foreach ( $abbr as $city ) {
-				if ( $is_dst == $city['dst'] && $utc_offset == $city['offset'] )
-					return $city['timezone_id'];
-			}
-		}
-		
-		// fallback to UTC
-		return 'UTC';
-	}	
-*/
-	
-	
-	//public static function 
-	
 	
 	public static function valid_api_icon( $prepend_empty = 'false' ) {
 		$result = array(
@@ -1204,29 +1136,51 @@ class TkEventWeather__Functions {
 	}
 	
 	
-	public static function timestamp_to_display( $timestamp = '', $utc_offset = '', $date_format = '' ) {
+	public static function timestamp_to_display( $timestamp = '', $timezone = '', $date_format = '' ) {
 		// timestamp
-		if ( false === self::valid_timestamp( $timestamp, 'bool' ) ) {
+		$timestamp = self::valid_timestamp( $timestamp );
+		
+		if ( '' === $timestamp ) {
 			return '';
 		}
 		
 		
-		if ( is_numeric ( $utc_offset ) ) {
-			$utc_offset = floatval( $utc_offset );
-		} else {
-			$utc_offset = get_option( 'gmt_offset' );
+		// We will change time zone just for this conversion. Then we'll set it back.
+		$existing_timezone = date_default_timezone_get();
+		
+		// shouldn't happen but might be a good backstop for older versions of PHP
+		if ( ! in_array( $existing_timezone, timezone_identifiers_list() ) ) {
+			$existing_timezone = 'UTC';
 		}
 		
-		$timestamp = intval( $timestamp ) + ( intval( $utc_offset ) * intval( HOUR_IN_SECONDS ) ); // becomes a float
-		$timestamp = self::valid_timestamp( $timestamp );
+		
+		// Dark Sky API may return an escaped time zone string
+		$timezone = stripslashes( $timezone );
+		
+		if ( ! in_array( $timezone, timezone_identifiers_list() ) ) {
+			$timezone = get_option( 'timezone_string' ); // could return NULL
+		}
+		
+		if ( empty( $timezone ) ) {
+			$timezone = $existing_timezone;
+		}
+		
+		date_default_timezone_set( $timezone );
+		
 		
 		if ( empty ( $date_format ) ) {
-			/* translators: hourly display time format, see https://developer.wordpress.org/reference/functions/date_i18n/#comment-972 */
-			$date_format = __( 'ga' );
+			return '';
 		}
 		
-		// return date ( $date_format, $timestamp );
-		return date_i18n ( $date_format, $timestamp, false ); // false means use UTC -- to use PHP date(). true means use GMT -- to use PHP gmdate().
+		// $date = date ( $date_format, $timestamp );
+		$date = date_i18n ( __( $date_format ), $timestamp, true ); // false means use UTC -- to use PHP date(), which is affected by date_default_timezone_set(). true means use GMT -- to use PHP gmdate().
+		// translators: hourly display time format, see https://developer.wordpress.org/reference/functions/date_i18n/#comment-972
+		
+		// set back to what date_default_timezone_get() was
+		date_default_timezone_set( $existing_timezone );
+		
+		// return 
+		return $date;
 	}
 	
 	public static function template_class_name( $template_name = '' ) {

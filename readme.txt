@@ -4,8 +4,8 @@ Tags: API, calendars, celsius, classes, concerts, Dark Sky, events, fahrenheit, 
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.3.0
-Tested up to: 4.7
-Stable tag: 1.2.6
+Tested up to: 4.7.1
+Stable tag: 1.3
 
 Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 
@@ -166,6 +166,16 @@ Here are quotes from the [Dark Sky API docs](https://darksky.net/dev/docs/source
 
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
+
+= Version 1.3 =
+* January 19, 2017
+* Paid add-ons: lower single-site prices and bulk purchasing is now available (discounted pricing when buying for multiple sites at once).
+* Tested with WordPress 4.7.1
+* Breaking change: Reworked time-based functions due to the Dark Sky API response deprecating 'offset'. Uses 'timezone' response now to retrieve the timezone of the specified location, which makes this plugin display more accurately.
+* Enhancement: Added Time Format options (time_format_hours and time_format_minutes shortcode arguments). Reference <a href="https://codex.wordpress.org/Function_Reference/date_i18n">date_i18n()</a> and <a href="https://codex.wordpress.org/Formatting_Date_and_Time">the Codex's Formatting Date and Time</a> for available time formats. This also changed the Hourly and Vertical templates, if you have customized those.
+* Changed transient name
+* Fixed error if weather API does not return a sunrise and/or sunset time (e.g. sun does not rise or set this day).
+* Added WP Timezone, Date Format, and Time Format to the Help tab's system information report.
 
 = Version 1.2.6 =
 * January 4, 2017

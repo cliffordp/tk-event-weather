@@ -483,12 +483,28 @@ class TkEventWeather__OptionsManager {
 									</td>
 								</tr>
 								<tr>
-									<td data-export-label="Language"><?php _e( 'WordPress Language', 'tk-event-weather' ); ?>:</td>
+									<td data-export-label="Permalinks"><?php _e( 'Permalink Structure', 'tk-event-weather' ); ?>:</td>
+									<td><?php echo esc_html( get_option( 'permalink_structure' ) ); ?></td>
+								</tr>
+								<tr>
+									<td data-export-label="WP Language"><?php _e( 'WP Language', 'tk-event-weather' ); ?>:</td>
 									<td><?php echo get_locale(); ?></td>
 								</tr>
 								<tr>
-									<td data-export-label="Permalinks"><?php _e( 'Permalink Structure', 'tk-event-weather' ); ?>:</td>
-									<td><?php echo esc_html( get_option( 'permalink_structure' ) ); ?></td>
+									<td data-export-label="WP Timezone"><?php _e( 'WP Timezone', 'tk-event-weather' ); ?>:</td>
+									<td><?php echo get_option( 'timezone_string' ); ?></td>
+								</tr>
+								<tr>
+									<td data-export-label="WP GMT Offset"><?php _e( 'WP GMT Offset', 'tk-event-weather' ); ?>:</td>
+									<td><?php echo get_option( 'gmt_offset' ); ?></td>
+								</tr>
+								<tr>
+									<td data-export-label="WP Date Format"><?php _e( 'WP Date Format', 'tk-event-weather' ); ?>:</td>
+									<td><?php echo get_option( 'date_format' ); ?></td>
+								</tr>
+								<tr>
+									<td data-export-label="WP Time Format"><?php _e( 'WP Time Format', 'tk-event-weather' ); ?>:</td>
+									<td><?php echo get_option( 'time_format' ); ?></td>
 								</tr>
 							</tbody>
 						</table>
@@ -563,11 +579,11 @@ class TkEventWeather__OptionsManager {
 									<td><?php echo size_format( wp_max_upload_size() ); ?></td>
 								</tr>
 								<tr>
-									<td data-export-label="Default Timezone is UTC"><?php _e( 'Default Server Timezone is UTC', 'tk-event-weather' ); ?>:</td>
+									<td data-export-label="Default Time Zone is UTC"><?php _e( 'Default Server Time Zone is UTC', 'tk-event-weather' ); ?>:</td>
 									<td><?php
 										$default_timezone = date_default_timezone_get();
 										if ( 'UTC' !== $default_timezone ) {
-											echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf( __( 'Default timezone is %s - it should be UTC', 'tk-event-weather' ), $default_timezone ) . '</mark>';
+											echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf( __( 'Default time zone is %s - it should be UTC', 'tk-event-weather' ), $default_timezone ) . '</mark>';
 										} else {
 											echo '<mark class="yes"><span class="dashicons dashicons-yes"></span></mark>';
 										} ?>

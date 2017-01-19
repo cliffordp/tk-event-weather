@@ -2,7 +2,7 @@
 /*
 	Plugin Name: TK Event Weather
 	Plugin URI: http://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
-	Version: 1.2.6
+	Version: 1.3
 	Author: TourKick (Clifford Paulick)
 	Author URI: http://tourkick.com/?utm_source=author-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
 	Description: Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
@@ -12,23 +12,23 @@
 */
 
 /*
-		"WordPress Plugin Template" Copyright (C) 2016 Michael Simpson	(email : michael.d.simpson@gmail.com)
+	"WordPress Plugin Template" Copyright (C) 2016 Michael Simpson	(email : michael.d.simpson@gmail.com)
 
-		This following part of this file is part of WordPress Plugin Template for WordPress.
+	This following part of this file is part of WordPress Plugin Template for WordPress.
 
-		WordPress Plugin Template is free software: you can redistribute it and/or modify
-		it under the terms of the GNU General Public License as published by
-		the Free Software Foundation, either version 3 of the License, or
-		(at your option) any later version.
+	WordPress Plugin Template is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-		WordPress Plugin Template is distributed in the hope that it will be useful,
-		but WITHOUT ANY WARRANTY; without even the implied warranty of
-		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
-		GNU General Public License for more details.
+	WordPress Plugin Template is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+	GNU General Public License for more details.
 
-		You should have received a copy of the GNU General Public License
-		along with Contact Form to Database Extension.
-		If not, see http://www.gnu.org/licenses/gpl-3.0.html
+	You should have received a copy of the GNU General Public License
+	along with Contact Form to Database Extension.
+	If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
 
@@ -48,7 +48,7 @@
 	- use more data from API, like 'summary' text as a title element somewhere
 		- the Dark Sky API "apparentTemperature" value is the "feels like" temperature
 		- inspiration from http://darkskyapp.com/
-	- handling of time zone offsets that aren't full hours -- e.g. Eucla Australia is UTC+8:45 -- https://en.wikipedia.org/wiki/List_of_UTC_time_offsets#UTC.2B08:45.2C_H.2A -- currently works well enough probably but outputs '4am' instead of '4:45am' -- does it really need to be fixed?
+	- Should be taken care of as of v1.3 because of using timezones instead of offsets :) -- Handling of time zone offsets that aren't full hours -- e.g. Eucla Australia is UTC+8:45 -- https://en.wikipedia.org/wiki/List_of_UTC_time_offsets#UTC.2B08:45.2C_H.2A -- currently works well enough probably but outputs '4am' instead of '4:45am' -- does it really need to be fixed?
 	- time of day versions of icons (night/day)
 		- https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-174607313
 		- https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-178440095
@@ -59,7 +59,6 @@
 		- could also enable "right now" time if not entered
 	- end time just pick last hour of day if end time is out of bounds
 	- add 'demo' option to output all icons (e.g. for styling/testing)
-	- 12 or 24 hour time format (handled automatically by WP translation?)
 	- weather advisory alerts (only happen in real-time so probably not going to happen)
 	- color options for styling SVGs (e.g. yellow sun with gray cloud) -- not possible with as-is SVGs because they're flattened (no CSS classes to "fill")
 	*/
@@ -101,29 +100,29 @@ function tk_event_weather_terms_agreement_text() {
 //
 // Create a helper function for easy SDK access.
 function tk_event_weather_freemius() {
-		global $tk_event_weather_freemius;
+	global $tk_event_weather_freemius;
 
-		if ( ! isset( $tk_event_weather_freemius ) && defined( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE' ) && file_exists( TK_EVENT_WEATHER_FREEMIUS_START_FILE ) ) {
-				// Include Freemius SDK.
-				require_once TK_EVENT_WEATHER_FREEMIUS_START_FILE;
+	if ( ! isset( $tk_event_weather_freemius ) && defined( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE' ) && file_exists( TK_EVENT_WEATHER_FREEMIUS_START_FILE ) ) {
+		// Include Freemius SDK.
+		require_once TK_EVENT_WEATHER_FREEMIUS_START_FILE;
 
-				$tk_event_weather_freemius = fs_dynamic_init( array(
-						'id'								=> '240',
-						'slug'							=> 'tk-event-weather',
-						'public_key'				=> 'pk_b6902fc0051f10b5e36bea21fb0e7',
-						'is_premium'				=> false,
-						'has_addons'				=> true,
-						'has_paid_plans'		=> false,
-						'menu'							=> array(
-								'slug'			=> 'tkeventweather__pluginsettings',
-								'parent'		=> array(
-										'slug' => 'options-general.php',
-								),
-						),
-				) );
-		}
+		$tk_event_weather_freemius = fs_dynamic_init( array(
+			'id'								=> '240',
+			'slug'							=> 'tk-event-weather',
+			'public_key'				=> 'pk_b6902fc0051f10b5e36bea21fb0e7',
+			'is_premium'				=> false,
+			'has_addons'				=> true,
+			'has_paid_plans'		=> false,
+			'menu'							=> array(
+					'slug'			=> 'tkeventweather__pluginsettings',
+					'parent'		=> array(
+							'slug' => 'options-general.php',
+					),
+			),
+		) );
+	}
 
-		return $tk_event_weather_freemius;
+	return $tk_event_weather_freemius;
 }
 
 // Init Freemius.
@@ -140,12 +139,12 @@ function tk_event_weather_freemius_custom_connect_message(
 	$freemius_link
 ) {
 	$tk_custom_message = sprintf(
-			__fs( 'hey-x' ) . '<br><br>' . __( 'The <strong>%2$s</strong> plugin is ready to go! Want to help make %2$s more awesome? Securely share some data to get the best experience and stay informed.', 'tk-event-weather' ),
-			$user_first_name,
-			$plugin_title,
-			'<strong>' . $user_login . '</strong>',
-			$site_link,
-			$freemius_link
+		__fs( 'hey-x' ) . '<br><br>' . __( 'The <strong>%2$s</strong> plugin is ready to go! Want to help make %2$s more awesome? Securely share some data to get the best experience and stay informed.', 'tk-event-weather' ),
+		$user_first_name,
+		$plugin_title,
+		'<strong>' . $user_login . '</strong>',
+		$site_link,
+		$freemius_link
 	);
 	
 	$tk_custom_message .= '<br><small>' . tk_event_weather_terms_agreement_text() . '</small>';
@@ -173,22 +172,22 @@ $TkEventWeather__minimalRequiredPhpVersion = '5.0';
  * @return boolean true if version check passed. If false, triggers an error which WP will handle, by displaying an error message on the Admin page
  */
 function TkEventWeather__noticePhpVersionWrong() {
-		global $TkEventWeather__minimalRequiredPhpVersion;
-		echo '<div class="updated fade">' .
-			__('Error: plugin "TK Event Weather" requires a newer version of PHP to be running.', 'tk-event-weather').
-						'<br/>' . __('Minimal version of PHP required: ', 'tk-event-weather') . '<strong>' . $TkEventWeather__minimalRequiredPhpVersion . '</strong>' .
-						'<br/>' . __('Your server\'s PHP version: ', 'tk-event-weather') . '<strong>' . phpversion() . '</strong>' .
-				'</div>';
+	global $TkEventWeather__minimalRequiredPhpVersion;
+	echo '<div class="updated fade">' .
+		__('Error: plugin "TK Event Weather" requires a newer version of PHP to be running.', 'tk-event-weather').
+					'<br/>' . __('Minimal version of PHP required: ', 'tk-event-weather') . '<strong>' . $TkEventWeather__minimalRequiredPhpVersion . '</strong>' .
+					'<br/>' . __('Your server\'s PHP version: ', 'tk-event-weather') . '<strong>' . phpversion() . '</strong>' .
+			'</div>';
 }
 
 
 function TkEventWeather__PhpVersionCheck() {
-		global $TkEventWeather__minimalRequiredPhpVersion;
-		if (version_compare(phpversion(), $TkEventWeather__minimalRequiredPhpVersion) < 0) {
-				add_action('admin_notices', 'TkEventWeather__noticePhpVersionWrong');
-				return false;
-		}
-		return true;
+	global $TkEventWeather__minimalRequiredPhpVersion;
+	if (version_compare(phpversion(), $TkEventWeather__minimalRequiredPhpVersion) < 0) {
+			add_action('admin_notices', 'TkEventWeather__noticePhpVersionWrong');
+			return false;
+	}
+	return true;
 }
 
 
@@ -220,7 +219,7 @@ function TkEventWeather__i18n_init() {
 // Run the version check.
 // If it is successful, continue with initialization for this plugin
 if (TkEventWeather__PhpVersionCheck()) {
-		// Only load and run the init function if we know PHP version can parse it
-		include_once('includes/init.php');
-		TkEventWeather__init(__FILE__);
+	// Only load and run the init function if we know PHP version can parse it
+	include_once('includes/init.php');
+	TkEventWeather__init(__FILE__);
 }
