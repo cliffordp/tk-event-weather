@@ -1745,11 +1745,11 @@ TK Event Weather -- Dark Sky API -- JSON Data
 
 	// do not comment out -- needed because of extending an abstract class
 	public function addScript() {
-			if (!self::$addedAlready) {
-					self::$addedAlready = true;
-					//wp_register_script('my-script', plugins_url('js/my-script.js', __FILE__), array('jquery'), '1.0', true);
-					//wp_print_scripts('my-script');
-			}
+		if (!self::$addedAlready) {
+			self::$addedAlready = true;
+			//wp_register_script('my-script', plugins_url('js/my-script.js', __FILE__), array('jquery'), '1.0', true);
+			//wp_print_scripts('my-script');
+		}
 	}
 	
 }

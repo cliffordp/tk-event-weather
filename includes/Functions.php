@@ -5,7 +5,10 @@ require_once( 'TemplateLoader.php' );
 
 class TkEventWeather__Functions {
 	// all variables and methods should be 'static'
-		
+
+	/**
+	 * @return bool|mixed
+	 */
 	public static function plugin_options() {
 		$plugin_options = get_option( 'tk_event_weather' );
 		if ( ! empty( $plugin_options ) ) {
@@ -26,13 +29,23 @@ class TkEventWeather__Functions {
 	public static function new_template_loader() {
 		return new TkEventWeather__TemplateLoader();
 	}
-	
+
+	/**
+	 * @param $slug
+	 * @param array $data
+	 * @param null $name
+	 * @param bool $load
+	 */
 	public static function load_template( $slug, $data = array(), $name = null, $load = true ) {
 		$template_loader = self::new_template_loader();
 		$template_loader->set_template_data( $data, 'context' ); // passed-through data becomes accessible as $context->piece_of_data within template
 		$template_loader->get_template_part( $slug, $name, $load );
 	}
-	
+
+	/**
+	 * @param string $prepend_empty
+	 * @return array|bool
+	 */
 	public static function valid_display_templates( $prepend_empty = 'false' ) {
 		$result = array(
 			'hourly_horizontal' => __( 'Hourly (Horizontal)', 'tk-event-weather' ),
@@ -82,7 +95,13 @@ class TkEventWeather__Functions {
 	public static function tk_clean_var( $var ) {
 		return is_array( $var ) ? array_map( 'tk_clean_var', $var ) : sanitize_text_field( $var );
 	}
-	
+
+	/**
+	 * @param $array
+	 * @param $key
+	 * @param string $fallback
+	 * @return mixed|string
+	 */
 	public static function array_get_value_by_key( $array, $key, $fallback = '' ) {
 		if( ! is_array( $array )
 			|| empty( $array )
@@ -96,7 +115,11 @@ class TkEventWeather__Functions {
 		
 		return $result; // consider strval()?
 	}
-	
+
+	/**
+	 * @param $input
+	 * @return array|bool
+	 */
 	public static function array_prepend_empty( $input ) {
 		if( ! is_array( $input ) ) {
 			$result = false;
@@ -106,7 +129,10 @@ class TkEventWeather__Functions {
 		
 		return $result;
 	}
-	
+
+	/**
+	 * @return array
+	 */
 	public static function all_valid_wp_capabilities() {
 		$all_roles = wp_roles();
 		
@@ -129,7 +155,12 @@ class TkEventWeather__Functions {
 		
 		return $all_capabilities;
 	}
-	
+
+	/**
+	 * @param string $input
+	 * @param string $capability
+	 * @return string
+	 */
 	public static function invalid_shortcode_message( $input = '', $capability = 'edit_theme_options' ) {
 		$capability = apply_filters ( 'tk_event_weather_shortcode_msg_cap', $capability );
 		
@@ -161,8 +192,14 @@ class TkEventWeather__Functions {
 		return $result;
 	}
 	
-	// round value to zero or custom decimals (e.g. used for temperatures)
-	// does not "pad with zeros" if rounded to 5 decimals and $input is only 2 decimals, will output as 2 decimals
+	/**
+	 * round value to zero or custom decimals (e.g. used for temperatures)
+	 * does not "pad with zeros" if rounded to 5 decimals and $input is only 2 decimals, will output as 2 decimals
+	 *
+	 * @param $input
+	 * @param int $decimals
+	 * @return float
+	 */
 	public static function rounded_float_value( $input, $decimals = 0 ) {
 		$input = self::remove_all_whitespace ( strtolower( $input ) );
 		
@@ -197,8 +234,12 @@ class TkEventWeather__Functions {
 		
 		return $result;
 	}
-	
+
 	// may select one or multiple (but not all since that would be valid but return no data)
+	/**
+	 * @param string $prepend_empty
+	 * @return array|bool
+	 */
 	public static function darksky_option_exclude( $prepend_empty = 'false' ) {
 		$result = array(
 			'currently'	=> __( 'Currently', 'tk-event-weather' ),
@@ -220,7 +261,12 @@ class TkEventWeather__Functions {
 	//
 	
 	
-	// Time Zone Sources options
+	/**
+	 * Time Zone Sources options
+	 *
+	 * @param string $prepend_empty
+	 * @return array|bool
+	 */
 	public static function valid_timezone_sources( $prepend_empty = 'false' ) {
 		
 		$result = array(
@@ -229,7 +275,8 @@ class TkEventWeather__Functions {
 		);
 		
 		// do not give WordPress option if option is not set
-		if ( empty( get_option( 'timezone_string' ) ) ) {
+		$wp_timezone = get_option( 'timezone_string' ); // could return NULL
+		if ( empty( $wp_timezone ) ) {
 			unset( $result['wordpress'] );
 		}
 		
@@ -239,9 +286,13 @@ class TkEventWeather__Functions {
 		
 		return $result;
 	}
-	
-	
-	// to be nice and link to http://tourkick.com/plugins/tk-event-weather/
+
+
+	/**
+	 * To be nice and link to http://tourkick.com/plugins/tk-event-weather/
+	 *
+	 * @return string
+	 */
 	public static function plugin_credit_link() {
 		$url = 'http://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-credit-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather';
 		
@@ -256,8 +307,12 @@ class TkEventWeather__Functions {
 		
 		return $result;
 	}
-	
-	// to comply with https://developer.darksky.net/
+
+	/**
+	 * to comply with https://developer.darksky.net/
+	 *
+	 * @return string
+	 */
 	public static function darksky_credit_link() {
 		$url = 'https://darksky.net/poweredby/';
 		
@@ -272,11 +327,17 @@ class TkEventWeather__Functions {
 		
 		return $result;
 	}
-	
-	
-	// Valid strtotime() relative time
-	// @link http://php.net/manual/en/function.strtotime.php
-	// @link http://php.net/manual/en/datetime.formats.relative.php -- plural "s" is optional for all except "weeks" so just used plural for all
+
+	/**
+	 * Valid strtotime() relative time
+	 *
+	 * @param string $prepend_empty
+	 *
+	 * @link http://php.net/manual/en/function.strtotime.php
+	 * @link http://php.net/manual/en/datetime.formats.relative.php -- plural "s" is optional for all except "weeks" so just used plural for all
+	 *
+	 * @return array|bool
+	 */
 	public static function valid_strtotime_units( $prepend_empty = 'false' ) {
 		$result = array(
 			'hours'		=> __( 'Hours', 'tk-event-weather' ),
@@ -292,13 +353,19 @@ class TkEventWeather__Functions {
 		
 		return $result;
 	}
-	
-	
+
+	/**
+	 * @param $input
+	 * @return mixed
+	 */
 	public static function remove_all_whitespace( $input ) {
 		return preg_replace( '/\s+/', '', $input );
 	}
-		
-		
+
+	/**
+	 * @param $input
+	 * @return int|string
+	 */
 	public static function sanitize_absint_allow_blank( $input ) {
 		if ( 0 === $input || '0' === $input ) {
 			return 0;
@@ -308,10 +375,14 @@ class TkEventWeather__Functions {
 			return absint( $input );
 		}
 	}
-		
-		
-		// same as https://developer.wordpress.org/reference/functions/sanitize_key/ except without strlolower()
-		// used for Google Maps Geocoding API Keys
+
+	/**
+	 * same as https://developer.wordpress.org/reference/functions/sanitize_key/ except without strlolower()
+	 * used for Google Maps Geocoding API Keys
+	 *
+	 * @param string $input
+	 * @return mixed
+	 */
 	public static function sanitize_key_allow_uppercase( $input = '' ) {
 		$result = self::remove_all_whitespace( $input );
 		
@@ -319,8 +390,11 @@ class TkEventWeather__Functions {
 		
 		return $result;
 	}
-		
-		
+
+	/**
+	 * @param string $input
+	 * @return mixed|string
+	 */
 	public static function sanitize_transient_name( $input = '' ) {
 		$result = self::remove_all_whitespace( $input );
 		
@@ -340,10 +414,15 @@ class TkEventWeather__Functions {
 		return $result;
 	}
 		
-		
-		// if transients are ON/TRUE, return transient value
-		// if transients are OFF/FALSE, delete transient
-		// if transients are ON/TRUE but no value, delete transient
+	/**
+	 * if transients are ON/TRUE, return transient value
+	 * if transients are OFF/FALSE, delete transient
+	 * if transients are ON/TRUE but no value, delete transient
+	 *
+	 * @param $transient_name
+	 * @param bool $transients_on
+	 * @return bool|mixed|string
+	 */
 	public static function transient_get_or_delete( $transient_name, $transients_on = true ) {
 		if ( ! isset( $transient_name ) || ! is_bool( $transients_on ) ) {
 			return false;
@@ -390,19 +469,19 @@ class TkEventWeather__Functions {
 	
 	
 	/**
-		* Verify string is valid latitude,longitude
-		* Dark Sky does not allow certain lat,long -- such as 0,0
-		* 
-		* @since 1.0.0
-		* 
-		* @link https://en.wikipedia.org/wiki/Decimal_degrees
-		* @link https://regex101.com/r/fZ1oR3/1
-		* 
-		* @param string $input Comma-separated latitude and longitude in decimal degrees.
-		* @param string $return_format Optional. 
-		* 
-		* @return $result If valid returns string or bool true, based on $return_format. If invalid, returns '' string or bool false, based on $return_format.
-		*/
+	 * Verify string is valid latitude,longitude
+	 * Dark Sky does not allow certain lat,long -- such as 0,0
+	 *
+	 * @since 1.0.0
+	 *
+	 * @link https://en.wikipedia.org/wiki/Decimal_degrees
+	 * @link https://regex101.com/r/fZ1oR3/1
+	 *
+	 * @param string $input Comma-separated latitude and longitude in decimal degrees.
+	 * @param string $return_format Optional.
+	 *
+	 * @return $result If valid returns string or bool true, based on $return_format. If invalid, returns '' string or bool false, based on $return_format.
+	 */
 	public static function valid_lat_long( $input, $return_format = '' ) {
 		$input = self::remove_all_whitespace ( $input );
 		
@@ -444,10 +523,10 @@ class TkEventWeather__Functions {
 	}
 	
 	/**
-		* if valid timestamp, returns integer timestamp
-		* or returns boolean if $return_format = 'bool' and is valid timestamp
-		* else returns empty string
-		*/
+	 * if valid timestamp, returns integer timestamp
+	 * or returns boolean if $return_format = 'bool' and is valid timestamp
+	 * else returns empty string
+	 */
 	public static function valid_timestamp( $input, $return_format = '' ) {
 		$result = self::remove_all_whitespace( $input ); // converts to string
 		
@@ -476,7 +555,12 @@ class TkEventWeather__Functions {
 			}
 		}
 	}
-	
+
+	/**
+	 * @param $input
+	 * @param string $return_format
+	 * @return bool|mixed|string
+	 */
 	public static function valid_iso_8601_date_time( $input, $return_format = '' ) {
 		$result = self::remove_all_whitespace( $input );
 		
@@ -526,8 +610,11 @@ class TkEventWeather__Functions {
 			}
 		}
 	}
-		
-	
+
+	/**
+	 * @param string $prepend_empty
+	 * @return array|bool
+	 */
 	public static function valid_api_icon( $prepend_empty = 'false' ) {
 		$result = array(
 			'clear-day',
@@ -551,7 +638,11 @@ class TkEventWeather__Functions {
 		
 		return $result;
 	}
-	
+
+	/**
+	 * @param string $prepend_empty
+	 * @return array|bool
+	 */
 	public static function valid_icon_type( $prepend_empty = 'false' ) {
 		$result = array(
 			'climacons_font',
@@ -820,7 +911,12 @@ class TkEventWeather__Functions {
 </g>
 </svg>';
 	}
-	
+
+	/**
+	 * @param $input
+	 * @param string $icon_type
+	 * @return mixed|string
+	 */
 	public static function icon_html( $input, $icon_type = 'climacons_font' ) {
 		$input = self::remove_all_whitespace ( strtolower( $input ) );
 		
@@ -906,7 +1002,12 @@ class TkEventWeather__Functions {
 				
 		return $result;
 	}
-	
+
+	/**
+	 * @param $input
+	 * @param string $icon_type
+	 * @return bool|string
+	 */
 	public static function wind_bearing_to_icon( $input, $icon_type = 'climacons_font' ) {
 		if( ! is_integer( $input ) ) { // not empty() because of allowable Zero
 			return false;
@@ -927,7 +1028,11 @@ class TkEventWeather__Functions {
 				
 		return $result;
 	}
-		
+
+	/**
+	 * @param $input
+	 * @return bool|string|void
+	 */
 	public static function temperature_units( $input ) {
 		if( empty( $input ) || ! array_key_exists( $input, self::darksky_option_units() ) ) {
 			return false;
@@ -941,7 +1046,13 @@ class TkEventWeather__Functions {
 		
 		return $result;
 	}
-	
+
+	/**
+	 * @param $temperature
+	 * @param int $temperature_decimals
+	 * @param string $degree
+	 * @return bool|float|string
+	 */
 	public static function temperature_to_display( $temperature, $temperature_decimals = 0, $degree = '&deg;' ) {
 		if( ! is_numeric( $temperature ) ) {
 			return false;
@@ -1130,12 +1241,17 @@ class TkEventWeather__Functions {
 			// 1 hour = 3600 seconds
 			// e.g. 2:30 --> 30 minutes = 1800 seconds --> $timestamp = $timestamp - 1800;
 			$timestamp -= $timestamp % 3600;
-			
+
 			return self::valid_timestamp( $timestamp );
 		}
 	}
-	
-	
+
+	/**
+	 * @param string $timestamp
+	 * @param string $timezone
+	 * @param string $date_format
+	 * @return string
+	 */
 	public static function timestamp_to_display( $timestamp = '', $timezone = '', $date_format = '' ) {
 		// timestamp
 		$timestamp = self::valid_timestamp( $timestamp );
@@ -1146,14 +1262,8 @@ class TkEventWeather__Functions {
 		
 		
 		// We will change time zone just for this conversion. Then we'll set it back.
-		$existing_timezone = date_default_timezone_get();
-		
-		// shouldn't happen but might be a good backstop for older versions of PHP
-		if ( ! in_array( $existing_timezone, timezone_identifiers_list() ) ) {
-			$existing_timezone = 'UTC';
-		}
-		
-		
+		$existing_timezone = date_default_timezone_get(); // will fallback to UTC but may also return a TZ environment variable (e.g. EST)
+				
 		// Dark Sky API may return an escaped time zone string
 		$timezone = stripslashes( $timezone );
 		
@@ -1173,8 +1283,8 @@ class TkEventWeather__Functions {
 		}
 		
 		// $date = date ( $date_format, $timestamp );
-		$date = date_i18n ( __( $date_format ), $timestamp, true ); // false means use UTC -- to use PHP date(), which is affected by date_default_timezone_set(). true means use GMT -- to use PHP gmdate().
-		// translators: hourly display time format, see https://developer.wordpress.org/reference/functions/date_i18n/#comment-972
+		$date = date_i18n( $date_format, $timestamp );
+		// possibly relevant issues with date_i18n(): https://core.trac.wordpress.org/ticket/38771, https://core.trac.wordpress.org/ticket/39595#comment:5
 		
 		// set back to what date_default_timezone_get() was
 		date_default_timezone_set( $existing_timezone );
@@ -1182,7 +1292,11 @@ class TkEventWeather__Functions {
 		// return 
 		return $date;
 	}
-	
+
+	/**
+	 * @param string $template_name
+	 * @return string
+	 */
 	public static function template_class_name( $template_name = '' ) {
 		$result = '';
 		
@@ -1192,7 +1306,10 @@ class TkEventWeather__Functions {
 		
 		return $result;
 	}
-	
+
+	/**
+	 * @return string
+	 */
 	public static function shortcode_error_class_name() {
 		$result = sanitize_html_class( strtolower( TkEventWeather__FuncSetup::$shortcode_name ) ) . '__error';
 		return $result;

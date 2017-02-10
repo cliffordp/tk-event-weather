@@ -29,7 +29,7 @@ abstract class TkEventWeather__ShortCodeLoader {
 		* @return void
 		*/
 		public function register($shortcodeName) {
-				$this->registerShortcodeToFunction($shortcodeName, 'handleShortcode');
+			$this->registerShortcodeToFunction($shortcodeName, 'handleShortcode');
 		}
 
 		/**
@@ -42,14 +42,14 @@ abstract class TkEventWeather__ShortCodeLoader {
 		* @return void
 		*/
 		protected function registerShortcodeToFunction($shortcodeName, $functionName) {
-				if (is_array($shortcodeName)) {
-						foreach ($shortcodeName as $aName) {
-								add_shortcode($aName, array($this, $functionName));
-						}
+			if (is_array($shortcodeName)) {
+				foreach ($shortcodeName as $aName) {
+					add_shortcode($aName, array($this, $functionName));
 				}
-				else {
-						add_shortcode($shortcodeName, array($this, $functionName));
-				}
+			}
+			else {
+				add_shortcode($shortcodeName, array($this, $functionName));
+			}
 		}
 
 		/**
