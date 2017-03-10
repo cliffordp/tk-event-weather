@@ -5,7 +5,7 @@ License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.3.0
 Tested up to: 4.7.2
-Stable tag: 1.3.1
+Stable tag: 1.4
 
 Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 
@@ -31,22 +31,41 @@ Currently Available:
 
 * [TK Event Weather for The Events Calendar by Modern Tribe](http://tourkick.com/shop/wordpress/tk-event-weather-the-events-calendar/) - 400,000+ active installs
 * [Events Manager by Marcus Sykes](http://tourkick.com/shop/wordpress/tk-event-weather-events-manager/) - 100,000+ active installs
+* [Simple Calendar by Moonstone Media](https://wordpress.org/plugins/google-calendar-events/) - 70,000+ active installs
 
 I am considering making add-ons for the following event calendars:
 
 * [All-in-One Event Calendar by Timely](https://wordpress.org/plugins/all-in-one-event-calendar/) - 100,000+ active installs
-* [Simple Calendar by Moonstone Media](https://wordpress.org/plugins/google-calendar-events/) - 70,000+ active installs
 * [Spider Event Calendar by WebDorado](https://wordpress.org/plugins/spider-event-calendar/) - 30,000+ active installs
 * [Calendar by Kieran O'Shea](https://wordpress.org/plugins/calendar/) - 30,000+ active installs
 * [My Calendar by Joe Dolson](https://wordpress.org/plugins/my-calendar/) - 30,000+ active installs
 * [Event Organiser by Stephen Harris](https://wordpress.org/plugins/event-organiser/) - 30,000+ active installs
-* [EventOn by ashanjay](https://codecanyon.net/item/eventon-wordpress-event-calendar-plugin/1211017?ref=cliffpaulick) - 21,000+ sales
+* [EventOn by ashanjay](https://codecanyon.net/item/eventon-wordpress-event-calendar-plugin/1211017?ref=cliffpaulick) - 25,000+ sales
+* [WP Simple Booking Calendar by simplebookingcalendar](https://wordpress.org/plugins/wp-simple-booking-calendar/) - 10,000+ active installs and/or its [Premium version](https://www.wpsimplebookingcalendar.com/)
+* [Bookly Booking Plugin by Ladela](https://codecanyon.net/item/bookly-booking-plugin-responsive-appointment-booking-and-scheduling/7226091?ref=cliffpaulick) - 12,500+ sales
+* [Pinpoint Booking System by DOTonPAPER](https://wordpress.org/plugins/booking-system/) - 9,000+ active installs and/or [its PRO upgrade](https://codecanyon.net/item/pinpoint-booking-system-pro-book-everything-with-wordpress/2675936?ref=cliffpaulick) [(previously on CodeCanyon)](https://codecanyon.net/item/pinpoint-booking-system-pro-book-everything-with-wordpress/2675936?ref=cliffpaulick) - 11,000+ sales
 * [Event Calendar WD by WebDorado](https://wordpress.org/plugins/event-calendar-wd/) - 10,000+ active installs
 * [Calendarize it! by RightHere](http://codecanyon.net/item/calendarize-it-for-wordpress/2568439?ref=cliffpaulick) - 7,000+ sales
 * [Appointment+ by WPMU DEV](https://premium.wpmudev.org/project/appointments-plus/) - 97,000+ downloads
 * [Events+ by WPMU DEV](https://premium.wpmudev.org/project/events-plus/) - 77,000+ downloads
+* [Timetable Responsive Schedule For WordPress by QuanticaLabs](https://codecanyon.net/item/timetable-responsive-schedule-for-wordpress/7010836?ref=cliffpaulick) - 6,000+ sales
+* [Wordpress Pro Event Calendar by DPereyra](https://codecanyon.net/item/wordpress-pro-event-calendar/2485867?ref=cliffpaulick) - 5,000+ sales
+* [Event Booking Pro by MoeHaydar](https://codecanyon.net/item/event-booking-pro-wp-plugin-paypal-or-offline/5543552?ref=cliffpaulick) - 4,500+ active installs
+* [Chronosly Events Calendar](https://wordpress.org/plugins/chronosly-events-calendar/) 4,000+ active installs and/or [its Advanced (Pro) version](https://codecanyon.net/item/chronosly-event-calendar-wordpress-plugin/8493796?ref=cliffpaulick) - 800+ sales
+* [Booked - Appointment Booking for WordPress by BoxyStudio](https://codecanyon.net/item/booked-appointments-appointment-booking-for-wordpress/9466968?ref=cliffpaulick) - 4,000+ active installs
+* [Events Calendar Registration & Booking by elbisnero](https://codecanyon.net/item/events-calendar-registration-booking/7647762?ref=cliffpaulick) - 3,000+ sales
+* [WordPress Appointment Booking and Online Scheduling Plugin by Appointy](https://wordpress.org/plugins/appointy-appointment-scheduler/) - 3,000+ active installs
 * [Event Espresso](https://eventespresso.com/third-party-addons/) - 2,000+ active installs of EE4 Decaf
+* [Team Booking by VonStroheim](https://codecanyon.net/item/team-booking-wordpress-booking-system/9211794?ref=cliffpaulick) - 2,500+ sales
+* [Facebook Events Importer](https://wordpress.org/plugins/facebook-events-importer/) and/or [its Pro version](http://wpfbevents.com/) - 2,000+ active installs
+* [WP Booking Calendar by Wachipi](https://codecanyon.net/item/wp-booking-calendar/4639530?ref=cliffpaulick) - 1,700+ sales
+* [HBook - Hotel booking system by HotelWP](https://codecanyon.net/item/hbook-hotel-booking-system-wordpress-plugin/10622779?ref=cliffpaulick) - 1,700+ sales
+* [BookingWizz for Wordpress by CriticalGears](https://codecanyon.net/item/bookingwizz-for-wordpress/2602153?ref=cliffpaulick) - 1,600+ sales
+* [Modern Events Calendar by WEBNUS](https://codecanyon.net/item/modern-events-calendar-responsive-event-scheduler-booking-for-wordpress/17731780?ref=cliffpaulick) - 1,500+ sales
 * [WooCommerce Bookings](https://woocommerce.com/products/woocommerce-bookings/) - thousands of active installs (exact number unknown)
+* [WooCommerce Appointments by BizzThemes](https://bizzthemes.com/plugins/woocommerce-appointments/)
+* [Booking & Appointment Plugin for WooCommerce by Tyche Softwares](https://www.tychesoftwares.com/store/premium-plugins/woocommerce-booking-plugin/)
+* [BirchPress Scheduler](https://www.birchpress.com/)
 
 Additional add-on ideas:
 
@@ -124,6 +143,14 @@ F) Displaying more than one day in a sequence (multiple API calls but appear all
 And then add some custom CSS, like this:
 `.tkeventw-myclass { display: inline-block; vertical-align: top; }`
 
+G) to display from 4:30pm through the remainder of the day (do not set the end_time)
+
+`[tk_event_weather lat_long="38.897676,-77.03653" start_time="2016-02-01T16:30:00-05:00"]`
+
+H) to display only 4:00pm's weather, set end_time to the same
+
+`[tk_event_weather lat_long="38.897676,-77.03653" start_time="2016-02-01T16:00:00-05:00" end_time="2016-02-01T16:00:00-05:00" sunrise_sunset_off="true"]`
+
 = Will this plugin work with my theme? =
 
 This plugin will work with any properly-coded WordPress theme. Free styling / customization help to integrate with your theme is not available from the plugin author.
@@ -166,6 +193,13 @@ Here are quotes from the [Dark Sky API docs](https://darksky.net/dev/docs/source
 
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
+
+= Version 1.4 =
+* March 10, 2017
+* Released <a href="http://tourkick.com/shop/wordpress/tk-event-weather-simple-calendar/" target="_blank">TK Event Weather for Simple Calendar</a>
+* Enhancement: End Time can now be blank/unused and will default to displaying the remaining hours of the day.
+* Enhancement: End Time can now equal Start time to display a single hour's weather. Note that if you enter 5:30am for both Start and End time, the output will be both 5am and 6am (and possibly a 3rd time in the middle with the sunrise or sunset). If you really only want a single hour displayed, you should only enter top of the hour (e.g. 5am or 6am) and also use `sunrise_sunset_off=true`. Example screenshot: https://cl.ly/2N2X1p1C1O1r
+* Enhancement: New "before" (h4) and "after" (p) shortcode arguments to output certain text only if the shortcode has output. Useful for a heading like "Forecast" or some text at the end of the shortcode's output, like a disclaimer about the weather not being guaranteed.
 
 = Version 1.3.1 =
 * February 10, 2017

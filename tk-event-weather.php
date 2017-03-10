@@ -2,7 +2,7 @@
 /*
 	Plugin Name: TK Event Weather
 	Plugin URI: http://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
-	Version: 1.3.1
+	Version: 1.4
 	Author: TourKick (Clifford Paulick)
 	Author URI: http://tourkick.com/?utm_source=author-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
 	Description: Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
@@ -37,9 +37,8 @@
 /** TODO:
 - sign up for newsletter
 - refresh screenshots
-- delete TkEventWeather__Plugin::$customizer_flag array keys like ^forecast_io%
+- delete leftover TkEventWeather__Plugin::$customizer_flag array keys like ^forecast_io%
 - https://github.com/cliffordp/tk-event-weather/issues/9 -- Add option to query weather API for more than a single day for events that span more than 1 calendar day. NOTE: for the current version of the weather API, each calendar day costs 1 API request. For example, an event spanning Jan 1 at 10pm through Jan 3 at 7am will cost 3 API calls. -- maybe make it an option
-- Add option for text to display before shortcode output.
 - add Customizer option to input a Post ID to default to when viewing the customizer from the plugin's Settings Button (could auto-set it if an Event exists)
 - look into https://developer.wordpress.org/plugins/the-basics/uninstall-methods/
 	- why it currently states "will also delete its data"
@@ -55,9 +54,6 @@
 - force debug report to be in English (i.e. not translatable)
 - Debug Mode enhancements: plugin settings, filters/actions in use
 - "current" / "right now" if event is currently happening
-- allow single time instead of hourly (start + end times) to make shortcode more flexible and also maybe applicable for events without an end time (e.g. The Events Calendar)
-	- could also enable "right now" time if not entered
-- end time just pick last hour of day if end time is out of bounds
 - add 'demo' option to output all icons (e.g. for styling/testing)
 - weather advisory alerts (only happen in real-time so probably not going to happen)
 - color options for styling SVGs (e.g. yellow sun with gray cloud) -- not possible with as-is SVGs because they're flattened (no CSS classes to "fill")

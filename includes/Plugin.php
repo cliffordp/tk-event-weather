@@ -233,6 +233,38 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 				'choices'			=> TkEventWeather__Functions::valid_display_templates( 'true' ),
 			));
 
+			// Before Text
+			$wp_customize->add_setting( self::$customizer_flag . '[text_before]', array(
+				'type'              => 'option',
+				'capability'        => 'edit_theme_options',
+				'default'           => '',
+				'sanitize_callback' => 'sanitize_text_field',
+			));
+
+			$wp_customize->add_control( self::$customizer_flag . '_text_before_control', array(
+				'label'       => esc_html__( 'Text before Forecast display', 'tk-event-weather' ),
+				'description' => __( 'What text should be displayed before the hourly weather? (h3 tag)<br>Example: Forecast<br>Default: none', 'tk-event-weather' ),
+				'section'     => self::$customizer_section_id,
+				'settings'    => self::$customizer_flag . '[text_before]',
+				'type'		  => 'text',
+			));
+
+			// After Text
+			$wp_customize->add_setting( self::$customizer_flag . '[text_after]', array(
+				'type'              => 'option',
+				'capability'        => 'edit_theme_options',
+				'default'           => '',
+				'sanitize_callback' => 'sanitize_text_field',
+			));
+
+			$wp_customize->add_control( self::$customizer_flag . '_text_after_control', array(
+				'label'       => esc_html__( 'Text after Forecast display', 'tk-event-weather' ),
+				'description' => __( 'What text should be displayed after the hourly weather? (p tag)<br>Example: a disclaimer about the weather not being guaranteed<br>Default: none', 'tk-event-weather' ),
+				'section'     => self::$customizer_section_id,
+				'settings'    => self::$customizer_flag . '[text_after]',
+				'type'		  => 'text',
+			));
+
 			// Hours Time Format
 			$wp_customize->add_setting( self::$customizer_flag . '[time_format_hours]', array(
 				'type'				=> 'option',

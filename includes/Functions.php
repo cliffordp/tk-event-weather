@@ -539,7 +539,7 @@ class TkEventWeather__Functions {
 		}
 		
 		// is valid timestamp
-		if ( is_int( $result ) && date( 'U', $result ) == intval ( $result ) ) {			
+		if ( is_int( $result ) && date( 'U', $result ) == intval ( $result ) ) {
 			if( '' == $return_format ) {
 				return intval( $result );
 			} else {
@@ -1259,7 +1259,6 @@ class TkEventWeather__Functions {
 		if ( '' === $timestamp ) {
 			return '';
 		}
-		
 		
 		// We will change time zone just for this conversion. Then we'll set it back.
 		$existing_timezone = date_default_timezone_get(); // will fallback to UTC but may also return a TZ environment variable (e.g. EST)

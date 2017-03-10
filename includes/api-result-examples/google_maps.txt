@@ -1,0 +1,97 @@
+<!--
+TK Event Weather -- Google Maps Geocoding API -- JSON Data
+{
+	"results": [
+	{
+		"address_components": [
+			{
+				"long_name": "The White House",
+				"short_name": "The White House",
+				"types": [
+					"point_of_interest",
+					"establishment"
+				]
+			},
+			{
+				"long_name": "1600",
+				"short_name": "1600",
+				"types": [
+					"street_number"
+				]
+			},
+			{
+				"long_name": "Pennsylvania Avenue Northwest",
+				"short_name": "Pennsylvania Ave NW",
+				"types": [
+					"route"
+				]
+			},
+			{
+				"long_name": "Northwest Washington",
+				"short_name": "Northwest Washington",
+				"types": [
+					"neighborhood",
+					"political"
+				]
+			},
+			{
+				"long_name": "Washington",
+				"short_name": "Washington",
+				"types": [
+					"locality",
+					"political"
+				]
+			},
+			{
+				"long_name": "District of Columbia",
+				"short_name": "DC",
+				"types": [
+					"administrative_area_level_1",
+					"political"
+				]
+			},
+			{
+				"long_name": "United States",
+				"short_name": "US",
+				"types": [
+					"country",
+					"political"
+				]
+			},
+			{
+				"long_name": "20500",
+				"short_name": "20500",
+				"types": [
+					"postal_code"
+				]
+			}
+		],
+		"formatted_address": "The White House, 1600 Pennsylvania Ave NW, Washington, DC 20500, USA",
+		"geometry": {
+			"location": {
+				"lat": 38.8976763,
+				"lng": -77.0365298
+			},
+			"location_type": "APPROXIMATE",
+			"viewport": {
+				"northeast": {
+					"lat": 38.899025280291,
+					"lng": -77.035180819709
+				},
+				"southwest": {
+					"lat": 38.896327319708,
+					"lng": -77.037878780292
+				}
+			}
+		},
+		"partial_match": true,
+		"place_id": "ChIJ37HL3ry3t4kRv3YLbdhpWXE",
+		"types": [
+			"point_of_interest",
+			"establishment"
+		]
+	}
+	],
+	"status": "OK"
+}
+-->
