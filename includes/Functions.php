@@ -17,24 +17,24 @@ class TkEventWeather__Functions {
 			return false;
 		}
 	}
-	
+
 	/**
-	*
-	* Views / Templates
-	* Reference: https://pippinsplugins.com/template-file-loaders-plugins/
-	* Reference: https://github.com/GaryJones/Gamajo-Template-Loader/tree/template-data
-	*
-	*/
-	
+	 *
+	 * Views / Templates
+	 * Reference: https://pippinsplugins.com/template-file-loaders-plugins/
+	 * Reference: https://github.com/GaryJones/Gamajo-Template-Loader/tree/template-data
+	 *
+	 */
+
 	public static function new_template_loader() {
 		return new TkEventWeather__TemplateLoader();
 	}
 
 	/**
-	 * @param $slug
+	 * @param       $slug
 	 * @param array $data
-	 * @param null $name
-	 * @param bool $load
+	 * @param null  $name
+	 * @param bool  $load
 	 */
 	public static function load_template( $slug, $data = array(), $name = null, $load = true ) {
 		$template_loader = self::new_template_loader();
@@ -44,40 +44,41 @@ class TkEventWeather__Functions {
 
 	/**
 	 * @param string $prepend_empty
+	 *
 	 * @return array|bool
 	 */
 	public static function valid_display_templates( $prepend_empty = 'false' ) {
 		$result = array(
 			'hourly_horizontal' => __( 'Hourly (Horizontal)', 'tk-event-weather' ),
-			'hourly_vertical'	=> __( 'Hourly (Vertical)', 'tk-event-weather' ),
-			'low_high'					=> __( 'Low-High Temperature', 'tk-event-weather' ),
+			'hourly_vertical'   => __( 'Hourly (Vertical)', 'tk-event-weather' ),
+			'low_high'          => __( 'Low-High Temperature', 'tk-event-weather' ),
 		);
-		
+
 		$custom_display_templates = apply_filters( 'tk_event_weather_custom_display_templates', array() );
-		
+
 		if ( ! empty( $custom_display_templates ) ) {
 			$result = array_merge( $result, $custom_display_templates );
 		}
-		
+
 		if ( 'true' == $prepend_empty ) {
 			$result = self::array_prepend_empty( $result );
 		}
-		
+
 		return $result;
 	}
-	
-	
+
+
 	public static function register_css() {
 		wp_register_style( TkEventWeather__FuncSetup::shortcode_name_hyphenated(), TkEventWeather__FuncSetup::plugin_dir_url_root() . 'css/tk-event-weather.css', array(), null );
 	}
-	
-	
+
+
 	/**
-		*
-		* Icons
-		*
-		*/
-	
+	 *
+	 * Icons
+	 *
+	 */
+
 	// Outdated: http://adamwhitcroft.com/climacons/font/
 	// https://github.com/christiannaths/Climacons-Font
 	// https://github.com/christiannaths/Climacons-Font/blob/master/webfont/demo.html
@@ -85,48 +86,52 @@ class TkEventWeather__Functions {
 	public static function register_climacons_css() {
 		wp_register_style( 'tkeventw-climacons', TkEventWeather__FuncSetup::plugin_dir_url_vendor() . 'climacons/climacons-font.css', array(), null );
 	}
-	
-	
+
+
 	/**
-	* Clean variables using sanitize_text_field.
-	* @param string|array $var
-	* @return string|array
-	*/
+	 * Clean variables using sanitize_text_field.
+	 *
+	 * @param string|array $var
+	 *
+	 * @return string|array
+	 */
 	public static function tk_clean_var( $var ) {
 		return is_array( $var ) ? array_map( 'tk_clean_var', $var ) : sanitize_text_field( $var );
 	}
 
 	/**
-	 * @param $array
-	 * @param $key
+	 * @param        $array
+	 * @param        $key
 	 * @param string $fallback
+	 *
 	 * @return mixed|string
 	 */
 	public static function array_get_value_by_key( $array, $key, $fallback = '' ) {
-		if( ! is_array( $array )
-			|| empty( $array )
-			|| ! isset( $array[$key] ) // use instead of array_key_exists()
-			|| '' === $array[$key] // to allow resetting an option back to its blank default
+		if ( ! is_array( $array )
+		     || empty( $array )
+		     || ! isset( $array[ $key ] ) // use instead of array_key_exists()
+		     || '' === $array[ $key ] // to allow resetting an option back to its blank default
 		) {
 			$result = $fallback;
 		} else {
-			$result = $array[$key];
+			$result = $array[ $key ];
 		}
-		
+
 		return $result; // consider strval()?
 	}
 
 	/**
 	 * @param $input
+	 *
 	 * @return array|bool
 	 */
 	public static function array_prepend_empty( $input ) {
-		if( ! is_array( $input ) ) {
+		if ( ! is_array( $input ) ) {
 			$result = false;
 		} else {
 			$result = array( '' => '' ) + $input;
 		}
-		
+
 		return $result;
 	}
 
@@ -135,155 +140,159 @@ class TkEventWeather__Functions {
 	 */
 	public static function all_valid_wp_capabilities() {
 		$all_roles = wp_roles();
-		
+
 		$all_capabilities = array();
-		
+
 		foreach ( $all_roles->roles as $key => $value ) {
-			$all_capabilities[] = array_keys( $value['capabilities'], true, true );
+			$all_capabilities[] = array_keys( $value[ 'capabilities' ], true, true );
 		}
-		
+
 		$all_capabilities_flattened = array();
-		
+
 		foreach ( $all_capabilities as $key => $value ) {
 			foreach ( $value as $key_a => $value_a ) {
 				$all_capabilities_flattened[] = $value_a;
 			}
 		}
-		
+
 		$all_capabilities = array_unique( $all_capabilities_flattened );
 		sort( $all_capabilities );
-		
+
 		return $all_capabilities;
 	}
 
 	/**
 	 * @param string $input
 	 * @param string $capability
+	 *
 	 * @return string
 	 */
 	public static function invalid_shortcode_message( $input = '', $capability = 'edit_theme_options' ) {
-		$capability = apply_filters ( 'tk_event_weather_shortcode_msg_cap', $capability );
-		
-		if( ! in_array( $capability, self::all_valid_wp_capabilities() ) ) {
+		$capability = apply_filters( 'tk_event_weather_shortcode_msg_cap', $capability );
+
+		if ( ! in_array( $capability, self::all_valid_wp_capabilities() ) ) {
 			$capability = 'edit_theme_options';
 		}
-				
+
 		// escape single apostrophes
 		$error_reason = str_replace( "'", "\'", $input );
-		
+
 		$shortcode_name = TkEventWeather__FuncSetup::$shortcode_name;
-		
-		if( ! empty( $error_reason ) ) {
+
+		if ( ! empty( $error_reason ) ) {
 			$message = sprintf( __( '%s for the `%s` shortcode to work correctly.', 'tk-event-weather' ), $error_reason, $shortcode_name );
 		} else {
 			$message = sprintf( __( 'Invalid or incomplete usage of the `%s` shortcode.', 'tk-event-weather' ), $shortcode_name );
 		}
-		
+
 		$message = sprintf( __( '%s (Error message only displayed to users with the `%s` capability.)', 'tk-event-weather' ), $message, $capability );
-		
+
 		$result = '';
-		if( current_user_can( $capability ) ) {
+		if ( current_user_can( $capability ) ) {
 			$result .= sprintf( '<div class="%s">%s</div>',
 				self::shortcode_error_class_name(),
-				esc_html ( $message )
+				esc_html( $message )
 			);
 		}
-		
+
 		return $result;
 	}
-	
+
 	/**
 	 * round value to zero or custom decimals (e.g. used for temperatures)
 	 * does not "pad with zeros" if rounded to 5 decimals and $input is only 2 decimals, will output as 2 decimals
 	 *
-	 * @param $input
+	 * @param     $input
 	 * @param int $decimals
+	 *
 	 * @return float
 	 */
 	public static function rounded_float_value( $input, $decimals = 0 ) {
-		$input = self::remove_all_whitespace ( strtolower( $input ) );
-		
+		$input = self::remove_all_whitespace( strtolower( $input ) );
+
 		$input = floatval( $input );
-		
+
 		$decimals = intval( $decimals );
 		if ( 0 > $decimals ) {
 			$decimals = 0;
 		}
-		
+
 		$result = round( $input, $decimals );
-		
+
 		return $result;
 	}
-	
+
 	// START Dark Sky valid options
 	// @link https://darksky.net/dev/docs
-	
+
 	// may select only one per API call
 	public static function darksky_option_units( $prepend_empty = 'false' ) {
 		$result = array(
-			'auto'	=> __( 'Auto (Default)', 'tk-event-weather' ),
-			'ca'	=> __( 'Canada', 'tk-event-weather' ),
-			'si'	=> __( 'SI (International System of Units)', 'tk-event-weather' ),
-			'uk2'	=> __( 'UK', 'tk-event-weather' ),
-			'us'	=> __( 'USA', 'tk-event-weather' ),
+			'auto' => __( 'Auto (Default)', 'tk-event-weather' ),
+			'ca'   => __( 'Canada', 'tk-event-weather' ),
+			'si'   => __( 'SI (International System of Units)', 'tk-event-weather' ),
+			'uk2'  => __( 'UK', 'tk-event-weather' ),
+			'us'   => __( 'USA', 'tk-event-weather' ),
 		);
-		
+
 		if ( 'true' == $prepend_empty ) {
 			$result = self::array_prepend_empty( $result );
 		}
-		
+
 		return $result;
 	}
 
 	// may select one or multiple (but not all since that would be valid but return no data)
 	/**
 	 * @param string $prepend_empty
+	 *
 	 * @return array|bool
 	 */
 	public static function darksky_option_exclude( $prepend_empty = 'false' ) {
 		$result = array(
-			'currently'	=> __( 'Currently', 'tk-event-weather' ),
-			'minutely'	=> __( 'Minutely', 'tk-event-weather' ),
-			'hourly'	=> __( 'Hourly', 'tk-event-weather' ),
-			'daily'		=> __( 'Daily', 'tk-event-weather' ),
-			'alerts'	=> __( 'Alerts', 'tk-event-weather' ),
-			'flags'		=> __( 'Flags', 'tk-event-weather' ),
+			'currently' => __( 'Currently', 'tk-event-weather' ),
+			'minutely'  => __( 'Minutely', 'tk-event-weather' ),
+			'hourly'    => __( 'Hourly', 'tk-event-weather' ),
+			'daily'     => __( 'Daily', 'tk-event-weather' ),
+			'alerts'    => __( 'Alerts', 'tk-event-weather' ),
+			'flags'     => __( 'Flags', 'tk-event-weather' ),
 		);
-		
+
 		if ( 'true' == $prepend_empty ) {
 			$result = self::array_prepend_empty( $result );
 		}
-		
+
 		return $result;
 	}
 	//
 	// END Dark Sky valid options
 	//
-	
-	
+
+
 	/**
 	 * Time Zone Sources options
 	 *
 	 * @param string $prepend_empty
+	 *
 	 * @return array|bool
 	 */
 	public static function valid_timezone_sources( $prepend_empty = 'false' ) {
-		
+
 		$result = array(
-			'api'		=> __( 'From API (i.e. Location-specific)', 'tk-event-weather' ),
+			'api'       => __( 'From API (i.e. Location-specific)', 'tk-event-weather' ),
 			'wordpress' => __( 'From WordPress General Settings', 'tk-event-weather' ),
 		);
-		
+
 		// do not give WordPress option if option is not set
 		$wp_timezone = get_option( 'timezone_string' ); // could return NULL
 		if ( empty( $wp_timezone ) ) {
-			unset( $result['wordpress'] );
+			unset( $result[ 'wordpress' ] );
 		}
-		
+
 		if ( 'true' == $prepend_empty ) {
 			$result = self::array_prepend_empty( $result );
 		}
-		
+
 		return $result;
 	}
 
@@ -295,16 +304,16 @@ class TkEventWeather__Functions {
 	 */
 	public static function plugin_credit_link() {
 		$url = 'http://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-credit-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather';
-		
+
 		$anchor_text = __( 'TK Event Weather plugin', 'tk-event-weather' );
-		
+
 		$result = sprintf( '<div class="tk-event-weather__plugin-credit">
 			<a href="%s" target="_blank">%s</a>
 		</div>',
 			$url,
 			$anchor_text
 		);
-		
+
 		return $result;
 	}
 
@@ -315,16 +324,16 @@ class TkEventWeather__Functions {
 	 */
 	public static function darksky_credit_link() {
 		$url = 'https://darksky.net/poweredby/';
-		
+
 		$anchor_text = __( 'Powered by Dark Sky', 'tk-event-weather' );
-		
+
 		$result = sprintf( '<div class="tk-event-weather__dark-sky-credit">
 			<a href="%s" target="_blank">%s</a>
 		</div>',
 			$url,
 			$anchor_text
 		);
-		
+
 		return $result;
 	}
 
@@ -340,22 +349,23 @@ class TkEventWeather__Functions {
 	 */
 	public static function valid_strtotime_units( $prepend_empty = 'false' ) {
 		$result = array(
-			'hours'		=> __( 'Hours', 'tk-event-weather' ),
-			'days'		=> __( 'Days (Default)', 'tk-event-weather' ),
-			'weeks'		=> __( 'Weeks', 'tk-event-weather' ),
-			'months'	=> __( 'Months', 'tk-event-weather' ),
-			'years'		=> __( 'Years', 'tk-event-weather' ),
+			'hours'  => __( 'Hours', 'tk-event-weather' ),
+			'days'   => __( 'Days (Default)', 'tk-event-weather' ),
+			'weeks'  => __( 'Weeks', 'tk-event-weather' ),
+			'months' => __( 'Months', 'tk-event-weather' ),
+			'years'  => __( 'Years', 'tk-event-weather' ),
 		);
-		
+
 		if ( 'true' == $prepend_empty ) {
 			$result = self::array_prepend_empty( $result );
 		}
-		
+
 		return $result;
 	}
 
 	/**
 	 * @param $input
+	 *
 	 * @return mixed
 	 */
 	public static function remove_all_whitespace( $input ) {
@@ -364,6 +374,7 @@ class TkEventWeather__Functions {
 
 	/**
 	 * @param $input
+	 *
 	 * @return int|string
 	 */
 	public static function sanitize_absint_allow_blank( $input ) {
@@ -381,93 +392,97 @@ class TkEventWeather__Functions {
 	 * used for Google Maps Geocoding API Keys
 	 *
 	 * @param string $input
+	 *
 	 * @return mixed
 	 */
 	public static function sanitize_key_allow_uppercase( $input = '' ) {
 		$result = self::remove_all_whitespace( $input );
-		
+
 		$result = preg_replace( '/[^A-Za-z0-9_\-]/', '', $result );
-		
+
 		return $result;
 	}
 
 	/**
 	 * @param string $input
+	 *
 	 * @return mixed|string
 	 */
 	public static function sanitize_transient_name( $input = '' ) {
 		$result = self::remove_all_whitespace( $input );
-		
+
 		// make sure no period, comma (e.g. from lat/long) or other unfriendly characters for the transients database field
 		$result = sanitize_key( $result );
-		
+
 		// dashes to underscores
 		$result = str_replace( '-', '_', $result );
-		
+
 		// "Must be 172 characters or fewer in length." per https://developer.wordpress.org/reference/functions/set_transient/
 		// also see https://core.trac.wordpress.org/ticket/15058
 		// But older versions of WordPress used to have a 40 character limit or would silently fail
 		// so if someone is using this plugin with an old version of WordPress, transients just will not be set (not ideal but they should update)
 		$result = substr( $result, 0, 171 );
 
-		
+
 		return $result;
 	}
-		
+
 	/**
 	 * if transients are ON/TRUE, return transient value
 	 * if transients are OFF/FALSE, delete transient
 	 * if transients are ON/TRUE but no value, delete transient
 	 *
-	 * @param $transient_name
+	 * @param      $transient_name
 	 * @param bool $transients_on
+	 *
 	 * @return bool|mixed|string
 	 */
 	public static function transient_get_or_delete( $transient_name, $transients_on = true ) {
 		if ( ! isset( $transient_name ) || ! is_bool( $transients_on ) ) {
 			return false;
 		}
-		
+
 		if ( false === $transients_on ) {
 			delete_transient( $transient_name );
 			$result = '';
 		} else {
 			$result = get_transient( $transient_name );
 		}
-		
+
 		if ( empty( $result ) ) {
 			delete_transient( $transient_name );
+
 			return false;
 		}
-		
+
 		return $result;
 	}
-	
+
 	// in case wanting to add sunrise/sunset to the hourly weather data and then re-sort by 'time' key -- but not used so commented out
 	// adapted from http://www.firsttube.com/read/sorting-a-multi-dimensional-array-with-php/
-/*
-	public static function sort_multidim_array_by_sub_key( $multidim_array, $sub_key ) {
-		// first check if we have a multidimensional array
-		if ( count( $multidim_array ) == count( $multidim_array, COUNT_RECURSIVE ) ) {
-			return false;
-		} else {
-			$a = $multidim_array;
+	/*
+		public static function sort_multidim_array_by_sub_key( $multidim_array, $sub_key ) {
+			// first check if we have a multidimensional array
+			if ( count( $multidim_array ) == count( $multidim_array, COUNT_RECURSIVE ) ) {
+				return false;
+			} else {
+				$a = $multidim_array;
+			}
+
+			foreach( $a as $k => $v ) {
+				$b[$k] = strtolower( $v[$subkey] );
+			}
+
+			asort( $b );
+
+			foreach( $b as $key => $val ) {
+				$c[] = $a[$key];
+			}
+			return $c;
 		}
-		
-		foreach( $a as $k => $v ) {
-			$b[$k] = strtolower( $v[$subkey] );
-		}
-		
-		asort( $b );
-		
-		foreach( $b as $key => $val ) {
-			$c[] = $a[$key];
-		}
-		return $c;
-	}
-*/
-	
-	
+	*/
+
+
 	/**
 	 * Verify string is valid latitude,longitude
 	 * Dark Sky does not allow certain lat,long -- such as 0,0
@@ -483,29 +498,29 @@ class TkEventWeather__Functions {
 	 * @return $result If valid returns string or bool true, based on $return_format. If invalid, returns '' string or bool false, based on $return_format.
 	 */
 	public static function valid_lat_long( $input, $return_format = '' ) {
-		$input = self::remove_all_whitespace ( $input );
-		
+		$input = self::remove_all_whitespace( $input );
+
 		if ( ! empty( $return_format ) && 'bool' != $return_format ) {
 			$return_format = '';
 		}
-		
+
 		// is not valid lat,long FORMAT
 		$match = preg_match( '/^([-+]?[1-8]?\d(?:\.\d+)?|90(?:\.0+)?),\s*([-+]?(?:180(?:\.0+)?|(?:(?:1[0-7]\d)|(?:[1-9]?\d))(?:\.\d+)?))$/', $input );
-		if( empty( $match ) ) {
+		if ( empty( $match ) ) {
 			if ( '' == $return_format ) {
 				return '';
 			} else {
 				return false;
 			}
 		}
-		
+
 		// separate lat,long
 		$lat_long_array = explode( ',', $input );
-		$latitude = floatval( $lat_long_array[0] );
-		$longitude = floatval( $lat_long_array[1] );
-		
+		$latitude       = floatval( $lat_long_array[ 0 ] );
+		$longitude      = floatval( $lat_long_array[ 1 ] );
+
 		// is not valid Dark Sky lat or long
-		if(
+		if (
 			empty( $latitude ) && empty( $longitude ) // e.g. 0.0000,0.0000
 		) {
 			if ( '' == $return_format ) {
@@ -521,7 +536,7 @@ class TkEventWeather__Functions {
 			}
 		}
 	}
-	
+
 	/**
 	 * if valid timestamp, returns integer timestamp
 	 * or returns boolean if $return_format = 'bool' and is valid timestamp
@@ -529,24 +544,23 @@ class TkEventWeather__Functions {
 	 */
 	public static function valid_timestamp( $input, $return_format = '' ) {
 		$result = self::remove_all_whitespace( $input ); // converts to string
-		
+
 		if ( is_numeric( $result ) ) {
 			$result = intval( $result ); // convert to integer
 		}
-		
+
 		if ( ! empty( $return_format ) && 'bool' != $return_format ) {
 			$return_format = '';
 		}
-		
+
 		// is valid timestamp
-		if ( is_int( $result ) && date( 'U', $result ) == intval ( $result ) ) {
-			if( '' == $return_format ) {
+		if ( is_int( $result ) && date( 'U', $result ) == intval( $result ) ) {
+			if ( '' == $return_format ) {
 				return intval( $result );
 			} else {
 				return true;
 			}
-		}
-		// is NOT valid
+		} // is NOT valid
 		else {
 			if ( '' == $return_format ) {
 				return '';
@@ -557,51 +571,51 @@ class TkEventWeather__Functions {
 	}
 
 	/**
-	 * @param $input
+	 * @param        $input
 	 * @param string $return_format
+	 *
 	 * @return bool|mixed|string
 	 */
 	public static function valid_iso_8601_date_time( $input, $return_format = '' ) {
 		$result = self::remove_all_whitespace( $input );
-		
+
 		if ( ! empty( $return_format ) && 'bool' != $return_format ) {
 			$return_format = '';
 		}
-		
+
 		// is valid ISO 8601 time (i.e. we do not want valid ISO 8601 Duration, Time Interval, etc.)
 		// API requires [YYYY]-[MM]-[DD]T[HH]:[MM]:[SS] -- https://en.wikipedia.org/wiki/ISO_8601#Combined_date_and_time_representations
 		// with an optional time zone formatted as Z for UTC time or {+,-}[HH]:[MM] (with or without separating colon) for an offset in hours or minutes
 		// For the latter format, if no time zone is present, local time (at the provided latitude and longitude) is assumed.
-/*
-		@link https://regex101.com/r/mL0xZ4/1
-		Should match ISO 8601 datetime for Dark Sky API:
-		[YYYY]-[MM]-[DD]T[HH]:[MM]:[SS]
-		with an optional time zone formatted as Z for UTC time or {+,-}[HH]:[MM] (with or without separating colon) for an offset
-		
-		Does Match:
-		2008-09-15T15:53:00
-		2007-03-01T13:00:00Z
-		2015-10-05T21:46:54-1500
-		2015-10-05T21:46:54+07:00
-		
-		Does Not Match:
-		2015-10-05T21:46:54-02
-		0
-		2008
-		2008-09
-		2008-09-15
-		2008-09-15 11:12:13
-		2008-09-15 11:12
-		1988-05-26T23:00:00.000Z
-*/
-		if( 1 == preg_match( '/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(Z|[\+-]\d{2}:?\d{2})?$/', $result ) ) {
-			if( '' == $return_format ) {
+		/*
+				@link https://regex101.com/r/mL0xZ4/1
+				Should match ISO 8601 datetime for Dark Sky API:
+				[YYYY]-[MM]-[DD]T[HH]:[MM]:[SS]
+				with an optional time zone formatted as Z for UTC time or {+,-}[HH]:[MM] (with or without separating colon) for an offset
+
+				Does Match:
+				2008-09-15T15:53:00
+				2007-03-01T13:00:00Z
+				2015-10-05T21:46:54-1500
+				2015-10-05T21:46:54+07:00
+
+				Does Not Match:
+				2015-10-05T21:46:54-02
+				0
+				2008
+				2008-09
+				2008-09-15
+				2008-09-15 11:12:13
+				2008-09-15 11:12
+				1988-05-26T23:00:00.000Z
+		*/
+		if ( 1 == preg_match( '/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(Z|[\+-]\d{2}:?\d{2})?$/', $result ) ) {
+			if ( '' == $return_format ) {
 				return $result;
 			} else {
 				return true;
 			}
-		}
-		// is NOT valid
+		} // is NOT valid
 		else {
 			if ( '' == $return_format ) {
 				return '';
@@ -613,6 +627,7 @@ class TkEventWeather__Functions {
 
 	/**
 	 * @param string $prepend_empty
+	 *
 	 * @return array|bool
 	 */
 	public static function valid_api_icon( $prepend_empty = 'false' ) {
@@ -631,16 +646,17 @@ class TkEventWeather__Functions {
 			'sunset',
 			'compass-north',
 		);
-		
+
 		if ( 'true' == $prepend_empty ) {
 			$result = self::array_prepend_empty( $result );
 		}
-		
+
 		return $result;
 	}
 
 	/**
 	 * @param string $prepend_empty
+	 *
 	 * @return array|bool
 	 */
 	public static function valid_icon_type( $prepend_empty = 'false' ) {
@@ -650,14 +666,14 @@ class TkEventWeather__Functions {
 			//'font_awesome',
 			'off',
 		);
-		
+
 		if ( 'true' == $prepend_empty ) {
 			$result = self::array_prepend_empty( $result );
 		}
-		
+
 		return $result;
 	}
-	
+
 	// 
 	// Climacons SVGs
 	// https://github.com/christiannaths/Climacons-Font/tree/master/SVG
@@ -683,7 +699,7 @@ class TkEventWeather__Functions {
 	c-0.781,0.781-2.049,0.781-2.828,0l-2.828-2.828c-0.781-0.78-0.781-2.047,0-2.828C62.093,60.531,63.36,60.531,64.142,61.312z"/>
 </svg>';
 	}
-	
+
 	public static function climacons_svg_moon() {
 		return '<?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)	-->
@@ -697,7 +713,7 @@ class TkEventWeather__Functions {
 	c3.802,0,6.978-2.655,7.791-6.211C52.937,50.884,49.115,47.062,48.212,42.208z"/>
 </svg>';
 	}
-	
+
 	public static function climacons_svg_cloud_rain() {
 		return '<?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)	-->
@@ -714,7 +730,7 @@ class TkEventWeather__Functions {
 	c0,1.105-0.895,2-1.999,2s-2-0.895-2-2V55.641C55.944,54.537,56.84,53.641,57.944,53.641z"/>
 </svg>';
 	}
-	
+
 	public static function climacons_svg_cloud_snow() {
 		return '<?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)	-->
@@ -734,7 +750,7 @@ class TkEventWeather__Functions {
 	c1.105,0,2,0.895,2,2c0,1.104-0.895,1.998-2,1.998c-1.104,0-1.999-0.895-1.999-1.998C56,66.535,56.896,65.641,57.999,65.641z"/>
 </svg>';
 	}
-	
+
 	// used for Sleet
 	public static function climacons_svg_cloud_hail() {
 		return '<?xml version="1.0" encoding="utf-8"?>
@@ -755,7 +771,7 @@ class TkEventWeather__Functions {
 	s-2-0.895-2-2C56,70.535,56.896,69.639,58,69.639z"/>
 </svg>';
 	}
-	
+
 	public static function climacons_svg_wind() {
 		return '<?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)	-->
@@ -772,7 +788,7 @@ class TkEventWeather__Functions {
 	c3.121,0.211,5.596,2.783,5.596,5.959C61.999,45.314,59.313,48.001,55.999,48.001z"/>
 </svg>';
 	}
-	
+
 	public static function climacons_svg_cloud_fog() {
 		return '<?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)	-->
@@ -788,7 +804,7 @@ class TkEventWeather__Functions {
 	c-1.104,0-2-0.895-2-2C28.003,70.535,28.898,69.639,30.003,69.639z"/>
 </svg>';
 	}
-	
+
 	public static function climacons_svg_cloud() {
 		return '<?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)	-->
@@ -802,7 +818,7 @@ class TkEventWeather__Functions {
 	c-6.626,0-11.998,5.372-11.998,11.999c0,6.626,5.372,11.998,11.998,11.998C47.562,61.639,56.924,61.639,59.943,61.639z"/>
 </svg>';
 	}
-	
+
 	public static function climacons_svg_cloud_sun() {
 		return '<?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)	-->
@@ -825,7 +841,7 @@ class TkEventWeather__Functions {
 	C45.851,31.11,44.584,31.11,43.803,30.329z"/>
 </svg>';
 	}
-	
+
 	public static function climacons_svg_cloud_moon() {
 		return '<?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)	-->
@@ -844,7 +860,7 @@ class TkEventWeather__Functions {
 	c0.858-0.979,1.485-2.168,1.786-3.482C63.881,39.525,60.059,35.706,59.155,30.85z"/>
 </svg>';
 	}
-	
+
 	public static function climacons_svg_sunrise() {
 		return '<?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)	-->
@@ -871,7 +887,7 @@ class TkEventWeather__Functions {
 </g>
 </svg>';
 	}
-	
+
 	public static function climacons_svg_sunset() {
 		return '<?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)	-->
@@ -893,7 +909,7 @@ class TkEventWeather__Functions {
 	s-0.896,1.999-2,1.999H40.002c-1.104,0-2-0.895-2-1.999S38.897,63.999,40.002,63.999z"/>
 </svg>';
 	}
-	
+
 	public static function climacons_svg_compass_north() {
 		return '<?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)	-->
@@ -913,84 +929,84 @@ class TkEventWeather__Functions {
 	}
 
 	/**
-	 * @param $input
+	 * @param        $input
 	 * @param string $icon_type
+	 *
 	 * @return mixed|string
 	 */
 	public static function icon_html( $input, $icon_type = 'climacons_font' ) {
-		$input = self::remove_all_whitespace ( strtolower( $input ) );
-		
+		$input = self::remove_all_whitespace( strtolower( $input ) );
+
 		if ( ! in_array( $input, self::valid_api_icon() ) ) {
 			return '';
 		}
-		
+
 		if ( ! in_array( $icon_type, self::valid_icon_type() ) ) {
 			$icon_type = 'climacons_font';
 		}
-		
+
 		$result = '';
-		
+
 		$climacons_font = array(
-			'clear-day'					=> 'sun',
-			'clear-night'				=> 'moon',
-			'rain'								=> 'rain',
-			'snow'								=> 'snow',
-			'sleet'							=> 'sleet',
-			'wind'								=> 'wind',
-			'fog'								=> 'fog',
-			'cloudy'							=> 'cloud',
-			'partly-cloudy-day'	=> 'cloud sun',
+			'clear-day'           => 'sun',
+			'clear-night'         => 'moon',
+			'rain'                => 'rain',
+			'snow'                => 'snow',
+			'sleet'               => 'sleet',
+			'wind'                => 'wind',
+			'fog'                 => 'fog',
+			'cloudy'              => 'cloud',
+			'partly-cloudy-day'   => 'cloud sun',
 			'partly-cloudy-night' => 'cloud moon',
-			'sunrise'						=> 'sunrise',
-			'sunset'							=> 'sunset',
-			'compass-north'			=> 'compass north',
+			'sunrise'             => 'sunrise',
+			'sunset'              => 'sunset',
+			'compass-north'       => 'compass north',
 		);
-		
+
 		// If you use SVGs, you'll need to add your own styling to make them appear more inline.
 		// https://github.com/christiannaths/Climacons-Font/tree/master/SVG
 		$climacons_svg = array(
-			'clear-day'					=> self::climacons_svg_sun(),
-			'clear-night'				=> self::climacons_svg_moon(),
-			'rain'								=> self::climacons_svg_cloud_rain(),
-			'snow'								=> self::climacons_svg_cloud_snow(),
-			'sleet'							=> self::climacons_svg_cloud_hail(),
-			'wind'								=> self::climacons_svg_wind(),
-			'fog'								=> self::climacons_svg_cloud_fog(),
-			'cloudy'							=> self::climacons_svg_cloud(),
-			'partly-cloudy-day'	=> self::climacons_svg_cloud_sun(),
+			'clear-day'           => self::climacons_svg_sun(),
+			'clear-night'         => self::climacons_svg_moon(),
+			'rain'                => self::climacons_svg_cloud_rain(),
+			'snow'                => self::climacons_svg_cloud_snow(),
+			'sleet'               => self::climacons_svg_cloud_hail(),
+			'wind'                => self::climacons_svg_wind(),
+			'fog'                 => self::climacons_svg_cloud_fog(),
+			'cloudy'              => self::climacons_svg_cloud(),
+			'partly-cloudy-day'   => self::climacons_svg_cloud_sun(),
 			'partly-cloudy-night' => self::climacons_svg_cloud_moon(),
-			'sunrise'						=> self::climacons_svg_sunrise(),
-			'sunset'							=> self::climacons_svg_sunset(),
-			'compass-north'			=> self::climacons_svg_compass_north(),
+			'sunrise'             => self::climacons_svg_sunrise(),
+			'sunset'              => self::climacons_svg_sunset(),
+			'compass-north'       => self::climacons_svg_compass_north(),
 		);
-		
+
 		// Font Awesome is really not usable (not enough weather-related icons). Plus, you would need to add the icon font yourself (e.g. via https://wordpress.org/plugins/better-font-awesome/ )
-/*
-		$fa_icons = array(
-			'clear-day'					=> 'fa-sun-o',
-			'clear-night'				=> 'fa-moon-o',
-			'rain'								=> 'fa-umbrella',
-			'snow'								=> 'fa-tint',
-			'sleet'							=> 'fa-tint',
-			'wind'								=> 'fa-send',
-			'fog'								=> 'fa-shield',
-			'cloudy'							=> 'fa-cloud',
-			'partly-cloudy-day'	=> 'fa-cloud',
-			'partly-cloudy-night' => 'fa-star-half',
-			'sunrise'						=> 'fa-arrow-up',
-			'sunset'							=> 'fa-arrow-down',
-			'compass-north'			=> 'fa-arrow-circle-o-up',
-		);
-*/
-		
+		/*
+				$fa_icons = array(
+					'clear-day'					=> 'fa-sun-o',
+					'clear-night'				=> 'fa-moon-o',
+					'rain'								=> 'fa-umbrella',
+					'snow'								=> 'fa-tint',
+					'sleet'							=> 'fa-tint',
+					'wind'								=> 'fa-send',
+					'fog'								=> 'fa-shield',
+					'cloudy'							=> 'fa-cloud',
+					'partly-cloudy-day'	=> 'fa-cloud',
+					'partly-cloudy-night' => 'fa-star-half',
+					'sunrise'						=> 'fa-arrow-up',
+					'sunset'							=> 'fa-arrow-down',
+					'compass-north'			=> 'fa-arrow-circle-o-up',
+				);
+		*/
+
 		if ( 'climacons_font' == $icon_type ) {
-			$icon = $climacons_font[$input];
+			$icon   = $climacons_font[ $input ];
 			$result = sprintf( '<i class="climacon %s"></i>', $icon );
 		} elseif ( 'climacons_svg' == $icon_type ) {
-			$icon = $climacons_svg[$input];
+			$icon   = $climacons_svg[ $input ];
 			$result = $icon;
-		}
-		/*
+		} /*
 		elseif ( 'font_awesome' == $icon_type ) {
 			$icon = $fa_icons[$input];
 			$result = sprintf( '<i class="fa %s"></i>', $icon );
@@ -999,25 +1015,26 @@ class TkEventWeather__Functions {
 		else {
 			// nothing
 		}
-				
+
 		return $result;
 	}
 
 	/**
-	 * @param $input
+	 * @param        $input
 	 * @param string $icon_type
+	 *
 	 * @return bool|string
 	 */
 	public static function wind_bearing_to_icon( $input, $icon_type = 'climacons_font' ) {
-		if( ! is_integer( $input ) ) { // not empty() because of allowable Zero
+		if ( ! is_integer( $input ) ) { // not empty() because of allowable Zero
 			return false;
 		}
-		
+
 		if ( ! in_array( $icon_type, self::valid_icon_type() ) ) {
 			$icon_type = 'climacons_font';
 		}
-		
-		
+
+
 		if ( 'climacons_font' == $icon_type ) {
 			$result = sprintf( '<i style="-ms-transform: rotate(%1$ddeg); -webkit-transform: rotate(%1$ddeg); transform: rotate(%1$ddeg);" class="tk-event-weather__wind-direction-icon climacon compass north"></i>', $input );
 		} elseif ( 'climacons_svg' == $icon_type ) {
@@ -1025,111 +1042,113 @@ class TkEventWeather__Functions {
 		} else {
 			// nothing
 		}
-				
+
 		return $result;
 	}
 
 	/**
 	 * @param $input
+	 *
 	 * @return bool|string|void
 	 */
 	public static function temperature_units( $input ) {
-		if( empty( $input ) || ! array_key_exists( $input, self::darksky_option_units() ) ) {
+		if ( empty( $input ) || ! array_key_exists( $input, self::darksky_option_units() ) ) {
 			return false;
 		}
-		
-		if( 'us' == $input ) {
+
+		if ( 'us' == $input ) {
 			$result = __( 'F', 'tk-event-weather' ); // Fahrenheit
 		} else {
 			$result = __( 'C', 'tk-event-weather' ); // Celsius
 		}
-		
+
 		return $result;
 	}
 
 	/**
-	 * @param $temperature
-	 * @param int $temperature_decimals
+	 * @param        $temperature
+	 * @param int    $temperature_decimals
 	 * @param string $degree
+	 *
 	 * @return bool|float|string
 	 */
 	public static function temperature_to_display( $temperature, $temperature_decimals = 0, $degree = '&deg;' ) {
-		if( ! is_numeric( $temperature ) ) {
+		if ( ! is_numeric( $temperature ) ) {
 			return false;
 		}
-		
+
 		$result = self::rounded_float_value( $temperature, $temperature_decimals );
-		
+
 		if ( ! empty( $degree ) ) {
 			$degree = sprintf( '<span class="degree-symbol">%s</span>', $degree );
 		}
-		
+
 		$result .= $degree;
-		
+
 		return $result;
 	}
-	
-	
+
+
 	/**
-		*
-		* http://www.srh.noaa.gov/epz/?n=wxcalc_windconvert
-		*
-		* if 'us' or 'uk2', MPH
-		* if 'si', meters per second
-		* if 'ca', km/h
-		*
-	**/
+	 *
+	 * http://www.srh.noaa.gov/epz/?n=wxcalc_windconvert
+	 *
+	 * if 'us' or 'uk2', MPH
+	 * if 'si', meters per second
+	 * if 'ca', km/h
+	 *
+	 **/
 	public static function wind_speed_units( $input ) {
 		if ( empty( $input ) || ! array_key_exists( $input, self::darksky_option_units() ) ) {
 			return false;
 		}
-		
+
 		if ( 'us' == $input || 'uk2' == $input ) {
 			$result = __( 'mph', 'tk-event-weather' ); // miles per hour
-		} elseif( 'si' == $input ) {
+		} elseif ( 'si' == $input ) {
 			$result = __( 'm/s', 'tk-event-weather' ); // meters per second
 		} else {
 			$result = __( 'km/h', 'tk-event-weather' ); // kilometers per hour
 		}
-		
+
 		return $result;
 	}
-	
-	
+
+
 	/**
-		* 
-		* https://en.wikipedia.org/wiki/Cardinal_direction
-		* https://en.wikipedia.org/wiki/Points_of_the_compass
-		* http://stackoverflow.com/questions/7490660/converting-wind-direction-in-angles-to-text-words
-		* http://climate.umn.edu/snow_fence/components/winddirectionanddegreeswithouttable3.htm
-		*
-	**/
+	 *
+	 * https://en.wikipedia.org/wiki/Cardinal_direction
+	 * https://en.wikipedia.org/wiki/Points_of_the_compass
+	 * http://stackoverflow.com/questions/7490660/converting-wind-direction-in-angles-to-text-words
+	 * http://climate.umn.edu/snow_fence/components/winddirectionanddegreeswithouttable3.htm
+	 *
+	 **/
 	// required to be an integer
 	public static function wind_bearing_to_direction( $input, $direction_initials = true, $precision = 8 ) {
-		if( ! is_integer( $input ) ) { // not empty() because of allowable Zero
+		if ( ! is_integer( $input ) ) { // not empty() because of allowable Zero
 			return false;
 		}
-		
+
 		$result = '';
-		
+
 		// 8 = 360 / 45
 		// 16 = 360 / 22.5
 		if ( 8 !== $precision && 16 !== $precision ) {
 			$precision = 8;
 		}
-		
+
 		if ( 8 === $precision ) {
 			$bearing_index = $input / 45;
 		} elseif ( 16 === $precision ) {
 			$bearing_index = $input / 22.5;
 		}
-		
+
 		if ( ! isset( $bearing_index ) ) {
 			return false;
 		}
-		
-		$bearing_index = intval ( round ( $bearing_index ) );
-		
+
+		$bearing_index = intval( round( $bearing_index ) );
+
 		if ( 8 == $precision ) {
 			if ( 8 == $bearing_index || 0 == $bearing_index ) {
 				$result = __( 'N', 'tk-event-weather' );
@@ -1189,7 +1208,7 @@ class TkEventWeather__Functions {
 		} else {
 			//
 		}
-		
+
 		if ( false === (bool) $direction_initials ) {
 			if ( 'N' == $result ) {
 				$result = __( 'north', 'tk-event-weather' );
@@ -1227,10 +1246,10 @@ class TkEventWeather__Functions {
 				// should not happen
 			}
 		}
-		
+
 		return $result;
 	}
-	
+
 	// e.g. 4:45pm -> 4:00pm
 	public static function timestamp_truncate_minutes( $timestamp = '' ) {
 		// timestamp
@@ -1250,59 +1269,61 @@ class TkEventWeather__Functions {
 	 * @param string $timestamp
 	 * @param string $timezone
 	 * @param string $date_format
+	 *
 	 * @return string
 	 */
 	public static function timestamp_to_display( $timestamp = '', $timezone = '', $date_format = '' ) {
 		// timestamp
 		$timestamp = self::valid_timestamp( $timestamp );
-		
+
 		if ( '' === $timestamp ) {
 			return '';
 		}
-		
+
 		// We will change time zone just for this conversion. Then we'll set it back.
 		$existing_timezone = date_default_timezone_get(); // will fallback to UTC but may also return a TZ environment variable (e.g. EST)
-				
+
 		// Dark Sky API may return an escaped time zone string
 		$timezone = stripslashes( $timezone );
-		
+
 		if ( ! in_array( $timezone, timezone_identifiers_list() ) ) {
 			$timezone = get_option( 'timezone_string' ); // could return NULL
 		}
-		
+
 		if ( empty( $timezone ) ) {
 			$timezone = $existing_timezone;
 		}
-		
+
 		date_default_timezone_set( $timezone );
-		
-		
+
+
 		if ( empty ( $date_format ) ) {
 			return '';
 		}
-		
+
 		// $date = date ( $date_format, $timestamp );
 		$date = date_i18n( $date_format, $timestamp );
 		// possibly relevant issues with date_i18n(): https://core.trac.wordpress.org/ticket/38771, https://core.trac.wordpress.org/ticket/39595#comment:5
-		
+
 		// set back to what date_default_timezone_get() was
 		date_default_timezone_set( $existing_timezone );
-		
+
 		// return 
 		return $date;
 	}
 
 	/**
 	 * @param string $template_name
+	 *
 	 * @return string
 	 */
 	public static function template_class_name( $template_name = '' ) {
 		$result = '';
-		
+
 		if ( array_key_exists( $template_name, self::valid_display_templates() ) ) {
-			$result = sanitize_html_class ( sprintf( 'template-%s', $template_name ) );
+			$result = sanitize_html_class( sprintf( 'template-%s', $template_name ) );
 		}
-		
+
 		return $result;
 	}
 
@@ -1311,16 +1332,17 @@ class TkEventWeather__Functions {
 	 */
 	public static function shortcode_error_class_name() {
 		$result = sanitize_html_class( strtolower( TkEventWeather__FuncSetup::$shortcode_name ) ) . '__error';
+
 		return $result;
 	}
-	
+
 	// does NOT close the opening DIV tag
 	// could add optional argument to customize element (div, span, etc)
 	public static function template_start_of_each_item( $template_class_name = '', $index = '' ) {
 		$result = '<div class="';
-		
+
 		$template_class_name = sanitize_html_class( $template_class_name );
-		
+
 		if ( ! empty( $template_class_name ) && is_integer( $index ) ) {
 			$result = sprintf( '<div class="%1$s__index-%2$d %1$s__item', $template_class_name, $index );
 		} elseif ( ! empty( $template_class_name ) && ! is_integer( $index ) ) {
@@ -1328,8 +1350,8 @@ class TkEventWeather__Functions {
 		} else {
 			// nothing to do
 		}
-		
+
 		return $result;
 	}
-	
+
 }
