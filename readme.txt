@@ -5,7 +5,7 @@ License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.3.0
 Tested up to: 4.7.3
-Stable tag: 1.4
+Stable tag: 1.4.1
 
 Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 
@@ -193,6 +193,10 @@ Here are quotes from the [Dark Sky API docs](https://darksky.net/dev/docs/source
 
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
+
+= Version 1.4.1 =
+* March 11, 2017
+* Update Freemius SDK from v1.2.1.5 to v1.2.1.6
 
 = Version 1.4 =
 * March 10, 2017
