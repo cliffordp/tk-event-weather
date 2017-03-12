@@ -363,14 +363,17 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 				$start_time           = TkEventWeather__Functions::valid_iso_8601_date_time( $start_time );
 				$start_time_iso_8601  = $start_time;
 				$start_time_timestamp = date( 'U', strtotime( $start_time ) );
-			} // check timestamp
+			}
+			// check timestamp
 			elseif ( true === TkEventWeather__Functions::valid_timestamp( $start_time, 'bool' ) ) {
 				$start_time           = TkEventWeather__Functions::valid_timestamp( $start_time );
 				$start_time_iso_8601  = date( DateTime::ATOM, $start_time ); // DateTime::ATOM is same as 'c'
 				$start_time_timestamp = $start_time;
-			} // not valid so clear out
+			}
+			// not valid so clear out
 			else {
 				$start_time = '';
+				$start_time_timestamp = '';
 			}
 		}
 

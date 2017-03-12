@@ -583,6 +583,12 @@ class TkEventWeather__Functions {
 			$return_format = '';
 		}
 
+		// default to Today's date (from WordPress' GMT Offset) if begins with capital "T" (skipping the date)
+		if ( 0 === strpos( $result, 'T' ) ) {
+			$today = current_time( 'Y-m-d' ); // e.g. "2017-03-11" for March 11, 2017
+			$result = $today . $result;
+		}
+
 		// is valid ISO 8601 time (i.e. we do not want valid ISO 8601 Duration, Time Interval, etc.)
 		// API requires [YYYY]-[MM]-[DD]T[HH]:[MM]:[SS] -- https://en.wikipedia.org/wiki/ISO_8601#Combined_date_and_time_representations
 		// with an optional time zone formatted as Z for UTC time or {+,-}[HH]:[MM] (with or without separating colon) for an offset in hours or minutes
@@ -609,7 +615,7 @@ class TkEventWeather__Functions {
 				2008-09-15 11:12
 				1988-05-26T23:00:00.000Z
 		*/
-		if ( 1 == preg_match( '/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(Z|[\+-]\d{2}:?\d{2})?$/', $result ) ) {
+		if ( 1 === preg_match( '/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(Z|[\+-]\d{2}:?\d{2})?$/', $result ) ) {
 			if ( '' == $return_format ) {
 				return $result;
 			} else {

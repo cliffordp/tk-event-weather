@@ -143,13 +143,17 @@ F) Displaying more than one day in a sequence (multiple API calls but appear all
 And then add some custom CSS, like this:
 `.tkeventw-myclass { display: inline-block; vertical-align: top; }`
 
-G) to display from 4:30pm through the remainder of the day (do not set the end_time)
+G) To display from 4:30pm through the remainder of the day (do not set the end_time)
 
 `[tk_event_weather lat_long="38.897676,-77.03653" start_time="2016-02-01T16:30:00-05:00"]`
 
-H) to display only 4:00pm's weather, set end_time to the same
+H) To display only 4:00pm's weather, set end_time to the same
 
 `[tk_event_weather lat_long="38.897676,-77.03653" start_time="2016-02-01T16:00:00-05:00" end_time="2016-02-01T16:00:00-05:00" sunrise_sunset_off="true"]`
+
+I) To display Today's weather from 6am - 7pm, begin the start_time and end_time shortcode arguments at the "T" part of the ISO 8601 format. Note that you will likely need to edit the shortcode twice per year to accurately reflect the location's Daylight Savings Time (DST) UTC offset.
+
+`[tk_event_weather location="The White House" start_time=T06:00:00-0400 end_time=T19:00:00-04:00 before="Today's Forecast"]`
 
 = Will this plugin work with my theme? =
 
@@ -196,6 +200,7 @@ Here are quotes from the [Dark Sky API docs](https://darksky.net/dev/docs/source
 
 = Version 1.4.1 =
 * March 11, 2017
+* Enhancement: If start_time or end_time begins with capital "T" (leaving out the YYYY-MM-DD part of the ISO 8601 format), today's date from WordPress' current_time( 'Y-m-d' ) will be used
 * Update Freemius SDK from v1.2.1.5 to v1.2.1.6
 
 = Version 1.4 =
