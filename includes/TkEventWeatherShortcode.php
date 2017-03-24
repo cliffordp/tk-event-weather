@@ -265,6 +265,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 				$location_request_uri_query_args = array();
 
 				$gmaps_api_key = TkEventWeather__Functions::sanitize_key_allow_uppercase( $atts[ 'gmaps_api_key' ] );
+				// TODO if not set, make it required and throw an error
 				if ( ! empty( $gmaps_api_key ) ) {
 					$location_request_uri_query_args[ 'key' ] = urlencode( $gmaps_api_key );
 				}

@@ -5,7 +5,7 @@ License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.3.0
 Tested up to: 4.7.3
-Stable tag: 1.4.1
+Stable tag: 1.4.2
 
 Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 
@@ -136,9 +136,9 @@ E) Just like Example D but with Location shortcode argument (a full address) -- 
 `[tk_event_weather location="1600 Pennsylvania Ave NW, Washington, DC 20500, USA" start_time="1454362200" end_time="1454381100"]`
 
 F) Displaying more than one day in a sequence (multiple API calls but appear all together), [like this screenshot](https://cl.ly/1X430L0g0z2c)
-`[tk_event_weather lat_long='28.5549259,-81.3342398' start_time='2016-08-27T22:00:00-04:00' end_time='2016-08-27T23:59:00-04:00' class='tkeventw-myclass']
+`[tk_event_weather lat_long='28.5549259,-81.3342398' start_time='2016-08-27T22:00:00-04:00' end_time='2016-08-27T23:59:00-04:00' class='tkeventw-myclass']`
 
-[tk_event_weather lat_long='28.5549259,-81.3342398' start_time='2016-08-28T00:00:00-04:00' end_time='2016-08-28T04:30:00-04:00' class='tkeventw-myclass' darksky_credit_link_off='true']`
+`[tk_event_weather lat_long='28.5549259,-81.3342398' start_time='2016-08-28T00:00:00-04:00' end_time='2016-08-28T04:30:00-04:00' class='tkeventw-myclass' darksky_credit_link_off='true']`
 
 And then add some custom CSS, like this:
 `.tkeventw-myclass { display: inline-block; vertical-align: top; }`
@@ -176,6 +176,13 @@ Here are quotes from the [Dark Sky API docs](https://darksky.net/dev/docs/source
 * "The Dark Sky API is backed by a wide range of data sources, which are aggregated together to provide the most accurate forecast possible for a given location."
 * "Most of our sources focus on the USA and UK, and these areas are best supported by our API. We have plans to greatly improve our international forecasts in the near future."
 
+= Acknowledgements =
+
+Many thanks to the following:
+* [Climacons webfont by Christian Naths](https://github.com/christiannaths/Climacons-Font)
+* [Gamajo Template Loader by Gary Jones](https://github.com/GaryJones/Gamajo-Template-Loader)
+* [WordPress Plugin Template by Michael Simpson](http://plugin.michael-simpson.com/)
+
 == Screenshots ==
 1. Plugin settings screen with convenient link to plugin options in the WordPress Customizer
 
@@ -197,6 +204,12 @@ Here are quotes from the [Dark Sky API docs](https://darksky.net/dev/docs/source
 
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
+
+= Version 1.4.2 =
+* March 24, 2017
+* Fix: Add missing Climacons SVG file
+* Rename action hook from get_template_part_tk_event_weather_hourly_horizontal to tk_event_weather_get_template_part_hourly_horizontal
+* Change plugin's Tools tab shortcode usage examples to instead link to this plugin's WordPress.org FAQs to avoid having to upkeep them in more than one place.
 
 = Version 1.4.1 =
 * March 11, 2017

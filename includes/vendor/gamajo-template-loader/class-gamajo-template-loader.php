@@ -92,7 +92,7 @@ if ( ! class_exists( 'Gamajo_Template_Loader' ) ) {
 		public function get_template_part( $slug, $name = null, $load = true ) {
 			// Execute code for this part.
 			do_action( 'get_template_part_' . $slug, $slug, $name );
-			do_action( 'get_template_part_' . $this->filter_prefix . '_' . $slug, $slug, $name );
+			do_action( $this->filter_prefix . '_get_template_part_' . $slug, $slug, $name );
 			// https://github.com/GaryJones/Gamajo-Template-Loader/pull/29
 
 			// Get files names of templates, for given slug and name.

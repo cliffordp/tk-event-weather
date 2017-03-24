@@ -333,43 +333,8 @@ class TkEventWeather__OptionsManager {
 			elseif ( $active_tab == 'tools' ) {
 			?>
                 <h2><?php _e( 'Shortcode Examples', 'tk-event-weather' ); ?></h2>
-                <p><?php _e( 'Multiple ways to display the weather for the White House on February 1, 2016, from 4:30pm&ndash;9:45pm Eastern Time', 'tk-event-weather' ); ?>
-                    :</p>
-                <div style="margin-left: 20px;">
-					<?php esc_html_e( 'A) with single Latitude/Longitude shortcode argument and ISO 8601 datetime format', 'tk-event-weather' ); ?>
-                    :
-                    <ul style="list-style-type:disc; list-style-position: inside;">
-                        <li>[tk_event_weather lat_long="38.897676,-77.03653" start_time="2016-02-01T16:30:00-05:00"
-                            end_time="2016-02-01T21:45:00-05:00"]
-                        </li>
-                    </ul>
-					<?php esc_html_e( 'B) or separate shortcode arguments for Latitude and Longitude', 'tk-event-weather' ); ?>
-                    :
-                    <ul style="list-style-type:disc; list-style-position: inside;">
-                        <li>[tk_event_weather lat="38.897676" long="-77.03653" start_time="2016-02-01T16:30:00-05:00"
-                            end_time="2016-02-01T21:45:00-05:00"]
-                        </li>
-                    </ul>
-					<?php esc_html_e( 'C) or with Unix timestamps', 'tk-event-weather' ); ?>:
-                    <ul style="list-style-type:disc; list-style-position: inside;">
-                        <li>[tk_event_weather lat_long="38.897676,-77.03653" start_time="1454362200"
-                            end_time="1454381100"]
-                        </li>
-                    </ul>
-					<?php esc_html_e( 'D) Just like Example A but with Location shortcode argument (a Place name)', 'tk-event-weather' ); ?>
-                    :
-                    <ul style="list-style-type:disc; list-style-position: inside;">
-                        <li>[tk_event_weather location="The White House" start_time="1454362200"
-                            end_time="1454381100"]
-                        </li>
-                    </ul>
-					<?php esc_html_e( 'E) Just like Example D but with Location shortcode argument (a full address)', 'tk-event-weather' ); ?>
-                    :
-                    <ul style="list-style-type:disc; list-style-position: inside;">
-                        <li>[tk_event_weather location="1600 Pennsylvania Ave NW, Washington, DC 20500, USA"
-                            start_time="1454362200" end_time="1454381100"]
-                        </li>
-                    </ul>
+                <p><?php printf( __( "For your reference, over a dozen examples are available at %sthis plugin's WordPress.org FAQs%s. (link opens in new window)", 'tk-event-weather' ), '<a href="https://wordpress.org/plugins-wp/tk-event-weather/#faq" target="_blank">', '</a>' ); ?>
+                </p>
                 </div>
             <br>
                 <h2><?php _e( 'Google Maps', 'tk-event-weather' ); ?></h2>
