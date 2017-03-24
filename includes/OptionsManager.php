@@ -572,10 +572,10 @@ class TkEventWeather__OptionsManager {
 							// Check if phpversion function exists.
 							if ( function_exists( 'phpversion' ) ) {
 								$php_version = phpversion();
-								if ( version_compare( $php_version, TkEventWeather__FuncSetup::$min_allowed_version_php, '<' ) ) {
+								if ( version_compare( $php_version, TkEventWeather__minimalRequiredPhpVersion(), '<' ) ) {
 									echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf( __( '%s - This plugin requires a minimum PHP version of %s. See: %s', 'tk-event-weather' ),
 											esc_html( $php_version ),
-											TkEventWeather__FuncSetup::$min_allowed_version_php,
+											TkEventWeather__minimalRequiredPhpVersion(),
 											'<a href="http://docs.woothemes.com/document/how-to-update-your-php-version/" target="_blank">' . __( 'How to update your PHP version', 'tk-event-weather' ) . '</a>' ) . '</mark>';
 								} else {
 									echo '<mark class="yes">' . esc_html( $php_version ) . '</mark>';

@@ -5,7 +5,7 @@ License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.3.0
 Tested up to: 4.7.3
-Stable tag: 1.4.2
+Stable tag: 1.4.3
 
 Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 
@@ -205,10 +205,15 @@ Many thanks to the following:
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
 
+= Version 1.4.3 =
+* March 24, 2017
+* Improved logic for loading plugin assets
+* Update Gamajo Template Loader from 1.2.0 to 1.3.0
+
 = Version 1.4.2 =
 * March 24, 2017
 * Fix: Add missing Climacons SVG file
-* Rename action hook from get_template_part_tk_event_weather_hourly_horizontal to tk_event_weather_get_template_part_hourly_horizontal
+* Rename action hook from get_template_part_tk_event_weather_hourly_horizontal to tk_event_weather_get_template_part_hourly_horizontal (similar renaming for other template names)
 * Change plugin's Tools tab shortcode usage examples to instead link to this plugin's WordPress.org FAQs to avoid having to upkeep them in more than one place.
 
 = Version 1.4.1 =

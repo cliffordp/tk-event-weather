@@ -75,6 +75,8 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 		// Add Actions & Filters
 		// http://plugin.michael-simpson.com/?page_id=37
 
+		add_action( 'template_redirect', array( $this, 'register_assets' ), 0 );
+
 
 		// Adding scripts & styles to all pages
 		// Examples:
@@ -103,6 +105,11 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 	//
 	// Start of Cliff's custom functions
 	//
+
+	public static function register_assets() {
+		TkEventWeather__Functions::register_css();
+		TkEventWeather__Functions::register_climacons_css();
+	}
 
 	public static function customizer_options_link() {
 		$url = 'customize.php';

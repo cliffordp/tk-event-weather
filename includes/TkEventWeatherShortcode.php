@@ -141,14 +141,6 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 
 		// extract( $atts ); // convert each array item to individual variable
 
-
-		// load CSS file for Administrators so error messages get styled even if there are no valid shortcodes on page
-		// if non-Administrator and no valid shortcode, CSS file will not load
-		if ( current_user_can( 'edit_theme_options' ) ) {
-			TkEventWeather__Functions::register_css();
-			wp_enqueue_style( sanitize_html_class( TkEventWeather__FuncSetup::shortcode_name_hyphenated() ) );
-		}
-
 		// Code
 
 		$debug = (bool) $atts[ 'debug_on' ];
@@ -949,7 +941,6 @@ TK Event Weather JSON Data
 
 		// enqueue CSS file if using Climacons Icon Font
 		if ( 'climacons_font' == $icons ) {
-			TkEventWeather__Functions::register_climacons_css();
 			wp_enqueue_style( 'tkeventw-climacons' );
 		}
 
@@ -1030,9 +1021,6 @@ TK Event Weather JSON Data
 		}
 
 
-		TkEventWeather__Functions::register_css();
-		wp_enqueue_style( sanitize_html_class( TkEventWeather__FuncSetup::shortcode_name_hyphenated() ) );
-
 		/**
 		 * Start Building Output!!!
 		 * All data should be set by now!!!
@@ -1080,6 +1068,9 @@ TK Event Weather JSON Data
 	public function addScript() {
 		if ( ! self::$addedAlready ) {
 			self::$addedAlready = true;
+
+			wp_enqueue_style( sanitize_html_class( TkEventWeather__FuncSetup::shortcode_name_hyphenated() ) );
+
 			//wp_register_script('my-script', plugins_url('js/my-script.js', __FILE__), array('jquery'), '1.0', true);
 			//wp_print_scripts('my-script');
 		}

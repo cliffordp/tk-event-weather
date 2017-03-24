@@ -13,8 +13,6 @@ class TkEventWeather__FuncSetup {
 
 	// https://wordpress.org/about/requirements/
 
-	public static $min_allowed_version_php = '5.4';
-
 	public static $min_allowed_version_mysql = '5.0';
 
 	public static $min_allowed_version_wordpress = '4.3.0';

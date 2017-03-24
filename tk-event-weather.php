@@ -2,7 +2,7 @@
 /*
 	Plugin Name: TK Event Weather
 	Plugin URI: http://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
-	Version: 1.4.2
+	Version: 1.4.3
 	Author: TourKick (Clifford Paulick)
 	Author URI: http://tourkick.com/?utm_source=author-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
 	Description: Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
@@ -81,6 +81,28 @@ define( 'TK_EVENT_WEATHER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) ); // e.
 define( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE', dirname( __FILE__ ) . '/includes/vendor/freemius/start.php' );
 
 
+
+// adapted from http://wpbackoffice.com/get-current-woocommerce-version-number/
+function tk_event_weather_version() {
+	// If get_plugins() isn't available, require it
+	if ( ! function_exists( 'get_plugins' ) ) {
+		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+	}
+	// Create the plugins folder and file variables
+	$plugin_folder = get_plugins( '/tk-event-weather' );
+	$plugin_file = 'tk-event-weather.php';
+
+	// If the plugin version number is set, return it
+	if ( isset( $plugin_folder[$plugin_file]['Version'] ) ) {
+		return $plugin_folder[$plugin_file]['Version'];
+	} else {
+		// Otherwise return null
+		return null;
+	}
+
+}
+
+
 function tk_event_weather_terms_agreement_text() {
 	return sprintf( __( 'By using this plugin, you agree to %s and %s Terms.', 'tk-event-weather' ),
 		'<a target="_blank" href="http://tourkick.com/terms/?utm_source=terms_agreement_text&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather">TourKick\'s</a>',
@@ -154,25 +176,25 @@ function tk_event_weather_freemius_plugin_icon() {
 tk_event_weather_freemius()->add_filter( 'plugin_icon', 'tk_event_weather_freemius_plugin_icon' );
 
 
-$TkEventWeather__minimalRequiredPhpVersion = '5.0';
+function TkEventWeather__minimalRequiredPhpVersion() {
+	return '5.4';
+}
 
 /**
  * Check the PHP version and give a useful error message if the user's version is less than the required version
  * @return boolean true if version check passed. If false, triggers an error which WP will handle, by displaying an error message on the Admin page
  */
 function TkEventWeather__noticePhpVersionWrong() {
-	global $TkEventWeather__minimalRequiredPhpVersion;
 	echo '<div class="updated fade">' .
 	     __( 'Error: plugin "TK Event Weather" requires a newer version of PHP to be running.', 'tk-event-weather' ) .
-	     '<br/>' . __( 'Minimal version of PHP required: ', 'tk-event-weather' ) . '<strong>' . $TkEventWeather__minimalRequiredPhpVersion . '</strong>' .
+	     '<br/>' . __( 'Minimal version of PHP required: ', 'tk-event-weather' ) . '<strong>' . TkEventWeather__minimalRequiredPhpVersion() . '</strong>' .
 	     '<br/>' . __( 'Your server\'s PHP version: ', 'tk-event-weather' ) . '<strong>' . phpversion() . '</strong>' .
 	     '</div>';
 }
 
 
 function TkEventWeather__PhpVersionCheck() {
-	global $TkEventWeather__minimalRequiredPhpVersion;
-	if ( version_compare( phpversion(), $TkEventWeather__minimalRequiredPhpVersion ) < 0 ) {
+	if ( version_compare( phpversion(), TkEventWeather__minimalRequiredPhpVersion() ) < 0 ) {
 		add_action( 'admin_notices', 'TkEventWeather__noticePhpVersionWrong' );
 
 		return false;

@@ -122,7 +122,7 @@ class TkEventWeather__InstallIndicator extends TkEventWeather__OptionsManager {
 	 * @return string
 	 */
 	public function getVersion() {
-		return $this->getPluginHeaderValue( 'Version' );
+		return tk_event_weather_version();
 	}
 
 
