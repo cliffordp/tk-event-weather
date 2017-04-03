@@ -205,6 +205,11 @@ Many thanks to the following:
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
 
+= Version 1.4.4 =
+* April 3, 2017
+* Enhancement: Hourly Horizontal forecast now displays on a single row and scrolls horizontally if necessary. There is also an option to disable this horizontal scrolling and display in multi-row like it used to be.
+* Fix logic for checking if start_time is empty.
+
 = Version 1.4.3 =
 * March 24, 2017
 * Improved logic for loading plugin assets

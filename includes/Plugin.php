@@ -304,6 +304,22 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 			'type'        => 'text',
 		) );
 
+		// Disable horizontal scrolling
+		$wp_customize->add_setting( self::$customizer_flag . '[scroll_horizontal_off]', array(
+			'type'       => 'option',
+			'capability' => 'edit_theme_options',
+			'default'    => '',
+		) );
+
+		$wp_customize->add_control( self::$customizer_flag . '_scroll_horizontal_off_control', array(
+			'label'       => esc_html__( 'Disable Horizontal Scrolling', 'tk-event-weather' ),
+			'description' => __( 'If checked, the horizontal scrolling stylesheet will not load and, therefore, it will wrap to multiple rows and there will not be a horizontal scroll bar.', 'tk-event-weather' ),
+			'section'     => self::$customizer_section_id,
+			'settings'    => self::$customizer_flag . '[scroll_horizontal_off]',
+			'type'        => 'checkbox',
+			'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
+		) );
+
 		// Past cutoff days
 		$wp_customize->add_setting( self::$customizer_flag . '[cutoff_past_days]', array(
 			'type'              => 'option',

@@ -1,0 +1,8 @@
+.tk-event-weather__wrapper {
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.tk-event-weather__wrapper .tk-event-weather__dark-sky-credit {
+    margin-bottom: 10px;
+}

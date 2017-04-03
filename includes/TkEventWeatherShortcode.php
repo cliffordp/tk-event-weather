@@ -368,7 +368,10 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 				$start_time = '';
 				$start_time_timestamp = '';
 			}
+		} else {
+			$start_time_timestamp = '';
 		}
+
 
 		$start_time_timestamp = TkEventWeather__Functions::valid_timestamp( $start_time_timestamp );
 
@@ -1066,10 +1069,16 @@ TK Event Weather JSON Data
 
 	// do not comment out -- needed because of extending an abstract class
 	public function addScript() {
+		$plugin_options = TkEventWeather__Functions::plugin_options();
+
 		if ( ! self::$addedAlready ) {
 			self::$addedAlready = true;
 
 			wp_enqueue_style( sanitize_html_class( TkEventWeather__FuncSetup::shortcode_name_hyphenated() ) );
+
+			if ( empty( $plugin_options['scroll_horizontal_off'] ) ) {
+				wp_enqueue_style( sanitize_html_class( TkEventWeather__FuncSetup::shortcode_name_hyphenated() . '-scroll-horizontal' ) );
+			}
 
 			//wp_register_script('my-script', plugins_url('js/my-script.js', __FILE__), array('jquery'), '1.0', true);
 			//wp_print_scripts('my-script');

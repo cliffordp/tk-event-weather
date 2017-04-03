@@ -73,6 +73,8 @@ class TkEventWeather__Functions {
 	 */
 	public static function register_css() {
 		wp_register_style( TkEventWeather__FuncSetup::shortcode_name_hyphenated(), TkEventWeather__FuncSetup::plugin_dir_url_root() . 'css/tk-event-weather.css', array(), tk_event_weather_version() );
+
+		wp_register_style( TkEventWeather__FuncSetup::shortcode_name_hyphenated() . '-scroll-horizontal', TkEventWeather__FuncSetup::plugin_dir_url_root() . 'css/tk-event-weather-scroll-horizontal.css', array(), tk_event_weather_version() );
 	}
 
 
