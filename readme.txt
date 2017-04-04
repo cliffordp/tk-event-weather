@@ -1,11 +1,11 @@
 === TK Event Weather ===
-Contributors: cliffpaulick
+Contributors: cliffpaulick, freemius
 Tags: API, calendars, celsius, classes, concerts, Dark Sky, events, fahrenheit, forecast, Forecast.io, local, meetings, shortcode, tickets, weather
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.3.0
 Tested up to: 4.7.3
-Stable tag: 1.4.3
+Stable tag: 1.4.4
 
 Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 
