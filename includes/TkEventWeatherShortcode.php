@@ -363,10 +363,16 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 				$start_time_iso_8601  = date( DateTime::ATOM, $start_time ); // DateTime::ATOM is same as 'c'
 				$start_time_timestamp = $start_time;
 			}
-			// not valid so clear out
+			// strtotime() or invalid (and therefore clear out)
 			else {
-				$start_time = '';
-				$start_time_timestamp = '';
+				$start_time = strtotime( $start_time );
+
+				if ( false === $start_time ) {
+					$start_time = '';
+				} else {
+					$start_time_timestamp = $start_time;
+					$start_time_iso_8601  = date( DateTime::ATOM, $start_time ); // DateTime::ATOM is same as 'c'
+				}
 			}
 		} else {
 			$start_time_timestamp = '';
@@ -436,14 +442,23 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 				$end_time           = TkEventWeather__Functions::valid_iso_8601_date_time( $end_time );
 				$end_time_iso_8601  = $end_time;
 				$end_time_timestamp = TkEventWeather__Functions::valid_timestamp( date( 'U', strtotime( $end_time ) ) ); // date() returns a string
-			} // check timestamp
+			}
+			// check timestamp
 			elseif ( true === TkEventWeather__Functions::valid_timestamp( $end_time, 'bool' ) ) {
 				$end_time           = TkEventWeather__Functions::valid_timestamp( $end_time );
 				$end_time_iso_8601  = date( DateTime::ATOM, $end_time ); // DateTime::ATOM is same as 'c'
 				$end_time_timestamp = $end_time;
-			} // not valid so clear out
+			}
+			// strtotime() or invalid (and therefore clear out)
 			else {
-				$end_time = '';
+				$end_time = strtotime( $end_time, $start_time_timestamp ); // strtotime() being relative to Start Time
+
+				if ( false === $end_time ) {
+					$end_time = '';
+				} else {
+					$end_time_timestamp = $end_time;
+					$end_time_iso_8601  = date( DateTime::ATOM, $end_time ); // DateTime::ATOM is same as 'c'
+				}
 			}
 		}
 

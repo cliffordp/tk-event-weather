@@ -1,11 +1,11 @@
 === TK Event Weather ===
 Contributors: cliffpaulick, freemius
-Tags: API, calendars, celsius, classes, concerts, Dark Sky, events, fahrenheit, forecast, Forecast.io, local, meetings, shortcode, tickets, weather
-License: GPLv3
+Tags: calendar, events, forecast, shortcode, weather
+License: GPL version 3 or any later version
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
-Requires at least: 4.3.0
+Requires at least: 4.6
 Tested up to: 4.7.3
-Stable tag: 1.4.4
+Stable tag: 1.4.5
 
 Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 
@@ -81,7 +81,7 @@ I'll consider making whichever add-ons I receive the most requests for (and are 
 * You'll need to enter your billing information at Dark Sky if you want to ensure your API access isn't cut off after 1,000 API calls per day.
 * If you're out of API calls for the day and you haven't entered billing information, the plugin will "fail gracefully" (does not display errors to non-Administrators).
 * You can check the [Dark Sky API's Status Updates](http://status.darksky.net/) to read its news.
-* The [Dark Sky Terms of Use](https://darksky.net/dev/docs/terms) states, "You agree that any application or service which incorporates data obtained from the Service shall prominently display the message "Powered by Dark Sky" in a legible manner near the data or any information derived from any data from the Service. This message must, if possible, open a link to https://darksky.net/poweredby/ when clicked or touched."
+* The [Dark Sky Terms of Use](https://darksky.net/dev/docs/terms) states, "You agree that any application or service which incorporates data obtained from the Service shall prominently display the message "Powered by Dark Sky" in a legible manner near the data or any information derived from any data from the Service. This message must, if possible, open a link to [https://darksky.net/poweredby/](https://darksky.net/poweredby/) when clicked or touched."
 * This plugin's output will automatically add a compliant link; however, there is a setting to disable outputting this link. This is because your site may not be a "public or user-facing application" (although it probably is) or because you've emailed to the address in their Terms of Use to request (and have been approved for) their extremely-affordable *white-label* account.
 * This plugin and its author are not affiliated with or endorsed by The Dark Sky Company, LLC.
 * This plugin utilizes [Freemius](https://freemius.com/wordpress/). All data collected via Freemius will be available to both Freemius and this plugin's author to be used in responsible ways. By opting-in to Freemius, you'll help us learn how we can make this plugin better and possibly communicate with you regarding the plugin's development.
@@ -155,6 +155,16 @@ I) To display Today's weather from 6am - 7pm, begin the start_time and end_time 
 
 `[tk_event_weather location="The White House" start_time=T06:00:00-0400 end_time=T19:00:00-04:00 before="Today's Forecast"]`
 
+J) To display the weather **from right now through the next 3 hours**. NOTE: end_time is relative to start_time, not to "now" (unless start_time is set to "now").
+
+`[tk_event_weather location="The White House" start_time="now" end_time="+3 hours"]`
+
+Example: At 12:06pm, this shortcode will display 12pm, 1pm, 2pm, 3pm, and 4pm (5 hours, possibly more if sunrise or sunset) -- because the shortcode always "bookends" the hours -- so it rounds 12:06pm *down* to 12:00 and rounds 3:06pm *up* to 4:00pm. So if you'd like only 12pm, 1pm, and 2pm to be displayed, you could add `class="max-3"` to the shortcode and then also add this CSS:
+
+`.tk-event-weather__wrapper.max-3 .template-hourly_horizontal__item:nth-of-type(1n+4) {
+    display: none;
+}`
+
 = Will this plugin work with my theme? =
 
 This plugin will work with any properly-coded WordPress theme. Free styling / customization help to integrate with your theme is not available from the plugin author.
@@ -204,6 +214,11 @@ Many thanks to the following:
 
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
+
+= Version 1.4.5 =
+* May 25, 2017
+* Enhancement: Support for PHP's <a href="https://secure.php.net/manual/en/function.strtotime.php">strtotime()</a>; allows you to set *start_time="now"* and/or *end_time="+3 hours"*. NOTE: end_time is relative to start_time, not to "now" (unless start_time is set to "now").
+* Changed minimum required WordPress version to 4.6 <a href="https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/#loading-text-domain">for translation purposes</a>.
 
 = Version 1.4.4 =
 * April 3, 2017

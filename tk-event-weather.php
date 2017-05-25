@@ -2,12 +2,12 @@
 /*
 	Plugin Name: TK Event Weather
 	Plugin URI: http://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
-	Version: 1.4.4
+	Version: 1.4.5
 	Author: TourKick (Clifford Paulick)
 	Author URI: http://tourkick.com/?utm_source=author-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
 	Description: Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 	Text Domain: tk-event-weather
-	License: GPLv3
+	License: GPL version 3 or any later version
 	License URI: http://www.gnu.org/licenses/gpl-3.0.html
 */
 
