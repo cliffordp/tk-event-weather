@@ -2,9 +2,9 @@
 /**
  *
  * @package        TkEventWeather
- * @author        TourKick (Clifford Paulick)
- * @link        https://github.com/GaryJones/Gamajo-Template-Loader#installation
- * @copyright    2016 TourKick (Clifford Paulick)
+ * @author         TourKick (Clifford Paulick)
+ * @link           https://github.com/GaryJones/Gamajo-Template-Loader#installation
+ * @copyright      2016 TourKick (Clifford Paulick)
  * @license        GPL-2.0+
  */
 
@@ -19,7 +19,7 @@ if ( ! class_exists( 'Gamajo_Template_Loader' ) ) {
  *
  * Only need to specify class properties here.
  *
- * @package TkEventWeather
+ * @package   TkEventWeather
  * @author    TourKick (Clifford Paulick)
  */
 class TkEventWeather__TemplateLoader extends Gamajo_Template_Loader {

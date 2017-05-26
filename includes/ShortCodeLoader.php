@@ -24,9 +24,9 @@ abstract class TkEventWeather__ShortCodeLoader {
 
 	/**
 	 * @param    $shortcodeName mixed either string name of the shortcode
-	 * (as it would appear in a post, e.g. [shortcodeName])
-	 * or an array of such names in case you want to have more than one name
-	 * for the same shortcode
+	 *                          (as it would appear in a post, e.g. [shortcodeName])
+	 *                          or an array of such names in case you want to have more than one name
+	 *                          for the same shortcode
 	 *
 	 * @return void
 	 */
@@ -36,11 +36,11 @@ abstract class TkEventWeather__ShortCodeLoader {
 
 	/**
 	 * @param    $shortcodeName mixed either string name of the shortcode
-	 * (as it would appear in a post, e.g. [shortcodeName])
-	 * or an array of such names in case you want to have more than one name
-	 * for the same shortcode
-	 * @param    $functionName string name of public function in this class to call as the
-	 * shortcode handler
+	 *                          (as it would appear in a post, e.g. [shortcodeName])
+	 *                          or an array of such names in case you want to have more than one name
+	 *                          for the same shortcode
+	 * @param    $functionName  string name of public function in this class to call as the
+	 *                          shortcode handler
 	 *
 	 * @return void
 	 */

@@ -113,13 +113,13 @@ class TkEventWeather__Functions {
 	 */
 	public static function array_get_value_by_key( $array, $key, $fallback = '' ) {
 		if ( ! is_array( $array )
-		     || empty( $array )
-		     || ! isset( $array[ $key ] ) // use instead of array_key_exists()
-		     || '' === $array[ $key ] // to allow resetting an option back to its blank default
+			|| empty( $array )
+			|| ! isset( $array[$key] ) // use instead of array_key_exists()
+			|| '' === $array[$key] // to allow resetting an option back to its blank default
 		) {
 			$result = $fallback;
 		} else {
-			$result = $array[ $key ];
+			$result = $array[$key];
 		}
 
 		return $result; // consider strval()?
@@ -149,7 +149,7 @@ class TkEventWeather__Functions {
 		$all_capabilities = array();
 
 		foreach ( $all_roles->roles as $key => $value ) {
-			$all_capabilities[] = array_keys( $value[ 'capabilities' ], true, true );
+			$all_capabilities[] = array_keys( $value['capabilities'], true, true );
 		}
 
 		$all_capabilities_flattened = array();
@@ -194,7 +194,8 @@ class TkEventWeather__Functions {
 
 		$result = '';
 		if ( current_user_can( $capability ) ) {
-			$result .= sprintf( '<div class="%s">%s</div>',
+			$result .= sprintf(
+				'<div class="%s">%s</div>',
 				self::shortcode_error_class_name(),
 				esc_html( $message )
 			);
@@ -248,6 +249,7 @@ class TkEventWeather__Functions {
 	}
 
 	// may select one or multiple (but not all since that would be valid but return no data)
+
 	/**
 	 * @param string $prepend_empty
 	 *
@@ -291,7 +293,7 @@ class TkEventWeather__Functions {
 		// do not give WordPress option if option is not set
 		$wp_timezone = get_option( 'timezone_string' ); // could return NULL
 		if ( empty( $wp_timezone ) ) {
-			unset( $result[ 'wordpress' ] );
+			unset( $result['wordpress'] );
 		}
 
 		if ( 'true' == $prepend_empty ) {
@@ -312,7 +314,8 @@ class TkEventWeather__Functions {
 
 		$anchor_text = __( 'TK Event Weather plugin', 'tk-event-weather' );
 
-		$result = sprintf( '<div class="tk-event-weather__plugin-credit">
+		$result = sprintf(
+			'<div class="tk-event-weather__plugin-credit">
 			<a href="%s" target="_blank">%s</a>
 		</div>',
 			$url,
@@ -332,7 +335,8 @@ class TkEventWeather__Functions {
 
 		$anchor_text = __( 'Powered by Dark Sky', 'tk-event-weather' );
 
-		$result = sprintf( '<div class="tk-event-weather__dark-sky-credit">
+		$result = sprintf(
+			'<div class="tk-event-weather__dark-sky-credit">
 			<a href="%s" target="_blank">%s</a>
 		</div>',
 			$url,
@@ -492,12 +496,12 @@ class TkEventWeather__Functions {
 	 * Verify string is valid latitude,longitude
 	 * Dark Sky does not allow certain lat,long -- such as 0,0
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
-	 * @link https://en.wikipedia.org/wiki/Decimal_degrees
-	 * @link https://regex101.com/r/fZ1oR3/1
+	 * @link   https://en.wikipedia.org/wiki/Decimal_degrees
+	 * @link   https://regex101.com/r/fZ1oR3/1
 	 *
-	 * @param string $input Comma-separated latitude and longitude in decimal degrees.
+	 * @param string $input         Comma-separated latitude and longitude in decimal degrees.
 	 * @param string $return_format Optional.
 	 *
 	 * @return $result If valid returns string or bool true, based on $return_format. If invalid, returns '' string or bool false, based on $return_format.
@@ -521,8 +525,8 @@ class TkEventWeather__Functions {
 
 		// separate lat,long
 		$lat_long_array = explode( ',', $input );
-		$latitude       = floatval( $lat_long_array[ 0 ] );
-		$longitude      = floatval( $lat_long_array[ 1 ] );
+		$latitude       = floatval( $lat_long_array[0] );
+		$longitude      = floatval( $lat_long_array[1] );
 
 		// is not valid Dark Sky lat or long
 		if (
@@ -590,7 +594,7 @@ class TkEventWeather__Functions {
 
 		// default to Today's date (from WordPress' GMT Offset) if begins with capital "T" (skipping the date)
 		if ( 0 === strpos( $result, 'T' ) ) {
-			$today = current_time( 'Y-m-d' ); // e.g. "2017-03-11" for March 11, 2017
+			$today  = current_time( 'Y-m-d' ); // e.g. "2017-03-11" for March 11, 2017
 			$result = $today . $result;
 		}
 
@@ -1012,10 +1016,10 @@ class TkEventWeather__Functions {
 		*/
 
 		if ( 'climacons_font' == $icon_type ) {
-			$icon   = $climacons_font[ $input ];
+			$icon   = $climacons_font[$input];
 			$result = sprintf( '<i class="climacon %s"></i>', $icon );
 		} elseif ( 'climacons_svg' == $icon_type ) {
-			$icon   = $climacons_svg[ $input ];
+			$icon   = $climacons_svg[$input];
 			$result = $icon;
 		} /*
 		elseif ( 'font_awesome' == $icon_type ) {

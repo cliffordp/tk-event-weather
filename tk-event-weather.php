@@ -2,7 +2,7 @@
 /*
 	Plugin Name: TK Event Weather
 	Plugin URI: http://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
-	Version: 1.4.5
+	Version: 1.4.6
 	Author: TourKick (Clifford Paulick)
 	Author URI: http://tourkick.com/?utm_source=author-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
 	Description: Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
@@ -81,7 +81,6 @@ define( 'TK_EVENT_WEATHER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) ); // e.
 define( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE', dirname( __FILE__ ) . '/includes/vendor/freemius/start.php' );
 
 
-
 // adapted from http://wpbackoffice.com/get-current-woocommerce-version-number/
 function tk_event_weather_version() {
 	// If get_plugins() isn't available, require it
@@ -90,7 +89,7 @@ function tk_event_weather_version() {
 	}
 	// Create the plugins folder and file variables
 	$plugin_folder = get_plugins( '/tk-event-weather' );
-	$plugin_file = 'tk-event-weather.php';
+	$plugin_file   = 'tk-event-weather.php';
 
 	// If the plugin version number is set, return it
 	if ( isset( $plugin_folder[$plugin_file]['Version'] ) ) {
@@ -104,7 +103,8 @@ function tk_event_weather_version() {
 
 
 function tk_event_weather_terms_agreement_text() {
-	return sprintf( __( 'By using this plugin, you agree to %s and %s Terms.', 'tk-event-weather' ),
+	return sprintf(
+		__( 'By using this plugin, you agree to %s and %s Terms.', 'tk-event-weather' ),
 		'<a target="_blank" href="http://tourkick.com/terms/?utm_source=terms_agreement_text&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather">TourKick\'s</a>',
 		'<a target="_blank" href="https://freemius.com/terms/">Freemius\'</a>'
 	);
@@ -120,20 +120,22 @@ function tk_event_weather_freemius() {
 		// Include Freemius SDK.
 		require_once TK_EVENT_WEATHER_FREEMIUS_START_FILE;
 
-		$tk_event_weather_freemius = fs_dynamic_init( array(
-			'id'             => '240',
-			'slug'           => 'tk-event-weather',
-			'public_key'     => 'pk_b6902fc0051f10b5e36bea21fb0e7',
-			'is_premium'     => false,
-			'has_addons'     => true,
-			'has_paid_plans' => false,
-			'menu'           => array(
-				'slug'   => 'tkeventweather__pluginsettings',
-				'parent' => array(
-					'slug' => 'options-general.php',
+		$tk_event_weather_freemius = fs_dynamic_init(
+			array(
+				'id'             => '240',
+				'slug'           => 'tk-event-weather',
+				'public_key'     => 'pk_b6902fc0051f10b5e36bea21fb0e7',
+				'is_premium'     => false,
+				'has_addons'     => true,
+				'has_paid_plans' => false,
+				'menu'           => array(
+					'slug'   => 'tkeventweather__pluginsettings',
+					'parent' => array(
+						'slug' => 'options-general.php',
+					),
 				),
-			),
-		) );
+			)
+		);
 	}
 
 	return $tk_event_weather_freemius;
@@ -186,10 +188,10 @@ function TkEventWeather__minimalRequiredPhpVersion() {
  */
 function TkEventWeather__noticePhpVersionWrong() {
 	echo '<div class="updated fade">' .
-	     __( 'Error: plugin "TK Event Weather" requires a newer version of PHP to be running.', 'tk-event-weather' ) .
-	     '<br/>' . __( 'Minimal version of PHP required: ', 'tk-event-weather' ) . '<strong>' . TkEventWeather__minimalRequiredPhpVersion() . '</strong>' .
-	     '<br/>' . __( 'Your server\'s PHP version: ', 'tk-event-weather' ) . '<strong>' . phpversion() . '</strong>' .
-	     '</div>';
+		__( 'Error: plugin "TK Event Weather" requires a newer version of PHP to be running.', 'tk-event-weather' ) .
+		'<br/>' . __( 'Minimal version of PHP required: ', 'tk-event-weather' ) . '<strong>' . TkEventWeather__minimalRequiredPhpVersion() . '</strong>' .
+		'<br/>' . __( 'Your server\'s PHP version: ', 'tk-event-weather' ) . '<strong>' . phpversion() . '</strong>' .
+		'</div>';
 }
 
 

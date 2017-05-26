@@ -66,7 +66,7 @@ class TkEventWeather__InstallIndicator extends TkEventWeather__OptionsManager {
 	 * need to check if
 	 *
 	 * @param    $version string best practice: use a dot-delimited string like '1.2.3' so version strings can be easily
-	 * compared using version_compare (http://php.net/manual/en/function.version-compare.php)
+	 *                    compared using version_compare (http://php.net/manual/en/function.version-compare.php)
 	 *
 	 * @return null
 	 */
@@ -96,7 +96,7 @@ class TkEventWeather__InstallIndicator extends TkEventWeather__OptionsManager {
 		$match = array();
 		preg_match( '/' . $key . ':\s*(\S+)/', $data, $match );
 		if ( count( $match ) >= 1 ) {
-			return $match[ 1 ];
+			return $match[1];
 		}
 
 		return null;

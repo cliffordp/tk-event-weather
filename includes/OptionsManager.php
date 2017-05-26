@@ -90,7 +90,7 @@ class TkEventWeather__OptionsManager {
 	 * to enforce "scoping" the options in the WP options table thereby avoiding name conflicts
 	 *
 	 * @param $optionName string defined in settings.php and set as keys of $this->optionMetaData
-	 * @param $default string default value to return if the option is not set
+	 * @param $default    string default value to return if the option is not set
 	 *
 	 * @return string the value from delegated call to get_option(), or optional default value
 	 * if option is not set.
@@ -115,6 +115,7 @@ class TkEventWeather__OptionsManager {
 	 */
 	public function deleteOption( $optionName ) {
 		$prefixedOptionName = $this->prefix( $optionName ); // how it is stored in DB
+
 		return delete_option( $prefixedOptionName );
 	}
 
@@ -123,12 +124,13 @@ class TkEventWeather__OptionsManager {
 	 * to enforce "scoping" the options in the WP options table thereby avoiding name conflicts
 	 *
 	 * @param    $optionName string defined in settings.php and set as keys of $this->optionMetaData
-	 * @param    $value mixed the new value
+	 * @param    $value      mixed the new value
 	 *
 	 * @return null from delegated call to delete_option()
 	 */
 	public function updateOption( $optionName, $value ) {
 		$prefixedOptionName = $this->prefix( $optionName ); // how it is stored in DB
+
 		return update_option( $prefixedOptionName, $value );
 	}
 
@@ -217,7 +219,8 @@ class TkEventWeather__OptionsManager {
 	public function createSettingsMenu() {
 		$pluginName = $this->getPluginDisplayName();
 		//create new top-level menu
-		add_menu_page( $pluginName . ' Plugin Settings',
+		add_menu_page(
+			$pluginName . ' Plugin Settings',
 			$pluginName,
 			'administrator',
 			get_class( $this ),
@@ -243,15 +246,15 @@ class TkEventWeather__OptionsManager {
 		?>
 
 
-        <div class="wrap">
-            <h1><?php echo $this->getPluginDisplayName();
+		<div class="wrap">
+			<h1><?php echo $this->getPluginDisplayName();
 				echo ' ';
 				_e( 'Settings', 'tk-event-weather' ); ?></h1>
 
 			<?php
 			// Greeting Box
 			?>
-            <div style="width: 80%; padding: 20px; margin: 20px; background-color: #fff; font-size: 120%;">
+			<div style="width: 80%; padding: 20px; margin: 20px; background-color: #fff; font-size: 120%;">
 				<?php
 				$tourkick_logo = TkEventWeather__FuncSetup::plugin_dir_url_images() . 'tourkick-logo-square-300.png';
 				printf( '<a href="http://tourkick.com/" target="_blank"><img style="float: left; margin: 5px 40px 10px 10px;" width="100" height="100" src="%s"></a>', $tourkick_logo );
@@ -260,661 +263,670 @@ class TkEventWeather__OptionsManager {
 				$addons_url = tk_event_weather_freemius()->addon_url( '' );
 				if ( ! empty( $addons_url ) ) {
 					?>
-                    <p style="font-size: 120%;">
+					<p style="font-size: 120%;">
 						<?php
-						printf( esc_html__( 'Check out the %sTK Event Weather add-on plugins%s to automatically integrate with popular WordPress calendars!', 'tk-event-weather' ),
+						printf(
+							esc_html__( 'Check out the %sTK Event Weather add-on plugins%s to automatically integrate with popular WordPress calendars!', 'tk-event-weather' ),
 							'<a href="' . tk_event_weather_freemius()->addon_url( '' ) . '">',
 							'</a>'
 						);
 						?>
-                    <ul style="list-style: disc; list-style-position: inside;">
-                        <li>TK Event Weather for The Events Calendar by Modern Tribe</li>
-                    </ul>
-                    </p>
+					<ul style="list-style: disc; list-style-position: inside;">
+						<li>TK Event Weather for The Events Calendar by Modern Tribe</li>
+					</ul>
+					</p>
 					<?php
 				}
 				?>
-                <br>
-                <p>
-                    <a href="http://b.tourkick.com/tkeventw-rate-5-stars"
-                       target="_blank"><?php esc_html_e( 'Share your 5-Star Review on WordPress.org', 'tk-event-weather' ); ?></a>
-                </p>
-                <p>
-                    <a href="http://b.tourkick.com/github-tk-event-weather" target="_blank">Contribute via GitHub</a>
-                </p>
-                <p><?php esc_html_e( 'Find me online', 'tk-event-weather' ); ?>: <a
-                            href="http://b.tourkick.com/twitter-follow-tourkick" target="_blank">Twitter</a> | <a
-                            href="http://b.tourkick.com/facebook-tourkick" target="_blank">Facebook</a> | <a
-                            href="http://b.tourkick.com/cliffpaulick-w-org-profile-plugins" target="_blank">WordPress
-                        Profile</a> | <a href="http://b.tourkick.com/tourkick-com" target="_blank">Website</a></p>
-                <hr>
-                <p style="font-style: italic;"><?php echo tk_event_weather_terms_agreement_text(); ?></p>
-            </div>
+				<br>
+				<p>
+					<a href="http://b.tourkick.com/tkeventw-rate-5-stars"
+					   target="_blank"><?php esc_html_e( 'Share your 5-Star Review on WordPress.org', 'tk-event-weather' ); ?></a>
+				</p>
+				<p>
+					<a href="http://b.tourkick.com/github-tk-event-weather" target="_blank">Contribute via GitHub</a>
+				</p>
+				<p><?php esc_html_e( 'Find me online', 'tk-event-weather' ); ?>: <a
+						href="http://b.tourkick.com/twitter-follow-tourkick" target="_blank">Twitter</a> | <a
+						href="http://b.tourkick.com/facebook-tourkick" target="_blank">Facebook</a> | <a
+						href="http://b.tourkick.com/cliffpaulick-w-org-profile-plugins" target="_blank">WordPress
+						Profile</a> | <a href="http://b.tourkick.com/tourkick-com" target="_blank">Website</a></p>
+				<hr>
+				<p style="font-style: italic;"><?php echo tk_event_weather_terms_agreement_text(); ?></p>
+			</div>
 
 
 			<?php
-			$active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'options';
+			$active_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'options';
 			$active_tab = wp_kses_post( esc_attr( $active_tab ) );
 			?>
-            <h2 class="nav-tab-wrapper">
-                <a href="<?php printf( '?page=%s&tab=options', $this->getSettingsSlug() ); ?>"
-                   class="nav-tab <?php echo $active_tab == 'options' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Options', 'tk-event-weather' ); ?></a>
-                <a href="<?php printf( '?page=%s&tab=tools', $this->getSettingsSlug() ); ?>"
-                   class="nav-tab <?php echo $active_tab == 'tools' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Tools', 'tk-event-weather' ); ?></a>
-                <a href="<?php printf( '?page=%s&tab=help', $this->getSettingsSlug() ); ?>"
-                   class="nav-tab <?php echo $active_tab == 'help' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Help', 'tk-event-weather' ); ?></a>
-            </h2>
+			<h2 class="nav-tab-wrapper">
+				<a href="<?php printf( '?page=%s&tab=options', $this->getSettingsSlug() ); ?>"
+				   class="nav-tab <?php echo $active_tab == 'options' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Options', 'tk-event-weather' ); ?></a>
+				<a href="<?php printf( '?page=%s&tab=tools', $this->getSettingsSlug() ); ?>"
+				   class="nav-tab <?php echo $active_tab == 'tools' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Tools', 'tk-event-weather' ); ?></a>
+				<a href="<?php printf( '?page=%s&tab=help', $this->getSettingsSlug() ); ?>"
+				   class="nav-tab <?php echo $active_tab == 'help' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Help', 'tk-event-weather' ); ?></a>
+			</h2>
 			<?php
 			if ( $active_tab == 'options' ) {
 				?>
-                <p><?php _e( "This plugin uses the WordPress Customizer to set its options.", 'tk-event-weather' ); ?></p>
-                <p><?php _e( "Click the button below to be taken directly to this plugin's section within the WordPress Customizer.", 'tk-event-weather' ); ?></p>
-                <p>
-                    <a href="<?php echo apply_filters( 'tk_event_weather_customizer_link', get_admin_url( get_current_blog_id(), 'customize.php' ) ); ?>"
-                       class="button-primary">
+				<p><?php _e( "This plugin uses the WordPress Customizer to set its options.", 'tk-event-weather' ); ?></p>
+				<p><?php _e( "Click the button below to be taken directly to this plugin's section within the WordPress Customizer.", 'tk-event-weather' ); ?></p>
+				<p>
+					<a href="<?php echo apply_filters( 'tk_event_weather_customizer_link', get_admin_url( get_current_blog_id(), 'customize.php' ) ); ?>"
+					   class="button-primary">
 						<?php _e( 'Edit Plugin Settings in WP Customizer', 'tk-event-weather' ) ?>
-                    </a>
-                </p>
-            <br><br>
-			<?php
-			/**
-			 * Commented out until method exists to return a string for direct URL to re-prompt anonymous users with opt-in -- https://github.com/Freemius/wordpress-sdk/issues/42
-			 * because connect_again() doesn't return a string to be used like this (as-is will re-prompt anonymous users every time they visit the plugin's settings page)
-			 * and because Edit Freemius Settings button (then click Delete All Accounts button) is only for my development/testing, not for users
-			 *
-			 * if ( ! empty ( tk_event_weather_freemius()->is_anonymous() ) ) {
-			 * printf ( '<p><a href="%s" class="button-secondary">%s</a></p>', tk_event_weather_freemius()->connect_again(), __( 'Connect to Freemius!', 'tk-event-weather' ) );
-			 * } else {
-			 * // maybe https://developer.wordpress.org/reference/functions/network_admin_url/ ?
-			 * printf ( '<p><a href="%s" class="button-secondary">%s</a></p>', admin_url( 'admin.php?page=freemius' ), __( 'Edit Freemius Settings', 'tk-event-weather' ) );
-			 * } // freemius is_anonymous()
-			 */
+					</a>
+				</p>
+				<br><br>
+				<?php
+				/**
+				 * Commented out until method exists to return a string for direct URL to re-prompt anonymous users with opt-in -- https://github.com/Freemius/wordpress-sdk/issues/42
+				 * because connect_again() doesn't return a string to be used like this (as-is will re-prompt anonymous users every time they visit the plugin's settings page)
+				 * and because Edit Freemius Settings button (then click Delete All Accounts button) is only for my development/testing, not for users
+				 *
+				 * if ( ! empty ( tk_event_weather_freemius()->is_anonymous() ) ) {
+				 * printf ( '<p><a href="%s" class="button-secondary">%s</a></p>', tk_event_weather_freemius()->connect_again(), __( 'Connect to Freemius!', 'tk-event-weather' ) );
+				 * } else {
+				 * // maybe https://developer.wordpress.org/reference/functions/network_admin_url/ ?
+				 * printf ( '<p><a href="%s" class="button-secondary">%s</a></p>', admin_url( 'admin.php?page=freemius' ), __( 'Edit Freemius Settings', 'tk-event-weather' ) );
+				 * } // freemius is_anonymous()
+				 */
 			} // options tab
 			elseif ( $active_tab == 'tools' ) {
 			?>
-                <h2><?php _e( 'Shortcode Examples', 'tk-event-weather' ); ?></h2>
-                <p><?php printf( __( "For your reference, over a dozen examples are available at %sthis plugin's WordPress.org FAQs%s. (link opens in new window)", 'tk-event-weather' ), '<a href="https://wordpress.org/plugins-wp/tk-event-weather/#faq" target="_blank">', '</a>' ); ?>
-                </p>
-                </div>
-            <br>
-                <h2><?php _e( 'Google Maps', 'tk-event-weather' ); ?></h2>
-                <p style="font-style: italic;"><?php printf( __( 'By using Google Maps, including the %slocation%s shortcode argument, you are agreeing to be bound by %s (link opens in new window).', 'tk-event-weather' ),
-						'<strong>',
-						'</strong>',
-						'<a href="https://developers.google.com/maps/terms" target="_blank">Google\'s Terms of Service</a>'
-					);
-					?></p>
-                <p><?php _e( 'Powered by Google.', 'tk-event-weather' ); ?></p>
-                <h2><?php _e( 'Geocoding&mdash;Find Latitude and Longitude Coordinates', 'tk-event-weather' ); ?></h2>
-                <p><?php printf( __( 'To help you find the Latitude and Longitude of a location to use in your shortcode, you may do a Google Maps lookup here without %sAPI usage limitations%s (link opens in new window). Type an address or place name, get the coordinates, manually paste them into wherever you are using the shortcode', 'tk-event-weather' ),
-						'<a href="https://developers.google.com/maps/faq#usage-limits" target="_blank">',
-						'</a>'
-					); ?>:</p>
-                <iframe style="text-align: center; margin-left: 10%; margin-right: 10%; width: 80%; min-width: 300px;"
-                        name="Google Maps API Geocoder Tool" src="http://b.tourkick.com/google-maps-geocoder"
-                        height="575" width="800">
-                    <p>Your browser does not support iframes. Please visit the <a
-                                href="http://b.tourkick.com/google-maps-geocoder" target="_blank">Google Maps API
-                            Geocoder Tool</a> directly.</p>
-                </iframe>
-            <br><br>
-			<?php
-			} // docs tab
-			elseif ( $active_tab == 'help' ) {
-			// modified from https://github.com/woothemes/woocommerce/blob/master/includes/admin/views/html-admin-page-status-report.php
-			// reference (outdated screenshots): https://docs.woothemes.com/document/understanding-the-woocommerce-system-status-report/
-			?>
-                <style>
-                    table.tkeventw_status_table {
-                        margin-bottom: 1em
-                    }
+			<h2><?php _e( 'Shortcode Examples', 'tk-event-weather' ); ?></h2>
+			<p><?php printf( __( "For your reference, over a dozen examples are available at %sthis plugin's WordPress.org FAQs%s. (link opens in new window)", 'tk-event-weather' ), '<a href="https://wordpress.org/plugins-wp/tk-event-weather/#faq" target="_blank">', '</a>' ); ?>
+			</p>
+		</div>
+	<br>
+		<h2><?php _e( 'Google Maps', 'tk-event-weather' ); ?></h2>
+		<p style="font-style: italic;"><?php printf(
+				__( 'By using Google Maps, including the %slocation%s shortcode argument, you are agreeing to be bound by %s (link opens in new window).', 'tk-event-weather' ),
+				'<strong>',
+				'</strong>',
+				'<a href="https://developers.google.com/maps/terms" target="_blank">Google\'s Terms of Service</a>'
+			);
+			?></p>
+		<p><?php _e( 'Powered by Google.', 'tk-event-weather' ); ?></p>
+		<h2><?php _e( 'Geocoding&mdash;Find Latitude and Longitude Coordinates', 'tk-event-weather' ); ?></h2>
+		<p><?php printf(
+				__( 'To help you find the Latitude and Longitude of a location to use in your shortcode, you may do a Google Maps lookup here without %sAPI usage limitations%s (link opens in new window). Type an address or place name, get the coordinates, manually paste them into wherever you are using the shortcode', 'tk-event-weather' ),
+				'<a href="https://developers.google.com/maps/faq#usage-limits" target="_blank">',
+				'</a>'
+			); ?>:</p>
+		<iframe style="text-align: center; margin-left: 10%; margin-right: 10%; width: 80%; min-width: 300px;"
+				name="Google Maps API Geocoder Tool" src="http://b.tourkick.com/google-maps-geocoder"
+				height="575" width="800">
+			<p>Your browser does not support iframes. Please visit the <a
+					href="http://b.tourkick.com/google-maps-geocoder" target="_blank">Google Maps API
+					Geocoder Tool</a> directly.</p>
+		</iframe>
+	<br><br>
+		<?php
+	} // docs tab
+	elseif ( $active_tab == 'help' ) {
+		// modified from https://github.com/woothemes/woocommerce/blob/master/includes/admin/views/html-admin-page-status-report.php
+		// reference (outdated screenshots): https://docs.woothemes.com/document/understanding-the-woocommerce-system-status-report/
+		?>
+		<style>
+			table.tkeventw_status_table {
+				margin-bottom: 1em
+			}
 
-                    table.tkeventw_status_table tr:nth-child(2n) td,
-                    table.tkeventw_status_table tr:nth-child(2n) th {
-                        background: #fcfcfc
-                    }
+			table.tkeventw_status_table tr:nth-child(2n) td,
+			table.tkeventw_status_table tr:nth-child(2n) th {
+				background: #fcfcfc
+			}
 
-                    table.tkeventw_status_table th {
-                        font-weight: 700;
-                        padding: 9px
-                    }
+			table.tkeventw_status_table th {
+				font-weight: 700;
+				padding: 9px
+			}
 
-                    table.tkeventw_status_table td:first-child {
-                        width: 33%
-                    }
+			table.tkeventw_status_table td:first-child {
+				width: 33%
+			}
 
-                    table.tkeventw_status_table td mark {
-                        background: 0 0
-                    }
+			table.tkeventw_status_table td mark {
+				background: 0 0
+			}
 
-                    table.tkeventw_status_table td mark.yes {
-                        color: #7ad03a
-                    }
+			table.tkeventw_status_table td mark.yes {
+				color: #7ad03a
+			}
 
-                    table.tkeventw_status_table td mark.no {
-                        color: #999
-                    }
+			table.tkeventw_status_table td mark.no {
+				color: #999
+			}
 
-                    table.tkeventw_status_table td mark.error {
-                        color: #a00
-                    }
+			table.tkeventw_status_table td mark.error {
+				color: #a00
+			}
 
-                    #debug-report {
-                        display: none;
-                        margin: 10px 0;
-                        padding: 0;
-                        position: relative
-                    }
+			#debug-report {
+				display: none;
+				margin: 10px 0;
+				padding: 0;
+				position: relative
+			}
 
-                    #debug-report textarea {
-                        font-family: monospace;
-                        width: 100%;
-                        margin: 0;
-                        height: 300px;
-                        padding: 20px;
-                        -moz-border-radius: 0;
-                        -webkit-border-radius: 0;
-                        border-radius: 0;
-                        resize: none;
-                        font-size: 12px;
-                        line-height: 20px;
-                        outline: 0
-                    }
-                </style>
-                <div class="updated inline">
-                    <p><?php _e( 'Please copy and paste this information in your ticket when contacting support:', 'tk-event-weather' ); ?> </p>
-                    <p class="submit"><a href="#"
-                                         class="button-primary debug-report"><?php _e( 'Get System Report', 'tk-event-weather' ); ?></a>
-                    </p>
-                    <div id="debug-report">
-                        <textarea readonly="readonly"></textarea>
-                        <h3 id="copy-for-support">&#x21b3;
-							<?php
-							// http://htmlarrows.com/arrows/down-arrow-with-tip-right/
-							_e( 'Copy and send to Support', 'tk-event-weather' );
-							// http://htmlarrows.com/arrows/down-arrow-with-corner-left/
-							?>
-                            &#x21b5;
-                        </h3>
-                        <hr>
-                        <p><?php _e( 'And/Or you might want to send your personal computer specifications:', 'tk-event-weather' ); ?></p>
-                        <p><a target="_blank"
-                              href="<?php printf( 'http://supportdetails.com/?sender_name=%s&sender=%s&recipient=%s', urlencode( get_home_url() ), urlencode( get_bloginfo( 'admin_email' ) ), urlencode( TkEventWeather__FuncSetup::$support_email_address ) ); ?>"
-                              class="button-secondary support-details"><?php _e( 'Get Personal Computer Details', 'tk-event-weather' ); ?></a>
-                        </p>
-                        <p>
-                            <em><?php _e( 'Then click the "Send Details" button from that site!', 'tk-event-weather' ); ?></em>
-                        </p>
-                    </div>
-                </div>
+			#debug-report textarea {
+				font-family: monospace;
+				width: 100%;
+				margin: 0;
+				height: 300px;
+				padding: 20px;
+				-moz-border-radius: 0;
+				-webkit-border-radius: 0;
+				border-radius: 0;
+				resize: none;
+				font-size: 12px;
+				line-height: 20px;
+				outline: 0
+			}
+		</style>
+		<div class="updated inline">
+			<p><?php _e( 'Please copy and paste this information in your ticket when contacting support:', 'tk-event-weather' ); ?> </p>
+			<p class="submit"><a href="#"
+								 class="button-primary debug-report"><?php _e( 'Get System Report', 'tk-event-weather' ); ?></a>
+			</p>
+			<div id="debug-report">
+				<textarea readonly="readonly"></textarea>
+				<h3 id="copy-for-support">&#x21b3;
+					<?php
+					// http://htmlarrows.com/arrows/down-arrow-with-tip-right/
+					_e( 'Copy and send to Support', 'tk-event-weather' );
+					// http://htmlarrows.com/arrows/down-arrow-with-corner-left/
+					?>
+					&#x21b5;
+				</h3>
+				<hr>
+				<p><?php _e( 'And/Or you might want to send your personal computer specifications:', 'tk-event-weather' ); ?></p>
+				<p><a target="_blank"
+					  href="<?php printf( 'http://supportdetails.com/?sender_name=%s&sender=%s&recipient=%s', urlencode( get_home_url() ), urlencode( get_bloginfo( 'admin_email' ) ), urlencode( TkEventWeather__FuncSetup::$support_email_address ) ); ?>"
+					  class="button-secondary support-details"><?php _e( 'Get Personal Computer Details', 'tk-event-weather' ); ?></a>
+				</p>
+				<p>
+					<em><?php _e( 'Then click the "Send Details" button from that site!', 'tk-event-weather' ); ?></em>
+				</p>
+			</div>
+		</div>
 
-                <table class="tkeventw_status_table widefat" cellspacing="0" id="status">
-                    <thead>
-                    <tr>
-                        <th colspan="3" data-export-label="WordPress Environment">
-                            <h2><?php _e( 'WordPress Environment', 'tk-event-weather' ); ?></h2></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td data-export-label="Home URL"><?php _e( 'Home URL', 'tk-event-weather' ); ?>:</td>
-                        <td><?php form_option( 'home' ); ?></td>
-                    </tr>
-                    <tr>
-                        <td data-export-label="Site URL"><?php _e( 'Site URL', 'tk-event-weather' ); ?>:</td>
-                        <td><?php form_option( 'siteurl' ); ?></td>
-                    </tr>
+		<table class="tkeventw_status_table widefat" cellspacing="0" id="status">
+			<thead>
+			<tr>
+				<th colspan="3" data-export-label="WordPress Environment">
+					<h2><?php _e( 'WordPress Environment', 'tk-event-weather' ); ?></h2></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td data-export-label="Home URL"><?php _e( 'Home URL', 'tk-event-weather' ); ?>:</td>
+				<td><?php form_option( 'home' ); ?></td>
+			</tr>
+			<tr>
+				<td data-export-label="Site URL"><?php _e( 'Site URL', 'tk-event-weather' ); ?>:</td>
+				<td><?php form_option( 'siteurl' ); ?></td>
+			</tr>
 
-                    <tr>
-                        <td data-export-label="WP Version"><?php _e( 'WP Version', 'tk-event-weather' ); ?>:</td>
-                        <td><?php
-							$wordpress_version = get_bloginfo( 'version' );
-							if ( version_compare( $wordpress_version, TkEventWeather__FuncSetup::$min_allowed_version_wordpress, '<' ) ) {
-								echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf( __( '%s - This plugin requires a minimum WordPress version of %s. See: %s', 'tk-event-weather' ),
-										esc_html( $wordpress_version ),
-										TkEventWeather__FuncSetup::$min_allowed_version_wordpress,
-										'<a href="https://codex.wordpress.org/WordPress_Versions" target="_blank">' . __( 'WordPress Version History', 'tk-event-weather' ) . '</a>' ) . '</mark>';
-							} else {
-								echo '<mark class="yes">' . esc_html( $wordpress_version ) . '</mark>';
-							}
-							?></td>
-                    </tr>
-                    <tr>
-                        <td data-export-label="WP Multisite"><?php _e( 'WP Multisite Enabled', 'tk-event-weather' ); ?>
-                            :
-                        </td>
-                        <td><?php if ( is_multisite() ) {
-								echo '<span class="dashicons dashicons-yes"></span>';
-							} else {
-								echo '&ndash;';
-							} ?></td>
-                    </tr>
-                    <tr>
-                        <td data-export-label="WP Memory Limit"><?php _e( 'WP Memory Limit', 'tk-event-weather' ); ?>:
-                        </td>
-                        <td><?php
-							$memory = WP_MEMORY_LIMIT;
-							if ( function_exists( 'memory_get_usage' ) ) {
-								$system_memory = @ini_get( 'memory_limit' );
-								$memory        = max( $memory, $system_memory );
-							}
-							if ( $memory < 67108864 ) {
-								echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf( __( '%s - We recommend setting memory to at least 64MB. See: %s', 'tk-event-weather' ), size_format( $memory ), '<a href="http://codex.wordpress.org/Editing_wp-config.php#Increasing_memory_allocated_to_PHP" target="_blank">' . __( 'Increasing memory allocated to PHP', 'tk-event-weather' ) . '</a>' ) . '</mark>';
-							} else {
-								echo '<mark class="yes">' . size_format( $memory ) . '</mark>';
-							}
-							?></td>
-                    </tr>
-                    <tr>
-                        <td data-export-label="WP Debug Mode"><?php _e( 'WP Debug Mode', 'tk-event-weather' ); ?>:</td>
-                        <td>
-							<?php if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) : ?>
-                                <mark class="yes"><span class="dashicons dashicons-yes"></span></mark>
-							<?php else : ?>
-                                <mark class="no">&ndash;</mark>
-							<?php endif; ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td data-export-label="WP Cron"><?php _e( 'WP Cron', 'tk-event-weather' ); ?>:</td>
-                        <td>
-							<?php if ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) : ?>
-                                <mark class="no">&ndash;</mark>
-							<?php else : ?>
-                                <mark class="yes"><span class="dashicons dashicons-yes"></span></mark>
-							<?php endif; ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td data-export-label="Permalinks"><?php _e( 'Permalink Structure', 'tk-event-weather' ); ?>:
-                        </td>
-                        <td><?php echo esc_html( get_option( 'permalink_structure' ) ); ?></td>
-                    </tr>
-                    <tr>
-                        <td data-export-label="WP Language"><?php _e( 'WP Language', 'tk-event-weather' ); ?>:</td>
-                        <td><?php echo get_locale(); ?></td>
-                    </tr>
-                    <tr>
-                        <td data-export-label="WP Timezone"><?php _e( 'WP Timezone', 'tk-event-weather' ); ?>:</td>
-                        <td><?php echo get_option( 'timezone_string' ); ?></td>
-                    </tr>
-                    <tr>
-                        <td data-export-label="WP GMT Offset"><?php _e( 'WP GMT Offset', 'tk-event-weather' ); ?>:</td>
-                        <td><?php echo get_option( 'gmt_offset' ); ?></td>
-                    </tr>
-                    <tr>
-                        <td data-export-label="WP Date Format"><?php _e( 'WP Date Format', 'tk-event-weather' ); ?>:
-                        </td>
-                        <td><?php echo get_option( 'date_format' ); ?></td>
-                    </tr>
-                    <tr>
-                        <td data-export-label="WP Time Format"><?php _e( 'WP Time Format', 'tk-event-weather' ); ?>:
-                        </td>
-                        <td><?php echo get_option( 'time_format' ); ?></td>
-                    </tr>
-                    </tbody>
-                </table>
-                <table class="tkeventw_status_table widefat" cellspacing="0">
-                    <thead>
-                    <tr>
-                        <th colspan="3" data-export-label="Server Environment">
-                            <h2><?php _e( 'Server Environment', 'tk-event-weather' ); ?></h2></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td data-export-label="Server Info"><?php _e( 'Server Info', 'tk-event-weather' ); ?>:</td>
-                        <td><?php echo esc_html( $_SERVER[ 'SERVER_SOFTWARE' ] ); ?></td>
-                    </tr>
-                    <tr>
-                        <td data-export-label="PHP Version"><?php _e( 'PHP Version', 'tk-event-weather' ); ?>:</td>
-                        <td><?php
-							// Check if phpversion function exists.
-							if ( function_exists( 'phpversion' ) ) {
-								$php_version = phpversion();
-								if ( version_compare( $php_version, TkEventWeather__minimalRequiredPhpVersion(), '<' ) ) {
-									echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf( __( '%s - This plugin requires a minimum PHP version of %s. See: %s', 'tk-event-weather' ),
-											esc_html( $php_version ),
-											TkEventWeather__minimalRequiredPhpVersion(),
-											'<a href="http://docs.woothemes.com/document/how-to-update-your-php-version/" target="_blank">' . __( 'How to update your PHP version', 'tk-event-weather' ) . '</a>' ) . '</mark>';
-								} else {
-									echo '<mark class="yes">' . esc_html( $php_version ) . '</mark>';
-								}
-							} else {
-								_e( "Couldn't determine PHP version because phpversion() doesn't exist.", 'tk-event-weather' );
-							}
-							?></td>
-                    </tr>
-					<?php if ( function_exists( 'ini_get' ) ) : ?>
-                        <tr>
-                            <td data-export-label="PHP Post Max Size"><?php _e( 'PHP Post Max Size', 'tk-event-weather' ); ?>
-                                :
-                            </td>
-                            <td><?php echo size_format( ini_get( 'post_max_size' ) ); ?></td>
-                        </tr>
-                        <tr>
-                            <td data-export-label="PHP Time Limit"><?php _e( 'PHP Timeout Limit', 'tk-event-weather' ); ?>
-                                :
-                            </td>
-                            <td><?php echo ini_get( 'max_execution_time' ); ?></td>
-                        </tr>
-                        <tr>
-                            <td data-export-label="PHP Max Input Vars"><?php _e( 'PHP Max Input Variables', 'tk-event-weather' ); ?>
-                                :
-                            </td>
-                            <td><?php echo ini_get( 'max_input_vars' ); ?></td>
-                        </tr>
-                        <tr>
-                            <td data-export-label="SUHOSIN Installed"><?php _e( 'SUHOSIN Installed', 'tk-event-weather' ); ?>
-                                :
-                            </td>
-                            <td><?php echo extension_loaded( 'suhosin' ) ? '<span class="dashicons dashicons-yes"></span>' : '&ndash;'; ?></td>
-                        </tr>
+			<tr>
+				<td data-export-label="WP Version"><?php _e( 'WP Version', 'tk-event-weather' ); ?>:</td>
+				<td><?php
+					$wordpress_version = get_bloginfo( 'version' );
+					if ( version_compare( $wordpress_version, TkEventWeather__FuncSetup::$min_allowed_version_wordpress, '<' ) ) {
+						echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf(
+								__( '%s - This plugin requires a minimum WordPress version of %s. See: %s', 'tk-event-weather' ),
+								esc_html( $wordpress_version ),
+								TkEventWeather__FuncSetup::$min_allowed_version_wordpress,
+								'<a href="https://codex.wordpress.org/WordPress_Versions" target="_blank">' . __( 'WordPress Version History', 'tk-event-weather' ) . '</a>'
+							) . '</mark>';
+					} else {
+						echo '<mark class="yes">' . esc_html( $wordpress_version ) . '</mark>';
+					}
+					?></td>
+			</tr>
+			<tr>
+				<td data-export-label="WP Multisite"><?php _e( 'WP Multisite Enabled', 'tk-event-weather' ); ?>
+					:
+				</td>
+				<td><?php if ( is_multisite() ) {
+						echo '<span class="dashicons dashicons-yes"></span>';
+					} else {
+						echo '&ndash;';
+					} ?></td>
+			</tr>
+			<tr>
+				<td data-export-label="WP Memory Limit"><?php _e( 'WP Memory Limit', 'tk-event-weather' ); ?>:
+				</td>
+				<td><?php
+					$memory = WP_MEMORY_LIMIT;
+					if ( function_exists( 'memory_get_usage' ) ) {
+						$system_memory = @ini_get( 'memory_limit' );
+						$memory        = max( $memory, $system_memory );
+					}
+					if ( $memory < 67108864 ) {
+						echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf( __( '%s - We recommend setting memory to at least 64MB. See: %s', 'tk-event-weather' ), size_format( $memory ), '<a href="http://codex.wordpress.org/Editing_wp-config.php#Increasing_memory_allocated_to_PHP" target="_blank">' . __( 'Increasing memory allocated to PHP', 'tk-event-weather' ) . '</a>' ) . '</mark>';
+					} else {
+						echo '<mark class="yes">' . size_format( $memory ) . '</mark>';
+					}
+					?></td>
+			</tr>
+			<tr>
+				<td data-export-label="WP Debug Mode"><?php _e( 'WP Debug Mode', 'tk-event-weather' ); ?>:</td>
+				<td>
+					<?php if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) : ?>
+						<mark class="yes"><span class="dashicons dashicons-yes"></span></mark>
+					<?php else : ?>
+						<mark class="no">&ndash;</mark>
 					<?php endif; ?>
-                    <tr>
-                        <td data-export-label="MySQL Version"><?php _e( 'MySQL Version', 'tk-event-weather' ); ?>:</td>
-                        <td>
-							<?php
-							/** @global wpdb $wpdb */
-							global $wpdb;
-							$mysql_version = $wpdb->db_version();
-							if ( version_compare( $mysql_version, TkEventWeather__FuncSetup::$min_allowed_version_mysql, '<' ) ) {
-								echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf( __( '%s - This plugin requires a minimum MySQL version of %s. See: %s', 'tk-event-weather' ),
-										esc_html( $mysql_version ),
-										TkEventWeather__FuncSetup::$min_allowed_version_mysql,
-										'<a href="https://wordpress.org/about/requirements/" target="_blank">' . __( 'WordPress Requirements', 'tk-event-weather' ) . '</a>' ) . '</mark>';
-							} else {
-								echo '<mark class="yes">' . esc_html( $mysql_version ) . '</mark>';
-							}
-							?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td data-export-label="Max Upload Size"><?php _e( 'Max Upload Size', 'tk-event-weather' ); ?>:
-                        </td>
-                        <td><?php echo size_format( wp_max_upload_size() ); ?></td>
-                    </tr>
-                    <tr>
-                        <td data-export-label="Default Time Zone is UTC"><?php _e( 'Default Server Time Zone is UTC', 'tk-event-weather' ); ?>
-                            :
-                        </td>
-                        <td><?php
-							$default_timezone = date_default_timezone_get();
-							if ( 'UTC' !== $default_timezone ) {
-								echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf( __( 'Default time zone is %s - it should be UTC', 'tk-event-weather' ), $default_timezone ) . '</mark>';
-							} else {
-								echo '<mark class="yes"><span class="dashicons dashicons-yes"></span></mark>';
-							} ?>
-                        </td>
-                    </tr>
-					<?php
-					$posting = array();
-					// fsockopen/cURL.
-					$posting[ 'fsockopen_curl' ][ 'name' ] = 'fsockopen/cURL';
-					if ( function_exists( 'fsockopen' ) || function_exists( 'curl_init' ) ) {
-						$posting[ 'fsockopen_curl' ][ 'success' ] = true;
-					} else {
-						$posting[ 'fsockopen_curl' ][ 'success' ] = false;
-						$posting[ 'fsockopen_curl' ][ 'note' ]    = __( 'Your server does not have fsockopen or cURL enabled - PayPal IPN and other scripts which communicate with other servers will not work. Contact your hosting provider.', 'tk-event-weather' );
-					}
-					// SOAP.
-					$posting[ 'soap_client' ][ 'name' ] = 'SoapClient';
-					if ( class_exists( 'SoapClient' ) ) {
-						$posting[ 'soap_client' ][ 'success' ] = true;
-					} else {
-						$posting[ 'soap_client' ][ 'success' ] = false;
-						$posting[ 'soap_client' ][ 'note' ]    = sprintf( __( 'Your server does not have the %s class enabled - some gateway plugins which use SOAP may not work as expected.', 'tk-event-weather' ), '<a href="http://php.net/manual/en/class.soapclient.php">SoapClient</a>' );
-					}
-					// DOMDocument.
-					$posting[ 'dom_document' ][ 'name' ] = 'DOMDocument';
-					if ( class_exists( 'DOMDocument' ) ) {
-						$posting[ 'dom_document' ][ 'success' ] = true;
-					} else {
-						$posting[ 'dom_document' ][ 'success' ] = false;
-						$posting[ 'dom_document' ][ 'note' ]    = sprintf( __( 'Your server does not have the %s class enabled - HTML/Multipart emails, and also some extensions, will not work without DOMDocument.', 'tk-event-weather' ), '<a href="http://php.net/manual/en/class.domdocument.php">DOMDocument</a>' );
-					}
-					// GZIP.
-					$posting[ 'gzip' ][ 'name' ] = 'GZip';
-					if ( is_callable( 'gzopen' ) ) {
-						$posting[ 'gzip' ][ 'success' ] = true;
-					} else {
-						$posting[ 'gzip' ][ 'success' ] = false;
-						$posting[ 'gzip' ][ 'note' ]    = sprintf( __( 'Your server does not support the %s function - this is required to use the GeoIP database from MaxMind. The API fallback will be used instead for geolocation.', 'tk-event-weather' ), '<a href="http://php.net/manual/en/zlib.installation.php">gzopen</a>' );
-					}
-					// Multibyte String.
-					$posting[ 'mbstring' ][ 'name' ] = 'Multibyte String';
-					if ( extension_loaded( 'mbstring' ) ) {
-						$posting[ 'mbstring' ][ 'success' ] = true;
-					} else {
-						$posting[ 'mbstring' ][ 'success' ] = false;
-						$posting[ 'mbstring' ][ 'note' ]    = sprintf( __( 'Your server does not support the %s functions - this is required for better character encoding. Some fallbacks will be used instead for it.', 'tk-event-weather' ), '<a href="http://php.net/manual/en/mbstring.installation.php">mbstring</a>' );
-					}
-					// WP Remote Get Check.
-					$posting[ 'wp_remote_get' ][ 'name' ] = __( 'Remote Get', 'tk-event-weather' );
-					$response                             = wp_safe_remote_get( 'http://www.woothemes.com/wc-api/product-key-api?request=ping&network=' . ( is_multisite() ? '1' : '0' ) );
-					if ( ! is_wp_error( $response ) && $response[ 'response' ][ 'code' ] >= 200 && $response[ 'response' ][ 'code' ] < 300 ) {
-						$posting[ 'wp_remote_get' ][ 'success' ] = true;
-					} else {
-						$posting[ 'wp_remote_get' ][ 'note' ] = __( 'wp_remote_get() failed. This plugin won\'t work with your server. Contact your hosting provider.', 'tk-event-weather' );
-						if ( is_wp_error( $response ) ) {
-							$posting[ 'wp_remote_get' ][ 'note' ] .= ' ' . sprintf( __( 'Error: %s', 'tk-event-weather' ), TkEventWeather__Functions::tk_clean_var( $response->get_error_message() ) );
+				</td>
+			</tr>
+			<tr>
+				<td data-export-label="WP Cron"><?php _e( 'WP Cron', 'tk-event-weather' ); ?>:</td>
+				<td>
+					<?php if ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) : ?>
+						<mark class="no">&ndash;</mark>
+					<?php else : ?>
+						<mark class="yes"><span class="dashicons dashicons-yes"></span></mark>
+					<?php endif; ?>
+				</td>
+			</tr>
+			<tr>
+				<td data-export-label="Permalinks"><?php _e( 'Permalink Structure', 'tk-event-weather' ); ?>:
+				</td>
+				<td><?php echo esc_html( get_option( 'permalink_structure' ) ); ?></td>
+			</tr>
+			<tr>
+				<td data-export-label="WP Language"><?php _e( 'WP Language', 'tk-event-weather' ); ?>:</td>
+				<td><?php echo get_locale(); ?></td>
+			</tr>
+			<tr>
+				<td data-export-label="WP Timezone"><?php _e( 'WP Timezone', 'tk-event-weather' ); ?>:</td>
+				<td><?php echo get_option( 'timezone_string' ); ?></td>
+			</tr>
+			<tr>
+				<td data-export-label="WP GMT Offset"><?php _e( 'WP GMT Offset', 'tk-event-weather' ); ?>:</td>
+				<td><?php echo get_option( 'gmt_offset' ); ?></td>
+			</tr>
+			<tr>
+				<td data-export-label="WP Date Format"><?php _e( 'WP Date Format', 'tk-event-weather' ); ?>:
+				</td>
+				<td><?php echo get_option( 'date_format' ); ?></td>
+			</tr>
+			<tr>
+				<td data-export-label="WP Time Format"><?php _e( 'WP Time Format', 'tk-event-weather' ); ?>:
+				</td>
+				<td><?php echo get_option( 'time_format' ); ?></td>
+			</tr>
+			</tbody>
+		</table>
+		<table class="tkeventw_status_table widefat" cellspacing="0">
+			<thead>
+			<tr>
+				<th colspan="3" data-export-label="Server Environment">
+					<h2><?php _e( 'Server Environment', 'tk-event-weather' ); ?></h2></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td data-export-label="Server Info"><?php _e( 'Server Info', 'tk-event-weather' ); ?>:</td>
+				<td><?php echo esc_html( $_SERVER['SERVER_SOFTWARE'] ); ?></td>
+			</tr>
+			<tr>
+				<td data-export-label="PHP Version"><?php _e( 'PHP Version', 'tk-event-weather' ); ?>:</td>
+				<td><?php
+					// Check if phpversion function exists.
+					if ( function_exists( 'phpversion' ) ) {
+						$php_version = phpversion();
+						if ( version_compare( $php_version, TkEventWeather__minimalRequiredPhpVersion(), '<' ) ) {
+							echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf(
+									__( '%s - This plugin requires a minimum PHP version of %s. See: %s', 'tk-event-weather' ),
+									esc_html( $php_version ),
+									TkEventWeather__minimalRequiredPhpVersion(),
+									'<a href="http://docs.woothemes.com/document/how-to-update-your-php-version/" target="_blank">' . __( 'How to update your PHP version', 'tk-event-weather' ) . '</a>'
+								) . '</mark>';
 						} else {
-							$posting[ 'wp_remote_get' ][ 'note' ] .= ' ' . sprintf( __( 'Status code: %s', 'tk-event-weather' ), TkEventWeather__Functions::tk_clean_var( $response[ 'response' ][ 'code' ] ) );
+							echo '<mark class="yes">' . esc_html( $php_version ) . '</mark>';
 						}
-						$posting[ 'wp_remote_get' ][ 'success' ] = false;
+					} else {
+						_e( "Couldn't determine PHP version because phpversion() doesn't exist.", 'tk-event-weather' );
 					}
-					// $posting = apply_filters( 'woocommerce_debug_posting', $posting );
-					foreach ( $posting as $post ) {
-						$mark = ! empty( $post[ 'success' ] ) ? 'yes' : 'error';
-						?>
-                        <tr>
-                            <td data-export-label="<?php echo esc_html( $post[ 'name' ] ); ?>"><?php echo esc_html( $post[ 'name' ] ); ?>
-                                :
-                            </td>
-                            <td>
-                                <mark class="<?php echo $mark; ?>">
-									<?php echo ! empty( $post[ 'success' ] ) ? '<span class="dashicons dashicons-yes"></span>' : '<span class="dashicons dashicons-no-alt"></span>'; ?><?php echo ! empty( $post[ 'note' ] ) ? wp_kses_data( $post[ 'note' ] ) : ''; ?>
-                                </mark>
-                            </td>
-                        </tr>
-						<?php
+					?></td>
+			</tr>
+			<?php if ( function_exists( 'ini_get' ) ) : ?>
+				<tr>
+					<td data-export-label="PHP Post Max Size"><?php _e( 'PHP Post Max Size', 'tk-event-weather' ); ?>
+						:
+					</td>
+					<td><?php echo size_format( ini_get( 'post_max_size' ) ); ?></td>
+				</tr>
+				<tr>
+					<td data-export-label="PHP Time Limit"><?php _e( 'PHP Timeout Limit', 'tk-event-weather' ); ?>
+						:
+					</td>
+					<td><?php echo ini_get( 'max_execution_time' ); ?></td>
+				</tr>
+				<tr>
+					<td data-export-label="PHP Max Input Vars"><?php _e( 'PHP Max Input Variables', 'tk-event-weather' ); ?>
+						:
+					</td>
+					<td><?php echo ini_get( 'max_input_vars' ); ?></td>
+				</tr>
+				<tr>
+					<td data-export-label="SUHOSIN Installed"><?php _e( 'SUHOSIN Installed', 'tk-event-weather' ); ?>
+						:
+					</td>
+					<td><?php echo extension_loaded( 'suhosin' ) ? '<span class="dashicons dashicons-yes"></span>' : '&ndash;'; ?></td>
+				</tr>
+			<?php endif; ?>
+			<tr>
+				<td data-export-label="MySQL Version"><?php _e( 'MySQL Version', 'tk-event-weather' ); ?>:</td>
+				<td>
+					<?php
+					/** @global wpdb $wpdb */
+					global $wpdb;
+					$mysql_version = $wpdb->db_version();
+					if ( version_compare( $mysql_version, TkEventWeather__FuncSetup::$min_allowed_version_mysql, '<' ) ) {
+						echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf(
+								__( '%s - This plugin requires a minimum MySQL version of %s. See: %s', 'tk-event-weather' ),
+								esc_html( $mysql_version ),
+								TkEventWeather__FuncSetup::$min_allowed_version_mysql,
+								'<a href="https://wordpress.org/about/requirements/" target="_blank">' . __( 'WordPress Requirements', 'tk-event-weather' ) . '</a>'
+							) . '</mark>';
+					} else {
+						echo '<mark class="yes">' . esc_html( $mysql_version ) . '</mark>';
 					}
 					?>
-                    </tbody>
-                </table>
-                <table class="tkeventw_status_table widefat" cellspacing="0">
-                    <thead>
-                    <tr>
-                        <th colspan="3" data-export-label="TK Event Weather Plugin Options">
-                            <h2><?php _e( 'TK Event Weather Plugin Options', 'tk-event-weather' ); ?></h2></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-					<?php
-					$plugin_options = TkEventWeather__Functions::plugin_options();
-
-					if ( ! empty( $plugin_options ) && is_array( $plugin_options ) ) {
-						foreach ( $plugin_options as $key => $option ) {
-							?>
-                            <tr>
-                                <td><?php echo esc_html( 'Core - ' . $key ); ?></td>
-                                <td><?php echo esc_html( $option ); ?></td>
-                            </tr>
-							<?php
-						}
-					}
-
-					// allow add-ons to output their settings too
-					$addon_plugin_options = apply_filters( 'tk_event_weather_add_on_plugin_options_array', array() );
-
-					if ( ! empty( $addon_plugin_options ) && is_array( $addon_plugin_options ) ) {
-						foreach ( $addon_plugin_options as $key => $option ) {
-							?>
-                            <tr>
-                                <td><?php echo esc_html( 'Addon - ' . $key ); ?></td>
-                                <td><?php echo esc_html( $option ); ?></td>
-                            </tr>
-							<?php
-						}
-					}
-					?>
-                    </tbody>
-                </table>
-                <table class="tkeventw_status_table widefat" cellspacing="0">
-                    <thead>
-                    <tr>
-                        <th colspan="3"
-                            data-export-label="Active Plugins (<?php echo count( (array) get_option( 'active_plugins' ) ); ?>)">
-                            <h2><?php _e( 'Active Plugins', 'tk-event-weather' ); ?>
-                                (<?php echo count( (array) get_option( 'active_plugins' ) ); ?>)</h2></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-					<?php
-					$active_plugins = (array) get_option( 'active_plugins', array() );
-					if ( is_multisite() ) {
-						$network_activated_plugins = array_keys( get_site_option( 'active_sitewide_plugins', array() ) );
-						$active_plugins            = array_merge( $active_plugins, $network_activated_plugins );
-					}
-					foreach ( $active_plugins as $plugin ) {
-						$plugin_data    = @get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin );
-						$dirname        = dirname( $plugin );
-						$version_string = '';
-						$network_string = '';
-						if ( ! empty( $plugin_data[ 'Name' ] ) ) {
-							// Link the plugin name to the plugin url if available.
-							$plugin_name = esc_html( $plugin_data[ 'Name' ] );
-							if ( ! empty( $plugin_data[ 'PluginURI' ] ) ) {
-								$plugin_name = '<a href="' . esc_url( $plugin_data[ 'PluginURI' ] ) . '" title="' . esc_attr__( 'Visit plugin homepage', 'tk-event-weather' ) . '" target="_blank">' . $plugin_name . '</a>';
-							}
-							?>
-                            <tr>
-                                <td><?php echo $plugin_name; ?></td>
-                                <td><?php echo sprintf( _x( 'by %s', 'by author', 'tk-event-weather' ), $plugin_data[ 'Author' ] ) . ' &ndash; ' . esc_html( $plugin_data[ 'Version' ] ) . $version_string . $network_string; ?></td>
-                            </tr>
-							<?php
-						}
-					}
-					?>
-                    </tbody>
-                </table>
-                <table class="tkeventw_status_table widefat" cellspacing="0">
-                    <thead>
-                    <tr>
-                        <th colspan="3" data-export-label="Theme"><h2><?php _e( 'Theme', 'tk-event-weather' ); ?></h2>
-                        </th>
-                    </tr>
-                    </thead>
-					<?php
-					include_once( ABSPATH . 'wp-admin/includes/theme-install.php' );
-					$active_theme  = wp_get_theme();
-					$theme_version = $active_theme->Version;
-					?>
-                    <tbody>
-                    <tr>
-                        <td data-export-label="Name"><?php _e( 'Current Active Theme', 'tk-event-weather' ); ?>:</td>
-                        <td><?php echo esc_html( $active_theme->Name ); ?></td>
-                    </tr>
-                    <tr>
-                        <td data-export-label="Version"><?php _e( 'Current Active Theme Version', 'tk-event-weather' ); ?>
-                            :
-                        </td>
-                        <td><?php
-							echo is_child_theme() ? __( 'N/A - Child Theme in use', 'tk-event-weather' ) : esc_html( $theme_version );
-							?></td>
-                    </tr>
-                    <tr>
-                        <td data-export-label="Author URL"><?php _e( 'Current Active Theme Author URL', 'tk-event-weather' ); ?>
-                            :
-                        </td>
-                        <td><?php echo $active_theme->{'Author URI'}; ?></td>
-                    </tr>
-                    <tr>
-                        <td data-export-label="Child Theme"><?php _e( 'Current Active Theme is a Child Theme', 'tk-event-weather' ); ?>
-                            :
-                        </td>
-                        <td><?php
-							echo is_child_theme() ? '<mark class="yes"><span class="dashicons dashicons-yes"></span></mark>' : '<span class="dashicons dashicons-no-alt"></span>';
-							?></td>
-                    </tr>
-					<?php
-					if ( is_child_theme() ) :
-						$parent_theme = wp_get_theme( $active_theme->Template );
-						?>
-                        <tr>
-                            <td data-export-label="Parent Theme Name"><?php _e( 'Parent Theme Name', 'tk-event-weather' ); ?>
-                                :
-                            </td>
-                            <td><?php echo esc_html( $parent_theme->Name ); ?></td>
-                        </tr>
-                        <tr>
-                            <td data-export-label="Parent Theme Version"><?php _e( 'Parent Theme Version', 'tk-event-weather' ); ?>
-                                :
-                            </td>
-                            <td><?php
-								echo esc_html( $parent_theme->Version );
-								?></td>
-                        </tr>
-                        <tr>
-                            <td data-export-label="Parent Theme Author URL"><?php _e( 'Parent Theme Author URL', 'tk-event-weather' ); ?>
-                                :
-                            </td>
-                            <td><?php echo $parent_theme->{'Author URI'}; ?></td>
-                        </tr>
-					<?php endif ?>
-                    </tbody>
-                </table>
-
-                <script type="text/javascript">
-                    jQuery('a.debug-report').click(function () {
-                        var report = '';
-                        jQuery('.tkeventw_status_table thead, .tkeventw_status_table tbody').each(function () {
-                            if (jQuery(this).is('thead')) {
-                                var label = jQuery(this).find('th:eq(0)').data('export-label') || jQuery(this).text();
-                                report = report + '\n### ' + jQuery.trim(label) + ' ###\n\n';
-                            } else {
-                                jQuery('tr', jQuery(this)).each(function () {
-                                    var label = jQuery(this).find('td:eq(0)').data('export-label') || jQuery(this).find('td:eq(0)').text();
-                                    var the_name = jQuery.trim(label).replace(/(<([^>]+)>)/ig, ''); // Remove HTML.
-                                    // Find value
-                                    var $value_html = jQuery(this).find('td:eq(1)').clone(); // 2nd <td>
-                                    $value_html.find('.private').remove();
-                                    $value_html.find('.dashicons-yes').replaceWith('&#10004;');
-                                    $value_html.find('.dashicons-no-alt, .dashicons-warning').replaceWith('&#10060;');
-                                    // Format value
-                                    var the_value = jQuery.trim($value_html.text());
-                                    var value_array = the_value.split(', ');
-                                    if (value_array.length > 1) {
-                                        // If value have a list of plugins ','.
-                                        // Split to add new line.
-                                        var temp_line = '';
-                                        jQuery.each(value_array, function (key, line) {
-                                            temp_line = temp_line + line + '\n';
-                                        });
-                                        the_value = temp_line;
-                                    }
-                                    report = report + '' + the_name + ': ' + the_value + '\n';
-                                });
-                            }
-                        });
-                        try {
-                            jQuery('#debug-report').slideDown().find('textarea').val('`' + report + '`').focus().select();
-                            jQuery(this).fadeOut();
-                            return false;
-                        } catch (e) {
-                            /* jshint devel: true */
-                            console.log(e);
-                        }
-                        return false;
-                    });
-                </script>
-				<?php
+				</td>
+			</tr>
+			<tr>
+				<td data-export-label="Max Upload Size"><?php _e( 'Max Upload Size', 'tk-event-weather' ); ?>:
+				</td>
+				<td><?php echo size_format( wp_max_upload_size() ); ?></td>
+			</tr>
+			<tr>
+				<td data-export-label="Default Time Zone is UTC"><?php _e( 'Default Server Time Zone is UTC', 'tk-event-weather' ); ?>
+					:
+				</td>
+				<td><?php
+					$default_timezone = date_default_timezone_get();
+					if ( 'UTC' !== $default_timezone ) {
+						echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf( __( 'Default time zone is %s - it should be UTC', 'tk-event-weather' ), $default_timezone ) . '</mark>';
+					} else {
+						echo '<mark class="yes"><span class="dashicons dashicons-yes"></span></mark>';
+					} ?>
+				</td>
+			</tr>
+			<?php
+			$posting = array();
+			// fsockopen/cURL.
+			$posting['fsockopen_curl']['name'] = 'fsockopen/cURL';
+			if ( function_exists( 'fsockopen' ) || function_exists( 'curl_init' ) ) {
+				$posting['fsockopen_curl']['success'] = true;
 			} else {
-				// nothing
+				$posting['fsockopen_curl']['success'] = false;
+				$posting['fsockopen_curl']['note']    = __( 'Your server does not have fsockopen or cURL enabled - PayPal IPN and other scripts which communicate with other servers will not work. Contact your hosting provider.', 'tk-event-weather' );
+			}
+			// SOAP.
+			$posting['soap_client']['name'] = 'SoapClient';
+			if ( class_exists( 'SoapClient' ) ) {
+				$posting['soap_client']['success'] = true;
+			} else {
+				$posting['soap_client']['success'] = false;
+				$posting['soap_client']['note']    = sprintf( __( 'Your server does not have the %s class enabled - some gateway plugins which use SOAP may not work as expected.', 'tk-event-weather' ), '<a href="http://php.net/manual/en/class.soapclient.php">SoapClient</a>' );
+			}
+			// DOMDocument.
+			$posting['dom_document']['name'] = 'DOMDocument';
+			if ( class_exists( 'DOMDocument' ) ) {
+				$posting['dom_document']['success'] = true;
+			} else {
+				$posting['dom_document']['success'] = false;
+				$posting['dom_document']['note']    = sprintf( __( 'Your server does not have the %s class enabled - HTML/Multipart emails, and also some extensions, will not work without DOMDocument.', 'tk-event-weather' ), '<a href="http://php.net/manual/en/class.domdocument.php">DOMDocument</a>' );
+			}
+			// GZIP.
+			$posting['gzip']['name'] = 'GZip';
+			if ( is_callable( 'gzopen' ) ) {
+				$posting['gzip']['success'] = true;
+			} else {
+				$posting['gzip']['success'] = false;
+				$posting['gzip']['note']    = sprintf( __( 'Your server does not support the %s function - this is required to use the GeoIP database from MaxMind. The API fallback will be used instead for geolocation.', 'tk-event-weather' ), '<a href="http://php.net/manual/en/zlib.installation.php">gzopen</a>' );
+			}
+			// Multibyte String.
+			$posting['mbstring']['name'] = 'Multibyte String';
+			if ( extension_loaded( 'mbstring' ) ) {
+				$posting['mbstring']['success'] = true;
+			} else {
+				$posting['mbstring']['success'] = false;
+				$posting['mbstring']['note']    = sprintf( __( 'Your server does not support the %s functions - this is required for better character encoding. Some fallbacks will be used instead for it.', 'tk-event-weather' ), '<a href="http://php.net/manual/en/mbstring.installation.php">mbstring</a>' );
+			}
+			// WP Remote Get Check.
+			$posting['wp_remote_get']['name'] = __( 'Remote Get', 'tk-event-weather' );
+			$response                         = wp_safe_remote_get( 'http://www.woothemes.com/wc-api/product-key-api?request=ping&network=' . ( is_multisite() ? '1' : '0' ) );
+			if ( ! is_wp_error( $response ) && $response['response']['code'] >= 200 && $response['response']['code'] < 300 ) {
+				$posting['wp_remote_get']['success'] = true;
+			} else {
+				$posting['wp_remote_get']['note'] = __( 'wp_remote_get() failed. This plugin won\'t work with your server. Contact your hosting provider.', 'tk-event-weather' );
+				if ( is_wp_error( $response ) ) {
+					$posting['wp_remote_get']['note'] .= ' ' . sprintf( __( 'Error: %s', 'tk-event-weather' ), TkEventWeather__Functions::tk_clean_var( $response->get_error_message() ) );
+				} else {
+					$posting['wp_remote_get']['note'] .= ' ' . sprintf( __( 'Status code: %s', 'tk-event-weather' ), TkEventWeather__Functions::tk_clean_var( $response['response']['code'] ) );
+				}
+				$posting['wp_remote_get']['success'] = false;
+			}
+			// $posting = apply_filters( 'woocommerce_debug_posting', $posting );
+			foreach ( $posting as $post ) {
+				$mark = ! empty( $post['success'] ) ? 'yes' : 'error';
+				?>
+				<tr>
+					<td data-export-label="<?php echo esc_html( $post['name'] ); ?>"><?php echo esc_html( $post['name'] ); ?>
+						:
+					</td>
+					<td>
+						<mark class="<?php echo $mark; ?>">
+							<?php echo ! empty( $post['success'] ) ? '<span class="dashicons dashicons-yes"></span>' : '<span class="dashicons dashicons-no-alt"></span>'; ?><?php echo ! empty( $post['note'] ) ? wp_kses_data( $post['note'] ) : ''; ?>
+						</mark>
+					</td>
+				</tr>
+				<?php
 			}
 			?>
+			</tbody>
+		</table>
+		<table class="tkeventw_status_table widefat" cellspacing="0">
+			<thead>
+			<tr>
+				<th colspan="3" data-export-label="TK Event Weather Plugin Options">
+					<h2><?php _e( 'TK Event Weather Plugin Options', 'tk-event-weather' ); ?></h2></th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php
+			$plugin_options = TkEventWeather__Functions::plugin_options();
 
-        </div>
+			if ( ! empty( $plugin_options ) && is_array( $plugin_options ) ) {
+				foreach ( $plugin_options as $key => $option ) {
+					?>
+					<tr>
+						<td><?php echo esc_html( 'Core - ' . $key ); ?></td>
+						<td><?php echo esc_html( $option ); ?></td>
+					</tr>
+					<?php
+				}
+			}
+
+			// allow add-ons to output their settings too
+			$addon_plugin_options = apply_filters( 'tk_event_weather_add_on_plugin_options_array', array() );
+
+			if ( ! empty( $addon_plugin_options ) && is_array( $addon_plugin_options ) ) {
+				foreach ( $addon_plugin_options as $key => $option ) {
+					?>
+					<tr>
+						<td><?php echo esc_html( 'Addon - ' . $key ); ?></td>
+						<td><?php echo esc_html( $option ); ?></td>
+					</tr>
+					<?php
+				}
+			}
+			?>
+			</tbody>
+		</table>
+		<table class="tkeventw_status_table widefat" cellspacing="0">
+			<thead>
+			<tr>
+				<th colspan="3"
+					data-export-label="Active Plugins (<?php echo count( (array) get_option( 'active_plugins' ) ); ?>)">
+					<h2><?php _e( 'Active Plugins', 'tk-event-weather' ); ?>
+						(<?php echo count( (array) get_option( 'active_plugins' ) ); ?>)</h2></th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php
+			$active_plugins = (array) get_option( 'active_plugins', array() );
+			if ( is_multisite() ) {
+				$network_activated_plugins = array_keys( get_site_option( 'active_sitewide_plugins', array() ) );
+				$active_plugins            = array_merge( $active_plugins, $network_activated_plugins );
+			}
+			foreach ( $active_plugins as $plugin ) {
+				$plugin_data    = @get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin );
+				$dirname        = dirname( $plugin );
+				$version_string = '';
+				$network_string = '';
+				if ( ! empty( $plugin_data['Name'] ) ) {
+					// Link the plugin name to the plugin url if available.
+					$plugin_name = esc_html( $plugin_data['Name'] );
+					if ( ! empty( $plugin_data['PluginURI'] ) ) {
+						$plugin_name = '<a href="' . esc_url( $plugin_data['PluginURI'] ) . '" title="' . esc_attr__( 'Visit plugin homepage', 'tk-event-weather' ) . '" target="_blank">' . $plugin_name . '</a>';
+					}
+					?>
+					<tr>
+						<td><?php echo $plugin_name; ?></td>
+						<td><?php echo sprintf( _x( 'by %s', 'by author', 'tk-event-weather' ), $plugin_data['Author'] ) . ' &ndash; ' . esc_html( $plugin_data['Version'] ) . $version_string . $network_string; ?></td>
+					</tr>
+					<?php
+				}
+			}
+			?>
+			</tbody>
+		</table>
+		<table class="tkeventw_status_table widefat" cellspacing="0">
+			<thead>
+			<tr>
+				<th colspan="3" data-export-label="Theme"><h2><?php _e( 'Theme', 'tk-event-weather' ); ?></h2>
+				</th>
+			</tr>
+			</thead>
+			<?php
+			include_once( ABSPATH . 'wp-admin/includes/theme-install.php' );
+			$active_theme  = wp_get_theme();
+			$theme_version = $active_theme->Version;
+			?>
+			<tbody>
+			<tr>
+				<td data-export-label="Name"><?php _e( 'Current Active Theme', 'tk-event-weather' ); ?>:</td>
+				<td><?php echo esc_html( $active_theme->Name ); ?></td>
+			</tr>
+			<tr>
+				<td data-export-label="Version"><?php _e( 'Current Active Theme Version', 'tk-event-weather' ); ?>
+					:
+				</td>
+				<td><?php
+					echo is_child_theme() ? __( 'N/A - Child Theme in use', 'tk-event-weather' ) : esc_html( $theme_version );
+					?></td>
+			</tr>
+			<tr>
+				<td data-export-label="Author URL"><?php _e( 'Current Active Theme Author URL', 'tk-event-weather' ); ?>
+					:
+				</td>
+				<td><?php echo $active_theme->{'Author URI'}; ?></td>
+			</tr>
+			<tr>
+				<td data-export-label="Child Theme"><?php _e( 'Current Active Theme is a Child Theme', 'tk-event-weather' ); ?>
+					:
+				</td>
+				<td><?php
+					echo is_child_theme() ? '<mark class="yes"><span class="dashicons dashicons-yes"></span></mark>' : '<span class="dashicons dashicons-no-alt"></span>';
+					?></td>
+			</tr>
+			<?php
+			if ( is_child_theme() ) :
+				$parent_theme = wp_get_theme( $active_theme->Template );
+				?>
+				<tr>
+					<td data-export-label="Parent Theme Name"><?php _e( 'Parent Theme Name', 'tk-event-weather' ); ?>
+						:
+					</td>
+					<td><?php echo esc_html( $parent_theme->Name ); ?></td>
+				</tr>
+				<tr>
+					<td data-export-label="Parent Theme Version"><?php _e( 'Parent Theme Version', 'tk-event-weather' ); ?>
+						:
+					</td>
+					<td><?php
+						echo esc_html( $parent_theme->Version );
+						?></td>
+				</tr>
+				<tr>
+					<td data-export-label="Parent Theme Author URL"><?php _e( 'Parent Theme Author URL', 'tk-event-weather' ); ?>
+						:
+					</td>
+					<td><?php echo $parent_theme->{'Author URI'}; ?></td>
+				</tr>
+			<?php endif ?>
+			</tbody>
+		</table>
+
+		<script type="text/javascript">
+			jQuery( 'a.debug-report' ).click( function () {
+				var report = '';
+				jQuery( '.tkeventw_status_table thead, .tkeventw_status_table tbody' ).each( function () {
+					if ( jQuery( this ).is( 'thead' ) ) {
+						var label = jQuery( this ).find( 'th:eq(0)' ).data( 'export-label' ) || jQuery( this ).text();
+						report = report + '\n### ' + jQuery.trim( label ) + ' ###\n\n';
+					} else {
+						jQuery( 'tr', jQuery( this ) ).each( function () {
+							var label = jQuery( this ).find( 'td:eq(0)' ).data( 'export-label' ) || jQuery( this ).find( 'td:eq(0)' ).text();
+							var the_name = jQuery.trim( label ).replace( /(<([^>]+)>)/ig, '' ); // Remove HTML.
+							// Find value
+							var $value_html = jQuery( this ).find( 'td:eq(1)' ).clone(); // 2nd <td>
+							$value_html.find( '.private' ).remove();
+							$value_html.find( '.dashicons-yes' ).replaceWith( '&#10004;' );
+							$value_html.find( '.dashicons-no-alt, .dashicons-warning' ).replaceWith( '&#10060;' );
+							// Format value
+							var the_value = jQuery.trim( $value_html.text() );
+							var value_array = the_value.split( ', ' );
+							if ( value_array.length > 1 ) {
+								// If value have a list of plugins ','.
+								// Split to add new line.
+								var temp_line = '';
+								jQuery.each( value_array, function ( key, line ) {
+									temp_line = temp_line + line + '\n';
+								} );
+								the_value = temp_line;
+							}
+							report = report + '' + the_name + ': ' + the_value + '\n';
+						} );
+					}
+				} );
+				try {
+					jQuery( '#debug-report' ).slideDown().find( 'textarea' ).val( '`' + report + '`' ).focus().select();
+					jQuery( this ).fadeOut();
+					return false;
+				} catch ( e ) {
+					/* jshint devel: true */
+					console.log( e );
+				}
+				return false;
+			} );
+		</script>
+		<?php
+	} else {
+		// nothing
+	}
+		?>
+
+		</div>
 		<?php
 
 	}
@@ -922,8 +934,8 @@ class TkEventWeather__OptionsManager {
 	/**
 	 * Helper-function outputs the correct form element (input tag, select tag) for the given item
 	 *
-	 * @param    $aOptionKey string name of the option (un-prefixed)
-	 * @param    $aOptionMeta mixed meta-data for $aOptionKey (either a string display-name or an array(display-name, option1, option2, ...)
+	 * @param    $aOptionKey       string name of the option (un-prefixed)
+	 * @param    $aOptionMeta      mixed meta-data for $aOptionKey (either a string display-name or an array(display-name, option1, option2, ...)
 	 * @param    $savedOptionValue string current value for $aOptionKey
 	 *
 	 * @return void
@@ -955,28 +967,28 @@ class TkEventWeather__OptionsManager {
 		if ( is_array( $aOptionMeta ) && count( $aOptionMeta ) >= 2 ) { // Drop-down list
 			$choices = array_slice( $aOptionMeta, 1 );
 			?>
-            <p><select name="<?php echo $aOptionKey ?>" id="<?php echo $aOptionKey ?>">
+			<p><select name="<?php echo $aOptionKey ?>" id="<?php echo $aOptionKey ?>">
 					<?php
 					foreach ( $choices as $aChoice ) {
 						$selected = ( $aChoice == $savedOptionValue ) ? 'selected' : '';
 						?>
-                        <option value="<?php echo $aChoice ?>" <?php echo $selected ?>><?php echo $this->getOptionValueI18nString( $aChoice ) ?></option>
+						<option value="<?php echo $aChoice ?>" <?php echo $selected ?>><?php echo $this->getOptionValueI18nString( $aChoice ) ?></option>
 						<?php
 					}
 					?>
-                </select></p>
+				</select></p>
 			<?php
 
 		} elseif ( true === $is_password_type_field ) { // Password/API Key Type field
 			?>
-            <p><input type="password" autocomplete="off" name="<?php echo $aOptionKey ?>" id="<?php echo $aOptionKey ?>"
-                      value="<?php echo esc_attr( $savedOptionValue ) ?>" size="50"/></p>
+			<p><input type="password" autocomplete="off" name="<?php echo $aOptionKey ?>" id="<?php echo $aOptionKey ?>"
+					  value="<?php echo esc_attr( $savedOptionValue ) ?>" size="50" /></p>
 			<?php
 
 		} else { // Simple input field
 			?>
-            <p><input type="text" name="<?php echo $aOptionKey ?>" id="<?php echo $aOptionKey ?>"
-                      value="<?php echo esc_attr( $savedOptionValue ) ?>" size="50"/></p>
+			<p><input type="text" name="<?php echo $aOptionKey ?>" id="<?php echo $aOptionKey ?>"
+					  value="<?php echo esc_attr( $savedOptionValue ) ?>" size="50" /></p>
 			<?php
 
 		}
@@ -1030,7 +1042,7 @@ class TkEventWeather__OptionsManager {
 		global $wpdb;
 		$rows = $wpdb->get_results( 'select version() as mysqlversion' );
 		if ( ! empty( $rows ) ) {
-			return $rows[ 0 ]->mysqlversion;
+			return $rows[0]->mysqlversion;
 		}
 
 		return false;
@@ -1046,7 +1058,7 @@ class TkEventWeather__OptionsManager {
 	 */
 	public function getEmailDomain() {
 		// Get the site domain and get rid of www.
-		$sitename = strtolower( $_SERVER[ 'SERVER_NAME' ] );
+		$sitename = strtolower( $_SERVER['SERVER_NAME'] );
 		if ( substr( $sitename, 0, 4 ) == 'www.' ) {
 			$sitename = substr( $sitename, 4 );
 		}

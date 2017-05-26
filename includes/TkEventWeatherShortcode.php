@@ -143,12 +143,12 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 
 		// Code
 
-		$debug = (bool) $atts[ 'debug_on' ];
+		$debug = (bool) $atts['debug_on'];
 
 
 		// if false === $transients, clear existing and set new transients
-		if ( ! empty( $atts[ 'transients_off' ] )
-		     && 'true' == $atts[ 'transients_off' ]
+		if ( ! empty( $atts['transients_off'] )
+			&& 'true' == $atts['transients_off']
 		) {
 			$transients = false;
 		} else {
@@ -157,14 +157,14 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 
 
 		// @link https://developer.wordpress.org/reference/functions/sanitize_key/
-		$api_key = sanitize_key( $atts[ 'api_key' ] );
+		$api_key = sanitize_key( $atts['api_key'] );
 
 		if ( empty( $api_key ) ) {
 			return TkEventWeather__Functions::invalid_shortcode_message( 'Please enter your Dark Sky API Key' );
 		}
 
 		// manually entered override custom field
-		$post_id = $atts[ 'post_id' ];
+		$post_id = $atts['post_id'];
 
 		// if post does not exist by ID, clear out $post_id variable
 		// @link https://developer.wordpress.org/reference/functions/get_post_status/
@@ -175,7 +175,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 			}
 		}
 
-		$template_data[ 'post_id' ] = $post_id;
+		$template_data['post_id'] = $post_id;
 
 		// the variable to send to Dark Sky API -- to be built via the code below
 		$latitude_longitude = '';
@@ -185,10 +185,10 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 		$longitude = '';
 
 		// combined lat,long (manual then custom field)
-		if ( ! empty ( $atts[ 'lat_long' ] ) ) {
-			$latitude_longitude = $atts[ 'lat_long' ];
-		} elseif ( ! empty( $post_id ) && ! empty( $atts[ 'lat_long_custom_field' ] ) ) {
-			$latitude_longitude = get_post_meta( $post_id, $atts[ 'lat_long_custom_field' ], true );
+		if ( ! empty ( $atts['lat_long'] ) ) {
+			$latitude_longitude = $atts['lat_long'];
+		} elseif ( ! empty( $post_id ) && ! empty( $atts['lat_long_custom_field'] ) ) {
+			$latitude_longitude = get_post_meta( $post_id, $atts['lat_long_custom_field'], true );
 		}
 
 		$latitude_longitude = TkEventWeather__Functions::valid_lat_long( $latitude_longitude );
@@ -196,17 +196,17 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 		// if no lat,long yet then build via separate lat and long
 		if ( empty ( $latitude_longitude ) ) {
 			// latitude
-			if ( ! empty ( $atts[ 'lat' ] ) ) {
-				$latitude = $atts[ 'lat' ];
-			} elseif ( ! empty( $post_id ) && ! empty( $atts[ 'lat_custom_field' ] ) ) {
-				$latitude = get_post_meta( $post_id, $atts[ 'lat_custom_field' ], true );
+			if ( ! empty ( $atts['lat'] ) ) {
+				$latitude = $atts['lat'];
+			} elseif ( ! empty( $post_id ) && ! empty( $atts['lat_custom_field'] ) ) {
+				$latitude = get_post_meta( $post_id, $atts['lat_custom_field'], true );
 			}
 
 			// longitude
-			if ( ! empty ( $atts[ 'long' ] ) ) {
-				$longitude = $atts[ 'long' ];
-			} elseif ( ! empty( $post_id ) && ! empty( $atts[ 'long_custom_field' ] ) ) {
-				$longitude = get_post_meta( $post_id, $atts[ 'long_custom_field' ], true );
+			if ( ! empty ( $atts['long'] ) ) {
+				$longitude = $atts['long'];
+			} elseif ( ! empty( $post_id ) && ! empty( $atts['long_custom_field'] ) ) {
+				$longitude = get_post_meta( $post_id, $atts['long_custom_field'], true );
 			}
 
 			// build comma-separated $latitude_longitude
@@ -221,10 +221,10 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 
 		if ( empty( $latitude_longitude ) ) {
 
-			if ( ! empty ( $atts[ 'location' ] ) ) {
-				$location = $atts[ 'location' ];
-			} elseif ( ! empty( $post_id ) && ! empty( $atts[ 'location_custom_field' ] ) ) {
-				$location = get_post_meta( $post_id, $atts[ 'location_custom_field' ], true );
+			if ( ! empty ( $atts['location'] ) ) {
+				$location = $atts['location'];
+			} elseif ( ! empty( $post_id ) && ! empty( $atts['location_custom_field'] ) ) {
+				$location = get_post_meta( $post_id, $atts['location_custom_field'], true );
 			}
 
 			$location = trim( $location );
@@ -233,7 +233,8 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 		// Google Maps Transient
 		if ( ! empty( $location ) ) {
 			// build transient
-			$location_transient_name = sprintf( '%s_gmaps_%s',
+			$location_transient_name = sprintf(
+				'%s_gmaps_%s',
 				TkEventWeather__FuncSetup::$transient_name_prepend,
 				TkEventWeather__Functions::remove_all_whitespace( $location )
 			);
@@ -256,10 +257,10 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 
 				$location_request_uri_query_args = array();
 
-				$gmaps_api_key = TkEventWeather__Functions::sanitize_key_allow_uppercase( $atts[ 'gmaps_api_key' ] );
+				$gmaps_api_key = TkEventWeather__Functions::sanitize_key_allow_uppercase( $atts['gmaps_api_key'] );
 				// TODO if not set, make it required and throw an error
 				if ( ! empty( $gmaps_api_key ) ) {
-					$location_request_uri_query_args[ 'key' ] = urlencode( $gmaps_api_key );
+					$location_request_uri_query_args['key'] = urlencode( $gmaps_api_key );
 				}
 				if ( ! empty( $location_request_uri_query_args ) ) {
 					$location_request_uri = add_query_arg( $location_request_uri_query_args, $location_request_uri );
@@ -304,9 +305,9 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 				return TkEventWeather__Functions::invalid_shortcode_message( 'The Google Maps Geocoding API resulted in an error: ' . $location_api_data->status . '. See https://developers.google.com/maps/documentation/geocoding/intro#StatusCodes' );
 			}
 
-			if ( ! empty ( $location_api_data->results[ 0 ]->geometry->location->lat ) ) {
-				$latitude  = $location_api_data->results[ 0 ]->geometry->location->lat;
-				$longitude = $location_api_data->results[ 0 ]->geometry->location->lng;
+			if ( ! empty ( $location_api_data->results[0]->geometry->location->lat ) ) {
+				$latitude  = $location_api_data->results[0]->geometry->location->lat;
+				$longitude = $location_api_data->results[0]->geometry->location->lng;
 			}
 
 			// build comma-separated $latitude_longitude
@@ -328,7 +329,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 
 			// set transient if API call resulted in usable data
 			if ( true === $transients
-			     && ! empty( $latitude_longitude ) // API resulted in usable data
+				&& ! empty( $latitude_longitude ) // API resulted in usable data
 			) {
 				set_transient( $location_transient_name, $location_api_data, 30 * DAY_IN_SECONDS ); // allowed to store for up to 30 calendar days, per https://developers.google.com/maps/terms#10-license-restrictions
 			}
@@ -338,14 +339,14 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 			return TkEventWeather__Functions::invalid_shortcode_message( 'Please enter valid Latitude and Longitude coordinates (or a Location that Google Maps can get coordinates for)' );
 		}
 
-		$template_data[ 'latitude_longitude' ] = $latitude_longitude;
+		$template_data['latitude_longitude'] = $latitude_longitude;
 
 		// Start Time
 		// ISO 8601 datetime or Unix timestamp
-		if ( '' != $atts[ 'start_time' ] ) {
-			$start_time = $atts[ 'start_time' ];
-		} elseif ( ! empty( $post_id ) && ! empty( $atts[ 'start_time_custom_field' ] ) ) {
-			$start_time = get_post_meta( $post_id, $atts[ 'lat_long_custom_field' ], true );
+		if ( '' != $atts['start_time'] ) {
+			$start_time = $atts['start_time'];
+		} elseif ( ! empty( $post_id ) && ! empty( $atts['start_time_custom_field'] ) ) {
+			$start_time = get_post_meta( $post_id, $atts['lat_long_custom_field'], true );
 		} else {
 			$start_time = '';
 		}
@@ -356,47 +357,49 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 				$start_time           = TkEventWeather__Functions::valid_iso_8601_date_time( $start_time );
 				$start_time_iso_8601  = $start_time;
 				$start_time_timestamp = date( 'U', strtotime( $start_time ) );
-			}
-			// check timestamp
+			} // check timestamp
 			elseif ( true === TkEventWeather__Functions::valid_timestamp( $start_time, 'bool' ) ) {
 				$start_time           = TkEventWeather__Functions::valid_timestamp( $start_time );
 				$start_time_iso_8601  = date( DateTime::ATOM, $start_time ); // DateTime::ATOM is same as 'c'
 				$start_time_timestamp = $start_time;
-			}
-			// strtotime() or invalid (and therefore clear out)
+			} // strtotime() or invalid (and therefore clear out)
 			else {
 				$start_time = strtotime( $start_time );
 
 				if ( false === $start_time ) {
-					$start_time = '';
+					$start_time           = '';
+					$start_time_timestamp = '';
 				} else {
 					$start_time_timestamp = $start_time;
 					$start_time_iso_8601  = date( DateTime::ATOM, $start_time ); // DateTime::ATOM is same as 'c'
 				}
 			}
-		} else {
+		}
+
+		// avoid error of variable not being set
+		if ( ! isset( $start_time_timestamp ) ) {
 			$start_time_timestamp = '';
 		}
 
-
 		$start_time_timestamp = TkEventWeather__Functions::valid_timestamp( $start_time_timestamp );
+
 
 		if ( empty( $start_time_timestamp ) ) {
 			return TkEventWeather__Functions::invalid_shortcode_message( 'Please enter a valid Start Time format' );
 		}
 
-		$template_data[ 'start_time_timestamp' ] = $start_time_timestamp;
+		$template_data['start_time_timestamp'] = $start_time_timestamp;
 
 
 		$weather_first_hour_timestamp = TkEventWeather__Functions::timestamp_truncate_minutes( $start_time_timestamp );
 
-		$template_data[ 'weather_first_hour_timestamp' ] = $weather_first_hour_timestamp;
+		$template_data['weather_first_hour_timestamp'] = $weather_first_hour_timestamp;
 
 
 		// cutoff_past
 		// strtotime date relative to $weather_first_hour_timestamp
-		if ( ! empty( $atts[ 'cutoff_past' ] ) ) {
-			$cutoff_past = $atts[ 'cutoff_past' ];
+		if ( ! empty( $atts['cutoff_past'] ) ) {
+			$cutoff_past = $atts['cutoff_past'];
 		} else {
 			$cutoff_past = '';
 		}
@@ -428,10 +431,10 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 
 		// End Time
 		// ISO 8601 datetime or Unix timestamp
-		if ( '' != $atts[ 'end_time' ] ) {
-			$end_time = $atts[ 'end_time' ];
-		} elseif ( ! empty( $post_id ) && ! empty( $atts[ 'end_time_custom_field' ] ) ) {
-			$end_time = get_post_meta( $post_id, $atts[ 'lat_long_custom_field' ], true );
+		if ( '' != $atts['end_time'] ) {
+			$end_time = $atts['end_time'];
+		} elseif ( ! empty( $post_id ) && ! empty( $atts['end_time_custom_field'] ) ) {
+			$end_time = get_post_meta( $post_id, $atts['lat_long_custom_field'], true );
 		} else {
 			$end_time = '';
 		}
@@ -442,19 +445,18 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 				$end_time           = TkEventWeather__Functions::valid_iso_8601_date_time( $end_time );
 				$end_time_iso_8601  = $end_time;
 				$end_time_timestamp = TkEventWeather__Functions::valid_timestamp( date( 'U', strtotime( $end_time ) ) ); // date() returns a string
-			}
-			// check timestamp
+			} // check timestamp
 			elseif ( true === TkEventWeather__Functions::valid_timestamp( $end_time, 'bool' ) ) {
 				$end_time           = TkEventWeather__Functions::valid_timestamp( $end_time );
 				$end_time_iso_8601  = date( DateTime::ATOM, $end_time ); // DateTime::ATOM is same as 'c'
 				$end_time_timestamp = $end_time;
-			}
-			// strtotime() or invalid (and therefore clear out)
+			} // strtotime() or invalid (and therefore clear out)
 			else {
 				$end_time = strtotime( $end_time, $start_time_timestamp ); // strtotime() being relative to Start Time
 
 				if ( false === $end_time ) {
-					$end_time = '';
+					$end_time           = '';
+					$end_time_timestamp = '';
 				} else {
 					$end_time_timestamp = $end_time;
 					$end_time_iso_8601  = date( DateTime::ATOM, $end_time ); // DateTime::ATOM is same as 'c'
@@ -484,7 +486,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 			return TkEventWeather__Functions::invalid_shortcode_message( 'Event Start Time must be earlier than Event End Time' );
 		}
 
-		$template_data[ 'end_time_timestamp' ] = $end_time_timestamp;
+		$template_data['end_time_timestamp'] = $end_time_timestamp;
 
 
 		/**
@@ -503,14 +505,14 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 			$weather_last_hour_timestamp = $end_time_hour_timestamp_plus_one_hour;
 		}
 
-		$template_data[ 'weather_last_hour_timestamp' ] = TkEventWeather__Functions::valid_timestamp( $weather_last_hour_timestamp );
+		$template_data['weather_last_hour_timestamp'] = TkEventWeather__Functions::valid_timestamp( $weather_last_hour_timestamp );
 
 
 		//
 		// cutoff_future
 		// strtotime date relative to $end_time_timestamp
-		if ( ! empty( $atts[ 'cutoff_future' ] ) ) {
-			$cutoff_future = $atts[ 'cutoff_future' ];
+		if ( ! empty( $atts['cutoff_future'] ) ) {
+			$cutoff_future = $atts['cutoff_future'];
 		} else {
 			$cutoff_future = '';
 		}
@@ -549,7 +551,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 
 
 		// Before Text
-		$before = sanitize_text_field( $atts[ 'before' ] );
+		$before = sanitize_text_field( $atts['before'] );
 
 		$before_filtered = apply_filters( 'tk_event_weather_before_full_html', $before ); // if you filter it, you're responsible for the entire HTML (e.g. wrapping in h4 tag)
 
@@ -562,7 +564,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 		}
 
 		// After Text
-		$after = sanitize_text_field( $atts[ 'after' ] );
+		$after = sanitize_text_field( $atts['after'] );
 
 		$after_filtered = apply_filters( 'tk_event_weather_after_full_html', $after ); // if you filter it, you're responsible for the entire HTML (e.g. wrapping in p tag)
 
@@ -575,17 +577,17 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 		}
 
 		// time_format_hours
-		$time_format_hours = sanitize_text_field( $atts[ 'time_format_hours' ] );
+		$time_format_hours = sanitize_text_field( $atts['time_format_hours'] );
 
-		$template_data[ 'time_format_hours' ] = $time_format_hours;
+		$template_data['time_format_hours'] = $time_format_hours;
 
 		// time_format_minutes
-		$time_format_minutes = sanitize_text_field( $atts[ 'time_format_minutes' ] );
+		$time_format_minutes = sanitize_text_field( $atts['time_format_minutes'] );
 
-		$template_data[ 'time_format_minutes' ] = $time_format_minutes;
+		$template_data['time_format_minutes'] = $time_format_minutes;
 
 		// units
-		$units = TkEventWeather__Functions::remove_all_whitespace( strtolower( $atts[ 'units' ] ) );
+		$units = TkEventWeather__Functions::remove_all_whitespace( strtolower( $atts['units'] ) );
 
 		$units_default = apply_filters( 'tk_event_weather_darksky_units_default', $units_option );
 
@@ -599,7 +601,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 		$exclude_default = apply_filters( 'tk_event_weather_darksky_exclude_default', 'minutely,alerts' );
 
 		// shortcode argument's value
-		$exclude_arg = TkEventWeather__Functions::remove_all_whitespace( strtolower( $atts[ 'exclude' ] ) );
+		$exclude_arg = TkEventWeather__Functions::remove_all_whitespace( strtolower( $atts['exclude'] ) );
 
 
 		if ( empty( $exclude_arg ) || $exclude_default == $exclude_arg ) {
@@ -648,7 +650,8 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 		// @link https://codex.wordpress.org/Easier_Expression_of_Time_Constants
 
 		// build transient
-		$transient_name = sprintf( '%s_%s_%s_%s_%s_%s_%d',
+		$transient_name = sprintf(
+			'%s_%s_%s_%s_%s_%s_%d',
 			TkEventWeather__FuncSetup::$transient_name_prepend,
 			'darksky',
 			$units,
@@ -740,7 +743,8 @@ TK Event Weather JSON Data
 		if ( empty( $api_data ) ) {
 			delete_transient( $transient_name ); // delete any expired transient by this name
 
-			$request_uri = sprintf( 'https://api.darksky.net/forecast/%s/%s,%s',
+			$request_uri = sprintf(
+				'https://api.darksky.net/forecast/%s/%s,%s',
 				$api_key,
 				$latitude_longitude,
 				$start_time_timestamp
@@ -749,11 +753,11 @@ TK Event Weather JSON Data
 
 			$request_uri_query_args = array();
 			if ( ! empty( $units ) ) {
-				$request_uri_query_args[ 'units' ] = $units;
+				$request_uri_query_args['units'] = $units;
 			}
 
 			if ( ! empty( $exclude ) ) {
-				$request_uri_query_args[ 'exclude' ] = $exclude;
+				$request_uri_query_args['exclude'] = $exclude;
 			}
 
 			if ( ! empty( $request_uri_query_args ) ) {
@@ -803,7 +807,7 @@ TK Event Weather JSON Data
 			*/
 
 			if ( true === $transients ) {
-				$transients_expiration_hours = absint( $atts[ 'transients_expiration' ] );
+				$transients_expiration_hours = absint( $atts['transients_expiration'] );
 				if ( 0 >= $transients_expiration_hours ) {
 					$transients_expiration_hours = absint( $transients_expiration_hours_option );
 				}
@@ -879,12 +883,12 @@ TK Event Weather JSON Data
 
 
 		// if timezone argument is set, use that, else set via timezone_source argument
-		$timezone = TkEventWeather__Functions::remove_all_whitespace( $atts[ 'timezone' ] ); // do not strtolower()
+		$timezone = TkEventWeather__Functions::remove_all_whitespace( $atts['timezone'] ); // do not strtolower()
 		if ( ! in_array( $timezone, timezone_identifiers_list() ) ) {
 			$timezone = '';
 
 			// Time Zone Source
-			$timezone_source = TkEventWeather__Functions::remove_all_whitespace( strtolower( $atts[ 'timezone_source' ] ) );
+			$timezone_source = TkEventWeather__Functions::remove_all_whitespace( strtolower( $atts['timezone_source'] ) );
 
 			if ( 'wp' == $timezone_source ) {
 				$timezone_source = 'wordpress';
@@ -904,7 +908,7 @@ TK Event Weather JSON Data
 			}
 		}
 
-		$template_data[ 'timezone' ] = $timezone;
+		$template_data['timezone'] = $timezone;
 
 
 		$sunrise_sunset = array(
@@ -917,37 +921,37 @@ TK Event Weather JSON Data
 			'sunset_to_be_inserted'  => false,
 		);
 
-		if ( empty( $atts[ 'sunrise_sunset_off' ] )
-		     || 'true' != $atts[ 'sunrise_sunset_off' ]
+		if ( empty( $atts['sunrise_sunset_off'] )
+			|| 'true' != $atts['sunrise_sunset_off']
 		) {
-			$sunrise_sunset[ 'on' ] = true;
+			$sunrise_sunset['on'] = true;
 		}
 
-		if ( true === $sunrise_sunset[ 'on' ] ) {
+		if ( true === $sunrise_sunset['on'] ) {
 			// might not be a sunrise this day
-			if ( isset( $api_data->daily->data[ 0 ]->sunriseTime ) ) {
-				$sunrise_sunset[ 'sunrise_timestamp' ]      = TkEventWeather__Functions::valid_timestamp( $api_data->daily->data[ 0 ]->sunriseTime );
-				$sunrise_sunset[ 'sunrise_hour_timestamp' ] = TkEventWeather__Functions::timestamp_truncate_minutes( $sunrise_sunset[ 'sunrise_timestamp' ] );
-				if ( $sunrise_sunset[ 'sunrise_timestamp' ] >= $weather_first_hour_timestamp ) {
-					$sunrise_sunset[ 'sunrise_to_be_inserted' ] = true;
+			if ( isset( $api_data->daily->data[0]->sunriseTime ) ) {
+				$sunrise_sunset['sunrise_timestamp']      = TkEventWeather__Functions::valid_timestamp( $api_data->daily->data[0]->sunriseTime );
+				$sunrise_sunset['sunrise_hour_timestamp'] = TkEventWeather__Functions::timestamp_truncate_minutes( $sunrise_sunset['sunrise_timestamp'] );
+				if ( $sunrise_sunset['sunrise_timestamp'] >= $weather_first_hour_timestamp ) {
+					$sunrise_sunset['sunrise_to_be_inserted'] = true;
 				}
 			}
 
 			// might not be a sunset this day
-			if ( isset( $api_data->daily->data[ 0 ]->sunsetTime ) ) {
-				$sunrise_sunset[ 'sunset_timestamp' ]      = TkEventWeather__Functions::valid_timestamp( $api_data->daily->data[ 0 ]->sunsetTime );
-				$sunrise_sunset[ 'sunset_hour_timestamp' ] = TkEventWeather__Functions::timestamp_truncate_minutes( $sunrise_sunset[ 'sunset_timestamp' ] );
-				if ( $weather_last_hour_timestamp >= $sunrise_sunset[ 'sunset_timestamp' ] ) {
-					$sunrise_sunset[ 'sunset_to_be_inserted' ] = true;
+			if ( isset( $api_data->daily->data[0]->sunsetTime ) ) {
+				$sunrise_sunset['sunset_timestamp']      = TkEventWeather__Functions::valid_timestamp( $api_data->daily->data[0]->sunsetTime );
+				$sunrise_sunset['sunset_hour_timestamp'] = TkEventWeather__Functions::timestamp_truncate_minutes( $sunrise_sunset['sunset_timestamp'] );
+				if ( $weather_last_hour_timestamp >= $sunrise_sunset['sunset_timestamp'] ) {
+					$sunrise_sunset['sunset_to_be_inserted'] = true;
 				}
 			}
 		}
 
-		$template_data[ 'sunrise_sunset' ] = $sunrise_sunset;
+		$template_data['sunrise_sunset'] = $sunrise_sunset;
 
 
 		// Icons
-		$icons = $atts[ 'icons' ];
+		$icons = $atts['icons'];
 
 		if ( 'climacons' == $icons ) {
 			$icons = 'climacons_font';
@@ -978,7 +982,7 @@ TK Event Weather JSON Data
 				}
 
 				if ( $index == $key ) {
-					$weather_hourly[ $index ] = $value;
+					$weather_hourly[$index] = $value;
 					$index ++;
 				}
 			}
@@ -986,52 +990,52 @@ TK Event Weather JSON Data
 
 		//$weather_hourly = TkEventWeather__Functions::sort_multidim_array_by_sub_key( $weather_hourly, 'time' );
 
-		$template_data[ 'weather_hourly' ] = $weather_hourly;
+		$template_data['weather_hourly'] = $weather_hourly;
 
 		// Get Low and High from Hourly
 		// https://developer.wordpress.org/reference/functions/wp_list_pluck/
 		$weather_hourly_temperatures = wp_list_pluck( $weather_hourly, 'temperature' ); // if nothing, will be an empty array
 
-		$template_data[ 'weather_hourly_temperatures' ] = $weather_hourly_temperatures;
+		$template_data['weather_hourly_temperatures'] = $weather_hourly_temperatures;
 
 		$weather_hourly_high = '';
 		if ( ! empty( $weather_hourly_temperatures ) && is_array( $weather_hourly_temperatures ) ) {
 			$weather_hourly_high = max( $weather_hourly_temperatures );
 		}
-		$template_data[ 'weather_hourly_high' ] = $weather_hourly_high;
+		$template_data['weather_hourly_high'] = $weather_hourly_high;
 
 		$weather_hourly_low = '';
 		if ( ! empty( $weather_hourly_temperatures ) && is_array( $weather_hourly_temperatures ) ) {
 			$weather_hourly_low = min( $weather_hourly_temperatures );
 		}
-		$template_data[ 'weather_hourly_low' ] = $weather_hourly_low;
+		$template_data['weather_hourly_low'] = $weather_hourly_low;
 
 
 		$temperature_units = TkEventWeather__Functions::temperature_units( $api_data->flags->units );
 
-		$template_data[ 'temperature_units' ] = $temperature_units;
+		$template_data['temperature_units'] = $temperature_units;
 
 		$wind_speed_units = TkEventWeather__Functions::wind_speed_units( $api_data->flags->units );
 
-		$template_data[ 'wind_speed_units' ] = $wind_speed_units;
+		$template_data['wind_speed_units'] = $wind_speed_units;
 
 		// class
-		$class = sanitize_html_class( $atts[ 'class' ] );
+		$class = sanitize_html_class( $atts['class'] );
 		if ( ! empty( $class ) ) {
 			$class = ' ' . $class;
 		}
 
-		$display_template = TkEventWeather__Functions::remove_all_whitespace( strtolower( $atts[ 'template' ] ) );
+		$display_template = TkEventWeather__Functions::remove_all_whitespace( strtolower( $atts['template'] ) );
 
 		if ( ! array_key_exists( $display_template, TkEventWeather__Functions::valid_display_templates() ) ) {
 			$display_template = 'hourly_horizontal';
 		}
 
-		$template_data[ 'template' ] = $display_template;
+		$template_data['template'] = $display_template;
 
 		$template_class_name = TkEventWeather__Functions::template_class_name( $display_template );
 
-		$template_data[ 'template_class_name' ] = $template_class_name;
+		$template_data['template_class_name'] = $template_class_name;
 
 		// if Debug Mode is true, set $debug_vars to true for admins only
 		if ( ! empty( $debug ) && current_user_can( 'edit_theme_options' ) ) {
@@ -1045,15 +1049,17 @@ TK Event Weather JSON Data
 		 */
 
 		// cannot do <style> tags inside template because it will break any open div (e.g. wrapper div)
-		$output .= sprintf( '<div class="tk-event-weather__wrapper%s">',
+		$output .= sprintf(
+			'<div class="tk-event-weather__wrapper%s">',
 			$class
 		);
 		$output .= PHP_EOL;
 
 		$output .= $before . PHP_EOL;
 
-		$output .= sprintf( '<div class="tk-event-weather-template %s">',
-			$template_data[ 'template_class_name' ]
+		$output .= sprintf(
+			'<div class="tk-event-weather-template %s">',
+			$template_data['template_class_name']
 		);
 		$output .= PHP_EOL;
 
@@ -1062,11 +1068,11 @@ TK Event Weather JSON Data
 		TkEventWeather__Functions::load_template( $display_template, $template_data );
 		$output .= ob_get_clean();
 
-		if ( 'true' == $atts[ 'plugin_credit_link_on' ] ) {
+		if ( 'true' == $atts['plugin_credit_link_on'] ) {
 			$output .= TkEventWeather__Functions::plugin_credit_link();
 		}
 
-		if ( empty( $atts[ 'darksky_credit_link_off' ] ) ) {
+		if ( empty( $atts['darksky_credit_link_off'] ) ) {
 			$output .= TkEventWeather__Functions::darksky_credit_link();
 		}
 

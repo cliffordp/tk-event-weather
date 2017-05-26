@@ -29,9 +29,9 @@ foreach ( $context->weather_hourly as $key => $value ) {
 
 	// doing this hour's weather
 	if ( ! empty ( $display_time ) ) {
-		if ( true === $context->sunrise_sunset[ 'sunrise_to_be_inserted' ] && $context->sunrise_sunset[ 'sunrise_timestamp' ] == $value->time ) {
+		if ( true === $context->sunrise_sunset['sunrise_to_be_inserted'] && $context->sunrise_sunset['sunrise_timestamp'] == $value->time ) {
 			// unless this hour's timestamp = sunrise timestamp
-		} elseif ( true === $context->sunrise_sunset[ 'sunset_to_be_inserted' ] && $context->sunrise_sunset[ 'sunset_timestamp' ] == $value->time ) {
+		} elseif ( true === $context->sunrise_sunset['sunset_to_be_inserted'] && $context->sunrise_sunset['sunset_timestamp'] == $value->time ) {
 			// unless this hour's timestamp = sunset timestamp
 		} else {
 			// actually do this hour's weather
@@ -44,14 +44,16 @@ foreach ( $context->weather_hourly as $key => $value ) {
 
 			$wind_direction = TkEventWeather__Functions::wind_bearing_to_direction( $value->windBearing, false );
 
-			$wind_html = sprintf( '<span class="%1$s__wind" title="%2$s %3$s %4$s">%2$s %3$s</span>',
+			$wind_html = sprintf(
+				'<span class="%1$s__wind" title="%2$s %3$s %4$s">%2$s %3$s</span>',
 				$context->template_class_name,
 				TkEventWeather__Functions::rounded_float_value( $value->windSpeed ),
 				$context->wind_speed_units,
 				$wind_direction
 			);
 
-			$output .= sprintf( '">
+			$output .= sprintf(
+				'">
 				<span data-timestamp="%1$d" class="%2$s__time">%3$s</span>
 				<span class="%2$s__icon %4$s" title="%5$s">%6$s</span>
 				<span class="%2$s__temperature">%7$s%8$s</span>
@@ -76,16 +78,17 @@ foreach ( $context->weather_hourly as $key => $value ) {
 	}
 
 	// now do sunrise or sunset
-	if ( true === $context->sunrise_sunset[ 'sunrise_to_be_inserted' ] && $value->time == $context->sunrise_sunset[ 'sunrise_hour_timestamp' ] ) {
+	if ( true === $context->sunrise_sunset['sunrise_to_be_inserted'] && $value->time == $context->sunrise_sunset['sunrise_hour_timestamp'] ) {
 		$output .= TkEventWeather__Functions::template_start_of_each_item( $context->template_class_name, $index );
 
-		$output .= sprintf( ' sunrise">
+		$output .= sprintf(
+			' sunrise">
 			<span data-timestamp="%1$d" class="%2$s__time">%3$s</span>
 			<span class="%2$s__icon sunrise" title="%4$s">%5$s</span>
 			<span>&nbsp;</span>',
-			$context->sunrise_sunset[ 'sunrise_timestamp' ],
+			$context->sunrise_sunset['sunrise_timestamp'],
 			$context->template_class_name,
-			TkEventWeather__Functions::timestamp_to_display( $context->sunrise_sunset[ 'sunrise_timestamp' ], $context->timezone, $context->time_format_minutes ),
+			TkEventWeather__Functions::timestamp_to_display( $context->sunrise_sunset['sunrise_timestamp'], $context->timezone, $context->time_format_minutes ),
 			__( 'Sunrise', 'tk-event-weather' ),
 			TkEventWeather__Functions::icon_html( 'sunrise' )
 		);
@@ -95,16 +98,17 @@ foreach ( $context->weather_hourly as $key => $value ) {
 		$output .= '</div>'; // close template_start_of_each_item()
 
 		$index ++; // increment index
-	} elseif ( true === $context->sunrise_sunset[ 'sunset_to_be_inserted' ] && $value->time == $context->sunrise_sunset[ 'sunset_hour_timestamp' ] ) {
+	} elseif ( true === $context->sunrise_sunset['sunset_to_be_inserted'] && $value->time == $context->sunrise_sunset['sunset_hour_timestamp'] ) {
 		$output .= TkEventWeather__Functions::template_start_of_each_item( $context->template_class_name, $index );
 
-		$output .= sprintf( ' sunset">
+		$output .= sprintf(
+			' sunset">
 			<span data-timestamp="%1$d" class="%2$s__time">%3$s</span>
 			<span class="%2$s__icon sunset" title="%4$s">%5$s</span>
 			<span>&nbsp;</span>',
-			$context->sunrise_sunset[ 'sunset_timestamp' ],
+			$context->sunrise_sunset['sunset_timestamp'],
 			$context->template_class_name,
-			TkEventWeather__Functions::timestamp_to_display( $context->sunrise_sunset[ 'sunset_timestamp' ], $context->timezone, $context->time_format_minutes ),
+			TkEventWeather__Functions::timestamp_to_display( $context->sunrise_sunset['sunset_timestamp'], $context->timezone, $context->time_format_minutes ),
 			__( 'Sunset', 'tk-event-weather' ),
 			TkEventWeather__Functions::icon_html( 'sunset' )
 		);
