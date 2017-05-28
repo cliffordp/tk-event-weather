@@ -136,12 +136,15 @@ E) Just like Example D but with Location shortcode argument (a full address) -- 
 `[tk_event_weather location="1600 Pennsylvania Ave NW, Washington, DC 20500, USA" start_time="1454362200" end_time="1454381100"]`
 
 F) Displaying more than one day in a sequence (multiple API calls but appear all together), [like this screenshot](https://cl.ly/1X430L0g0z2c)
-`[tk_event_weather lat_long='28.5549259,-81.3342398' start_time='2016-08-27T22:00:00-04:00' end_time='2016-08-27T23:59:00-04:00' class='tkeventw-myclass']`
 
-`[tk_event_weather lat_long='28.5549259,-81.3342398' start_time='2016-08-28T00:00:00-04:00' end_time='2016-08-28T04:30:00-04:00' class='tkeventw-myclass' darksky_credit_link_off='true']`
+`[tk_event_weather lat_long='28.5549259,-81.3342398' start_time='2016-08-27T22:00:00-04:00' end_time='2016-08-27T23:59:00-04:00' class='tkeventw-myclass']
+[tk_event_weather lat_long='28.5549259,-81.3342398' start_time='2016-08-28T00:00:00-04:00' end_time='2016-08-28T04:30:00-04:00' class='tkeventw-myclass' darksky_credit_link_off='true']`
 
 And then add some custom CSS, like this:
-`.tkeventw-myclass { display: inline-block; vertical-align: top; }`
+
+`.tkeventw-myclass {
+	display: inline-block; vertical-align: top;
+}`
 
 G) To display from 4:30pm through the remainder of the day (do not set the end_time)
 
