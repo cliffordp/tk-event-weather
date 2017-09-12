@@ -119,7 +119,7 @@ class TkEventWeather__TkEventWeatherShortcode extends TkEventWeather__ShortCodeS
 			'units'                   => '',
 			// default/fallback is $units_default
 			'timezone'                => '',
-			// allow entering specific timezone -- see https://secure.php.net/manual/en/timezones.php
+			// allow entering specific timezone -- see https://secure.php.net/manual/timezones.php -- does NOT support Manual Offset (e.g. UTC+10), even though WordPress provides these options.
 			'timezone_source'         => $timezone_source_option,
 			'sunrise_sunset_off'      => $sunrise_sunset_off_option,
 			// "true" is the only valid value
@@ -797,7 +797,7 @@ TK Event Weather JSON Data
 
 			// inside here because if using transient, $request will not be set
 			if ( ! empty( $debug ) ) {
-				$output .= sprintf( '<!--%1$sTK Event Weather -- Dark Sky API -- Request URI%1$s%2$s%1$s-->%1$s', PHP_EOL, $request_uri );
+				$output .= sprintf( '<!--%1$sTK Event Weather -- Dark Sky API -- Request URI%1$s%2$s%1$s-->%1$s', PHP_EOL, esc_url_raw( $request_uri ) );
 			}
 			/* Example Debug Output:
 			<!--
@@ -884,8 +884,12 @@ TK Event Weather JSON Data
 
 		// if timezone argument is set, use that, else set via timezone_source argument
 		$timezone = TkEventWeather__Functions::remove_all_whitespace( $atts['timezone'] ); // do not strtolower()
+
 		if ( ! in_array( $timezone, timezone_identifiers_list() ) ) {
-			$timezone = '';
+			// DO NOT allow manual offset (invalid for PHP) timezones via shortcode because it is not supported by the API and can open the door to unexpected behavior.
+			if ( in_array( $timezone, TkEventWeather__Functions::wp_manual_utc_offsets_array() ) ) {
+				return TkEventWeather__Functions::invalid_shortcode_message( $timezone .' is a manual UTC offset, not a valid timezone name. Manual UTC offsets are allowed by WordPress but not supported by this plugin. Instead, please use a timezone name supported by PHP (https://secure.php.net/manual/timezones.php)' );
+			}
 
 			// Timezone Source
 			$timezone_source = TkEventWeather__Functions::remove_all_whitespace( strtolower( $atts['timezone_source'] ) );
@@ -895,15 +899,18 @@ TK Event Weather JSON Data
 			}
 
 			if ( ! array_key_exists( $timezone_source, TkEventWeather__Functions::valid_timezone_sources() ) ) {
-				return TkEventWeather__Functions::invalid_shortcode_message( 'Please set your WordPress time zone in General Settings or fix your Time Zone Source shortcode argument' );
+				return TkEventWeather__Functions::invalid_shortcode_message( 'Please set your WordPress timezone in General Settings or fix your Timezone Source shortcode argument' );
 			}
 
 			if ( 'wordpress' == $timezone_source ) {
-				$timezone = get_option( 'timezone_string' ); // ordinarily this function could return NULL, but valid_timezone_sources should disallow that before we get this far
+				$timezone = get_option( 'timezone_string' ); // will be NULL if using a manual offset timezone, which will then default it to use the API's detected timezone
 			}
 
-			if ( 'api' == $timezone_source ) {
-				// Dark Sky API may return an escaped time zone string
+			if (
+				'api' == $timezone_source
+				|| empty( $timezone ) // in case WP is set to manual offset, in which case 'gmt_offset' WordPress option will be set. It and 'timezone_string' are mutually exclusive.
+			) {
+				// Dark Sky API may return an escaped timezone string
 				$timezone = stripslashes( $api_data->timezone );
 			}
 		}

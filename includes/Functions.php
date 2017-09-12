@@ -277,11 +277,44 @@ class TkEventWeather__Functions {
 
 
 	/**
-	 * Time Zone Sources options
+	 * Numeric array of WordPress' own UTC offset options.
+	 *
+	 * Examples: 'UTC+0', 'UTC-5', 'UTC+8.75'
+	 *
+	 * @see wp_timezone_choice()
+	 *
+	 * @return array
+	 */
+	public static function wp_manual_utc_offsets_array() {
+		$result = array();
+
+		// Manual UTC offsets, code borrowed from https://developer.wordpress.org/reference/functions/wp_timezone_choice/
+		$offset_range = array(
+			-12, -11.5, -11, -10.5, -10, -9.5, -9, -8.5, -8, -7.5, -7, -6.5, -6, -5.5, -5, -4.5, -4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5,
+			0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 5.75, 6, 6.5, 7, 7.5, 8, 8.5, 8.75, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.75, 13, 13.75, 14
+		);
+
+		foreach ( $offset_range as $offset ) {
+			if ( 0 <= $offset ) {
+				$offset_value = '+' . $offset;
+			} else {
+				$offset_value = (string) $offset;
+			}
+
+			$offset_value = 'UTC' . $offset_value;
+
+			$result[] = esc_attr( $offset_value );
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Timezone Sources options
 	 *
 	 * @param string $prepend_empty
 	 *
-	 * @return array|bool
+	 * @return array
 	 */
 	public static function valid_timezone_sources( $prepend_empty = 'false' ) {
 
@@ -477,13 +510,13 @@ class TkEventWeather__Functions {
 			} else {
 				$a = $multidim_array;
 			}
-
+	
 			foreach( $a as $k => $v ) {
 				$b[$k] = strtolower( $v[$subkey] );
 			}
-
+	
 			asort( $b );
-
+	
 			foreach( $b as $key => $val ) {
 				$c[] = $a[$key];
 			}
@@ -600,20 +633,20 @@ class TkEventWeather__Functions {
 
 		// is valid ISO 8601 time (i.e. we do not want valid ISO 8601 Duration, Time Interval, etc.)
 		// API requires [YYYY]-[MM]-[DD]T[HH]:[MM]:[SS] -- https://en.wikipedia.org/wiki/ISO_8601#Combined_date_and_time_representations
-		// with an optional time zone formatted as Z for UTC time or {+,-}[HH]:[MM] (with or without separating colon) for an offset in hours or minutes
-		// For the latter format, if no time zone is present, local time (at the provided latitude and longitude) is assumed.
+		// with an optional timezone formatted as Z for UTC time or {+,-}[HH]:[MM] (with or without separating colon) for an offset in hours or minutes
+		// For the latter format, if no timezone is present, local time (at the provided latitude and longitude) is assumed.
 		/*
 				@link https://regex101.com/r/mL0xZ4/1
 				Should match ISO 8601 datetime for Dark Sky API:
 				[YYYY]-[MM]-[DD]T[HH]:[MM]:[SS]
-				with an optional time zone formatted as Z for UTC time or {+,-}[HH]:[MM] (with or without separating colon) for an offset
-
+				with an optional timezone formatted as Z for UTC time or {+,-}[HH]:[MM] (with or without separating colon) for an offset
+	
 				Does Match:
 				2008-09-15T15:53:00
 				2007-03-01T13:00:00Z
 				2015-10-05T21:46:54-1500
 				2015-10-05T21:46:54+07:00
-
+	
 				Does Not Match:
 				2015-10-05T21:46:54-02
 				0
@@ -1295,10 +1328,10 @@ class TkEventWeather__Functions {
 			return '';
 		}
 
-		// We will change time zone just for this conversion. Then we'll set it back.
+		// We will change timezone just for this conversion. Then we'll set it back.
 		$existing_timezone = date_default_timezone_get(); // will fallback to UTC but may also return a TZ environment variable (e.g. EST)
 
-		// Dark Sky API may return an escaped time zone string
+		// Dark Sky API may return an escaped timezone string
 		$timezone = stripslashes( $timezone );
 
 		if ( ! in_array( $timezone, timezone_identifiers_list() ) ) {
