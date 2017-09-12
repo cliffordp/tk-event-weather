@@ -45,7 +45,7 @@
  * - use more data from API, like 'summary' text as a title element somewhere
  * - the Dark Sky API "apparentTemperature" value is the "feels like" temperature
  * - inspiration from http://darkskyapp.com/
- * - Should be taken care of as of v1.3 because of using timezones instead of offsets :) -- Handling of time zone offsets that aren't full hours -- e.g. Eucla Australia is UTC+8:45 -- https://en.wikipedia.org/wiki/List_of_UTC_time_offsets#UTC.2B08:45.2C_H.2A -- currently works well enough probably but outputs '4am' instead of '4:45am' -- does it really need to be fixed?
+ * - Should be taken care of as of v1.3 because of using timezones instead of offsets :) -- Handling of timezone offsets that aren't full hours -- e.g. Eucla Australia is UTC+8:45 -- https://en.wikipedia.org/wiki/List_of_UTC_time_offsets#UTC.2B08:45.2C_H.2A -- currently works well enough probably but outputs '4am' instead of '4:45am' -- does it really need to be fixed?
  * - time of day versions of icons (night/day)
  * - https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-174607313
  * - https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-178440095

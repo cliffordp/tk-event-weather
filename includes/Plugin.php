@@ -415,7 +415,7 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 		)
 		);
 
-		// Time Zone Sources
+		// Timezone Sources
 		$wp_customize->add_setting(
 			self::$customizer_flag . '[timezone_source]', array(
 			'type'       => 'option',
@@ -426,8 +426,8 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 
 		$wp_customize->add_control(
 			self::$customizer_flag . '_timezone_source_control', array(
-			'label'       => esc_html__( 'Time Zone Source', 'tk-event-weather' ),
-			'description' => __( "In which time zone should hourly times be displayed?<br><strong>From API</strong> means times will be displayed per location. For example, if an event on your site is in New York City, the weather times get displayed in New York City time even if your WordPress time zone is set to Honolulu, Hawaii or UTC-10.<br><strong>From Wordpress</strong> means all weather times display in your WordPress time zone. From the example above, the event in New York City would have its weather displayed in Honolulu time.<br>(If you do not see WordPress as an option here, please first set it in your General Settings.)<br>Default: From API", 'tk-event-weather' ),
+			'label'       => esc_html__( 'Timezone Source', 'tk-event-weather' ),
+			'description' => __( "In which timezone should hourly times be displayed?<br><strong>From API</strong> means times will be displayed per location. For example, if an event on your site is in New York City, the weather times get displayed in New York City time even if your WordPress timezone is set to Honolulu, Hawaii or UTC-10.<br><strong>From Wordpress</strong> means all weather times display in your WordPress timezone. From the example above, the event in New York City would have its weather displayed in Honolulu time.<br>(If you do not see WordPress as an option here, please first set it in your General Settings.)<br>Default: From API", 'tk-event-weather' ),
 			'section'     => self::$customizer_section_id,
 			'settings'    => self::$customizer_flag . '[timezone_source]',
 			'type'        => 'select',

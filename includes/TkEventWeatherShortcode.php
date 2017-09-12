@@ -887,7 +887,7 @@ TK Event Weather JSON Data
 		if ( ! in_array( $timezone, timezone_identifiers_list() ) ) {
 			$timezone = '';
 
-			// Time Zone Source
+			// Timezone Source
 			$timezone_source = TkEventWeather__Functions::remove_all_whitespace( strtolower( $atts['timezone_source'] ) );
 
 			if ( 'wp' == $timezone_source ) {
