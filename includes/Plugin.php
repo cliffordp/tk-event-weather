@@ -152,12 +152,12 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 
 	/**
 	 * Add plugin options to Customizer
-	 * See: https://developer.wordpress.org/themes/advanced-topics/customizer-api/
+	 * See: https://developer.wordpress.org/themes/customize-api/
 	 */
 	public function customizer_options( WP_Customize_Manager $wp_customize ) {
 
 		// Add Edit Shortcuts
-		// https://developer.wordpress.org/themes/advanced-topics/customizer-api/#selective-refresh-fast-accurate-updates
+		// https://developer.wordpress.org/themes/customize-api/tools-for-improved-user-experience/#selective-refresh-fast-accurate-updates
 		$wp_customize->selective_refresh->add_partial(
 			self::customizer_edit_shortcut_setting(), array(
 			'selector'            => '.tk-event-weather__wrapper',
