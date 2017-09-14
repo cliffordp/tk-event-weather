@@ -211,6 +211,16 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 			'section'     => self::$customizer_section_id,
 			'settings'    => self::$customizer_flag . '[darksky_api_key]',
 			'type'        => 'password',
+			/**
+			 * Avoid the nagging LastPass prompt upon each WP Customizer save
+			 * @link https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion
+			 * @link https://www.chromium.org/developers/design-documents/form-styles-that-chromium-understands
+			 * @link https://lastpass.com/support.php?cmd=showfaq&id=10512
+			 */
+			'input_attrs' => array(
+				'data-lpignore' => 'true',
+				'autocomplete' => 'new-password',
+			),
 		)
 		);
 
@@ -232,6 +242,10 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 			'section'     => self::$customizer_section_id,
 			'settings'    => self::$customizer_flag . '[google_maps_api_key]',
 			'type'        => 'password',
+			'input_attrs' => array(
+				'data-lpignore' => 'true',
+				'autocomplete' => 'new-password',
+			),
 		)
 		);
 
