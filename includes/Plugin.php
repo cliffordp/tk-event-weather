@@ -3,7 +3,7 @@
 // e.g. https://plugins.trac.wordpress.org/browser/form-to-post/trunk/FormToPost_Plugin.php
 
 include_once( 'LifeCycle.php' );
-require_once( 'Functions.php' );
+require_once( 'class-TKEventW_Functions.php' );
 
 class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 
@@ -92,9 +92,9 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 		// Register short codes
 		// http://plugin.michael-simpson.com/?page_id=39
 
-		include_once( 'TkEventWeatherShortcode.php' );
-		$sc = new TkEventWeather__TkEventWeatherShortcode();
-		$sc->register( TkEventWeather__FuncSetup::$shortcode_name );
+		include_once( 'class-TKEventW_Shortcode.php' );
+		$sc = new TKEventW_Shortcode();
+		$sc->register( TKEventW_Setup::$shortcode_name );
 
 
 		// Register AJAX hooks
@@ -107,8 +107,8 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 	//
 
 	public static function register_assets() {
-		TkEventWeather__Functions::register_css();
-		TkEventWeather__Functions::register_climacons_css();
+		TKEventW_Functions::register_css();
+		TKEventW_Functions::register_climacons_css();
 	}
 
 	public static function customizer_options_link() {
@@ -135,7 +135,7 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 
 	public static function customizer_edit_shortcut_setting() {
 		// Always start at Dark Sky API Key if not entered
-		$darksky_api_key = TkEventWeather__Functions::array_get_value_by_key( TkEventWeather__Functions::plugin_options(), 'darksky_api_key' );
+		$darksky_api_key = TKEventW_Functions::array_get_value_by_key( TKEventW_Functions::plugin_options(), 'darksky_api_key' );
 
 		if ( empty( $darksky_api_key ) ) {
 			$setting = self::$customizer_flag . '[darksky_api_key]';
@@ -265,7 +265,7 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 			'section'     => self::$customizer_section_id,
 			'settings'    => self::$customizer_flag . '[display_template]',
 			'type'        => 'select',
-			'choices'     => TkEventWeather__Functions::valid_display_templates( 'true' ),
+			'choices'     => TKEventW_Functions::valid_display_templates( 'true' ),
 		)
 		);
 
@@ -375,7 +375,7 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 			'type'              => 'option',
 			'capability'        => 'edit_theme_options',
 			'default'           => '',
-			'sanitize_callback' => array( 'TkEventWeather__Functions', 'sanitize_absint_allow_blank' ),
+			'sanitize_callback' => array( 'TKEventW_Functions', 'sanitize_absint_allow_blank' ),
 		)
 		);
 
@@ -395,7 +395,7 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 			'type'              => 'option',
 			'capability'        => 'edit_theme_options',
 			'default'           => '',
-			'sanitize_callback' => array( 'TkEventWeather__Functions', 'sanitize_absint_allow_blank' ),
+			'sanitize_callback' => array( 'TKEventW_Functions', 'sanitize_absint_allow_blank' ),
 		)
 		);
 
@@ -425,7 +425,7 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 			'section'     => self::$customizer_section_id,
 			'settings'    => self::$customizer_flag . '[darksky_units]',
 			'type'        => 'select',
-			'choices'     => TkEventWeather__Functions::darksky_option_units( 'true' ),
+			'choices'     => TKEventW_Functions::darksky_option_units( 'true' ),
 		)
 		);
 
@@ -445,7 +445,7 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 			'section'     => self::$customizer_section_id,
 			'settings'    => self::$customizer_flag . '[timezone_source]',
 			'type'        => 'select',
-			'choices'     => TkEventWeather__Functions::valid_timezone_sources( 'true' ),
+			'choices'     => TKEventW_Functions::valid_timezone_sources( 'true' ),
 		)
 		);
 
@@ -455,7 +455,7 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 			'type'              => 'option',
 			'capability'        => 'edit_theme_options',
 			'default'           => '',
-			'sanitize_callback' => array( 'TkEventWeather__Functions', 'sanitize_absint_allow_blank' ),
+			'sanitize_callback' => array( 'TKEventW_Functions', 'sanitize_absint_allow_blank' ),
 		)
 		);
 

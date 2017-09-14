@@ -1,9 +1,9 @@
 <?php
 
-require_once( 'FuncSetup.php' );
-require_once( 'TemplateLoader.php' );
+require_once( 'class-TKEventW_Setup.php' );
+require_once( 'class-TKEventW_Template.php' );
 
-class TkEventWeather__Functions {
+class TKEventW_Functions {
 	// all variables and methods should be 'static'
 
 	/**
@@ -27,7 +27,7 @@ class TkEventWeather__Functions {
 	 */
 
 	public static function new_template_loader() {
-		return new TkEventWeather__TemplateLoader();
+		return new TKEventW_Template();
 	}
 
 	/**
@@ -72,9 +72,9 @@ class TkEventWeather__Functions {
 	 * handle is 'tk-event-weather'
 	 */
 	public static function register_css() {
-		wp_register_style( TkEventWeather__FuncSetup::shortcode_name_hyphenated(), TkEventWeather__FuncSetup::plugin_dir_url_root() . 'css/tk-event-weather.css', array(), tk_event_weather_version() );
+		wp_register_style( TKEventW_Setup::shortcode_name_hyphenated(), TKEventW_Setup::plugin_dir_url_root() . 'css/tk-event-weather.css', array(), tk_event_weather_version() );
 
-		wp_register_style( TkEventWeather__FuncSetup::shortcode_name_hyphenated() . '-scroll-horizontal', TkEventWeather__FuncSetup::plugin_dir_url_root() . 'css/tk-event-weather-scroll-horizontal.css', array(), tk_event_weather_version() );
+		wp_register_style( TKEventW_Setup::shortcode_name_hyphenated() . '-scroll-horizontal', TKEventW_Setup::plugin_dir_url_root() . 'css/tk-event-weather-scroll-horizontal.css', array(), tk_event_weather_version() );
 	}
 
 
@@ -89,7 +89,7 @@ class TkEventWeather__Functions {
 	// https://github.com/christiannaths/Climacons-Font/blob/master/webfont/demo.html
 	//
 	public static function register_climacons_css() {
-		wp_register_style( 'tkeventw-climacons', TkEventWeather__FuncSetup::plugin_dir_url_vendor() . 'climacons/climacons-font.css', array(), tk_event_weather_version() );
+		wp_register_style( 'tkeventw-climacons', TKEventW_Setup::plugin_dir_url_vendor() . 'climacons/climacons-font.css', array(), tk_event_weather_version() );
 	}
 
 
@@ -182,7 +182,7 @@ class TkEventWeather__Functions {
 		// escape single apostrophes
 		$error_reason = str_replace( "'", "\'", $input );
 
-		$shortcode_name = TkEventWeather__FuncSetup::$shortcode_name;
+		$shortcode_name = TKEventW_Setup::$shortcode_name;
 
 		if ( ! empty( $error_reason ) ) {
 			$message = sprintf( __( '%s for the `%s` shortcode to work correctly.', 'tk-event-weather' ), $error_reason, $shortcode_name );
@@ -1379,7 +1379,7 @@ class TkEventWeather__Functions {
 	 * @return string
 	 */
 	public static function shortcode_error_class_name() {
-		$result = sanitize_html_class( strtolower( TkEventWeather__FuncSetup::$shortcode_name ) ) . '__error';
+		$result = sanitize_html_class( strtolower( TKEventW_Setup::$shortcode_name ) ) . '__error';
 
 		return $result;
 	}

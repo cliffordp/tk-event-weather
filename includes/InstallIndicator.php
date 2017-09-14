@@ -111,7 +111,7 @@ class TkEventWeather__InstallIndicator extends TkEventWeather__OptionsManager {
 	 * @link https://developer.wordpress.org/reference/functions/plugin_dir_path/
 	 */
 	protected function getPluginDir() {
-		return TkEventWeather__FuncSetup::plugin_dir_path_root();
+		return TKEventW_Setup::plugin_dir_path_root();
 	}
 
 	/**
