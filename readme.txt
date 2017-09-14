@@ -220,6 +220,7 @@ Many thanks to the following:
 
 = Version 1.5 =
 * Fix - Detect when a Manual UTC Offset (like "UTC+10") is used instead of an IANA timezone name supported by the weather API and PHP (like "Australia/Brisbane"). If a manual UTC offset is used, the shortcode will now result in an error. Previously, it would fallback to use the API's detected local timezone. This change was made to reduce confusion and the possibility of inconsistencies in some edge cases.
+* Tweak - Manually set the WP Customizer's password-type fields for API keys to disable autocomplete and password prompts.
 * Update Freemius SDK from v1.2.1.7.1 to v1.2.2.9
 
 = Version 1.4.6 =
