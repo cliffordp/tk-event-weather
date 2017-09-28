@@ -353,13 +353,13 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 
 		if ( '' != $start_time ) {
 			// check ISO 8601 first because it's stricter
-			if ( true === TKEventW_Functions::valid_iso_8601_date_time( $start_time, 'bool' ) ) {
-				$start_time           = TKEventW_Functions::valid_iso_8601_date_time( $start_time );
+			if ( true === TKEventW_Time::valid_iso_8601_date_time( $start_time, 'bool' ) ) {
+				$start_time           = TKEventW_Time::valid_iso_8601_date_time( $start_time );
 				$start_time_iso_8601  = $start_time;
 				$start_time_timestamp = date( 'U', strtotime( $start_time ) );
 			} // check timestamp
-			elseif ( true === TKEventW_Functions::valid_timestamp( $start_time, 'bool' ) ) {
-				$start_time           = TKEventW_Functions::valid_timestamp( $start_time );
+			elseif ( true === TKEventW_Time::valid_timestamp( $start_time, 'bool' ) ) {
+				$start_time           = TKEventW_Time::valid_timestamp( $start_time );
 				$start_time_iso_8601  = date( DateTime::ATOM, $start_time ); // DateTime::ATOM is same as 'c'
 				$start_time_timestamp = $start_time;
 			} // strtotime() or invalid (and therefore clear out)
@@ -381,7 +381,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 			$start_time_timestamp = '';
 		}
 
-		$start_time_timestamp = TKEventW_Functions::valid_timestamp( $start_time_timestamp );
+		$start_time_timestamp = TKEventW_Time::valid_timestamp( $start_time_timestamp );
 
 
 		if ( empty( $start_time_timestamp ) ) {
@@ -391,7 +391,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 		$template_data['start_time_timestamp'] = $start_time_timestamp;
 
 
-		$weather_first_hour_timestamp = TKEventW_Functions::timestamp_truncate_minutes( $start_time_timestamp );
+		$weather_first_hour_timestamp = TKEventW_Time::timestamp_truncate_minutes( $start_time_timestamp );
 
 		$template_data['weather_first_hour_timestamp'] = $weather_first_hour_timestamp;
 
@@ -416,7 +416,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 			}
 		}
 
-		$min_timestamp = TKEventW_Functions::valid_timestamp( $min_timestamp );
+		$min_timestamp = TKEventW_Time::valid_timestamp( $min_timestamp );
 
 		if ( ! empty( $min_timestamp ) && '' != $weather_first_hour_timestamp ) {
 			if ( $min_timestamp > $weather_first_hour_timestamp ) {
@@ -441,13 +441,13 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 
 		if ( '' != $end_time ) {
 			// check ISO 8601 first because it's stricter
-			if ( true === TKEventW_Functions::valid_iso_8601_date_time( $end_time, 'bool' ) ) {
-				$end_time           = TKEventW_Functions::valid_iso_8601_date_time( $end_time );
+			if ( true === TKEventW_Time::valid_iso_8601_date_time( $end_time, 'bool' ) ) {
+				$end_time           = TKEventW_Time::valid_iso_8601_date_time( $end_time );
 				$end_time_iso_8601  = $end_time;
-				$end_time_timestamp = TKEventW_Functions::valid_timestamp( date( 'U', strtotime( $end_time ) ) ); // date() returns a string
+				$end_time_timestamp = TKEventW_Time::valid_timestamp( date( 'U', strtotime( $end_time ) ) ); // date() returns a string
 			} // check timestamp
-			elseif ( true === TKEventW_Functions::valid_timestamp( $end_time, 'bool' ) ) {
-				$end_time           = TKEventW_Functions::valid_timestamp( $end_time );
+			elseif ( true === TKEventW_Time::valid_timestamp( $end_time, 'bool' ) ) {
+				$end_time           = TKEventW_Time::valid_timestamp( $end_time );
 				$end_time_iso_8601  = date( DateTime::ATOM, $end_time ); // DateTime::ATOM is same as 'c'
 				$end_time_timestamp = $end_time;
 			} // strtotime() or invalid (and therefore clear out)
@@ -469,7 +469,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 			$end_time_timestamp = '';
 		}
 
-		$end_time_timestamp = TKEventW_Functions::valid_timestamp( $end_time_timestamp );
+		$end_time_timestamp = TKEventW_Time::valid_timestamp( $end_time_timestamp );
 
 		if ( '' == $end_time_timestamp ) {
 			$end_time_timestamp = $weather_first_hour_timestamp + DAY_IN_SECONDS; // API will only return single day so we're just padding it on through tomorrow -- cannot do [[[strtotime( 'tomorrow', $start_time_timestamp ) - 1]]] because the location's timezone may be different from the server's timezone and therefore end the day at 8pm (4 hours short of 11:59pm) if in a UTC-4 location
@@ -496,7 +496,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 		 * if event ends at 7:00:00pm, set $weather_last_hour_timestamp to 7pm
 		 *
 		 */
-		$end_time_hour_timestamp               = TKEventW_Functions::timestamp_truncate_minutes( $end_time_timestamp ); // e.g. 7pm instead of 7:52pm
+		$end_time_hour_timestamp               = TKEventW_Time::timestamp_truncate_minutes( $end_time_timestamp ); // e.g. 7pm instead of 7:52pm
 		$end_time_hour_timestamp_plus_one_hour = 3600 + $end_time_hour_timestamp; // e.g. 8pm
 
 		if ( $end_time_timestamp == $end_time_hour_timestamp ) { // e.g. event ends at 7:00:00
@@ -505,7 +505,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 			$weather_last_hour_timestamp = $end_time_hour_timestamp_plus_one_hour;
 		}
 
-		$template_data['weather_last_hour_timestamp'] = TKEventW_Functions::valid_timestamp( $weather_last_hour_timestamp );
+		$template_data['weather_last_hour_timestamp'] = TKEventW_Time::valid_timestamp( $weather_last_hour_timestamp );
 
 
 		//
@@ -529,7 +529,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 			}
 		}
 
-		$max_timestamp = TKEventW_Functions::valid_timestamp( $max_timestamp );
+		$max_timestamp = TKEventW_Time::valid_timestamp( $max_timestamp );
 
 		if ( ! empty( $max_timestamp ) && '' != $end_time_timestamp ) {
 			if ( $end_time_timestamp > $max_timestamp ) {
@@ -887,7 +887,7 @@ TK Event Weather JSON Data
 
 		if ( ! in_array( $timezone, timezone_identifiers_list() ) ) {
 			// DO NOT allow manual offset (invalid for PHP) timezones via shortcode because it is not supported by the API and can open the door to unexpected behavior.
-			if ( in_array( $timezone, TKEventW_Functions::wp_manual_utc_offsets_array() ) ) {
+			if ( in_array( $timezone, TKEventW_Time::wp_manual_utc_offsets_array() ) ) {
 				return TKEventW_Functions::invalid_shortcode_message( $timezone . ' is a manual UTC offset, not a valid timezone name. Manual UTC offsets are allowed by WordPress but not supported by this plugin. Instead, please use a timezone name supported by PHP (https://secure.php.net/manual/timezones.php)' );
 			}
 
@@ -898,7 +898,7 @@ TK Event Weather JSON Data
 				$timezone_source = 'wordpress';
 			}
 
-			if ( ! array_key_exists( $timezone_source, TKEventW_Functions::valid_timezone_sources() ) ) {
+			if ( ! array_key_exists( $timezone_source, TKEventW_Time::valid_timezone_sources() ) ) {
 				return TKEventW_Functions::invalid_shortcode_message( 'Please set your WordPress timezone in General Settings or fix your Timezone Source shortcode argument' );
 			}
 
@@ -937,8 +937,8 @@ TK Event Weather JSON Data
 		if ( true === $sunrise_sunset['on'] ) {
 			// might not be a sunrise this day
 			if ( isset( $api_data->daily->data[0]->sunriseTime ) ) {
-				$sunrise_sunset['sunrise_timestamp']      = TKEventW_Functions::valid_timestamp( $api_data->daily->data[0]->sunriseTime );
-				$sunrise_sunset['sunrise_hour_timestamp'] = TKEventW_Functions::timestamp_truncate_minutes( $sunrise_sunset['sunrise_timestamp'] );
+				$sunrise_sunset['sunrise_timestamp']      = TKEventW_Time::valid_timestamp( $api_data->daily->data[0]->sunriseTime );
+				$sunrise_sunset['sunrise_hour_timestamp'] = TKEventW_Time::timestamp_truncate_minutes( $sunrise_sunset['sunrise_timestamp'] );
 				if ( $sunrise_sunset['sunrise_timestamp'] >= $weather_first_hour_timestamp ) {
 					$sunrise_sunset['sunrise_to_be_inserted'] = true;
 				}
@@ -946,8 +946,8 @@ TK Event Weather JSON Data
 
 			// might not be a sunset this day
 			if ( isset( $api_data->daily->data[0]->sunsetTime ) ) {
-				$sunrise_sunset['sunset_timestamp']      = TKEventW_Functions::valid_timestamp( $api_data->daily->data[0]->sunsetTime );
-				$sunrise_sunset['sunset_hour_timestamp'] = TKEventW_Functions::timestamp_truncate_minutes( $sunrise_sunset['sunset_timestamp'] );
+				$sunrise_sunset['sunset_timestamp']      = TKEventW_Time::valid_timestamp( $api_data->daily->data[0]->sunsetTime );
+				$sunrise_sunset['sunset_hour_timestamp'] = TKEventW_Time::timestamp_truncate_minutes( $sunrise_sunset['sunset_timestamp'] );
 				if ( $weather_last_hour_timestamp >= $sunrise_sunset['sunset_timestamp'] ) {
 					$sunrise_sunset['sunset_to_be_inserted'] = true;
 				}

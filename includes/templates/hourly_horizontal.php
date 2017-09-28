@@ -21,7 +21,7 @@ $index = 1;
 
 foreach ( $context->weather_hourly as $key => $value ) {
 
-	$display_time = TKEventW_Functions::timestamp_to_display( $value->time, $context->timezone, $context->time_format_hours );
+	$display_time = TKEventW_Time::timestamp_to_display( $value->time, $context->timezone, $context->time_format_hours );
 
 	// if sunrise or sunset timestamp = this hourly weather timestamp, don't display this hour's weather. Instead, only do sunrise/sunset
 	// Example: Sunset at 6:00pm, don't display the 6pm hourly weather info
@@ -89,7 +89,7 @@ foreach ( $context->weather_hourly as $key => $value ) {
 			<span>&nbsp;</span>',
 			$context->sunrise_sunset['sunrise_timestamp'],
 			$context->template_class_name,
-			TKEventW_Functions::timestamp_to_display( $context->sunrise_sunset['sunrise_timestamp'], $context->timezone, $context->time_format_minutes ),
+			TKEventW_Time::timestamp_to_display( $context->sunrise_sunset['sunrise_timestamp'], $context->timezone, $context->time_format_minutes ),
 			__( 'Sunrise', 'tk-event-weather' ),
 			TKEventW_Functions::icon_html( 'sunrise' )
 		);
@@ -110,7 +110,7 @@ foreach ( $context->weather_hourly as $key => $value ) {
 			<span>&nbsp;</span>',
 			$context->sunrise_sunset['sunset_timestamp'],
 			$context->template_class_name,
-			TKEventW_Functions::timestamp_to_display( $context->sunrise_sunset['sunset_timestamp'], $context->timezone, $context->time_format_minutes ),
+			TKEventW_Time::timestamp_to_display( $context->sunrise_sunset['sunset_timestamp'], $context->timezone, $context->time_format_minutes ),
 			__( 'Sunset', 'tk-event-weather' ),
 			TKEventW_Functions::icon_html( 'sunset' )
 		);

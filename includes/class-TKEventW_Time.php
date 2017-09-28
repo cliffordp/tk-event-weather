@@ -64,6 +64,7 @@ class TKEventW_Time {
 	}
 
 	/**
+	 * TODO: Unused function
 	 * Valid strtotime() relative time
 	 *
 	 * @param string $prepend_empty
@@ -96,7 +97,7 @@ class TKEventW_Time {
 	 * else returns empty string
 	 */
 	public static function valid_timestamp( $input, $return_format = '' ) {
-		$result = self::remove_all_whitespace( $input ); // converts to string
+		$result = TKEventW_Functions::remove_all_whitespace( $input ); // converts to string
 
 		if ( is_numeric( $result ) ) {
 			$result = intval( $result ); // convert to integer
@@ -130,7 +131,7 @@ class TKEventW_Time {
 	 * @return bool|mixed|string
 	 */
 	public static function valid_iso_8601_date_time( $input, $return_format = '' ) {
-		$result = self::remove_all_whitespace( $input );
+		$result = TKEventW_Functions::remove_all_whitespace( $input );
 
 		if ( ! empty( $return_format ) && 'bool' != $return_format ) {
 			$return_format = '';
