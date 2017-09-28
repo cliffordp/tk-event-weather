@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @package        TkEventWeather
+ * @package        TkEventW
  * @author         TourKick (Clifford Paulick)
  * @link           https://github.com/GaryJones/Gamajo-Template-Loader#installation
  * @copyright      2016 TourKick (Clifford Paulick)
@@ -17,7 +17,7 @@ if ( ! class_exists( 'Gamajo_Template_Loader' ) ) {
  *
  * Only need to specify class properties here.
  *
- * @package   TkEventWeather
+ * @package   TkEventW
  * @author    TourKick (Clifford Paulick)
  */
 class TKEventW_Template extends Gamajo_Template_Loader {
