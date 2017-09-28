@@ -28,7 +28,7 @@ include_once( 'ShortCodeLoader.php' );
  * The idea is you have a shortcode that needs a script loaded, but you only
  * want to load it if the shortcode is actually called.
  */
-abstract class TkEventWeather__ShortCodeScriptLoader extends TkEventWeather__ShortCodeLoader {
+abstract class TkEventW__ShortCodeScriptLoader extends TkEventW__ShortCodeLoader {
 
 	var $doAddScript;
 

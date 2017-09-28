@@ -21,7 +21,7 @@
 
 include_once( 'OptionsManager.php' );
 
-class TkEventWeather__InstallIndicator extends TkEventWeather__OptionsManager {
+class TkEventW__InstallIndicator extends TkEventW__OptionsManager {
 
 	const optionInstalled = '_installed';
 	const optionVersion = '_version';

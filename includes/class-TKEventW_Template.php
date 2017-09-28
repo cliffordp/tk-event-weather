@@ -12,8 +12,6 @@ if ( ! class_exists( 'Gamajo_Template_Loader' ) ) {
 	require 'vendor/gamajo-template-loader/class-gamajo-template-loader.php';
 }
 
-// uses the 'template-data' branch of Gamajo Template Loader -- see https://github.com/GaryJones/Gamajo-Template-Loader/tree/template-data
-
 /**
  * Template loader for TK Event Weather.
  *

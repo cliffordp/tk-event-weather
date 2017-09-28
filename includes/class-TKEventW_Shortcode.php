@@ -6,7 +6,7 @@
 include_once( 'ShortCodeScriptLoader.php' );
 require_once( 'class-TKEventW_Functions.php' );
 
-class TKEventW_Shortcode extends TkEventWeather__ShortCodeScriptLoader {
+class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 
 	private static $addedAlready = false;
 
@@ -52,7 +52,7 @@ class TKEventW_Shortcode extends TkEventWeather__ShortCodeScriptLoader {
 
 			$sunrise_sunset_off_option = TKEventW_Functions::array_get_value_by_key( $plugin_options, 'sunrise_sunset_off' );
 
-			//$icons_option = TkEventWeather__Functions::array_get_value_by_key ( $plugin_options, 'icons' );
+			//$icons_option = TkEventW__Functions::array_get_value_by_key ( $plugin_options, 'icons' );
 
 			$plugin_credit_link_on_option   = TKEventW_Functions::array_get_value_by_key( $plugin_options, 'plugin_credit_link_on' );
 			$darksky_credit_link_off_option = TKEventW_Functions::array_get_value_by_key( $plugin_options, 'darksky_credit_link_off' );
@@ -478,7 +478,7 @@ class TKEventW_Shortcode extends TkEventWeather__ShortCodeScriptLoader {
 		// if Event Start and End times are the same
 		if ( $weather_first_hour_timestamp == $end_time_timestamp ) {
 			// this is allowed as of version 1.4
-			//return TkEventWeather__Functions::invalid_shortcode_message( 'Please make sure Event Start Time and Event End Time are not the same' );
+			//return TkEventW__Functions::invalid_shortcode_message( 'Please make sure Event Start Time and Event End Time are not the same' );
 		}
 
 		// if Event End time is before Start time
@@ -730,12 +730,12 @@ TK Event Weather JSON Data
 			$api_data = $transient_value;
 			if ( empty( $api_data ) ) {
 				delete_transient( $transient_name );
-				// return TkEventWeather__Functions::invalid_shortcode_message( 'Data from Transient used but some sort of data inconsistency. Transient deleted. May or may not need to troubleshoot' );
+				// return TkEventW__Functions::invalid_shortcode_message( 'Data from Transient used but some sort of data inconsistency. Transient deleted. May or may not need to troubleshoot' );
 			}
 
 			if ( ! empty( $api_data->error ) ) {
 				delete_transient( $transient_name );
-				// return TkEventWeather__Functions::invalid_shortcode_message( 'Data from Transient used but an error: ' . $api_data->error . '. Transient deleted. May or may not need to troubleshoot' );
+				// return TkEventW__Functions::invalid_shortcode_message( 'Data from Transient used but an error: ' . $api_data->error . '. Transient deleted. May or may not need to troubleshoot' );
 			}
 		}
 
@@ -995,7 +995,7 @@ TK Event Weather JSON Data
 			}
 		}
 
-		//$weather_hourly = TkEventWeather__Functions::sort_multidim_array_by_sub_key( $weather_hourly, 'time' );
+		//$weather_hourly = TkEventW__Functions::sort_multidim_array_by_sub_key( $weather_hourly, 'time' );
 
 		$template_data['weather_hourly'] = $weather_hourly;
 

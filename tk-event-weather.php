@@ -35,7 +35,7 @@
 /** TODO:
  * - sign up for newsletter
  * - refresh screenshots
- * - delete leftover TkEventWeather__Plugin::$customizer_flag array keys like ^forecast_io%
+ * - delete leftover TkEventW__Plugin::$customizer_flag array keys like ^forecast_io%
  * - https://github.com/cliffordp/tk-event-weather/issues/9 -- Add option to query weather API for more than a single day for events that span more than 1 calendar day. NOTE: for the current version of the weather API, each calendar day costs 1 API request. For example, an event spanning Jan 1 at 10pm through Jan 3 at 7am will cost 3 API calls. -- maybe make it an option
  * - add Customizer option to input a Post ID to default to when viewing the customizer from the plugin's Settings Button (could auto-set it if an Event exists)
  * - look into https://developer.wordpress.org/plugins/the-basics/uninstall-methods/
@@ -178,7 +178,7 @@ function tk_event_weather_freemius_plugin_icon() {
 tk_event_weather_freemius()->add_filter( 'plugin_icon', 'tk_event_weather_freemius_plugin_icon' );
 
 
-function TkEventWeather__minimalRequiredPhpVersion() {
+function TkEventW__minimalRequiredPhpVersion() {
 	return '5.4';
 }
 
@@ -186,18 +186,18 @@ function TkEventWeather__minimalRequiredPhpVersion() {
  * Check the PHP version and give a useful error message if the user's version is less than the required version
  * @return boolean true if version check passed. If false, triggers an error which WP will handle, by displaying an error message on the Admin page
  */
-function TkEventWeather__noticePhpVersionWrong() {
+function TkEventW__noticePhpVersionWrong() {
 	echo '<div class="updated fade">' .
 		__( 'Error: plugin "TK Event Weather" requires a newer version of PHP to be running.', 'tk-event-weather' ) .
-		'<br/>' . __( 'Minimal version of PHP required: ', 'tk-event-weather' ) . '<strong>' . TkEventWeather__minimalRequiredPhpVersion() . '</strong>' .
+		'<br/>' . __( 'Minimal version of PHP required: ', 'tk-event-weather' ) . '<strong>' . TkEventW__minimalRequiredPhpVersion() . '</strong>' .
 		'<br/>' . __( 'Your server\'s PHP version: ', 'tk-event-weather' ) . '<strong>' . phpversion() . '</strong>' .
 		'</div>';
 }
 
 
-function TkEventWeather__PhpVersionCheck() {
-	if ( version_compare( phpversion(), TkEventWeather__minimalRequiredPhpVersion() ) < 0 ) {
-		add_action( 'admin_notices', 'TkEventWeather__noticePhpVersionWrong' );
+function TkEventW__PhpVersionCheck() {
+	if ( version_compare( phpversion(), TkEventW__minimalRequiredPhpVersion() ) < 0 ) {
+		add_action( 'admin_notices', 'TkEventW__noticePhpVersionWrong' );
 
 		return false;
 	}
@@ -215,7 +215,7 @@ function TkEventWeather__PhpVersionCheck() {
  * @return void
  */
 /*
-function TkEventWeather__i18n_init() {
+function TkEventW__i18n_init() {
 	$pluginDir = dirname(plugin_basename(__FILE__));
 	load_plugin_textdomain('tk-event-weather', false, $pluginDir . '/languages/');
 }
@@ -228,12 +228,12 @@ function TkEventWeather__i18n_init() {
 
 // old code (goes with above)?
 // Initialize i18n
-// add_action('plugins_loaded','TkEventWeather__i18n_init');
+// add_action('plugins_loaded','TkEventW__i18n_init');
 
 // Run the version check.
 // If it is successful, continue with initialization for this plugin
-if ( TkEventWeather__PhpVersionCheck() ) {
+if ( TkEventW__PhpVersionCheck() ) {
 	// Only load and run the init function if we know PHP version can parse it
 	include_once( 'includes/init.php' );
-	TkEventWeather__init( __FILE__ );
+	TkEventW__init( __FILE__ );
 }

@@ -20,7 +20,7 @@
 		If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-abstract class TkEventWeather__ShortCodeLoader {
+abstract class TkEventW__ShortCodeLoader {
 
 	/**
 	 * @param    $shortcodeName mixed either string name of the shortcode

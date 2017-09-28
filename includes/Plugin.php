@@ -5,7 +5,7 @@
 include_once( 'LifeCycle.php' );
 require_once( 'class-TKEventW_Functions.php' );
 
-class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
+class TkEventW__Plugin extends TkEventW__LifeCycle {
 
 	private static $customizer_flag = 'tk_event_weather';
 
@@ -585,7 +585,7 @@ class TkEventWeather__Plugin extends TkEventWeather__LifeCycle {
 						'section'			=> self::$customizer_section_id,
 						'settings'			=> self::$customizer_flag . '[sunrise_sunset_off]',
 						'type'				=> 'select',
-						'choices'			=> TkEventWeather__Functions::valid_icon_type( 'true' ),
+						'choices'			=> TkEventW__Functions::valid_icon_type( 'true' ),
 					));
 		*/
 
