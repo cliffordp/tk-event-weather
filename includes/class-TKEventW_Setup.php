@@ -20,6 +20,18 @@ class TKEventW_Setup {
 	public static $support_email_address = 'tko+tkeventw@tourkick.com';
 
 	/**
+	 * 'TK Event Weather'
+	 *
+	 * Just a helper. Useful when passing to sprintf(), for example.
+	 *
+	 * @return string
+	 */
+	public static function plugin_display_name() {
+		$this_plugin = new TkEventW__Plugin;
+		return $this_plugin->getPluginDisplayName();
+	}
+
+	/**
 	 *
 	 * Plugin Directories
 	 *

@@ -1,11 +1,21 @@
 <?php
 
-require_once( 'class-TKEventW_Setup.php' );
-require_once( 'class-TKEventW_Template.php' );
-require_once( 'class-TKEventW_Time.php' );
-
 class TKEventW_Functions {
 	// all variables and methods should be 'static'
+
+	/**
+	 * If a shortcode error message is used at any time, this will be true.
+	 *
+	 * @var bool
+	 */
+	public static $shortcode_error = false;
+
+	/**
+	 * Get the shortcode error message.
+	 *
+	 * @var string
+	 */
+	public static $shortcode_error_message = '';
 
 	/**
 	 * @return bool|mixed
@@ -114,13 +124,13 @@ class TKEventW_Functions {
 	 */
 	public static function array_get_value_by_key( $array, $key, $fallback = '' ) {
 		if ( ! is_array( $array )
-			|| empty( $array )
-			|| ! isset( $array[$key] ) // use instead of array_key_exists()
-			|| '' === $array[$key] // to allow resetting an option back to its blank default
+		     || empty( $array )
+		     || ! isset( $array[ $key ] ) // use instead of array_key_exists()
+		     || '' === $array[ $key ] // to allow resetting an option back to its blank default
 		) {
 			$result = $fallback;
 		} else {
-			$result = $array[$key];
+			$result = $array[ $key ];
 		}
 
 		return $result; // consider strval()?
@@ -171,9 +181,11 @@ class TKEventW_Functions {
 	 * @param string $input
 	 * @param string $capability
 	 *
-	 * @return string
+	 * @return null
 	 */
 	public static function invalid_shortcode_message( $input = '', $capability = 'edit_theme_options' ) {
+		self::$shortcode_error = true;
+
 		$capability = apply_filters( 'tk_event_weather_shortcode_msg_cap', $capability );
 
 		if ( ! in_array( $capability, self::all_valid_wp_capabilities() ) ) {
@@ -202,7 +214,7 @@ class TKEventW_Functions {
 			);
 		}
 
-		return $result;
+		self::$shortcode_error_message = $result;
 	}
 
 	/**
@@ -449,10 +461,14 @@ class TKEventW_Functions {
 	 * @link   https://en.wikipedia.org/wiki/Decimal_degrees
 	 * @link   https://regex101.com/r/fZ1oR3/1
 	 *
-	 * @param string $input         Comma-separated latitude and longitude in decimal degrees.
+	 * @param string $input         Comma-separated latitude and
+	 *                              longitude in decimal degrees.
 	 * @param string $return_format Optional.
 	 *
-	 * @return $result If valid returns string or bool true, based on $return_format. If invalid, returns '' string or bool false, based on $return_format.
+	 * @return bool|string          If valid, returns string or bool true,
+	 *                              based on $return_format. If invalid,
+	 *                              returns empty string or bool false,
+	 *                              based on $return_format.
 	 */
 	public static function valid_lat_long( $input, $return_format = '' ) {
 		$input = self::remove_all_whitespace( $input );
@@ -870,10 +886,10 @@ class TKEventW_Functions {
 		*/
 
 		if ( 'climacons_font' == $icon_type ) {
-			$icon   = $climacons_font[$input];
+			$icon   = $climacons_font[ $input ];
 			$result = sprintf( '<i class="climacon %s"></i>', $icon );
 		} elseif ( 'climacons_svg' == $icon_type ) {
-			$icon   = $climacons_svg[$input];
+			$icon   = $climacons_svg[ $input ];
 			$result = $icon;
 		} /*
 		elseif ( 'font_awesome' == $icon_type ) {

@@ -2,15 +2,44 @@
 
 // Option 3 from http://plugin.michael-simpson.com/?page_id=39
 
-
 include_once( 'ShortCodeScriptLoader.php' );
+require_once( 'class-TKEventW_Setup.php' );
 require_once( 'class-TKEventW_Functions.php' );
+require_once( 'class-TKEventW_API_Google_Maps.php' );
+require_once( 'class-TKEventW_API_Dark_Sky.php' );
+require_once( 'class-TKEventW_Single_Day.php' );
+require_once( 'class-TKEventW_Template.php' );
+require_once( 'class-TKEventW_Time.php' );
 
 class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 
 	private static $addedAlready = false;
 
-	// must be public
+	public static $dark_sky_api_key = '';
+	public static $google_maps_api_key = '';
+
+	public static $debug_enabled = false;
+	public static $transients_enabled = true;
+
+	/**
+	 * The street address that you want to geocode, in the format used by the
+	 * national postal service of the country concerned. Additional address
+	 * elements such as business names and unit, suite or floor numbers
+	 * should be avoided.
+	 *
+	 * @link https://developers.google.com/maps/documentation/geocoding/intro#geocoding
+	 *
+	 * @var string
+	 */
+	public static $location = '';
+
+	/**
+	 * The comma-separated latitude,longitude coordinates to send to Dark Sky API.
+	 *
+	 * @var string
+	 */
+	public static $latitude_longitude = '';
+
 	public static function shortcode_name() {
 		return TKEventW_Setup::$shortcode_name;
 	}
@@ -24,7 +53,8 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 		$plugin_options = TKEventW_Functions::plugin_options();
 
 		if ( empty( $plugin_options ) ) {
-			return TKEventW_Functions::invalid_shortcode_message( 'Please complete the initial setup' );
+			TKEventW_Functions::invalid_shortcode_message( 'Please complete the initial setup' );
+			return TKEventW_Functions::$shortcode_error_message;
 		} else {
 			$api_key_option = TKEventW_Functions::array_get_value_by_key( $plugin_options, 'darksky_api_key' );
 
@@ -143,16 +173,16 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 
 		// Code
 
-		$debug = (bool) $atts['debug_on'];
+		self::$debug_enabled = (bool) $atts['debug_on'];
 
 
 		// if false === $transients, clear existing and set new transients
 		if ( ! empty( $atts['transients_off'] )
-			&& 'true' == $atts['transients_off']
+		     && 'true' == $atts['transients_off']
 		) {
-			$transients = false;
+			self::$transients_enabled = false;
 		} else {
-			$transients = true;
+			self::$transients_enabled = true;
 		}
 
 
@@ -160,7 +190,10 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 		$api_key = sanitize_key( $atts['api_key'] );
 
 		if ( empty( $api_key ) ) {
-			return TKEventW_Functions::invalid_shortcode_message( 'Please enter your Dark Sky API Key' );
+			TKEventW_Functions::invalid_shortcode_message( 'Please enter your Dark Sky API Key' );
+			return TKEventW_Functions::$shortcode_error_message;
+		} else {
+			self::$dark_sky_api_key = $api_key;
 		}
 
 		// manually entered override custom field
@@ -177,24 +210,21 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 
 		$template_data['post_id'] = $post_id;
 
-		// the variable to send to Dark Sky API -- to be built via the code below
-		$latitude_longitude = '';
-
-		// only used temporarily if separate lat and long need to be combined into $latitude_longitude
+		// only used temporarily if separate lat and long need to be combined
 		$latitude  = '';
 		$longitude = '';
 
 		// combined lat,long (manual then custom field)
 		if ( ! empty ( $atts['lat_long'] ) ) {
-			$latitude_longitude = $atts['lat_long'];
+			self::$latitude_longitude = $atts['lat_long'];
 		} elseif ( ! empty( $post_id ) && ! empty( $atts['lat_long_custom_field'] ) ) {
-			$latitude_longitude = get_post_meta( $post_id, $atts['lat_long_custom_field'], true );
+			self::$latitude_longitude = get_post_meta( $post_id, $atts['lat_long_custom_field'], true );
 		}
 
-		$latitude_longitude = TKEventW_Functions::valid_lat_long( $latitude_longitude );
+		self::$latitude_longitude = TKEventW_Functions::valid_lat_long( self::$latitude_longitude );
 
 		// if no lat,long yet then build via separate lat and long
-		if ( empty ( $latitude_longitude ) ) {
+		if ( empty ( self::$latitude_longitude ) ) {
 			// latitude
 			if ( ! empty ( $atts['lat'] ) ) {
 				$latitude = $atts['lat'];
@@ -209,137 +239,39 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 				$longitude = get_post_meta( $post_id, $atts['long_custom_field'], true );
 			}
 
-			// build comma-separated $latitude_longitude
-			$latitude_longitude = sprintf( '%F,%F', $latitude, $longitude );
-			$latitude_longitude = TKEventW_Functions::valid_lat_long( $latitude_longitude );
+			// combine into comma-separated
+			self::$latitude_longitude = sprintf( '%F,%F', $latitude, $longitude );
+			self::$latitude_longitude = TKEventW_Functions::valid_lat_long( self::$latitude_longitude );
 		}
 
-
-		// Fetch from Google Maps Geocoding API
-		$location          = '';
-		$location_api_data = '';
-
-		if ( empty( $latitude_longitude ) ) {
+		if ( empty( self::$latitude_longitude ) ) {
 
 			if ( ! empty ( $atts['location'] ) ) {
-				$location = $atts['location'];
+				self::$location = $atts['location'];
 			} elseif ( ! empty( $post_id ) && ! empty( $atts['location_custom_field'] ) ) {
-				$location = get_post_meta( $post_id, $atts['location_custom_field'], true );
+				self::$location = get_post_meta( $post_id, $atts['location_custom_field'], true );
 			}
 
-			$location = trim( $location );
+			self::$location = trim( self::$location );
 		}
 
-		// Google Maps Transient
-		if ( ! empty( $location ) ) {
-			// build transient
-			$location_transient_name = sprintf(
-				'%s_gmaps_%s',
-				TKEventW_Setup::$transient_name_prepend,
-				TKEventW_Functions::remove_all_whitespace( $location )
-			);
+		// Get lat,long from Google Maps API
+		if ( ! empty( self::$location ) ) {
 
-			$location_transient_name  = TKEventW_Functions::sanitize_transient_name( $location_transient_name );
-			$location_transient_value = TKEventW_Functions::transient_get_or_delete( $location_transient_name, $transients );
+			self::$google_maps_api_key = $atts['gmaps_api_key'];
 
-			if ( ! empty( $location_transient_value ) ) {
-				if ( ! is_object( $location_transient_value ) || is_wp_error( $location_transient_value ) ) {
-					$location_transient_value = '';
-					delete_transient( $location_transient_name );
-				}
-			}
+			// Fetch from transient or Google Maps Geocoding API
+			self::$latitude_longitude = TKEventW_API_Google_Maps::get_lat_long();
 
-			if ( ! empty( $location_transient_value ) ) {
-				$location_api_data = $location_transient_value;
-			} else {
-				// make an API call
-				$location_request_uri = sprintf( 'https://maps.googleapis.com/maps/api/geocode/json?address=%s', urlencode( $location ) );
-
-				$location_request_uri_query_args = array();
-
-				$gmaps_api_key = TKEventW_Functions::sanitize_key_allow_uppercase( $atts['gmaps_api_key'] );
-				// TODO if not set, make it required and throw an error
-				if ( ! empty( $gmaps_api_key ) ) {
-					$location_request_uri_query_args['key'] = urlencode( $gmaps_api_key );
-				}
-				if ( ! empty( $location_request_uri_query_args ) ) {
-					$location_request_uri = add_query_arg( $location_request_uri_query_args, $location_request_uri );
-				}
-
-				$location_request = wp_safe_remote_get( esc_url_raw( $location_request_uri ) );
-
-				if ( is_wp_error( $location_request ) ) {
-					return TKEventW_Functions::invalid_shortcode_message( 'Google Maps Geocoding API request sent but resulted in a WordPress Error. Please troubleshoot' );
-				}
-
-				// @link https://developer.wordpress.org/reference/functions/wp_remote_retrieve_body/
-				$location_body = wp_remote_retrieve_body( $location_request );
-
-				if ( empty( $location_body ) ) {
-					return TKEventW_Functions::invalid_shortcode_message( 'Google Maps Geocoding API request sent but nothing received. Please troubleshoot' );
-				}
-
-				$location_api_data = json_decode( $location_body );
-
-				if ( empty( $location_api_data ) ) {
-					return TKEventW_Functions::invalid_shortcode_message( 'Google Maps Geocoding API response received but some sort of data inconsistency. Please troubleshoot' );
-				}
-
-				// inside here because if using transient, $location_request will not be set
-				if ( ! empty( $debug ) ) {
-					$output .= sprintf( '<!--%1$sTK Event Weather -- Google Maps Geocoding API -- Request URI%1$s%2$s%1$s-->%1$s', PHP_EOL, $location_request_uri );
-				}
-
-				/* Example Debug Output:
-				<!--
-				TK Event Weather -- Google Maps Geocoding API -- Request URI
-				https://maps.googleapis.com/maps/api/geocode/json?address=The+White+House
-				-->
-				*/
-			} // end else{}
-
-			// do stuff with Google Maps Geocoding API data
-
-			// see https://developers.google.com/maps/documentation/geocoding/intro#StatusCodes
-			if ( 'OK' != $location_api_data->status ) {
-				return TKEventW_Functions::invalid_shortcode_message( 'The Google Maps Geocoding API resulted in an error: ' . $location_api_data->status . '. See https://developers.google.com/maps/documentation/geocoding/intro#StatusCodes' );
-			}
-
-			if ( ! empty ( $location_api_data->results[0]->geometry->location->lat ) ) {
-				$latitude  = $location_api_data->results[0]->geometry->location->lat;
-				$longitude = $location_api_data->results[0]->geometry->location->lng;
-			}
-
-			// build comma-separated $latitude_longitude
-			$latitude_longitude = sprintf( '%F,%F', $latitude, $longitude );
-			$latitude_longitude = TKEventW_Functions::valid_lat_long( $latitude_longitude );
-
-			// now $api_data is set for sure (better be to have gotten this far)
-			if ( ! empty( $debug ) ) {
-				$output .= sprintf( '<!--%1$sTK Event Weather -- Google Maps Geocoding API -- JSON Data%1$s%2$s%1$s-->%1$s', PHP_EOL, json_encode( $location_api_data, JSON_PRETTY_PRINT ) ); // requires PHP 5.4
-			}
-
-
-			/**
-			 *
-			 * api-result-examples/google_maps.txt
-			 *
-			 */
-
-
-			// set transient if API call resulted in usable data
-			if ( true === $transients
-				&& ! empty( $latitude_longitude ) // API resulted in usable data
-			) {
-				set_transient( $location_transient_name, $location_api_data, 30 * DAY_IN_SECONDS ); // allowed to store for up to 30 calendar days, per https://developers.google.com/maps/terms#10-license-restrictions
-			}
+			$output .= TKEventW_API_Google_Maps::get_debug_messages();
 		}
 
-		if ( empty( $latitude_longitude ) ) {
-			return TKEventW_Functions::invalid_shortcode_message( 'Please enter valid Latitude and Longitude coordinates (or a Location that Google Maps can get coordinates for)' );
+		if ( empty( self::$latitude_longitude ) ) {
+			TKEventW_Functions::invalid_shortcode_message( 'Please enter valid Latitude and Longitude coordinates (or a Location that Google Maps can get coordinates for)' );
+			return TKEventW_Functions::$shortcode_error_message;
 		}
 
-		$template_data['latitude_longitude'] = $latitude_longitude;
+		$template_data['latitude_longitude'] = self::$latitude_longitude;
 
 		// Start Time
 		// ISO 8601 datetime or Unix timestamp
@@ -385,7 +317,8 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 
 
 		if ( empty( $start_time_timestamp ) ) {
-			return TKEventW_Functions::invalid_shortcode_message( 'Please enter a valid Start Time format' );
+			TKEventW_Functions::invalid_shortcode_message( 'Please enter a valid Start Time format' );
+			return TKEventW_Functions::$shortcode_error_message;
 		}
 
 		$template_data['start_time_timestamp'] = $start_time_timestamp;
@@ -420,13 +353,15 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 
 		if ( ! empty( $min_timestamp ) && '' != $weather_first_hour_timestamp ) {
 			if ( $min_timestamp > $weather_first_hour_timestamp ) {
-				return TKEventW_Functions::invalid_shortcode_message( 'Event Start Time needs to be more recent than the Past Cutoff Time' );
+				TKEventW_Functions::invalid_shortcode_message( 'Event Start Time needs to be more recent than the Past Cutoff Time' );
+				return TKEventW_Functions::$shortcode_error_message;
 			}
 		}
 
 		// max 60 years in the past, per API docs
 		if ( strtotime( '-60 years' ) > $weather_first_hour_timestamp ) {
-			return TKEventW_Functions::invalid_shortcode_message( 'Event Start Time needs to be more recent than 60 years in the past, per Dark Sky API docs,' );
+			TKEventW_Functions::invalid_shortcode_message( 'Event Start Time needs to be more recent than 60 years in the past, per Dark Sky API docs,' );
+			return TKEventW_Functions::$shortcode_error_message;
 		}
 
 		// End Time
@@ -478,12 +413,14 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 		// if Event Start and End times are the same
 		if ( $weather_first_hour_timestamp == $end_time_timestamp ) {
 			// this is allowed as of version 1.4
-			//return TkEventW__Functions::invalid_shortcode_message( 'Please make sure Event Start Time and Event End Time are not the same' );
+			// TkEventW__Functions::invalid_shortcode_message( 'Please make sure Event Start Time and Event End Time are not the same' );
+			// return TKEventW_Functions::$shortcode_error_message;
 		}
 
 		// if Event End time is before Start time
 		if ( $weather_first_hour_timestamp > $end_time_timestamp ) {
-			return TKEventW_Functions::invalid_shortcode_message( 'Event Start Time must be earlier than Event End Time' );
+			TKEventW_Functions::invalid_shortcode_message( 'Event Start Time must be earlier than Event End Time' );
+			return TKEventW_Functions::$shortcode_error_message;
 		}
 
 		$template_data['end_time_timestamp'] = $end_time_timestamp;
@@ -533,13 +470,15 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 
 		if ( ! empty( $max_timestamp ) && '' != $end_time_timestamp ) {
 			if ( $end_time_timestamp > $max_timestamp ) {
-				return TKEventW_Functions::invalid_shortcode_message( 'Event End Time needs to be more recent than Future Cutoff Time' );
+				TKEventW_Functions::invalid_shortcode_message( 'Event End Time needs to be more recent than Future Cutoff Time' );
+				return TKEventW_Functions::$shortcode_error_message;
 			}
 		}
 
 		// max 10 years future, per API docs
 		if ( $end_time_timestamp > strtotime( '+10 years' ) ) {
-			return TKEventW_Functions::invalid_shortcode_message( 'Event End Time needs to be less than 10 years in the future, per Dark Sky API docs,' );
+			TKEventW_Functions::invalid_shortcode_message( 'Event End Time needs to be less than 10 years in the future, per Dark Sky API docs,' );
+			return TKEventW_Functions::$shortcode_error_message;
 		}
 
 
@@ -657,10 +596,10 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 			$units,
 			$exclude_for_transient,
 			// latitude (before comma)
-			substr( strstr( $latitude_longitude, ',', true ), 0, 6 ), // requires PHP 5.3.0+
+			substr( strstr( self::$latitude_longitude, ',', true ), 0, 6 ), // requires PHP 5.3.0+
 			// first 6 (assuming period is in first 5, getting first 6 will result in 5 valid characters for transient name
 			// longitude (after comma)
-			substr( strstr( $latitude_longitude, ',', false ), 0, 6 ), // does not require PHP 5.3.0+
+			substr( strstr( self::$latitude_longitude, ',', false ), 0, 6 ), // does not require PHP 5.3.0+
 			substr( $weather_first_hour_timestamp, - 5, 5 ) // last 5 of Start Time timestamp
 		//substr( $end_time_timestamp, -5, 5 ) // last 5 of End Time timestamp
 		// noticed in testing sometimes leading zero(s) get truncated, possibly due to sanitize_key()... but, as long as it is consistent we are ok.
@@ -668,7 +607,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 
 		$transient_name = TKEventW_Functions::sanitize_transient_name( $transient_name );
 
-		$transient_value = TKEventW_Functions::transient_get_or_delete( $transient_name, $transients );
+		$transient_value = TKEventW_Functions::transient_get_or_delete( $transient_name, self::$transients_enabled );
 
 
 		// Make API call if nothing from Transients
@@ -730,12 +669,14 @@ TK Event Weather JSON Data
 			$api_data = $transient_value;
 			if ( empty( $api_data ) ) {
 				delete_transient( $transient_name );
-				// return TkEventW__Functions::invalid_shortcode_message( 'Data from Transient used but some sort of data inconsistency. Transient deleted. May or may not need to troubleshoot' );
+				// TkEventW__Functions::invalid_shortcode_message( 'Data from Transient used but some sort of data inconsistency. Transient deleted. May or may not need to troubleshoot' );
+				// return TKEventW_Functions::$shortcode_error_message;
 			}
 
 			if ( ! empty( $api_data->error ) ) {
 				delete_transient( $transient_name );
-				// return TkEventW__Functions::invalid_shortcode_message( 'Data from Transient used but an error: ' . $api_data->error . '. Transient deleted. May or may not need to troubleshoot' );
+				// TkEventW__Functions::invalid_shortcode_message( 'Data from Transient used but an error: ' . $api_data->error . '. Transient deleted. May or may not need to troubleshoot' );
+				// return TKEventW_Functions::$shortcode_error_message;
 			}
 		}
 
@@ -746,7 +687,7 @@ TK Event Weather JSON Data
 			$request_uri = sprintf(
 				'https://api.darksky.net/forecast/%s/%s,%s',
 				$api_key,
-				$latitude_longitude,
+				self::$latitude_longitude,
 				$start_time_timestamp
 			// $start_time_iso_8601
 			);
@@ -771,32 +712,37 @@ TK Event Weather JSON Data
 
 			// @link https://developer.wordpress.org/reference/functions/is_wp_error/
 			if ( is_wp_error( $request ) ) {
-				return TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API request sent but resulted in a WordPress Error. Please troubleshoot' );
+				TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API request sent but resulted in a WordPress Error. Please troubleshoot' );
+				return TKEventW_Functions::$shortcode_error_message;
 			}
 
 			// @link https://developer.wordpress.org/reference/functions/wp_remote_retrieve_body/
 			$body = wp_remote_retrieve_body( $request );
 
 			if ( empty( $body ) ) {
-				return TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API request sent but nothing received. Please troubleshoot' );
+				TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API request sent but nothing received. Please troubleshoot' );
+				return TKEventW_Functions::$shortcode_error_message;
 			}
 
 			$api_data = json_decode( $body );
 
 			if ( empty( $api_data ) ) {
-				return TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API response received but some sort of data inconsistency. Please troubleshoot' );
+				TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API response received but some sort of data inconsistency. Please troubleshoot' );
+				return TKEventW_Functions::$shortcode_error_message;
 			}
 
 			if ( ! empty( $api_data->error ) ) {
-				return TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API responded with an error: ' . $api_data->error . ' - Please troubleshoot' );
+				TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API responded with an error: ' . $api_data->error . ' - Please troubleshoot' );
+				return TKEventW_Functions::$shortcode_error_message;
 			}
 
 			if ( empty( $api_data->hourly->data ) ) {
-				return TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API responded but without hourly data. Please troubleshoot' );
+				TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API responded but without hourly data. Please troubleshoot' );
+				return TKEventW_Functions::$shortcode_error_message;
 			}
 
 			// inside here because if using transient, $request will not be set
-			if ( ! empty( $debug ) ) {
+			if ( ! empty( self::$debug_enabled ) ) {
 				$output .= sprintf( '<!--%1$sTK Event Weather -- Dark Sky API -- Request URI%1$s%2$s%1$s-->%1$s', PHP_EOL, esc_url_raw( $request_uri ) );
 			}
 			/* Example Debug Output:
@@ -806,7 +752,7 @@ TK Event Weather JSON Data
 			-->
 			*/
 
-			if ( true === $transients ) {
+			if ( true === self::$transients_enabled ) {
 				$transients_expiration_hours = absint( $atts['transients_expiration'] );
 				if ( 0 >= $transients_expiration_hours ) {
 					$transients_expiration_hours = absint( $transients_expiration_hours_option );
@@ -834,7 +780,7 @@ TK Event Weather JSON Data
 		*/
 
 		// now $api_data is set for sure (better be to have gotten this far)
-		if ( ! empty( $debug ) ) {
+		if ( ! empty( self::$debug_enabled ) ) {
 			$output .= sprintf( '<!--%1$sTK Event Weather -- Dark Sky API -- JSON Data%1$s%2$s%1$s-->%1$s', PHP_EOL, json_encode( $api_data, JSON_PRETTY_PRINT ) ); // requires PHP 5.4
 		}
 
@@ -861,7 +807,8 @@ TK Event Weather JSON Data
 
 		// Protect against odd hourly weather scenarios like location only having data from midnight to 8am and event start time is 9am
 		if ( ! isset( $weather_hourly_start_key ) ) { // need to allow for zero due to numeric array
-			return TKEventW_Functions::invalid_shortcode_message( 'Event Start Time error. API did not return enough hourly data. Please troubleshoot' );
+			TKEventW_Functions::invalid_shortcode_message( 'Event Start Time error. API did not return enough hourly data. Please troubleshoot' );
+			return TKEventW_Functions::$shortcode_error_message;
 		}
 
 		// End Time Weather
@@ -878,7 +825,8 @@ TK Event Weather JSON Data
 		}
 
 		if ( ! isset( $weather_hourly_end_key ) ) { // need to allow for zero due to numeric array
-			return TKEventW_Functions::invalid_shortcode_message( 'Event End Time is out of range. Please troubleshoot' );
+			TKEventW_Functions::invalid_shortcode_message( 'Event End Time is out of range. Please troubleshoot' );
+			return TKEventW_Functions::$shortcode_error_message;
 		}
 
 
@@ -888,7 +836,8 @@ TK Event Weather JSON Data
 		if ( ! in_array( $timezone, timezone_identifiers_list() ) ) {
 			// DO NOT allow manual offset (invalid for PHP) timezones via shortcode because it is not supported by the API and can open the door to unexpected behavior.
 			if ( in_array( $timezone, TKEventW_Time::wp_manual_utc_offsets_array() ) ) {
-				return TKEventW_Functions::invalid_shortcode_message( $timezone . ' is a manual UTC offset, not a valid timezone name. Manual UTC offsets are allowed by WordPress but not supported by this plugin. Instead, please use a timezone name supported by PHP (https://secure.php.net/manual/timezones.php)' );
+				TKEventW_Functions::invalid_shortcode_message( $timezone . ' is a manual UTC offset, not a valid timezone name. Manual UTC offsets are allowed by WordPress but not supported by this plugin. Instead, please use a timezone name supported by PHP (https://secure.php.net/manual/timezones.php)' );
+				return TKEventW_Functions::$shortcode_error_message;
 			}
 
 			// Timezone Source
@@ -899,7 +848,8 @@ TK Event Weather JSON Data
 			}
 
 			if ( ! array_key_exists( $timezone_source, TKEventW_Time::valid_timezone_sources() ) ) {
-				return TKEventW_Functions::invalid_shortcode_message( 'Please set your WordPress timezone in General Settings or fix your Timezone Source shortcode argument' );
+				TKEventW_Functions::invalid_shortcode_message( 'Please set your WordPress timezone in General Settings or fix your Timezone Source shortcode argument' );
+				return TKEventW_Functions::$shortcode_error_message;
 			}
 
 			if ( 'wordpress' == $timezone_source ) {
@@ -929,7 +879,7 @@ TK Event Weather JSON Data
 		);
 
 		if ( empty( $atts['sunrise_sunset_off'] )
-			|| 'true' != $atts['sunrise_sunset_off']
+		     || 'true' != $atts['sunrise_sunset_off']
 		) {
 			$sunrise_sunset['on'] = true;
 		}
@@ -989,7 +939,7 @@ TK Event Weather JSON Data
 				}
 
 				if ( $index == $key ) {
-					$weather_hourly[$index] = $value;
+					$weather_hourly[ $index ] = $value;
 					$index ++;
 				}
 			}
@@ -1044,8 +994,7 @@ TK Event Weather JSON Data
 
 		$template_data['template_class_name'] = $template_class_name;
 
-		// if Debug Mode is true, set $debug_vars to true for admins only
-		if ( ! empty( $debug ) && current_user_can( 'edit_theme_options' ) ) {
+		if ( ! empty( self::$debug_enabled ) && current_user_can( 'edit_theme_options' ) ) {
 			// var_dump( get_defined_vars() ); // uncomment if you REALLY want to display this information
 		}
 
