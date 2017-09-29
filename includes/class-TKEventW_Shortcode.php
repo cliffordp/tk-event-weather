@@ -263,7 +263,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 			// Fetch from transient or Google Maps Geocoding API
 			self::$latitude_longitude = TKEventW_API_Google_Maps::get_lat_long();
 
-			$output .= TKEventW_API_Google_Maps::get_debug_messages();
+			$output .= TKEventW_API_Google_Maps::get_debug_output();
 		}
 
 		if ( empty( self::$latitude_longitude ) ) {

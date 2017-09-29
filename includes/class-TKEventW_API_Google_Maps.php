@@ -82,7 +82,7 @@ class TKEventW_API_Google_Maps {
 		return $data;
 	}
 
-	public static function get_debug_messages() {
+	public static function get_debug_output() {
 		$output = '';
 
 		if ( empty( TKEventW_Shortcode::$debug_enabled ) ) {
@@ -153,15 +153,16 @@ class TKEventW_API_Google_Maps {
 			return TKEventW_Functions::invalid_shortcode_message( 'The Google Maps Geocoding API resulted in an error: ' . $data->status . '. See https://developers.google.com/maps/documentation/geocoding/intro#StatusCodes' );
 		}
 
+		$latitude_longitude = '';
 
 		if ( ! empty ( $data->results[0]->geometry->location->lat ) ) {
 			$latitude  = $data->results[0]->geometry->location->lat;
 			$longitude = $data->results[0]->geometry->location->lng;
-		}
 
-		// build comma-separated coordinates
-		$latitude_longitude = sprintf( '%F,%F', $latitude, $longitude );
-		$latitude_longitude = TKEventW_Functions::valid_lat_long( $latitude_longitude );
+			// build comma-separated coordinates
+			$latitude_longitude = sprintf( '%F,%F', $latitude, $longitude );
+			$latitude_longitude = TKEventW_Functions::valid_lat_long( $latitude_longitude );
+		}
 
 		return $latitude_longitude;
 	}
