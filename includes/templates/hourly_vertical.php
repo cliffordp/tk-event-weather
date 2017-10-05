@@ -21,7 +21,7 @@ $index = 1;
 
 foreach ( $context->weather_hourly as $key => $value ) {
 
-	$display_time = TKEventW_Time::timestamp_to_display( $value->time, $context->timezone, $context->time_format_hours );
+	$display_time = TKEventW_Time::timestamp_to_display( $value->time, TKEventW_Shortcode::$timezone, TKEventW_Shortcode::$time_format_hours );
 
 	// if sunrise or sunset timestamp = this hourly weather timestamp, don't display this hour's weather. Instead, only do sunrise/sunset
 	// Example: Sunset at 6:00pm, don't display the 6pm hourly weather info
@@ -35,7 +35,7 @@ foreach ( $context->weather_hourly as $key => $value ) {
 			// unless this hour's timestamp = sunset timestamp
 		} else {
 			// actually do this hour's weather
-			$output .= TKEventW_Functions::template_start_of_each_item( $context->template_class_name, $index );
+			$output .= TKEventW_Template::template_start_of_each_item( $context->template_class_name, $index );
 
 			$wind_bearing = '';
 			if ( isset( $value->windBearing ) ) {
@@ -79,7 +79,7 @@ foreach ( $context->weather_hourly as $key => $value ) {
 
 	// now do sunrise or sunset
 	if ( true === $context->sunrise_sunset['sunrise_to_be_inserted'] && $value->time == $context->sunrise_sunset['sunrise_hour_timestamp'] ) {
-		$output .= TKEventW_Functions::template_start_of_each_item( $context->template_class_name, $index );
+		$output .= TKEventW_Template::template_start_of_each_item( $context->template_class_name, $index );
 
 		$output .= sprintf(
 			' sunrise">
@@ -88,7 +88,7 @@ foreach ( $context->weather_hourly as $key => $value ) {
 			<span>&nbsp;</span>',
 			$context->sunrise_sunset['sunrise_timestamp'],
 			$context->template_class_name,
-			TKEventW_Time::timestamp_to_display( $context->sunrise_sunset['sunrise_timestamp'], $context->timezone, $context->time_format_minutes ),
+			TKEventW_Time::timestamp_to_display( $context->sunrise_sunset['sunrise_timestamp'], TKEventW_Shortcode::$timezone, TKEventW_Shortcode::$time_format_minutes ),
 			__( 'Sunrise', 'tk-event-weather' ),
 			TKEventW_Functions::icon_html( 'sunrise' )
 		);
@@ -99,7 +99,7 @@ foreach ( $context->weather_hourly as $key => $value ) {
 
 		$index ++; // increment index
 	} elseif ( true === $context->sunrise_sunset['sunset_to_be_inserted'] && $value->time == $context->sunrise_sunset['sunset_hour_timestamp'] ) {
-		$output .= TKEventW_Functions::template_start_of_each_item( $context->template_class_name, $index );
+		$output .= TKEventW_Template::template_start_of_each_item( $context->template_class_name, $index );
 
 		$output .= sprintf(
 			' sunset">
@@ -108,7 +108,7 @@ foreach ( $context->weather_hourly as $key => $value ) {
 			<span>&nbsp;</span>',
 			$context->sunrise_sunset['sunset_timestamp'],
 			$context->template_class_name,
-			TKEventW_Time::timestamp_to_display( $context->sunrise_sunset['sunset_timestamp'], $context->timezone, $context->time_format_minutes ),
+			TKEventW_Time::timestamp_to_display( $context->sunrise_sunset['sunset_timestamp'], TKEventW_Shortcode::$timezone, TKEventW_Shortcode::$time_format_minutes ),
 			__( 'Sunset', 'tk-event-weather' ),
 			TKEventW_Functions::icon_html( 'sunset' )
 		);

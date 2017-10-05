@@ -27,25 +27,47 @@ class TKEventW_API_Google_Maps {
 		 *
 		 * @link https://developers.google.com/maps/documentation/geocoding/intro#RegionCodes
 		 */
-		$uri_query_args = apply_filters( 'tkeventw_geocode_request_uri_query_args', $uri_query_args );
+		$uri_query_args = apply_filters( 'tk_event_weather_gmaps_geocode_request_uri_query_args', $uri_query_args );
 
 		$uri = add_query_arg( $uri_query_args, $uri_base );
 
 		return $uri;
 	}
 
-	private static function get_geocode_response_data() {
-		// Get from transient if exists and valid
-		$transient_data = self::get_transient_value();
+	/**
+	 * @param      $transient
+	 *
+	 * @return bool
+	 */
+	private static function valid_transient( $transient ) {
+		if ( ! empty( $transient ) ) {
+			if (
+				// WordPress error
+				is_wp_error( $transient )
 
-		if ( ! empty( $transient_data ) ) { // TODO is_object()???
-			if ( ! is_object( $transient_data ) || is_wp_error( $transient_data ) ) {
-				$transient_data = '';
+				// expected result of json_decode() of API response
+				|| ! is_object( $transient )
+			) {
+				$transient = '';
+
 				delete_transient( self::get_transient_name() );
 			}
 		}
 
-		if ( ! empty( $transient_data ) ) {
+		if ( ! empty( $transient ) ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private static function get_response_data() { // TODO why running so many times for single call?
+		// Get from transient if exists and valid
+		$transient_data = self::get_transient_value();
+
+		if ( true === self::valid_transient( $transient_data ) ) {
+			TKEventW_Shortcode::$google_maps_api_transient_used = 'TRUE'; // TODO include in debug info
+
 			return $transient_data;
 		}
 
@@ -63,6 +85,7 @@ class TKEventW_API_Google_Maps {
 		}
 
 		$data = json_decode( $body );
+
 
 		if ( empty( $data ) ) {
 			return TKEventW_Functions::invalid_shortcode_message( 'Google Maps Geocoding API response received but some sort of data inconsistency. Please troubleshoot' );
@@ -89,7 +112,7 @@ class TKEventW_API_Google_Maps {
 			return $output;
 		}
 
-		$data = self::get_geocode_response_data();
+		$data = self::get_response_data();
 
 		if ( empty( $data ) ) {
 			return $output;
@@ -103,7 +126,7 @@ class TKEventW_API_Google_Maps {
 		-->
 		 */
 		$output .= sprintf(
-			'<!--%1$s%2$s -- Google Maps Geocoding API -- Request URI%1$s%2$s%1$s-->%1$s',
+			'<!--%1$s%2$s -- Google Maps Geocoding API -- Request URI%1$s%3$s%1$s-->%1$s',
 			PHP_EOL,
 			TKEventW_Setup::plugin_display_name(),
 			self::geocode_request_uri()
@@ -114,9 +137,10 @@ class TKEventW_API_Google_Maps {
 		 *
 		 * api-result-examples/google_maps.txt
 		 */
-		$output .= sprintf( '<!--%1$s%2$s -- Google Maps Geocoding API -- JSON Data%1$s%2$s%1$s-->%1$s',
+		$output .= sprintf( '<!--%1$s%2$s -- Google Maps Geocoding API -- Obtained from Transient: %3 -- JSON Data%1$s%4$s%1$s-->%1$s',
 			PHP_EOL,
 			TKEventW_Setup::plugin_display_name(),
+			TKEventW_Shortcode::$google_maps_api_transient_used,
 			json_encode( $data, JSON_PRETTY_PRINT ) // JSON_PRETTY_PRINT option requires PHP 5.4
 		);
 
@@ -136,7 +160,7 @@ class TKEventW_API_Google_Maps {
 	}
 
 	private static function get_transient_value() {
-		$value = TKEventW_Functions::transient_get_or_delete( self::get_transient_name(), TKEventW_Shortcode::$transients_enabled );
+		return TKEventW_Functions::transient_get_or_delete( self::get_transient_name(), TKEventW_Shortcode::$transients_enabled );
 	}
 
 	public static function get_lat_long() {
@@ -144,7 +168,7 @@ class TKEventW_API_Google_Maps {
 			return TKEventW_Functions::valid_lat_long( TKEventW_Shortcode::$latitude_longitude );
 		}
 
-		$data = self::get_geocode_response_data();
+		$data = self::get_response_data();
 
 		/**
 		 * @link https://developers.google.com/maps/documentation/geocoding/intro#StatusCodes

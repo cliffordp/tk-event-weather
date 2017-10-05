@@ -9,6 +9,7 @@ require_once( 'class-TKEventW_API_Google_Maps.php' );
 require_once( 'class-TKEventW_API_Dark_Sky.php' );
 require_once( 'class-TKEventW_Single_Day.php' );
 require_once( 'class-TKEventW_Template.php' );
+require_once( 'class-TKEventW_Template_Loader.php' );
 require_once( 'class-TKEventW_Time.php' );
 
 class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
@@ -16,10 +17,32 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 	private static $addedAlready = false;
 
 	public static $dark_sky_api_key = '';
+	public static $dark_sky_api_units = '';
+	public static $dark_sky_api_exclude = '';
+	public static $dark_sky_api_uri_query_args = array();
+	public static $dark_sky_api_transient_used = 'FALSE';
+
 	public static $google_maps_api_key = '';
+	public static $google_maps_api_transient_used = 'FALSE';
 
 	public static $debug_enabled = false;
 	public static $transients_enabled = true;
+	public static $transients_expiration_hours = 0;
+
+	// Timezone might get set via API response, depending on settings.
+	public static $timezone = '';
+
+	public static $time_format_hours = '';
+	public static $time_format_minutes = '';
+
+	// Variables named with "span" are for the entire timespan, such as multiday.
+	public static $span_start_time_timestamp = false;
+	public static $span_first_hour_timestamp = false; // Start time's timestamp with minutes truncated. Should be equal to or less than $span_start_time_timestamp.
+	public static $span_end_time_timestamp = false;
+
+	public static $span_total_days_in_span = false;
+
+	public static $span_template_data = array();
 
 	/**
 	 * The street address that you want to geocode, in the format used by the
@@ -48,12 +71,11 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 
 		$output = '';
 
-		$template_data = array(); // sent to view template to render output
-
 		$plugin_options = TKEventW_Functions::plugin_options();
 
 		if ( empty( $plugin_options ) ) {
 			TKEventW_Functions::invalid_shortcode_message( 'Please complete the initial setup' );
+
 			return TKEventW_Functions::$shortcode_error_message;
 		} else {
 			$api_key_option = TKEventW_Functions::array_get_value_by_key( $plugin_options, 'darksky_api_key' );
@@ -161,11 +183,12 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 			// HTML
 			'class'                   => '',
 			// custom class
-			'TKEventW_Template'       => $display_template_option,
+			'template'                => $display_template_option,
 			// Debug Mode
 			'debug_on'                => $debug_on_option,
 			// anything !empty()
 		);
+		// TODO: Max days -- set to 1 for non-multiday forcasts
 
 		$atts = shortcode_atts( $defaults, $atts, 'tk-event-weather' );
 
@@ -173,7 +196,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 
 		// Code
 
-		self::$debug_enabled = (bool) $atts['debug_on'];
+		self::$debug_enabled = (bool) $atts['debug_on']; // TODO not used at all? -- maybe var_dump( get_defined_vars() ) somewhere?
 
 
 		// if false === $transients, clear existing and set new transients
@@ -186,15 +209,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 		}
 
 
-		// @link https://developer.wordpress.org/reference/functions/sanitize_key/
-		$api_key = sanitize_key( $atts['api_key'] );
-
-		if ( empty( $api_key ) ) {
-			TKEventW_Functions::invalid_shortcode_message( 'Please enter your Dark Sky API Key' );
-			return TKEventW_Functions::$shortcode_error_message;
-		} else {
-			self::$dark_sky_api_key = $api_key;
-		}
+		self::$dark_sky_api_key = $atts['api_key'];
 
 		// manually entered override custom field
 		$post_id = $atts['post_id'];
@@ -208,7 +223,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 			}
 		}
 
-		$template_data['post_id'] = $post_id;
+		self::$span_template_data['post_id'] = $post_id;
 
 		// only used temporarily if separate lat and long need to be combined
 		$latitude  = '';
@@ -258,7 +273,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 		// Get lat,long from Google Maps API
 		if ( ! empty( self::$location ) ) {
 
-			self::$google_maps_api_key = $atts['gmaps_api_key'];
+			self::$google_maps_api_key = TKEventW_Functions::sanitize_key_allow_uppercase( $atts['gmaps_api_key'] );
 
 			// Fetch from transient or Google Maps Geocoding API
 			self::$latitude_longitude = TKEventW_API_Google_Maps::get_lat_long();
@@ -267,11 +282,14 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 		}
 
 		if ( empty( self::$latitude_longitude ) ) {
-			TKEventW_Functions::invalid_shortcode_message( 'Please enter valid Latitude and Longitude coordinates (or a Location that Google Maps can get coordinates for)' );
+			if ( empty( TKEventW_Functions::$shortcode_error_message ) ) {
+				TKEventW_Functions::invalid_shortcode_message( 'Please enter valid Latitude and Longitude coordinates (or a Location that Google Maps can get coordinates for)' );
+			}
+
 			return TKEventW_Functions::$shortcode_error_message;
 		}
 
-		$template_data['latitude_longitude'] = self::$latitude_longitude;
+		self::$span_template_data['latitude_longitude'] = self::$latitude_longitude;
 
 		// Start Time
 		// ISO 8601 datetime or Unix timestamp
@@ -318,19 +336,18 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 
 		if ( empty( $start_time_timestamp ) ) {
 			TKEventW_Functions::invalid_shortcode_message( 'Please enter a valid Start Time format' );
+
 			return TKEventW_Functions::$shortcode_error_message;
 		}
 
-		$template_data['start_time_timestamp'] = $start_time_timestamp;
+		self::$span_start_time_timestamp = $start_time_timestamp;
+		self::$span_first_hour_timestamp = TKEventW_Time::timestamp_truncate_minutes( $start_time_timestamp );
 
-
-		$weather_first_hour_timestamp = TKEventW_Time::timestamp_truncate_minutes( $start_time_timestamp );
-
-		$template_data['weather_first_hour_timestamp'] = $weather_first_hour_timestamp;
+		self::$span_template_data['span_first_hour_timestamp'] = TKEventW_Shortcode::$span_first_hour_timestamp;
 
 
 		// cutoff_past
-		// strtotime date relative to $weather_first_hour_timestamp
+		// strtotime date relative to self::$span_first_hour_timestamp
 		if ( ! empty( $atts['cutoff_past'] ) ) {
 			$cutoff_past = $atts['cutoff_past'];
 		} else {
@@ -351,16 +368,18 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 
 		$min_timestamp = TKEventW_Time::valid_timestamp( $min_timestamp );
 
-		if ( ! empty( $min_timestamp ) && '' != $weather_first_hour_timestamp ) {
-			if ( $min_timestamp > $weather_first_hour_timestamp ) {
+		if ( ! empty( $min_timestamp ) && '' != TKEventW_Shortcode::$span_first_hour_timestamp ) {
+			if ( $min_timestamp > TKEventW_Shortcode::$span_first_hour_timestamp ) {
 				TKEventW_Functions::invalid_shortcode_message( 'Event Start Time needs to be more recent than the Past Cutoff Time' );
+
 				return TKEventW_Functions::$shortcode_error_message;
 			}
 		}
 
 		// max 60 years in the past, per API docs
-		if ( strtotime( '-60 years' ) > $weather_first_hour_timestamp ) {
+		if ( strtotime( '-60 years' ) > TKEventW_Shortcode::$span_first_hour_timestamp ) {
 			TKEventW_Functions::invalid_shortcode_message( 'Event Start Time needs to be more recent than 60 years in the past, per Dark Sky API docs,' );
+
 			return TKEventW_Functions::$shortcode_error_message;
 		}
 
@@ -407,42 +426,25 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 		$end_time_timestamp = TKEventW_Time::valid_timestamp( $end_time_timestamp );
 
 		if ( '' == $end_time_timestamp ) {
-			$end_time_timestamp = $weather_first_hour_timestamp + DAY_IN_SECONDS; // API will only return single day so we're just padding it on through tomorrow -- cannot do [[[strtotime( 'tomorrow', $start_time_timestamp ) - 1]]] because the location's timezone may be different from the server's timezone and therefore end the day at 8pm (4 hours short of 11:59pm) if in a UTC-4 location
+			$end_time_timestamp = TKEventW_Shortcode::$span_first_hour_timestamp + DAY_IN_SECONDS; // just padding it on through the next day
+			$total_days_in_span = 1; // and then manually setting Total Days to 1 because of fudging the End Time (because we do not yet have the timezone)
 		}
 
+		self::$span_end_time_timestamp = $end_time_timestamp;
+
 		// if Event Start and End times are the same
-		if ( $weather_first_hour_timestamp == $end_time_timestamp ) {
+		if ( TKEventW_Shortcode::$span_first_hour_timestamp == $end_time_timestamp ) {
 			// this is allowed as of version 1.4
 			// TkEventW__Functions::invalid_shortcode_message( 'Please make sure Event Start Time and Event End Time are not the same' );
 			// return TKEventW_Functions::$shortcode_error_message;
 		}
 
 		// if Event End time is before Start time
-		if ( $weather_first_hour_timestamp > $end_time_timestamp ) {
+		if ( TKEventW_Shortcode::$span_first_hour_timestamp > $end_time_timestamp ) {
 			TKEventW_Functions::invalid_shortcode_message( 'Event Start Time must be earlier than Event End Time' );
+
 			return TKEventW_Functions::$shortcode_error_message;
 		}
-
-		$template_data['end_time_timestamp'] = $end_time_timestamp;
-
-
-		/**
-		 * $weather_last_hour_timestamp helps with setting 'sunset_to_be_inserted'
-		 *
-		 * if event ends at 7:52pm, set $weather_last_hour_timestamp to 8pm
-		 * if event ends at 7:00:00pm, set $weather_last_hour_timestamp to 7pm
-		 *
-		 */
-		$end_time_hour_timestamp               = TKEventW_Time::timestamp_truncate_minutes( $end_time_timestamp ); // e.g. 7pm instead of 7:52pm
-		$end_time_hour_timestamp_plus_one_hour = 3600 + $end_time_hour_timestamp; // e.g. 8pm
-
-		if ( $end_time_timestamp == $end_time_hour_timestamp ) { // e.g. event ends at 7:00:00
-			$weather_last_hour_timestamp = $end_time_hour_timestamp;
-		} else {
-			$weather_last_hour_timestamp = $end_time_hour_timestamp_plus_one_hour;
-		}
-
-		$template_data['weather_last_hour_timestamp'] = TKEventW_Time::valid_timestamp( $weather_last_hour_timestamp );
 
 
 		//
@@ -471,6 +473,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 		if ( ! empty( $max_timestamp ) && '' != $end_time_timestamp ) {
 			if ( $end_time_timestamp > $max_timestamp ) {
 				TKEventW_Functions::invalid_shortcode_message( 'Event End Time needs to be more recent than Future Cutoff Time' );
+
 				return TKEventW_Functions::$shortcode_error_message;
 			}
 		}
@@ -478,12 +481,13 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 		// max 10 years future, per API docs
 		if ( $end_time_timestamp > strtotime( '+10 years' ) ) {
 			TKEventW_Functions::invalid_shortcode_message( 'Event End Time needs to be less than 10 years in the future, per Dark Sky API docs,' );
+
 			return TKEventW_Functions::$shortcode_error_message;
 		}
 
 
 		//
-		// $weather_first_hour_timestamp is equal to or greater than $min_timestamp and $end_time_timestamp is less than or equal to $max_timestamp
+		// TKEventW_Shortcode::$span_first_hour_timestamp is equal to or greater than $min_timestamp and $end_time_timestamp is less than or equal to $max_timestamp
 		// or $min_timestamp and/or $max_timestamp were set to zero (i.e. no limits)
 		// so continue...
 		//
@@ -502,6 +506,8 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 			}
 		}
 
+		self::$span_template_data['before'] = $before;
+
 		// After Text
 		$after = sanitize_text_field( $atts['after'] );
 
@@ -515,38 +521,34 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 			}
 		}
 
+		self::$span_template_data['after'] = $after;
+
 		// time_format_hours
 		$time_format_hours = sanitize_text_field( $atts['time_format_hours'] );
 
-		$template_data['time_format_hours'] = $time_format_hours;
+		self::$time_format_hours = $time_format_hours;
 
 		// time_format_minutes
 		$time_format_minutes = sanitize_text_field( $atts['time_format_minutes'] );
 
-		$template_data['time_format_minutes'] = $time_format_minutes;
+		self::$time_format_minutes = $time_format_minutes;
 
 		// units
 		$units = TKEventW_Functions::remove_all_whitespace( strtolower( $atts['units'] ) );
 
-		$units_default = apply_filters( 'tk_event_weather_darksky_units_default', $units_option );
-
 		if ( ! array_key_exists( $units, TKEventW_Functions::darksky_option_units() ) ) {
-			$units = $units_default;
+			$units = $units_option;
 		}
+
+		self::$dark_sky_api_units = $units;
 
 		// exclude
 		$exclude = '';
 
-		$exclude_default = apply_filters( 'tk_event_weather_darksky_exclude_default', 'minutely,alerts' );
-
 		// shortcode argument's value
 		$exclude_arg = TKEventW_Functions::remove_all_whitespace( strtolower( $atts['exclude'] ) );
 
-
-		if ( empty( $exclude_arg ) || $exclude_default == $exclude_arg ) {
-			$exclude = $exclude_default;
-		} else {
-			// array of shortcode argument's value
+		if ( ! empty( $exclude ) ) {
 			$exclude_arg_array = explode( ',', $exclude_arg );
 
 			if ( is_array( $exclude_arg_array ) ) {
@@ -566,267 +568,76 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 					}
 				} // foreach()
 			} // is_array()
-		} // else
+		} // if
 
-		// Prepare $exclude_for_transient (first letter of each $exclude, not separated by any character)
-		$exclude_for_transient = '';
-		$exclude_array         = explode( ',', $exclude );
-		if ( is_array( $exclude_array ) ) {
-			sort( $exclude_array );
-			foreach ( $exclude_array as $key => $value ) {
-				if ( empty( $exclude_for_transient ) ) {
-					$exclude_for_transient .= substr( $value, 0, 1 );
-				} else {
-					// $exclude_for_transient .= '_';
-					$exclude_for_transient .= substr( $value, 0, 1 );
-				}
-			}
+		if ( empty( $exclude_arg ) ) {
+			$exclude = 'minutely,alerts';
+		}
+
+		self::$dark_sky_api_exclude = $exclude;
+
+
+		// Sunrise Sunset
+		self::$span_template_data['sunrise_sunset']['on'] = false;
+
+		if (
+			empty( $atts['sunrise_sunset_off'] )
+			|| 'true' != $atts['sunrise_sunset_off']
+		) {
+			self::$span_template_data['sunrise_sunset']['on'] = true;
 		}
 
 
-		// Transients
-		// @link https://codex.wordpress.org/Transients_API
-		// @link https://codex.wordpress.org/Easier_Expression_of_Time_Constants
+		// Icons
+		$icons = $atts['icons'];
 
-		// build transient
-		$transient_name = sprintf(
-			'%s_%s_%s_%s_%s_%s_%d',
-			TKEventW_Setup::$transient_name_prepend,
-			'darksky',
-			$units,
-			$exclude_for_transient,
-			// latitude (before comma)
-			substr( strstr( self::$latitude_longitude, ',', true ), 0, 6 ), // requires PHP 5.3.0+
-			// first 6 (assuming period is in first 5, getting first 6 will result in 5 valid characters for transient name
-			// longitude (after comma)
-			substr( strstr( self::$latitude_longitude, ',', false ), 0, 6 ), // does not require PHP 5.3.0+
-			substr( $weather_first_hour_timestamp, - 5, 5 ) // last 5 of Start Time timestamp
-		//substr( $end_time_timestamp, -5, 5 ) // last 5 of End Time timestamp
-		// noticed in testing sometimes leading zero(s) get truncated, possibly due to sanitize_key()... but, as long as it is consistent we are ok.
-		);
-
-		$transient_name = TKEventW_Functions::sanitize_transient_name( $transient_name );
-
-		$transient_value = TKEventW_Functions::transient_get_or_delete( $transient_name, self::$transients_enabled );
-
-
-		// Make API call if nothing from Transients
-		// e.g. https://api.darksky.net/forecast/APIKEY/LATITUDE,LONGITUDE,TIME
-		// if invalid API key, returns 400 Bad Request
-		// API does not want any querying wrapped in brackets, as may be shown in the documentation -- brackets indicates OPTIONAL parameters, not to actually wrap in brackets for your request
-		// 
-		// $api_data->currently is either 'right now' if no TIMESTAMP is part of the API or is the weather for the given TIMESTAMP even if in the past or future (yes, it still is called 'currently')
-		// 
-		/*
-		*
-		*
-		* Example:
-		* Weather for the White House on Feb 1 at 4:30pm Eastern Time (as of 2016-01-25T03:01:09-06:00)
-		* API call in ISO 8601 format
-		* https://api.darksky.net/forecast/_______API_KEY_______/36.281445,-75.794662,2016-02-01T16:30:00-05:00?units=auto&exclude=alerts,daily,flags,hourly,minutely
-		* API call in Unix Timestamp format (same result)
-		* https://api.darksky.net/forecast/_______API_KEY_______/36.281445,-75.794662,1454362200?units=auto&exclude=alerts,daily,flags,hourly,minutely
-		* result:
-<!--
-TK Event Weather JSON Data
-{
-	"latitude": 36.281445,
-	"longitude": -75.794662,
-	"timezone": "America\/New_York",
-	"offset": -5,
-	"currently": {
-		"time": 1454362200,
-		"summary": "Clear",
-		"icon": "clear-day",
-		"precipIntensity": 0.0008,
-		"precipProbability": 0.01,
-		"precipType": "rain",
-		"temperature": 56.9,
-		"apparentTemperature": 56.9,
-		"dewPoint": 48.64,
-		"humidity": 0.74,
-		"windSpeed": 1.91,
-		"windBearing": 163,
-		"cloudCover": 0,
-		"pressure": 1016.99,
-		"ozone": 280.52
-	}
-}
--->
-
-
-
-
-		// if API doesn't TECHNICALLY error out but does return an API error message
-		examples:
-		{"code":400,"error":"An invalid time was specified."}
-		{"code":400,"error":"An invalid units parameter was provided."}
-		*
-		*
-		*/
-
-		if ( ! empty( $transient_value ) ) {
-			$api_data = $transient_value;
-			if ( empty( $api_data ) ) {
-				delete_transient( $transient_name );
-				// TkEventW__Functions::invalid_shortcode_message( 'Data from Transient used but some sort of data inconsistency. Transient deleted. May or may not need to troubleshoot' );
-				// return TKEventW_Functions::$shortcode_error_message;
-			}
-
-			if ( ! empty( $api_data->error ) ) {
-				delete_transient( $transient_name );
-				// TkEventW__Functions::invalid_shortcode_message( 'Data from Transient used but an error: ' . $api_data->error . '. Transient deleted. May or may not need to troubleshoot' );
-				// return TKEventW_Functions::$shortcode_error_message;
-			}
+		if (
+			empty( $icons )
+			|| 'climacons' == $icons
+			|| ! in_array( $icons, TKEventW_Functions::valid_icon_type() )
+		) {
+			$icons = 'climacons_font';
 		}
 
-		// $api_data not yet set because $transient_value was bad so just run through new API call as if transient did not exist (got deleted a few lines above)
-		if ( empty( $api_data ) ) {
-			delete_transient( $transient_name ); // delete any expired transient by this name
-
-			$request_uri = sprintf(
-				'https://api.darksky.net/forecast/%s/%s,%s',
-				$api_key,
-				self::$latitude_longitude,
-				$start_time_timestamp
-			// $start_time_iso_8601
-			);
-
-			$request_uri_query_args = array();
-			if ( ! empty( $units ) ) {
-				$request_uri_query_args['units'] = $units;
-			}
-
-			if ( ! empty( $exclude ) ) {
-				$request_uri_query_args['exclude'] = $exclude;
-			}
-
-			if ( ! empty( $request_uri_query_args ) ) {
-				$request_uri = add_query_arg( $request_uri_query_args, $request_uri );
-			}
-
-			// GET STUFF FROM API
-			// @link https://codex.wordpress.org/Function_Reference/esc_url_raw
-			// @link https://developer.wordpress.org/reference/functions/wp_safe_remote_get/
-			$request = wp_safe_remote_get( esc_url_raw( $request_uri ) );
-
-			// @link https://developer.wordpress.org/reference/functions/is_wp_error/
-			if ( is_wp_error( $request ) ) {
-				TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API request sent but resulted in a WordPress Error. Please troubleshoot' );
-				return TKEventW_Functions::$shortcode_error_message;
-			}
-
-			// @link https://developer.wordpress.org/reference/functions/wp_remote_retrieve_body/
-			$body = wp_remote_retrieve_body( $request );
-
-			if ( empty( $body ) ) {
-				TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API request sent but nothing received. Please troubleshoot' );
-				return TKEventW_Functions::$shortcode_error_message;
-			}
-
-			$api_data = json_decode( $body );
-
-			if ( empty( $api_data ) ) {
-				TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API response received but some sort of data inconsistency. Please troubleshoot' );
-				return TKEventW_Functions::$shortcode_error_message;
-			}
-
-			if ( ! empty( $api_data->error ) ) {
-				TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API responded with an error: ' . $api_data->error . ' - Please troubleshoot' );
-				return TKEventW_Functions::$shortcode_error_message;
-			}
-
-			if ( empty( $api_data->hourly->data ) ) {
-				TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API responded but without hourly data. Please troubleshoot' );
-				return TKEventW_Functions::$shortcode_error_message;
-			}
-
-			// inside here because if using transient, $request will not be set
-			if ( ! empty( self::$debug_enabled ) ) {
-				$output .= sprintf( '<!--%1$sTK Event Weather -- Dark Sky API -- Request URI%1$s%2$s%1$s-->%1$s', PHP_EOL, esc_url_raw( $request_uri ) );
-			}
-			/* Example Debug Output:
-			<!--
-			TK Event Weather -- Dark Sky API -- Request URI
-			https://api.darksky.net/forecast/___API_KEY___/38.897676,-77.036530,1464604200?units=auto&exclude=minutely,alerts
-			-->
-			*/
-
-			if ( true === self::$transients_enabled ) {
-				$transients_expiration_hours = absint( $atts['transients_expiration'] );
-				if ( 0 >= $transients_expiration_hours ) {
-					$transients_expiration_hours = absint( $transients_expiration_hours_option );
-				}
-				set_transient( $transient_name, $api_data, $transients_expiration_hours * HOUR_IN_SECONDS ); // e.g. 12 hours
-			}
+		// enqueue CSS file if using Climacons Icon Font
+		if ( 'climacons_font' == $icons ) {
+			wp_enqueue_style( 'tkeventw-climacons' );
 		}
 
-		/*
-		Example var_dump($request) when bad data, like https://api.darksky.net/forecast/___API_KEY___/0.000000,0.000000,1466199900?exclude=minutely
-		object(stdClass)[100]
-		public 'latitude' => int 0
-		public 'longitude' => int 0
-		public 'timezone' => string 'Etc/GMT' (length=7)
-		public 'offset' => int 0
-		public 'currently' =>
-		object(stdClass)[677]
-			public 'time' => int 1466199900
-		public 'flags' =>
-		object(stdClass)[96]
-			public 'sources' =>
-				array (size=0)
-					empty
-			public 'units' => string 'us' (length=2)
-		*/
+		self::$span_template_data['icons'] = $icons;
 
-		// now $api_data is set for sure (better be to have gotten this far)
-		if ( ! empty( self::$debug_enabled ) ) {
-			$output .= sprintf( '<!--%1$sTK Event Weather -- Dark Sky API -- JSON Data%1$s%2$s%1$s-->%1$s', PHP_EOL, json_encode( $api_data, JSON_PRETTY_PRINT ) ); // requires PHP 5.4
+		if ( 'true' == $atts['plugin_credit_link_on'] ) {
+			self::$span_template_data['plugin_credit_link_enabled'] = true;
 		}
+
+		if ( 'true' == $atts['darksky_credit_link_off'] ) {
+			self::$span_template_data['darksky_credit_link_enabled'] = false;
+		}
+
+		self::$span_template_data['class'] = $atts['class'];
+
+		// Template
+		$display_template = TKEventW_Functions::remove_all_whitespace( strtolower( $atts['template'] ) );
+
+		if ( ! array_key_exists( $display_template, TKEventW_Template::valid_display_templates() ) ) {
+			$display_template = 'hourly_horizontal';
+		}
+
+		self::$span_template_data['template'] = $display_template;
+		self::$span_template_data['template_class_name'] = TKEventW_Template::template_class_name( $display_template );
+
 
 		/**
+		 * Run the first day through Dark Sky API.
 		 *
-		 * api-result-examples/dark_sky.txt
-		 *
+		 * Must be done before setting Timezone because the timezone might
+		 * be getting set via the API, depending on the settings.
 		 */
+		$first_day_class = new TKEventW_Single_Day( self::$span_start_time_timestamp, self::$span_end_time_timestamp, 1 );
+		$first_day_data  = $first_day_class::get_result();
 
-		// Build Weather data that we'll use			
-
-		// https://developer.wordpress.org/reference/functions/wp_list_pluck/
-		$api_data_houly_hours = wp_list_pluck( $api_data->hourly->data, 'time' );
-
-		$api_data_houly_hours_keys = array_keys( $api_data_houly_hours );
-
-		// First hour to start pulling for Hourly Data
-		foreach ( $api_data_houly_hours as $key => $value ) {
-			if ( intval( $value ) == intval( $weather_first_hour_timestamp ) ) {
-				$weather_hourly_start_key = $key; // so we know where to start when pulling hourly weather
-				break;
-			}
-		}
-
-		// Protect against odd hourly weather scenarios like location only having data from midnight to 8am and event start time is 9am
-		if ( ! isset( $weather_hourly_start_key ) ) { // need to allow for zero due to numeric array
-			TKEventW_Functions::invalid_shortcode_message( 'Event Start Time error. API did not return enough hourly data. Please troubleshoot' );
-			return TKEventW_Functions::$shortcode_error_message;
-		}
-
-		// End Time Weather
-		foreach ( $api_data_houly_hours as $key => $value ) {
-			if ( intval( $value ) >= intval( $end_time_timestamp ) ) {
-				$weather_hourly_end_key = $key;
-				break;
-			}
-		}
-
-		// if none, just get last hour of the day (e.g. if Event End Time is next day 2am, just get 11pm same day as Event Start Time (not perfect but may be better than 2nd API call)
-		if ( ! isset( $weather_hourly_end_key ) ) { // need to allow for zero due to numeric array
-			$weather_hourly_end_key = end( $api_data_houly_hours_keys );
-		}
-
-		if ( ! isset( $weather_hourly_end_key ) ) { // need to allow for zero due to numeric array
-			TKEventW_Functions::invalid_shortcode_message( 'Event End Time is out of range. Please troubleshoot' );
-			return TKEventW_Functions::$shortcode_error_message;
+		if ( ! empty( self::$debug_enabled ) ) {
+			$output .= $first_day_data['api_data_debug'];
 		}
 
 
@@ -837,6 +648,7 @@ TK Event Weather JSON Data
 			// DO NOT allow manual offset (invalid for PHP) timezones via shortcode because it is not supported by the API and can open the door to unexpected behavior.
 			if ( in_array( $timezone, TKEventW_Time::wp_manual_utc_offsets_array() ) ) {
 				TKEventW_Functions::invalid_shortcode_message( $timezone . ' is a manual UTC offset, not a valid timezone name. Manual UTC offsets are allowed by WordPress but not supported by this plugin. Instead, please use a timezone name supported by PHP (https://secure.php.net/manual/timezones.php)' );
+
 				return TKEventW_Functions::$shortcode_error_message;
 			}
 
@@ -849,6 +661,7 @@ TK Event Weather JSON Data
 
 			if ( ! array_key_exists( $timezone_source, TKEventW_Time::valid_timezone_sources() ) ) {
 				TKEventW_Functions::invalid_shortcode_message( 'Please set your WordPress timezone in General Settings or fix your Timezone Source shortcode argument' );
+
 				return TKEventW_Functions::$shortcode_error_message;
 			}
 
@@ -861,187 +674,68 @@ TK Event Weather JSON Data
 				|| empty( $timezone ) // in case WP is set to manual offset, in which case 'gmt_offset' WordPress option will be set. It and 'timezone_string' are mutually exclusive.
 			) {
 				// Dark Sky API may return an escaped timezone string
-				$timezone = stripslashes( $api_data->timezone );
+				$timezone = stripslashes( $first_day_data['api_data']->timezone );
 			}
 		}
 
-		$template_data['timezone'] = $timezone;
+		self::$timezone                       = $timezone;
+		self::$span_template_data['timezone'] = $timezone;
 
 
-		$sunrise_sunset = array(
-			'on'                     => false,
-			'sunrise_timestamp'      => false,
-			'sunrise_hour_timestamp' => false,
-			'sunset_timestamp'       => false,
-			'sunset_hour_timestamp'  => false,
-			'sunrise_to_be_inserted' => false,
-			'sunset_to_be_inserted'  => false,
-		);
+		$output .= $first_day_data['template_output'];
 
-		if ( empty( $atts['sunrise_sunset_off'] )
-		     || 'true' != $atts['sunrise_sunset_off']
-		) {
-			$sunrise_sunset['on'] = true;
+
+		// Only calculate Total Days if not already set because it might have been forced to 1 (if no End Time was set)
+		if ( empty( $total_days_in_span ) ) {
+			$total_days_in_span = TKEventW_Time::count_start_end_cal_days_span( self::$span_start_time_timestamp, self::$span_end_time_timestamp, $timezone );
 		}
 
-		if ( true === $sunrise_sunset['on'] ) {
-			// might not be a sunrise this day
-			if ( isset( $api_data->daily->data[0]->sunriseTime ) ) {
-				$sunrise_sunset['sunrise_timestamp']      = TKEventW_Time::valid_timestamp( $api_data->daily->data[0]->sunriseTime );
-				$sunrise_sunset['sunrise_hour_timestamp'] = TKEventW_Time::timestamp_truncate_minutes( $sunrise_sunset['sunrise_timestamp'] );
-				if ( $sunrise_sunset['sunrise_timestamp'] >= $weather_first_hour_timestamp ) {
-					$sunrise_sunset['sunrise_to_be_inserted'] = true;
-				}
-			}
+		$midnight_first_day = TKEventW_Time::get_a_days_min_max_timestamp( self::$span_start_time_timestamp, $timezone );
+		$midnight_last_day  = TKEventW_Time::get_a_days_min_max_timestamp( self::$span_end_time_timestamp, $timezone );
 
-			// might not be a sunset this day
-			if ( isset( $api_data->daily->data[0]->sunsetTime ) ) {
-				$sunrise_sunset['sunset_timestamp']      = TKEventW_Time::valid_timestamp( $api_data->daily->data[0]->sunsetTime );
-				$sunrise_sunset['sunset_hour_timestamp'] = TKEventW_Time::timestamp_truncate_minutes( $sunrise_sunset['sunset_timestamp'] );
-				if ( $weather_last_hour_timestamp >= $sunrise_sunset['sunset_timestamp'] ) {
-					$sunrise_sunset['sunset_to_be_inserted'] = true;
-				}
-			}
+		$midnight_timestamps_except_first_day = array();
+
+		$existing_timezone = date_default_timezone_get(); // will fallback to UTC but may also return a TZ environment variable (e.g. EST)
+		date_default_timezone_set( self::$timezone );
+
+		// because we are excluding the first day
+		for ( $i = $total_days_in_span - 1; 0 !== $i; $i -- ) {
+			$days_string = sprintf( '+%d days', $i );
+			$midnight_timestamps_except_first_day[] = strtotime( $days_string, $midnight_first_day );
+		}
+		date_default_timezone_set( $existing_timezone );
+
+		sort( $midnight_timestamps_except_first_day, SORT_NUMERIC );
+
+		// Check for data inconsistencies... should not happen.
+		$hopefully_midnight_last_day = array_slice( $midnight_timestamps_except_first_day, - 1 );
+		if ( $midnight_last_day !== $hopefully_midnight_last_day[0] ) {
+			// instead of returning a full error, let's just display one day; it's better than nothing.
+			$total_days_in_span = 1;
 		}
 
-		$template_data['sunrise_sunset'] = $sunrise_sunset;
+		$day_index = 2;
+		if ( 1 < $total_days_in_span ) {
+			foreach ( $midnight_timestamps_except_first_day as $midnight ) {
+				$day_class = new TKEventW_Single_Day( $midnight, self::$span_end_time_timestamp, $day_index );
+				$day_data  = $day_class::get_result();
 
-
-		// Icons
-		$icons = $atts['icons'];
-
-		if ( 'climacons' == $icons ) {
-			$icons = 'climacons_font';
-		}
-
-		if ( empty( $icons ) || ! in_array( $icons, TKEventW_Functions::valid_icon_type() ) ) {
-			$icons = 'climacons_font';
-		}
-
-		// enqueue CSS file if using Climacons Icon Font
-		if ( 'climacons_font' == $icons ) {
-			wp_enqueue_style( 'tkeventw-climacons' );
-		}
-
-
-		// Hourly Weather
-		// any internal pointers to reset first?
-
-		$weather_hourly = array();
-
-		$index = $weather_hourly_start_key;
-
-		if ( is_integer( $index ) ) {
-			foreach ( $api_data->hourly->data as $key => $value ) {
-
-				if ( $key > $weather_hourly_end_key ) {
-					break;
+				if ( ! empty( self::$debug_enabled ) ) {
+					$output .= $day_data['api_data_debug'];
 				}
 
-				if ( $index == $key ) {
-					$weather_hourly[ $index ] = $value;
-					$index ++;
-				}
+				$output .= $day_data['template_output'];
+
+				$day_index++;
 			}
 		}
 
-		//$weather_hourly = TkEventW__Functions::sort_multidim_array_by_sub_key( $weather_hourly, 'time' );
-
-		$template_data['weather_hourly'] = $weather_hourly;
-
-		// Get Low and High from Hourly
-		// https://developer.wordpress.org/reference/functions/wp_list_pluck/
-		$weather_hourly_temperatures = wp_list_pluck( $weather_hourly, 'temperature' ); // if nothing, will be an empty array
-
-		$template_data['weather_hourly_temperatures'] = $weather_hourly_temperatures;
-
-		$weather_hourly_high = '';
-		if ( ! empty( $weather_hourly_temperatures ) && is_array( $weather_hourly_temperatures ) ) {
-			$weather_hourly_high = max( $weather_hourly_temperatures );
+		// one last check just to make sure
+		if ( ! empty( TKEventW_Functions::$shortcode_error_message  ) ) {
+			return TKEventW_Functions::$shortcode_error_message;
 		}
-		$template_data['weather_hourly_high'] = $weather_hourly_high;
-
-		$weather_hourly_low = '';
-		if ( ! empty( $weather_hourly_temperatures ) && is_array( $weather_hourly_temperatures ) ) {
-			$weather_hourly_low = min( $weather_hourly_temperatures );
-		}
-		$template_data['weather_hourly_low'] = $weather_hourly_low;
-
-
-		$temperature_units = TKEventW_Functions::temperature_units( $api_data->flags->units );
-
-		$template_data['temperature_units'] = $temperature_units;
-
-		$wind_speed_units = TKEventW_Functions::wind_speed_units( $api_data->flags->units );
-
-		$template_data['wind_speed_units'] = $wind_speed_units;
-
-		// class
-		$class = sanitize_html_class( $atts['class'] );
-		if ( ! empty( $class ) ) {
-			$class = ' ' . $class;
-		}
-
-		$display_template = TKEventW_Functions::remove_all_whitespace( strtolower( $atts['TKEventW_Template'] ) );
-
-		if ( ! array_key_exists( $display_template, TKEventW_Functions::valid_display_templates() ) ) {
-			$display_template = 'hourly_horizontal';
-		}
-
-		$template_data['TKEventW_Template'] = $display_template;
-
-		$template_class_name = TKEventW_Functions::template_class_name( $display_template );
-
-		$template_data['template_class_name'] = $template_class_name;
-
-		if ( ! empty( self::$debug_enabled ) && current_user_can( 'edit_theme_options' ) ) {
-			// var_dump( get_defined_vars() ); // uncomment if you REALLY want to display this information
-		}
-
-
-		/**
-		 * Start Building Output!!!
-		 * All data should be set by now!!!
-		 */
-
-		// cannot do <style> tags inside template because it will break any open div (e.g. wrapper div)
-		$output .= sprintf(
-			'<div class="tk-event-weather__wrapper%s">',
-			$class
-		);
-		$output .= PHP_EOL;
-
-		$output .= $before . PHP_EOL;
-
-		$output .= sprintf(
-			'<div class="tk-event-weather-template %s">',
-			$template_data['template_class_name']
-		);
-		$output .= PHP_EOL;
-
-		// https://github.com/GaryJones/Gamajo-Template-Loader/issues/13#issuecomment-196046201
-		ob_start();
-		TKEventW_Functions::load_template( $display_template, $template_data );
-		$output .= ob_get_clean();
-
-		if ( 'true' == $atts['plugin_credit_link_on'] ) {
-			$output .= TKEventW_Functions::plugin_credit_link();
-		}
-
-		if ( empty( $atts['darksky_credit_link_off'] ) ) {
-			$output .= TKEventW_Functions::darksky_credit_link();
-		}
-
-		$output .= '</div>'; // .tk-event-weather-template
-		$output .= PHP_EOL;
-
-		$output .= $after . PHP_EOL;
-
-		$output .= '</div>'; // .tk-event-weather--wrapper
-		$output .= PHP_EOL;
 
 		return $output;
-
 	}
 
 	// do not comment out -- needed because of extending an abstract class

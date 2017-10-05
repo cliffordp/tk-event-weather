@@ -17,8 +17,61 @@ class TKEventW_Time {
 
 		// Manual UTC offsets, code borrowed from https://developer.wordpress.org/reference/functions/wp_timezone_choice/
 		$offset_range = array(
-			-12, -11.5, -11, -10.5, -10, -9.5, -9, -8.5, -8, -7.5, -7, -6.5, -6, -5.5, -5, -4.5, -4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5,
-			0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 5.75, 6, 6.5, 7, 7.5, 8, 8.5, 8.75, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.75, 13, 13.75, 14
+			- 12,
+			- 11.5,
+			- 11,
+			- 10.5,
+			- 10,
+			- 9.5,
+			- 9,
+			- 8.5,
+			- 8,
+			- 7.5,
+			- 7,
+			- 6.5,
+			- 6,
+			- 5.5,
+			- 5,
+			- 4.5,
+			- 4,
+			- 3.5,
+			- 3,
+			- 2.5,
+			- 2,
+			- 1.5,
+			- 1,
+			- 0.5,
+			0,
+			0.5,
+			1,
+			1.5,
+			2,
+			2.5,
+			3,
+			3.5,
+			4,
+			4.5,
+			5,
+			5.5,
+			5.75,
+			6,
+			6.5,
+			7,
+			7.5,
+			8,
+			8.5,
+			8.75,
+			9,
+			9.5,
+			10,
+			10.5,
+			11,
+			11.5,
+			12,
+			12.75,
+			13,
+			13.75,
+			14
 		);
 
 		foreach ( $offset_range as $offset ) {
@@ -245,6 +298,121 @@ class TKEventW_Time {
 
 		// return 
 		return $date;
+	}
+
+	/**
+	 * Given a timestamp, find the minimum or maximum timestamp of that same day.
+	 *
+	 * If minimum, it will be midnight of that day. Daylight Savings Time (DST)
+	 * is not a factor because it does not change over at midnight; it changes
+	 * over at 2 AM.
+	 * If maximum, it will be 11:59:59 PM of that day.
+	 *
+	 * @param        $timestamp
+	 * @param string $timezone
+	 * @param bool   $max Default is FALSE, which means return midnight.
+	 *
+	 * @return bool|int
+	 */
+	public static function get_a_days_min_max_timestamp( $timestamp, $timezone = '', $max = false ) {
+		// We will change timezone just for this conversion. Then we'll set it back.
+		$existing_timezone = date_default_timezone_get(); // will fallback to UTC but may also return a TZ environment variable (e.g. EST)
+
+		// Dark Sky API may return an escaped timezone string
+		$timezone = stripslashes( $timezone );
+
+		if ( ! in_array( $timezone, timezone_identifiers_list() ) ) {
+			$timezone = get_option( 'timezone_string' ); // could return NULL
+		}
+
+		if ( empty( $timezone ) ) {
+			$timezone = $existing_timezone;
+		}
+
+		date_default_timezone_set( $timezone );
+
+		$datetime = new DateTime();
+
+		$datetime->setTimestamp( $timestamp );
+
+		$day = $datetime->format( 'Y-m-d' );
+
+		if ( true === $max ) {
+			// 11:59:59 PM of this day
+			$day .= ' 23:59:59';
+		} else {
+			// Midnight of this day
+			$day .= ' 00:00:00';
+		}
+
+		$result = strtotime( $day );
+
+		// set back to what date_default_timezone_get() was
+		date_default_timezone_set( $existing_timezone );
+
+		return $result;
+	}
+
+	public static function count_start_end_cal_days_span( $start_time_timestamp, $end_time_timestamp, $timezone = '' ) {
+		// We will change timezone just for this conversion. Then we'll set it back.
+		$existing_timezone = date_default_timezone_get(); // will fallback to UTC but may also return a TZ environment variable (e.g. EST)
+
+		// Dark Sky API may return an escaped timezone string
+		$timezone = stripslashes( $timezone );
+
+		if ( ! in_array( $timezone, timezone_identifiers_list() ) ) {
+			$timezone = get_option( 'timezone_string' ); // could return NULL
+		}
+
+		if ( empty( $timezone ) ) {
+			$timezone = $existing_timezone;
+		}
+
+		date_default_timezone_set( $timezone );
+
+		$start = new DateTime();
+		$end   = new DateTime();
+
+		$start->setTimestamp( $start_time_timestamp );
+		$end->setTimestamp( $end_time_timestamp );
+
+		/**
+		 * @link https://secure.php.net/manual/en/datetime.diff.php
+		 * @link https://secure.php.net/manual/en/dateinterval.format.php
+		 */
+		$diff = (int) $start->diff( $end, true )->format( '%a' );
+
+		/**
+		 * If Start and End are on the same calendar day, difference will be zero.
+		 * We are trying to get total calendar days covered by 2 dates, not just
+		 * the technical difference.
+		 */
+		$diff = $diff + 1;
+
+		// set back to what date_default_timezone_get() was
+		date_default_timezone_set( $existing_timezone );
+
+		return $diff;
+	}
+
+	public static function get_last_hour_hour_of_forecast( $end_time_timestamp ) {
+		/**
+		 * Helps with setting 'sunset_to_be_inserted'
+		 *
+		 * if event ends at 7:52pm, set to 8pm
+		 * if event ends at 7:00:00pm (not 7:00:01pm or later), set to 7pm // TODO verify
+		 *
+		 */
+		$top_of_hour      = self::timestamp_truncate_minutes( $end_time_timestamp ); // e.g. 7pm instead of 7:52pm
+		$top_of_next_hour = HOUR_IN_SECONDS + $top_of_hour; // e.g. 8pm
+
+		if ( $end_time_timestamp == $top_of_hour ) { // e.g. event ends at 7:00:00
+			$result = $top_of_hour;
+		} else {
+			$result = $top_of_next_hour;
+		}
+
+		return $result;
 	}
 
 }

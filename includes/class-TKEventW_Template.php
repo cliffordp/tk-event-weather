@@ -1,62 +1,85 @@
 <?php
-/**
- *
- * @package        TkEventW
- * @author         TourKick (Clifford Paulick)
- * @link           https://github.com/GaryJones/Gamajo-Template-Loader#installation
- * @copyright      2016 TourKick (Clifford Paulick)
- * @license        GPL-2.0+
- */
 
-if ( ! class_exists( 'Gamajo_Template_Loader' ) ) {
-	require 'vendor/gamajo-template-loader/class-gamajo-template-loader.php';
-}
+class TKEventW_Template {
+	/**
+	 * Views / Templates
+	 *
+	 * @link https://pippinsplugins.com/template-file-loaders-plugins/
+	 */
 
-/**
- * Template loader for TK Event Weather.
- *
- * Only need to specify class properties here.
- *
- * @package   TkEventW
- * @author    TourKick (Clifford Paulick)
- */
-class TKEventW_Template extends Gamajo_Template_Loader {
+	public static function new_template_loader() {
+		return new TKEventW_Template_Loader();
+	}
 
 	/**
-	 * Prefix for filter names.
-	 *
-	 * @since 1.0.0
-	 * @type string
+	 * @param       $slug
+	 * @param array $data
+	 * @param null  $name
+	 * @param bool  $load
 	 */
-	protected $filter_prefix = 'tk_event_weather';
+	public static function load_template( $slug, $data = array(), $name = null, $load = true ) {
+		$template_loader = self::new_template_loader();
+		$template_loader->set_template_data( $data, 'context' ); // passed-through data becomes accessible as $context->piece_of_data within template
+		$template_loader->get_template_part( $slug, $name, $load );
+	}
 
 	/**
-	 * Directory name where custom templates for this plugin should be found in the theme.
+	 * @param string $prepend_empty
 	 *
-	 * @since 1.0.0
-	 * @type string
+	 * @return array|bool
 	 */
-	protected $theme_template_directory = 'tk-event-weather';
+	public static function valid_display_templates( $prepend_empty = 'false' ) {
+		$result = array(
+			'hourly_horizontal' => __( 'Hourly (Horizontal)', 'tk-event-weather' ),
+			'hourly_vertical'   => __( 'Hourly (Vertical)', 'tk-event-weather' ),
+			'low_high'          => __( 'Low-High Temperature', 'tk-event-weather' ),
+		);
+
+		$custom_display_templates = apply_filters( 'tk_event_weather_custom_display_templates', array() );
+
+		if ( ! empty( $custom_display_templates ) ) {
+			$result = array_merge( $result, $custom_display_templates );
+		}
+
+		if ( 'true' == $prepend_empty ) {
+			$result = TKEventW_Functions::array_prepend_empty( $result );
+		}
+
+		return $result;
+	}
 
 	/**
-	 * Reference to the root directory path of this plugin.
+	 * @param string $template_name
 	 *
-	 * Can either be a defined constant, or a relative reference from where the subclass lives.
-	 *
-	 * @since 1.0.0
-	 * @type string
+	 * @return string
 	 */
-	protected $plugin_directory = TK_EVENT_WEATHER_PLUGIN_ROOT_DIR; // cannot use a function so need to use a constant, which gets defined in the root plugin file
+	public static function template_class_name( $template_name = '' ) {
+		$result = '';
 
-	/**
-	 * Directory name where templates are found in this plugin.
-	 *
-	 * Can either be a defined constant, or a relative reference from where the subclass lives.
-	 *
-	 * @since 1.1.0
-	 *
-	 * @type string
-	 */
-	protected $plugin_template_directory = 'includes/templates'; // or includes/templates, etc.
+		if ( array_key_exists( $template_name, self::valid_display_templates() ) ) {
+			$result = sanitize_html_class( sprintf( 'template-%s', $template_name ) );
+		}
+
+		return $result;
+	}
+
+	// does NOT close the opening DIV tag
+	// could add optional argument to customize element (div, span, etc)
+	public static function template_start_of_each_item( $template_class_name = '', $index = '' ) {
+		$result = '<div class="';
+
+		$template_class_name = sanitize_html_class( $template_class_name );
+
+		if ( ! empty( $template_class_name ) && is_integer( $index ) ) {
+			$result = sprintf( '<div class="%1$s__index-%2$d %1$s__item', $template_class_name, $index );
+		} elseif ( ! empty( $template_class_name ) && ! is_integer( $index ) ) {
+			$result = sprintf( '<div class="%1$s %1$s__item ', $template_class_name );
+		} else {
+			// nothing to do
+		}
+
+		return $result;
+	}
+
 
 }

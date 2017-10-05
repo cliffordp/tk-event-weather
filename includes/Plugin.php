@@ -265,7 +265,7 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 			'section'     => self::$customizer_section_id,
 			'settings'    => self::$customizer_flag . '[display_template]',
 			'type'        => 'select',
-			'choices'     => TKEventW_Functions::valid_display_templates( 'true' ),
+			'choices'     => TKEventW_Template::valid_display_templates( 'true' ),
 		)
 		);
 
@@ -445,7 +445,7 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 			'section'     => self::$customizer_section_id,
 			'settings'    => self::$customizer_flag . '[timezone_source]',
 			'type'        => 'select',
-			'choices'     => TKEventW_Functions::valid_timezone_sources( 'true' ),
+			'choices'     => TKEventW_Template::valid_display_templates( 'true' ),
 		)
 		);
 
