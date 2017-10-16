@@ -81,6 +81,8 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 		} else {
 			$api_key_option = TKEventW_Functions::array_get_value_by_key( $plugin_options, 'darksky_api_key' );
 
+			$multi_day_off_option = TKEventW_Functions::array_get_value_by_key( $plugin_options, 'multi_day_off' );
+
 			$gmaps_api_key_option = TKEventW_Functions::array_get_value_by_key( $plugin_options, 'google_maps_api_key' );
 
 			$text_before = TKEventW_Functions::array_get_value_by_key( $plugin_options, 'text_before' );
@@ -125,6 +127,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 		// Attributes
 		$defaults = array(
 			'api_key'                 => $api_key_option,
+			'multi_day_off'           => $multi_day_off_option,
 			'gmaps_api_key'           => $gmaps_api_key_option,
 			'post_id'                 => get_the_ID(),
 			// The ID of the current post
@@ -693,8 +696,12 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 
 		$output .= $first_day_data['template_output'];
 
+		if ( 'true' == $atts['multi_day_off'] ) {
+			self::$span_template_data['multi_day_off'] = true;
+		}
 
-		// Only calculate Total Days if not already set because it might have been forced to 1 (if no End Time was set)
+
+		// Only calculate Total Days in Span if not already set because it might have been forced to 1 (if no End Time was set)
 		if ( empty( $total_days_in_span ) ) {
 			$total_days_in_span = TKEventW_Time::count_start_end_cal_days_span( self::$span_start_time_timestamp, self::$span_end_time_timestamp, $timezone );
 		}
@@ -709,7 +716,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 
 		// because we are excluding the first day
 		for ( $i = $total_days_in_span - 1; 0 !== $i; $i -- ) {
-			$days_string = sprintf( '+%d days', $i );
+			$days_string                            = sprintf( '+%d days', $i );
 			$midnight_timestamps_except_first_day[] = strtotime( $days_string, $midnight_first_day );
 		}
 		date_default_timezone_set( $existing_timezone );
@@ -718,29 +725,64 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 
 		// Check for data inconsistencies... should not happen.
 		$hopefully_midnight_last_day = array_slice( $midnight_timestamps_except_first_day, - 1 );
-		if ( $midnight_last_day !== $hopefully_midnight_last_day[0] ) {
+		if (
+			empty( $hopefully_midnight_last_day[0] )
+			|| $midnight_last_day !== $hopefully_midnight_last_day[0]
+		) {
 			// instead of returning a full error, let's just display one day; it's better than nothing.
 			$total_days_in_span = 1;
 		}
 
+		$max_allowed_consecutive_days = apply_filters( 'tk_event_weather_multi_day_max_allowed_consecutive_days', 10 );
+
+		$max_allowed_consecutive_days = absint( $max_allowed_consecutive_days );
+
+		// reset to default if filtering caused trouble
+		if ( 1 > $max_allowed_consecutive_days ) {
+			$max_allowed_consecutive_days = 10;
+		}
+
+		if ( $max_allowed_consecutive_days < $total_days_in_span ) {
+			$total_days_in_span = $max_allowed_consecutive_days;
+		}
+
 		$day_index = 2;
 		if ( 1 < $total_days_in_span ) {
-			foreach ( $midnight_timestamps_except_first_day as $midnight ) {
-				$day_class = new TKEventW_Single_Day( $midnight, self::$span_end_time_timestamp, $day_index );
-				$day_data  = $day_class::get_result();
+			// if multi-day is enabled
+			if ( ! empty( self::$span_template_data['multi_day_off'] ) ) {
+				TKEventW_Functions::invalid_shortcode_message( 'Multi-Day Forecasting is disabled and Event End Time is not on the same day as Event Start Time. Please correct the Event End Time to either be a different time on the same day or to be blank (to display weather through the end of the same day)' );
+				$output .= TKEventW_Functions::$shortcode_error_message;
+			} else {
+				foreach ( $midnight_timestamps_except_first_day as $midnight ) {
+					$day_class = new TKEventW_Single_Day( $midnight, self::$span_end_time_timestamp, $day_index );
+					$day_data  = $day_class::get_result();
 
-				if ( ! empty( self::$debug_enabled ) ) {
-					$output .= $day_data['api_data_debug'];
+					if ( ! empty( self::$debug_enabled ) ) {
+						$output .= $day_data['api_data_debug'];
+					}
+
+					$output .= $day_data['template_output'];
+
+					// if last day, output credit link(s)
+					if ( $total_days_in_span === $day_index ) {
+						if ( 'true' == $atts['plugin_credit_link_on'] ) {
+							$output .= TKEventW_Functions::plugin_credit_link();
+							$output .= PHP_EOL;
+						}
+
+						if ( empty( $atts['darksky_credit_link_off'] ) ) {
+							$output .= TKEventW_Functions::darksky_credit_link();
+							$output .= PHP_EOL;
+						}
+					}
+
+					$day_index ++;
 				}
-
-				$output .= $day_data['template_output'];
-
-				$day_index++;
 			}
 		}
 
 		// one last check just to make sure
-		if ( ! empty( TKEventW_Functions::$shortcode_error_message  ) ) {
+		if ( ! empty( TKEventW_Functions::$shortcode_error_message ) ) {
 			return TKEventW_Functions::$shortcode_error_message;
 		}
 
