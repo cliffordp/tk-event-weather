@@ -635,7 +635,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 			$display_template = 'hourly_horizontal';
 		}
 
-		self::$span_template_data['template'] = $display_template;
+		self::$span_template_data['template']            = $display_template;
 		self::$span_template_data['template_class_name'] = TKEventW_Template::template_class_name( $display_template );
 
 
