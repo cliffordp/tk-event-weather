@@ -288,20 +288,14 @@ TK Event Weather JSON Data
 
 		$output .= '<div class="tk-event-weather-template">';
 		$output .= PHP_EOL;
+
+		$output .= sprintf( '<h4 class="tk-event-weather-day-name">%s</h4>', date_i18n( TKEventW_Shortcode::$time_format_day, self::$result['start_time_timestamp'] ) );
 		$output .= PHP_EOL;
 
 		// https://github.com/GaryJones/Gamajo-Template-Loader/issues/13#issuecomment-196046201
 		ob_start(); // TODO still needed?
 		TKEventW_Template::load_template( $template_data['template'], $template_data );
 		$output .= ob_get_clean();
-
-		if ( ! empty( $template_data['plugin_credit_link_enabled'] ) ) {
-			$output .= TKEventW_Functions::plugin_credit_link();
-		}
-
-		if ( ! empty( $template_data['darksky_credit_link_enabled'] ) ) {
-			$output .= TKEventW_Functions::darksky_credit_link();
-		}
 
 		$output .= '</div>'; // .tk-event-weather-template
 		$output .= PHP_EOL;
