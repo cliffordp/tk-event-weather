@@ -221,6 +221,7 @@ Many thanks to the following:
 = Version 1.5 =
 * Fix - Detect when a Manual UTC Offset (like "UTC+10") is used instead of an IANA timezone name supported by the weather API and PHP (like "Australia/Brisbane"). If a manual UTC offset is used, the shortcode will now result in an error. Previously, it would fallback to use the API's detected local timezone. This change was made to reduce confusion and the possibility of inconsistencies in some edge cases.
 * Enhancement - Added a convenient link in the WP Admin Bar to edit the current URL in the Customizer, jumping right to TK Event Weather's settings panel. Removed the `tk_event_weather_customizer_link_to_core_section` filter, as it is irrelevant now.
+* Tweak - Improved the Customizer UI by breaking out all the plugin options from a single section to multiple sections.
 * Tweak - Manually set the WP Customizer's password-type fields for API keys to disable autocomplete and password prompts.
 * Tweak - Removed tk_event_weather_darksky_units_default and tk_event_weather_darksky_exclude_default filters. Added tk_event_weather_dark_sky_request_uri_query_args filter.
 * Enhancement - Added tk_event_weather_gmaps_geocode_request_uri_query_args filter to allow adding things like <a href="https://developers.google.com/maps/documentation/geocoding/intro#RegionCodes">Region Biasing</a>.
