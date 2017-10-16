@@ -77,6 +77,9 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 
 		add_action( 'template_redirect', array( $this, 'register_assets' ), 0 );
 
+		// WP Admin Bar: add TK Event Weather settings link under Customizer item
+		add_action( 'admin_bar_menu', array( $this, 'customizer_link_to_edit_current_url' ) );
+
 
 		// Adding scripts & styles to all pages
 		// Examples:
@@ -117,6 +120,18 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 		// get the page to return to (hit X on the Customizer)
 		//$url = add_query_arg( 'return', esc_url( admin_url( 'themes.php' ) ), $url );
 
+	/**
+	 * Add Customizer URL query parameters to a given link.
+	 *
+	 * @param $url                  The URL to add Customizer URL query
+	 *                              parameters to.
+	 * @param $deep_link_to_section Optional to deep link into a particular
+	 *                              section, such as 'display', 'api_dark_sky',
+	 *                              'api_google', or 'advanced'.
+	 *
+	 * @return string
+	 */
+	private function convert_link_to_a_customizer_link( $url, $deep_link_to_section = '') {
 		// add flag in the Customizer url so we know we're in this plugin's Customizer Section
 		$url = add_query_arg( self::$customizer_flag, 'true', $url );
 
@@ -128,7 +143,42 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 		if ( true === $link_to_core_section ) {
 			// auto-open the Core Settings section within the panel
 			$url = add_query_arg( 'autofocus[section]', self::$customizer_section_id, $url );
+	/**
+	 * WP Admin Bar: add TK Event Weather settings link under Customizer item
+	 *
+	 * Based on wp_admin_bar_customize_menu()
+	 *
+	 * @param $wp_adminbar
+	 */
+	public function customizer_link_to_edit_current_url( $wp_adminbar ) {
+		if (
+			is_customize_preview()
+			|| is_admin()
+		) {
+			return;
 		}
+
+		$current_url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+		$url = add_query_arg( 'url', urlencode( $current_url ), wp_customize_url() );
+
+		$url = self::convert_link_to_a_customizer_link( $url );
+
+		$wp_adminbar->add_node( array(
+			'id'     => 'tkeventw_edit_page',
+			'title'  => __( 'Open in TK Event Weather settings', 'tk-event-weather' ),
+			'parent' => 'customize',
+			'href'   => $url,
+			'meta'   => array(
+				'class' => 'hide-if-no-customize',
+			),
+		) );
+	}
+
+	public static function customizer_options_link() {
+		$url = wp_customize_url();
+
+		$url = self::convert_link_to_a_customizer_link( $url );
 
 		return $url;
 	}
