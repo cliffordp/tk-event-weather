@@ -32,6 +32,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 	// Timezone might get set via API response, depending on settings.
 	public static $timezone = '';
 
+	public static $time_format_day = '';
 	public static $time_format_hours = '';
 	public static $time_format_minutes = '';
 
@@ -87,6 +88,8 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 			$text_after = TKEventW_Functions::array_get_value_by_key( $plugin_options, 'text_after' );
 
 			$display_template_option = TKEventW_Functions::array_get_value_by_key( $plugin_options, 'display_template' );
+
+			$time_format_day_option = TKEventW_Functions::array_get_value_by_key( $plugin_options, 'time_format_day', 'M j' );
 
 			$time_format_hours_option = TKEventW_Functions::array_get_value_by_key( $plugin_options, 'time_format_hours', 'ga' );
 
@@ -166,6 +169,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 			// Display Customizations
 			'before'                  => $text_before,
 			'after'                   => $text_after,
+			'time_format_day'       => $time_format_day_option,
 			'time_format_hours'       => $time_format_hours_option,
 			'time_format_minutes'     => $time_format_minutes_option,
 			'units'                   => '',
@@ -522,6 +526,11 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 		}
 
 		self::$span_template_data['after'] = $after;
+
+		// time_format_day
+		$time_format_day = sanitize_text_field( $atts['time_format_day'] );
+
+		self::$time_format_day = $time_format_day;
 
 		// time_format_hours
 		$time_format_hours = sanitize_text_field( $atts['time_format_hours'] );
