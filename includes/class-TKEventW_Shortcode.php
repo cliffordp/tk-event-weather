@@ -29,8 +29,9 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 	public static $transients_enabled = true;
 	public static $transients_expiration_hours = 0;
 
-	// Timezone might get set via API response, depending on settings.
-	public static $timezone = '';
+	// ONLY set via TKEventW_Time::set_timezone_and_source_from_shortcode_args()
+	public static $timezone_source = ''; // can be blank if timezone is set manually via shortcode argument
+	public static $timezone = ''; // cannot be blank, possibly set via TKEventW_Time::set_timezone_from_api()
 
 	public static $time_format_day = '';
 	public static $time_format_hours = '';
@@ -172,7 +173,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 			// Display Customizations
 			'before'                  => $text_before,
 			'after'                   => $text_after,
-			'time_format_day'       => $time_format_day_option,
+			'time_format_day'         => $time_format_day_option,
 			'time_format_hours'       => $time_format_hours_option,
 			'time_format_minutes'     => $time_format_minutes_option,
 			'units'                   => '',
@@ -289,7 +290,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 		}
 
 		if ( empty( self::$latitude_longitude ) ) {
-			if ( empty( TKEventW_Functions::$shortcode_error_message ) ) {
+			if ( empty( TKEventW_Functions::$shortcode_error_message ) ) { // TODO move to the method itself (to not overwrite)
 				TKEventW_Functions::invalid_shortcode_message( 'Please enter valid Latitude and Longitude coordinates (or a Location that Google Maps can get coordinates for)' );
 			}
 
@@ -639,6 +640,12 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 		self::$span_template_data['template_class_name'] = TKEventW_Template::template_class_name( $display_template );
 
 
+		TKEventW_Time::set_timezone_and_source_from_shortcode_args( $atts['timezone'], $atts['timezone_source'] );
+
+		if ( ! empty( TKEventW_Functions::$shortcode_error )) { //TODO remove this variable
+			return TKEventW_Functions::$shortcode_error_message;
+		}
+
 		/**
 		 * Run the first day through Dark Sky API.
 		 *
@@ -652,47 +659,9 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 			$output .= $first_day_data['api_data_debug'];
 		}
 
-
-		// if timezone argument is set, use that, else set via timezone_source argument
-		$timezone = TKEventW_Functions::remove_all_whitespace( $atts['timezone'] ); // do not strtolower()
-
-		if ( ! in_array( $timezone, timezone_identifiers_list() ) ) {
-			// DO NOT allow manual offset (invalid for PHP) timezones via shortcode because it is not supported by the API and can open the door to unexpected behavior.
-			if ( in_array( $timezone, TKEventW_Time::wp_manual_utc_offsets_array() ) ) {
-				TKEventW_Functions::invalid_shortcode_message( $timezone . ' is a manual UTC offset, not a valid timezone name. Manual UTC offsets are allowed by WordPress but not supported by this plugin. Instead, please use a timezone name supported by PHP (https://secure.php.net/manual/timezones.php)' );
-
-				return TKEventW_Functions::$shortcode_error_message;
-			}
-
-			// Timezone Source
-			$timezone_source = TKEventW_Functions::remove_all_whitespace( strtolower( $atts['timezone_source'] ) );
-
-			if ( 'wp' == $timezone_source ) {
-				$timezone_source = 'wordpress';
-			}
-
-			if ( ! array_key_exists( $timezone_source, TKEventW_Time::valid_timezone_sources() ) ) {
-				TKEventW_Functions::invalid_shortcode_message( 'Please set your WordPress timezone in General Settings or fix your Timezone Source shortcode argument' );
-
-				return TKEventW_Functions::$shortcode_error_message;
-			}
-
-			if ( 'wordpress' == $timezone_source ) {
-				$timezone = get_option( 'timezone_string' ); // will be NULL if using a manual offset timezone, which will then default it to use the API's detected timezone
-			}
-
-			if (
-				'api' == $timezone_source
-				|| empty( $timezone ) // in case WP is set to manual offset, in which case 'gmt_offset' WordPress option will be set. It and 'timezone_string' are mutually exclusive.
-			) {
-				// Dark Sky API may return an escaped timezone string
-				$timezone = stripslashes( $first_day_data['api_data']->timezone );
-			}
+		if ( ! empty( TKEventW_Functions::$shortcode_error )) {
+			return TKEventW_Functions::$shortcode_error_message;
 		}
-
-		self::$timezone                       = $timezone;
-		self::$span_template_data['timezone'] = $timezone;
-
 
 		$output .= $first_day_data['template_output'];
 
@@ -703,11 +672,11 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 
 		// Only calculate Total Days in Span if not already set because it might have been forced to 1 (if no End Time was set)
 		if ( empty( $total_days_in_span ) ) {
-			$total_days_in_span = TKEventW_Time::count_start_end_cal_days_span( self::$span_start_time_timestamp, self::$span_end_time_timestamp, $timezone );
+			$total_days_in_span = TKEventW_Time::count_start_end_cal_days_span( self::$span_start_time_timestamp, self::$span_end_time_timestamp, self::$timezone );
 		}
 
-		$midnight_first_day = TKEventW_Time::get_a_days_min_max_timestamp( self::$span_start_time_timestamp, $timezone );
-		$midnight_last_day  = TKEventW_Time::get_a_days_min_max_timestamp( self::$span_end_time_timestamp, $timezone );
+		$midnight_first_day = TKEventW_Time::get_a_days_min_max_timestamp( self::$span_start_time_timestamp, self::$timezone );
+		$midnight_last_day  = TKEventW_Time::get_a_days_min_max_timestamp( self::$span_end_time_timestamp, self::$timezone );
 
 		$midnight_timestamps_except_first_day = array();
 

@@ -143,6 +143,8 @@ class TKEventW_API_Dark_Sky {
 			set_transient( self::get_transient_name(), $data, TKEventW_Shortcode::$transients_expiration_hours * HOUR_IN_SECONDS ); // e.g. 12 hours
 		}
 
+		TKEventW_Time::set_timezone_from_api( $data->timezone ); // TODO: minor optimization: only run the first day of a multi-day request
+
 		return $data;
 	}
 

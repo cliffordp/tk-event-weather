@@ -281,15 +281,20 @@ TK Event Weather JSON Data
 		 */
 
 		// cannot do <style> tags inside template because it will break any open div (e.g. wrapper div)
-		$output .= sprintf( '<div class="%s">', $class );
+		$output .= sprintf( '<div class="%s">', esc_attr( $class ) );
 		$output .= PHP_EOL;
 
-		$output .= $template_data['before'] . PHP_EOL;
+		$output .= $template_data['before'];
+		$output .= PHP_EOL;
 
 		$output .= '<div class="tk-event-weather-template">';
 		$output .= PHP_EOL;
 
-		$output .= sprintf( '<h4 class="tk-event-weather-day-name">%s</h4>', date_i18n( TKEventW_Shortcode::$time_format_day, self::$result['start_time_timestamp'] ) );
+		$output .= '<h4 class="tk-event-weather-day-name"';
+		if ( ! empty( self::$result['api_data']->daily->data[0]->summary ) ) {// Note "daily" instead of "hourly"
+			$output .= sprintf( ' title="%s"', esc_attr( self::$result['api_data']->daily->data[0]->summary ) );
+		}
+		$output .= sprintf( '>%s</h4>', esc_attr( date_i18n( TKEventW_Shortcode::$time_format_day, self::$result['start_time_timestamp'] ) ) );
 		$output .= PHP_EOL;
 
 		// https://github.com/GaryJones/Gamajo-Template-Loader/issues/13#issuecomment-196046201
@@ -300,7 +305,8 @@ TK Event Weather JSON Data
 		$output .= '</div>'; // .tk-event-weather-template
 		$output .= PHP_EOL;
 
-		$output .= $template_data['after'] . PHP_EOL;
+		$output .= $template_data['after'];
+		$output .= PHP_EOL;
 
 		$output .= '</div>'; // .tk-event-weather--wrapper
 		$output .= PHP_EOL;

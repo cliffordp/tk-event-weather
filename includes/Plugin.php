@@ -582,7 +582,7 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 				'section'     => self:: $customizer_section_id . '_api_dark_sky',
 				'settings'    => self::$customizer_flag . '[timezone_source]',
 				'type'        => 'select',
-				'choices'     => TKEventW_Template::valid_display_templates( 'true' ),
+				'choices'     => TKEventW_Time::valid_timezone_sources( 'true' ),
 			)
 		);
 
