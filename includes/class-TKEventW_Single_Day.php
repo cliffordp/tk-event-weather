@@ -255,7 +255,8 @@ TK Event Weather JSON Data
 		$template_data['wind_speed_units'] = $wind_speed_units;
 
 		// Total Days in Span won't be set at time of first day's run so don't try to include it
-		$class = sprintf( 'tk-event-weather__wrapper tk-event-weather__span-%d-to-%d tk-event-weather__day-index-%d %s',
+		$class = sprintf( 'tk-event-weather__wrapper %s tk-event-weather__span-%d-to-%d tk-event-weather__day-index-%d %s',
+			TKEventW_Shortcode::$span_template_data['template_class_name'],
 			TKEventW_Shortcode::$span_start_time_timestamp,
 			TKEventW_Shortcode::$span_end_time_timestamp,
 			self::$result['day_number_of_span'],
@@ -285,10 +286,8 @@ TK Event Weather JSON Data
 
 		$output .= $template_data['before'] . PHP_EOL;
 
-		$output .= sprintf(
-			'<div class="tk-event-weather-template %s">',
-			TKEventW_Shortcode::$span_template_data['template_class_name']
-		);
+		$output .= '<div class="tk-event-weather-template">';
+		$output .= PHP_EOL;
 		$output .= PHP_EOL;
 
 		// https://github.com/GaryJones/Gamajo-Template-Loader/issues/13#issuecomment-196046201

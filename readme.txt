@@ -223,6 +223,7 @@ Many thanks to the following:
 * Tweak - Manually set the WP Customizer's password-type fields for API keys to disable autocomplete and password prompts.
 * Tweak - Removed tk_event_weather_darksky_units_default and tk_event_weather_darksky_exclude_default filters. Added tk_event_weather_dark_sky_request_uri_query_args filter.
 * Enhancement - Added tk_event_weather_gmaps_geocode_request_uri_query_args filter to allow adding things like <a href="https://developers.google.com/maps/documentation/geocoding/intro#RegionCodes">Region Biasing</a>.
+* Fix - Hourly Horizontal's scrolling CSS no longer affects the Hourly Vertical and Low-High displays.
 * Update Freemius SDK from v1.2.1.7.1 to v1.2.2.9
 
 = Version 1.4.6 =
