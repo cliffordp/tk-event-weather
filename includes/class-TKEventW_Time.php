@@ -422,6 +422,34 @@ class TKEventW_Time {
 	}
 
 	/**
+	 * If a timestamp is during "today" in a given timezone.
+	 *
+	 * @param $timestamp
+	 *
+	 * @return bool
+	 */
+	public static function timestamp_is_during_today( $timestamp ) {
+		if ( empty( TKEventW_Shortcode::$timezone ) ) {
+			return false;
+		}
+
+		$now            = time();
+		$today_midnight = self::get_a_days_min_max_timestamp( $now, TKEventW_Shortcode::$timezone );
+		$today_end      = self::get_a_days_min_max_timestamp( $now, TKEventW_Shortcode::$timezone, true );
+
+		if (
+			! empty( $today_midnight )
+			&& ! empty( $today_end )
+			&& $today_midnight <= $timestamp
+			&& $today_end >= $timestamp
+		) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * Given a timestamp, find the minimum or maximum timestamp of that same day.
 	 *
 	 * If minimum, it will be midnight of that day. Daylight Savings Time (DST)

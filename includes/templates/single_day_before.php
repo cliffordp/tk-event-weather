@@ -38,7 +38,26 @@ $output .= '<h4 class="tk-event-weather-day-name"';
 if ( ! empty( $context->api_data->daily->data[0]->summary ) ) { // Note "daily" instead of "hourly"
 	$output .= sprintf( ' title="%s"', esc_attr( $context->api_data->daily->data[0]->summary ) );
 }
-$output .= sprintf( '>%s</h4>', esc_attr( date_i18n( TKEventW_Shortcode::$time_format_day, $context->start_time_timestamp ) ) );
+
+$day_name = date_i18n( TKEventW_Shortcode::$time_format_day, $context->start_time_timestamp );
+
+/**
+ * Filter to disable changing a day's name from something like "Oct 1" to
+ * "Today".
+ *
+ * @param $today_text
+ * @param $day_name
+ */
+$change_day_name_to_today = apply_filters( 'tk_event_weather_change_day_name_if_is_today', true, $day_name );
+
+if (
+	! empty( $change_day_name_to_today )
+	&& true === TKEventW_Time::timestamp_is_during_today( $context->start_time_timestamp )
+) {
+	$day_name = _x( 'Today', 'day name if forecast is for today', 'tk-event-weather' );
+}
+
+$output .= sprintf( '>%s</h4>', esc_attr( $day_name ) );
 $output .= PHP_EOL;
 
 // Same as "title" attribute for Day Name but displayed below it so it is more noticeable

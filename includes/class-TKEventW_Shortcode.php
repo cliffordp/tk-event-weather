@@ -668,6 +668,13 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 			return TKEventW_Functions::$shortcode_error_message;
 		}
 
+		// Multi-Day Start at Today
+		if ( 'true' == $atts['multi_day_ignore_start_at_today'] ) {
+			self::$span_template_data['multi_day_start_at_today'] = false;
+		} else {
+			self::$span_template_data['multi_day_start_at_today'] = true;
+		}
+
 		/**
 		 * Run the first day through Dark Sky API.
 		 *
@@ -738,16 +745,9 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 			$total_days_in_span = 1;
 		}
 
-		// Multi-Day Start at Today
-		if ( 'true' == $atts['multi_day_ignore_start_at_today'] ) {
-			self::$span_template_data['multi_day_start_at_today'] = false;
-		} else {
-			self::$span_template_data['multi_day_start_at_today'] = true;
-		}
-
+		// if entire span is in the past, set back to FALSE
 		$today_midnight = TKEventW_Time::get_a_days_min_max_timestamp( time(), self::$timezone );
 
-		// if entire span is in the past, set back to FALSE
 		if (
 			true === self::$span_template_data['multi_day_start_at_today']
 			&& $midnight_last_day < $today_midnight

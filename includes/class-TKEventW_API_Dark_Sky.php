@@ -108,12 +108,39 @@ class TKEventW_API_Dark_Sky {
 		}
 	}
 
+	/**
+	 * Set timezone as soon as possible because so many other things rely on it.
+	 *
+	 * We usually want the timezone set via the API, but we need the timezone
+	 * set ASAP because of running the API data through the display template
+	 * or using functions requiring the timezone.
+	 *
+	 * @param $use_this_timezone
+	 *
+	 * @return bool
+	 */
+	public static function set_timezone_if_needed( $use_this_timezone ) {
+		if (
+			! empty( TKEventW_Shortcode::$timezone )
+			|| ! in_array( $use_this_timezone, timezone_identifiers_list() )
+		) {
+			return false;
+		}
+
+		// set it from API if we're allowed to
+		TKEventW_Time::set_timezone_from_api( $use_this_timezone );
+	}
+
 	public static function get_response_data() {
 		// Get from transient if exists and valid
 		$transient_data = self::get_transient_value();
 
 		if ( true === self::valid_transient( $transient_data ) ) {
 			TKEventW_Shortcode::$dark_sky_api_transient_used = 'TRUE';
+
+			if ( ! empty( $transient_data->timezone ) ) {
+				self::set_timezone_if_needed( $transient_data->timezone );
+			}
 
 			return $transient_data;
 		}
@@ -156,8 +183,8 @@ class TKEventW_API_Dark_Sky {
 			set_transient( self::get_transient_name(), $data, $transient_expiration_hours * HOUR_IN_SECONDS ); // e.g. 12 hours
 		}
 
-		if ( empty( TKEventW_Shortcode::$timezone ) ) {
-			TKEventW_Time::set_timezone_from_api( $data->timezone );
+		if ( ! empty( $data->timezone ) ) {
+			self::set_timezone_if_needed( $data->timezone );
 		}
 
 		return $data;
