@@ -125,7 +125,7 @@ TK Event Weather JSON Data
 	}
 
 	private static function build_template_output() {
-		if ( true === TKEventW_Functions::$shortcode_error ) {
+		if ( ! empty( TKEventW_Functions::$shortcode_error_message ) ) {
 			return false;
 		}
 
@@ -138,7 +138,7 @@ TK Event Weather JSON Data
 
 		// First hour to start pulling for Hourly Data
 		foreach ( $hourly_timestamps as $key => $value ) {
-			if ( intval( $value ) == intval( self::$result['start_time_timestamp'] ) ) {
+			if ( intval( $value ) === intval( TKEventW_Time::timestamp_truncate_minutes( self::$result['start_time_timestamp'] ) ) ) {
 				$weather_hourly_start_key = $key; // so we know where to start when pulling hourly weather
 				break;
 			}
@@ -255,7 +255,7 @@ TK Event Weather JSON Data
 		$template_data['wind_speed_units'] = $wind_speed_units;
 
 		// Total Days in Span won't be set at time of first day's run so don't try to include it
-		$class = sprintf( 'tk-event-weather__wrapper %s tk-event-weather__span-%d-to-%d tk-event-weather__day-index-%d %s',
+		$class = sprintf( 'tk-event-weather__wrap_single_day %s tk-event-weather__span-%d-to-%d tk-event-weather__day-index-%d %s',
 			TKEventW_Shortcode::$span_template_data['template_class_name'],
 			TKEventW_Shortcode::$span_start_time_timestamp,
 			TKEventW_Shortcode::$span_end_time_timestamp,
@@ -291,24 +291,37 @@ TK Event Weather JSON Data
 		$output .= PHP_EOL;
 
 		$output .= '<h4 class="tk-event-weather-day-name"';
-		if ( ! empty( self::$result['api_data']->daily->data[0]->summary ) ) {// Note "daily" instead of "hourly"
+		if ( ! empty( self::$result['api_data']->daily->data[0]->summary ) ) { // Note "daily" instead of "hourly"
 			$output .= sprintf( ' title="%s"', esc_attr( self::$result['api_data']->daily->data[0]->summary ) );
 		}
 		$output .= sprintf( '>%s</h4>', esc_attr( date_i18n( TKEventW_Shortcode::$time_format_day, self::$result['start_time_timestamp'] ) ) );
 		$output .= PHP_EOL;
 
+		// Same as "title" attribute for Day Name but displayed below it so it is more noticeable
+		if ( ! empty( self::$result['api_data']->daily->data[0]->summary ) ) { // Note "daily" instead of "hourly"
+			$output .= sprintf( '<div class="tk-event-weather-day-summary">%s</div>', esc_html( self::$result['api_data']->daily->data[0]->summary ) );
+			$output .= PHP_EOL;
+		}
+
+		$output .= '<div class="tk-event-weather-single-day-weather">';
+		$output .= PHP_EOL;
+
 		// https://github.com/GaryJones/Gamajo-Template-Loader/issues/13#issuecomment-196046201
-		ob_start(); // TODO still needed?
+		ob_start();
+
 		TKEventW_Template::load_template( $template_data['template'], $template_data );
 		$output .= ob_get_clean();
+
+		$output .= '</div>'; // .tk-event-weather-single-day-weather
+		$output .= PHP_EOL;
 
 		$output .= '</div>'; // .tk-event-weather-template
 		$output .= PHP_EOL;
 
-		$output .= $template_data['after'];
+		$output .= '</div>'; // .$class
 		$output .= PHP_EOL;
 
-		$output .= '</div>'; // .tk-event-weather--wrapper
+		$output .= $template_data['after'];
 		$output .= PHP_EOL;
 
 		return $output;

@@ -50,12 +50,30 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 	}
 
 
+	public function activate() {
+
+	}
+
+	public function deactivate() {
+	}
+
 	/**
 	 * Perform actions when upgrading from version X to version Y
 	 * See: http://plugin.michael-simpson.com/?page_id=35
 	 * @return void
 	 */
 	public function upgrade() {
+		$upgradeOk    = true;
+		$savedVersion = $this->getVersionSaved();
+		if ( $this->isVersionLessThan( $savedVersion, '1.5' ) ) {
+			// TODO: delete old options, including transients https://wordpress.stackexchange.com/a/75758/22702 -- delete leftover TkEventW__Plugin::$customizer_flag array keys like ^forecast_io%
+		}
+
+		// Post-upgrade, set the current version in the options
+		$codeVersion = $this->getVersion();
+		if ( $upgradeOk && $savedVersion != $codeVersion ) {
+			$this->saveInstalledVersion();
+		}
 	}
 
 	public function addActionsAndFilters() {
@@ -125,17 +143,17 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 	 *
 	 * @return string
 	 */
-	private function convert_link_to_a_customizer_link( $url, $deep_link_to_section = '') {
+	private static function convert_link_to_a_customizer_link( $url, $deep_link_to_section = '' ) {
 		// add flag in the Customizer url so we know we're in this plugin's Customizer Section
 		$url = add_query_arg( self::$customizer_flag, 'true', $url );
 
 		// auto-open the panel
 		$url = add_query_arg( 'autofocus[panel]', self::$customizer_panel_id, $url );
 
-		if ( ! empty( $deep_link_to_section)) {
+		if ( ! empty( $deep_link_to_section ) ) {
 			// e.g. 'display' becomes self::$customizer_section_id . '_display'
 			$section_id = sprintf( '%s_%s', self::$customizer_section_id, $deep_link_to_section );
-			$url = add_query_arg( 'autofocus[section]', $section_id, $url );
+			$url        = add_query_arg( 'autofocus[section]', $section_id, $url );
 		}
 
 		return $url;
@@ -148,7 +166,7 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 	 *
 	 * @param $wp_adminbar
 	 */
-	public function customizer_link_to_edit_current_url( $wp_adminbar ) {
+	public static function customizer_link_to_edit_current_url( $wp_adminbar ) {
 		if (
 			is_customize_preview()
 			|| is_admin()
@@ -181,7 +199,7 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 		return $url;
 	}
 
-	public static function customizer_edit_shortcut_setting() {
+	public function customizer_edit_shortcut_setting() {
 		// Always start at Dark Sky API Key if not entered
 		$darksky_api_key = TKEventW_Functions::array_get_value_by_key( TKEventW_Functions::plugin_options(), 'darksky_api_key' );
 
@@ -292,6 +310,63 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 			)
 		);
 
+		// Disable horizontal scrolling
+		$wp_customize->add_setting(
+			self::$customizer_flag . '[scroll_horizontal_off]', array(
+				'type'    => 'option',
+				'default' => '',
+			)
+		);
+
+		$wp_customize->add_control(
+			self::$customizer_flag . '_scroll_horizontal_off_control', array(
+				'label'       => esc_html__( 'Disable Horizontal Scrolling', 'tk-event-weather' ),
+				'description' => __( 'If checked, the horizontal scrolling stylesheet will not load and, therefore, it will wrap to multiple rows and there will not be a horizontal scroll bar.', 'tk-event-weather' ),
+				'section'     => self:: $customizer_section_id . '_display',
+				'settings'    => self::$customizer_flag . '[scroll_horizontal_off]',
+				'type'        => 'checkbox',
+				'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
+			)
+		);
+
+		// Disable vertical to columns
+		$wp_customize->add_setting(
+			self::$customizer_flag . '[vertical_to_columns_off]', array(
+				'type'    => 'option',
+				'default' => '',
+			)
+		);
+
+		$wp_customize->add_control(
+			self::$customizer_flag . '_vertical_to_columns_off_control', array(
+				'label'       => esc_html__( 'Disable Vertical to Columns', 'tk-event-weather' ),
+				'description' => __( 'If checked, the vertical columns stylesheet will not load and, therefore, each day displayed vertically will be below the previous day.', 'tk-event-weather' ),
+				'section'     => self:: $customizer_section_id . '_display',
+				'settings'    => self::$customizer_flag . '[vertical_to_columns_off]',
+				'type'        => 'checkbox',
+				'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
+			)
+		);
+
+		// Disable Sunrise/Sunset
+		$wp_customize->add_setting(
+			self::$customizer_flag . '[sunrise_sunset_off]', array(
+				'type'    => 'option',
+				'default' => '',
+			)
+		);
+
+		$wp_customize->add_control(
+			self::$customizer_flag . '_sunrise_sunset_off_control', array(
+				'label'       => esc_html__( 'Disable Sunrise/Sunset', 'tk-event-weather' ),
+				'description' => __( 'Check this box to disable including sunrise and sunset times into the hourly weather views.', 'tk-event-weather' ),
+				'section'     => self:: $customizer_section_id . '_display',
+				'settings'    => self::$customizer_flag . '[sunrise_sunset_off]',
+				'type'        => 'checkbox',
+				'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
+			)
+		);
+
 		// Before Text
 		$wp_customize->add_setting(
 			self::$customizer_flag . '[text_before]', array(
@@ -387,45 +462,7 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 			)
 		);
 
-		// Disable horizontal scrolling
-		$wp_customize->add_setting(
-			self::$customizer_flag . '[scroll_horizontal_off]', array(
-				'type'    => 'option',
-				'default' => '',
-			)
-		);
-
-		$wp_customize->add_control(
-			self::$customizer_flag . '_scroll_horizontal_off_control', array(
-				'label'       => esc_html__( 'Disable Horizontal Scrolling', 'tk-event-weather' ),
-				'description' => __( 'If checked, the horizontal scrolling stylesheet will not load and, therefore, it will wrap to multiple rows and there will not be a horizontal scroll bar.', 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_display',
-				'settings'    => self::$customizer_flag . '[scroll_horizontal_off]',
-				'type'        => 'checkbox',
-				'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
-			)
-		);
-
-		// Disable Sunrise/Sunset
-		$wp_customize->add_setting(
-			self::$customizer_flag . '[sunrise_sunset_off]', array(
-				'type'    => 'option',
-				'default' => '',
-			)
-		);
-
-		$wp_customize->add_control(
-			self::$customizer_flag . '_sunrise_sunset_off_control', array(
-				'label'       => esc_html__( 'Disable Sunrise/Sunset', 'tk-event-weather' ),
-				'description' => __( 'Check this box to disable including sunrise and sunset times into the hourly weather views.', 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_display',
-				'settings'    => self::$customizer_flag . '[sunrise_sunset_off]',
-				'type'        => 'checkbox',
-				'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
-			)
-		);
-
-		// Disable Plugin Credit Link
+		// Enable Plugin Credit Link
 		$wp_customize->add_setting(
 			self::$customizer_flag . '[plugin_credit_link_on]', array(
 				'type'    => 'option',
@@ -491,22 +528,41 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 			)
 		);
 
-		// Disable Multi-Day
+		// Multi-Day control
 		$wp_customize->add_setting(
-			self::$customizer_flag . '[multi_day_off]', array(
+			self::$customizer_flag . '[multi_day_limit]', array(
+				'type'              => 'option',
+				'default'           => '',
+				'sanitize_callback' => array( 'TKEventW_Functions', 'sanitize_absint_allow_blank' ),
+			)
+		);
+
+		$wp_customize->add_control(
+			self::$customizer_flag . '_multi_day_limit_control', array(
+				'label'       => esc_html__( 'Multi-day forecast limit', 'tk-event-weather' ),
+				'description' => __( "This is to protect you against too many API calls at once due to a typo between the Start Date and End Date, for example. <strong>Change this to 1 to disable multi-day forecasts</strong>, or increase it beyond 10 if you really want to. Note that each calendar day of a forecast request will cost 1 Dark Sky API credit. Example: December 2 at 7pm to December 4 at 5am would be 3 days.<br><strong>Default: 10</strong>", 'tk-event-weather' ),
+				'section'     => self:: $customizer_section_id . '_api_dark_sky',
+				'settings'    => self::$customizer_flag . '[multi_day_limit]',
+				'type'        => 'text',
+			)
+		);
+
+		// Multi-Day force showing past days while Today is in the span of days
+		$wp_customize->add_setting(
+			self::$customizer_flag . '[multi_day_ignore_start_at_today]', array(
 				'type'    => 'option',
 				'default' => '',
 			)
 		);
 
 		$wp_customize->add_control(
-			self::$customizer_flag . '_multi_day_off_control', array(
-				'label'       => esc_html__( 'Disable multi-day forecasts', 'tk-event-weather' ),
-				'description' => __( "Check this box to disable multi-day weather forecasts. If enabled, each calendar day of a forecast request will cost 1 Dark Sky API credit. Example: December 2 at 7pm to December 4 at 5am would be 3 days. If disabled and the Event End Time is on a different day than the Event End Time, the shortcode will result in an error.", 'tk-event-weather' ),
+			self::$customizer_flag . '_multi_day_ignore_start_at_today_control', array(
+				'label'       => esc_html__( 'Disable considering Today into multi-day forecasts', 'tk-event-weather' ),
+				'description' => __( 'If a multi-day forecast starts prior to Today but ends on or after Today, the multi-day forecast will start at Today. Once the entire multi-day span is in the past, the entire span of days will display according to your "Past cutoff (in days)" setting. Example: Today is July 7 and the forecast spans July 6-10; with this box unchecked, July 7-10 will be displayed. On July 11, July 6-10 will be displayed.', 'tk-event-weather' ),
 				'section'     => self:: $customizer_section_id . '_api_dark_sky',
-				'settings'    => self::$customizer_flag . '[multi_day_off]',
+				'settings'    => self::$customizer_flag . '[multi_day_ignore_start_at_today]',
 				'type'        => 'checkbox',
-				'choices'     => array( 'true' => __( 'Enable', 'tk-event-weather' ) ),
+				'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
 			)
 		);
 
@@ -559,11 +615,30 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 		$wp_customize->add_control(
 			self::$customizer_flag . '_darksky_units_control', array(
 				'label'       => esc_html__( 'Units', 'tk-event-weather' ),
-				'description' => __( 'Although it is recommended to leave this as "Auto", you may choose to force returning the weather data in specific units.<br>Reference: <a href="https://darksky.net/dev/docs/time-machine" target="_blank">Dark Sky API Docs > Options</a> (link opens in new window)', 'tk-event-weather' ),
+				'description' => __( 'Although it is recommended to leave this as "Auto", you may choose to force returning the weather data in specific units.<br>Reference: <a href="https://darksky.net/dev/docs#request-parameters" target="_blank">Dark Sky API Docs</a> (link opens in new window)', 'tk-event-weather' ),
 				'section'     => self:: $customizer_section_id . '_api_dark_sky',
 				'settings'    => self::$customizer_flag . '[darksky_units]',
 				'type'        => 'select',
-				'choices'     => TKEventW_Functions::darksky_option_units( 'true' ),
+				'choices'     => TKEventW_API_Dark_Sky::valid_units( 'true' ),
+			)
+		);
+
+		// Language
+		$wp_customize->add_setting(
+			self::$customizer_flag . '[darksky_language]', array(
+				'type'    => 'option',
+				'default' => '',
+			)
+		);
+
+		$wp_customize->add_control(
+			self::$customizer_flag . '_darksky_language_control', array(
+				'label'       => esc_html__( 'Language', 'tk-event-weather' ),
+				'description' => __( 'Language for the summary text(s).<br>Reference: <a href="https://darksky.net/dev/docs#request-parameters" target="_blank">Dark Sky API Docs</a> (link opens in new window)<br><strong>Default: English</strong>', 'tk-event-weather' ),
+				'section'     => self:: $customizer_section_id . '_api_dark_sky',
+				'settings'    => self::$customizer_flag . '[darksky_language]',
+				'type'        => 'select',
+				'choices'     => TKEventW_API_Dark_Sky::valid_languages( 'true' ),
 			)
 		);
 

@@ -17,7 +17,6 @@ class TKEventW_API_Google_Maps {
 
 		$uri_query_args['address'] = urlencode( $address );
 
-		// TODO if not set, make it required and throw an error
 		if ( ! empty( $api_key ) ) {
 			$uri_query_args['key'] = urlencode( $api_key );
 		}
@@ -61,12 +60,12 @@ class TKEventW_API_Google_Maps {
 		}
 	}
 
-	private static function get_response_data() { // TODO why running so many times for single call?
+	private static function get_response_data() {
 		// Get from transient if exists and valid
 		$transient_data = self::get_transient_value();
 
 		if ( true === self::valid_transient( $transient_data ) ) {
-			TKEventW_Shortcode::$google_maps_api_transient_used = 'TRUE'; // TODO include in debug info
+			TKEventW_Shortcode::$google_maps_api_transient_used = 'TRUE';
 
 			return $transient_data;
 		}
@@ -118,7 +117,11 @@ class TKEventW_API_Google_Maps {
 			return $output;
 		}
 
-		/* Request URI
+		/**
+		 * Request URI
+		 *
+		 * api-result-examples/google_maps.txt
+		 *
 		 * Example Debug Output:
 		<!--
 		TK Event Weather -- Google Maps Geocoding API -- Request URI
@@ -126,21 +129,11 @@ class TKEventW_API_Google_Maps {
 		-->
 		 */
 		$output .= sprintf(
-			'<!--%1$s%2$s -- Google Maps Geocoding API -- Request URI%1$s%3$s%1$s-->%1$s',
-			PHP_EOL,
-			TKEventW_Setup::plugin_display_name(),
-			self::geocode_request_uri()
-		);
-
-		/**
-		 * JSON Data
-		 *
-		 * api-result-examples/google_maps.txt
-		 */
-		$output .= sprintf( '<!--%1$s%2$s -- Google Maps Geocoding API -- Obtained from Transient: %3 -- JSON Data%1$s%4$s%1$s-->%1$s',
+			'<!--%1$s%2$s -- Google Maps Geocoding API -- Obtained from Transient: %3$s -- Request URI:%1$s%4$s%1$s -- JSON Data:%1$s%5$s%1$s-->%1$s',
 			PHP_EOL,
 			TKEventW_Setup::plugin_display_name(),
 			TKEventW_Shortcode::$google_maps_api_transient_used,
+			self::geocode_request_uri(),
 			json_encode( $data, JSON_PRETTY_PRINT ) // JSON_PRETTY_PRINT option requires PHP 5.4
 		);
 

@@ -13,10 +13,18 @@
 
 /* TK Event Weather and Dark Sky credit links */
 
-.tk-event-weather__plugin-credit,
-.tk-event-weather__dark-sky-credit {
+.tk-event-weather__credit-links {
+	margin-top: 2em;
 	line-height: 1.5;
 	font-size: 50%;
+}
+
+.tk-event-weather-day-name {
+	margin-top: 1em;
+}
+
+.tk-event-weather-day-summary {
+	margin-bottom: 1em;
 }
 
 .tk-event-weather__wind-direction-icon {

@@ -136,16 +136,18 @@ class TKEventW_Time {
 		// if timezone argument is set, use that, else set via timezone_source argument
 		$timezone = TKEventW_Functions::remove_all_whitespace( $timezone ); // do not strtolower()
 
-		if ( in_array( $timezone, timezone_identifiers_list() ) ) {
-			TKEventW_Shortcode::$timezone = $timezone;
-
-			return;
-		} else {
-			// DO NOT allow manual offset (invalid for PHP) timezones via shortcode because it is not supported by the API and can open the door to unexpected behavior.
-			if ( in_array( $timezone, TKEventW_Time::wp_manual_utc_offsets_array() ) ) {
-				TKEventW_Functions::invalid_shortcode_message( $timezone . ' is a manual UTC offset, not a valid timezone name. Manual UTC offsets are allowed by WordPress but not supported by this plugin. Instead, please use a timezone name supported by PHP (https://secure.php.net/manual/timezones.php)' );
+		if ( ! empty( $timezone ) ) {
+			if ( in_array( $timezone, timezone_identifiers_list() ) ) {
+				TKEventW_Shortcode::$timezone = $timezone;
 
 				return;
+			} else {
+				// DO NOT allow manual offset (invalid for PHP) timezones via shortcode because it is not supported by the API and can open the door to unexpected behavior.
+				if ( in_array( $timezone, TKEventW_Time::wp_manual_utc_offsets_array() ) ) {
+					TKEventW_Functions::invalid_shortcode_message( $timezone . ' is a manual UTC offset, not a valid timezone name. Manual UTC offsets are allowed by WordPress but not supported by this plugin. Instead, please use a timezone name supported by PHP (https://secure.php.net/manual/timezones.php)' );
+
+					return;
+				}
 			}
 		}
 
@@ -199,7 +201,7 @@ class TKEventW_Time {
 	}
 
 	/**
-	 * Get the timezone from the API response and then set it.
+	 * Get the timezone from the API response if necessary and then set it.
 	 *
 	 * If hard-coded from shortcode, that will already be set. If WordPress is
 	 * the source, the timezone will already be set from that other method.
@@ -225,6 +227,14 @@ class TKEventW_Time {
 				TKEventW_Functions::invalid_shortcode_message( 'The Timezone could not be set via the Dark Sky API. Please enable debug and investigate further' );
 			}
 		}
+	}
+
+	public function get_timezone() {
+		if ( ! empty( TKEventW_Shortcode::$timezone ) ) {
+			return TKEventW_Shortcode::$timezone;
+		}
+
+		self::set_timezone_and_source_from_shortcode_args();
 	}
 
 	/**

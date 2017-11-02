@@ -1,8 +1,8 @@
-.tk-event-weather__wrapper.template-hourly_horizontal {
+.tk-event-weather__wrapper .template-hourly_horizontal .tk-event-weather-single-day-weather {
 	overflow-x: auto;
 	white-space: nowrap;
 }
 
-.tk-event-weather__wrapper.template-hourly_horizontal .tk-event-weather__dark-sky-credit {
+.tk-event-weather__wrapper .template-hourly_horizontal .tk-event-weather-single-day-weather .tk-event-weather__credit-links {
 	margin-bottom: 10px;
 }

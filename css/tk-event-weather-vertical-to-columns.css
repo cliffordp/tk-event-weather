@@ -1,0 +1,14 @@
+.tk-event-weather__wrap_weather.hourly_vertical {
+	display: flex;
+	align-items: left;
+	justify-content: space-between;
+	flex-direction: row;
+	flex-wrap: wrap;
+	flex-flow: row wrap;
+	align-content: flex-start;
+}
+
+.tk-event-weather__wrap_weather.hourly_vertical .tk-event-weather__wrap_single_day {
+	margin-right: 2em;
+	margin-top: 1em;
+}

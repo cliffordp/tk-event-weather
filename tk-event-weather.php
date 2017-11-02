@@ -31,30 +31,25 @@
 	If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-
 /** TODO:
  * - sign up for newsletter
  * - refresh screenshots
- * - delete leftover TkEventW__Plugin::$customizer_flag array keys like ^forecast_io%
- * - https://github.com/cliffordp/tk-event-weather/issues/9 -- Add option to query weather API for more than a single day for events that span more than 1 calendar day. NOTE: for the current version of the weather API, each calendar day costs 1 API request. For example, an event spanning Jan 1 at 10pm through Jan 3 at 7am will cost 3 API calls. -- maybe make it an option
  * - add Customizer option to input a Post ID to default to when viewing the customizer from the plugin's Settings Button (could auto-set it if an Event exists)
  * - look into https://developer.wordpress.org/plugins/the-basics/uninstall-methods/
  * - why it currently states "will also delete its data"
  * - should we add an option to "delete its data" on uninstall?
- * - truncate seconds off all timestamps? -- avoid 10pm hour + 10pm sunset, like http://cl.ly/430H1J0p2R07
- * - use more data from API, like 'summary' text as a title element somewhere
+ * - truncate seconds off all timestamps? -- avoid 10pm hour + 10pm sunset, like http://cl.ly/430H1J0p2R07 -- No.
  * - the Dark Sky API "apparentTemperature" value is the "feels like" temperature
  * - inspiration from http://darkskyapp.com/
- * - Should be taken care of as of v1.3 because of using timezones instead of offsets :) -- Handling of timezone offsets that aren't full hours -- e.g. Eucla Australia is UTC+8:45 -- https://en.wikipedia.org/wiki/List_of_UTC_time_offsets#UTC.2B08:45.2C_H.2A -- currently works well enough probably but outputs '4am' instead of '4:45am' -- does it really need to be fixed?
  * - time of day versions of icons (night/day)
- * - https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-174607313
- * - https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-178440095
+ * - UI: https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-174607313
+ * - UI: https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-178440095
  * - force debug report to be in English (i.e. not translatable)
  * - Debug Mode enhancements: plugin settings, filters/actions in use
- * - "current" / "right now" if event is currently happening
  * - add 'demo' option to output all icons (e.g. for styling/testing)
  * - weather advisory alerts (only happen in real-time so probably not going to happen)
  * - color options for styling SVGs (e.g. yellow sun with gray cloud) -- not possible with as-is SVGs because they're flattened (no CSS classes to "fill")
+ * - Add support for https://wordpress.org/plugins/shortcode-ui/
  */
 
 

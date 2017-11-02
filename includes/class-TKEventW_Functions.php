@@ -4,13 +4,6 @@ class TKEventW_Functions {
 	// all variables and methods should be 'static'
 
 	/**
-	 * If a shortcode error message is used at any time, this will be true.
-	 *
-	 * @var bool
-	 */
-	public static $shortcode_error = false;
-
-	/**
 	 * Get the shortcode error message.
 	 *
 	 * @var string
@@ -37,6 +30,8 @@ class TKEventW_Functions {
 		wp_register_style( TKEventW_Setup::shortcode_name_hyphenated(), TKEventW_Setup::plugin_dir_url_root() . 'css/tk-event-weather.css', array(), tk_event_weather_version() );
 
 		wp_register_style( TKEventW_Setup::shortcode_name_hyphenated() . '-scroll-horizontal', TKEventW_Setup::plugin_dir_url_root() . 'css/tk-event-weather-scroll-horizontal.css', array(), tk_event_weather_version() );
+
+		wp_register_style( TKEventW_Setup::shortcode_name_hyphenated() . '-vertical-to-columns', TKEventW_Setup::plugin_dir_url_root() . 'css/tk-event-weather-vertical-to-columns.css', array(), tk_event_weather_version() );
 	}
 
 
@@ -135,7 +130,10 @@ class TKEventW_Functions {
 	 * @return null
 	 */
 	public static function invalid_shortcode_message( $input = '', $capability = 'edit_theme_options' ) {
-		self::$shortcode_error = true;
+		// Avoid overwriting the current message if one already exists.
+		if ( ! empty( self::$shortcode_error_message ) ) {
+			return;
+		}
 
 		$capability = apply_filters( 'tk_event_weather_shortcode_msg_cap', $capability );
 
@@ -146,12 +144,10 @@ class TKEventW_Functions {
 		// escape single apostrophes
 		$error_reason = str_replace( "'", "\'", $input );
 
-		$shortcode_name = TKEventW_Setup::$shortcode_name;
-
 		if ( ! empty( $error_reason ) ) {
-			$message = sprintf( __( '%s for the `%s` shortcode to work correctly.', 'tk-event-weather' ), $error_reason, $shortcode_name );
+			$message = sprintf( __( '%s for the `%s` shortcode to work correctly.', 'tk-event-weather' ), $error_reason, TKEventW_Setup::$shortcode_name );
 		} else {
-			$message = sprintf( __( 'Invalid or incomplete usage of the `%s` shortcode.', 'tk-event-weather' ), $shortcode_name );
+			$message = sprintf( __( 'Invalid or incomplete usage of the `%s` shortcode.', 'tk-event-weather' ), TKEventW_Setup::$shortcode_name );
 		}
 
 		$message = sprintf( __( '%s (Error message only displayed to users with the `%s` capability.)', 'tk-event-weather' ), $message, $capability );
@@ -192,94 +188,76 @@ class TKEventW_Functions {
 		return $result;
 	}
 
-	// START Dark Sky valid options
-	// @link https://darksky.net/dev/docs
-
-	// may select only one per API call
-	public static function darksky_option_units( $prepend_empty = 'false' ) {
-		$result = array(
-			'auto' => __( 'Auto (Default)', 'tk-event-weather' ),
-			'ca'   => __( 'Canada', 'tk-event-weather' ),
-			'si'   => __( 'SI (International System of Units)', 'tk-event-weather' ),
-			'uk2'  => __( 'UK', 'tk-event-weather' ),
-			'us'   => __( 'USA', 'tk-event-weather' ),
-		);
-
-		if ( 'true' == $prepend_empty ) {
-			$result = self::array_prepend_empty( $result );
-		}
-
-		return $result;
-	}
-
-	// may select one or multiple (but not all since that would be valid but return no data)
-
 	/**
-	 * @param string $prepend_empty
-	 *
-	 * @return array|bool
-	 */
-	public static function darksky_option_exclude( $prepend_empty = 'false' ) {
-		$result = array(
-			'currently' => __( 'Currently', 'tk-event-weather' ),
-			'minutely'  => __( 'Minutely', 'tk-event-weather' ),
-			'hourly'    => __( 'Hourly', 'tk-event-weather' ),
-			'daily'     => __( 'Daily', 'tk-event-weather' ),
-			'alerts'    => __( 'Alerts', 'tk-event-weather' ),
-			'flags'     => __( 'Flags', 'tk-event-weather' ),
-		);
-
-		if ( 'true' == $prepend_empty ) {
-			$result = self::array_prepend_empty( $result );
-		}
-
-		return $result;
-	}
-	//
-	// END Dark Sky valid options
-	//
-
-
-	/**
-	 * To be nice and link to http://tourkick.com/plugins/tk-event-weather/
+	 * Get the credit link(s) to comply with https://developer.darksky.net/
+	 * and/or to spread the news about this plugin existing by linking to
+	 * https://tourkick.com/plugins/tk-event-weather/
 	 *
 	 * @return string
 	 */
-	public static function plugin_credit_link() {
-		$url = 'http://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-credit-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather';
+	public static function get_credit_links() {
+		$output = '';
 
-		$anchor_text = __( 'TK Event Weather plugin', 'tk-event-weather' );
+		if (
+			empty( TKEventW_Shortcode::$span_template_data['darksky_credit_link_enabled'] )
+			&& empty( TKEventW_Shortcode::$span_template_data['plugin_credit_link_enabled'] )
+		) {
+			return $output;
+		}
 
-		$result = sprintf(
-			'<div class="tk-event-weather__plugin-credit">
-			<a href="%s" target="_blank">%s</a>
-		</div>',
-			$url,
-			$anchor_text
-		);
+		$powered_by = _x( 'Powered by', 'plugin credit links', 'tk-event-weather' );
 
-		return $result;
-	}
+		$dark_sky_url = 'https://darksky.net/poweredby/';
 
-	/**
-	 * to comply with https://developer.darksky.net/
-	 *
-	 * @return string
-	 */
-	public static function darksky_credit_link() {
-		$url = 'https://darksky.net/poweredby/';
+		$dark_sky_link_text = 'Dark Sky';
 
-		$anchor_text = __( 'Powered by Dark Sky', 'tk-event-weather' );
+		$plugin_link_url = 'https://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-credit-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather';
 
-		$result = sprintf(
-			'<div class="tk-event-weather__dark-sky-credit">
-			<a href="%s" target="_blank">%s</a>
-		</div>',
-			$url,
-			$anchor_text
-		);
+		$plugin_link_text = _x( 'TK Event Weather plugin', 'plugin credit links', 'tk-event-weather' );
 
-		return $result;
+		if (
+			// both
+			! empty( TKEventW_Shortcode::$span_template_data['darksky_credit_link_enabled'] )
+			&& ! empty( TKEventW_Shortcode::$span_template_data['plugin_credit_link_enabled'] )
+		) {
+			$output = sprintf(
+				'<a href="%s" target="_blank">%s %s</a> %s <a href="%s" target="_blank">%s</a>',
+				$dark_sky_url,
+				$powered_by,
+				$dark_sky_link_text,
+				_x( 'and', 'plugin credit links', 'tk-event-weather' ),
+				$plugin_link_url,
+				$plugin_link_text
+			);
+		} elseif (
+			// only Dark Sky link
+		! empty( TKEventW_Shortcode::$span_template_data['darksky_credit_link_enabled'] )
+		) {
+			$output = sprintf(
+				'<a href="%s" target="_blank">%s %s</a>',
+				$dark_sky_url,
+				$powered_by,
+				$dark_sky_link_text
+			);
+		} elseif (
+			// only plugin credit link
+		! empty( TKEventW_Shortcode::$span_template_data['plugin_credit_link_enabled'] )
+		) {
+			$output = sprintf(
+				'<a href="%s" target="_blank">%s %s</a>',
+				$plugin_link_url,
+				$powered_by,
+				$plugin_link_text
+			);
+		} else {
+			// nothing
+		}
+
+		if ( ! empty( $output ) ) {
+			$output = sprintf( '<div class="tk-event-weather__credit-links">%s</div>', $output );
+		}
+
+		return $output;
 	}
 
 
@@ -334,8 +312,11 @@ class TKEventW_Functions {
 		// make sure no period, comma (e.g. from lat/long) or other unfriendly characters for the transients database field
 		$result = sanitize_key( $result );
 
-		// dashes to underscores
+		// dashes to underscores (such as for a negative number longitude)
 		$result = str_replace( '-', '_', $result );
+
+		// remove repeat underscores, such as a space next to a dash and both got changed to underscores
+		$result = str_replace( '__', '_', $result );
 
 		// "Must be 172 characters or fewer in length." per https://developer.wordpress.org/reference/functions/set_transient/
 		// also see https://core.trac.wordpress.org/ticket/15058
@@ -888,7 +869,7 @@ class TKEventW_Functions {
 	 * @return bool|string|void
 	 */
 	public static function temperature_units( $input ) {
-		if ( empty( $input ) || ! array_key_exists( $input, self::darksky_option_units() ) ) {
+		if ( empty( $input ) || ! array_key_exists( $input, TKEventW_API_Dark_Sky::valid_units() ) ) {
 			return false;
 		}
 
@@ -935,7 +916,7 @@ class TKEventW_Functions {
 	 *
 	 **/
 	public static function wind_speed_units( $input ) {
-		if ( empty( $input ) || ! array_key_exists( $input, self::darksky_option_units() ) ) {
+		if ( empty( $input ) || ! array_key_exists( $input, TKEventW_API_Dark_Sky::valid_units() ) ) {
 			return false;
 		}
 
