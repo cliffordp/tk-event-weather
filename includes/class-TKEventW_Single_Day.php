@@ -50,9 +50,10 @@ class TKEventW_Single_Day {
 		$template_data = TKEventW_Shortcode::$span_template_data;
 
 		/**
-		 * Pass along useful information from self::$result, but do NOT include
-		 * 'api_data', 'api_data_debug', or 'template_output' because then we'd
-		 * be causing duplicate output and/or circular reference.
+		 * Pass along useful information from __construct(), but do NOT include
+		 * self::$api_data, self::$api_data_debug, or self::$template_output
+		 * because then we will cause duplicate output (debug info output
+		 * elsewhere) and/or circular references (JSON encoding its own output).
 		 */
 		$template_data['start_time_timestamp'] = self::$start_time_timestamp;
 		$template_data['end_time_timestamp'] = self::$end_time_timestamp;
