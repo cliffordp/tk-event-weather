@@ -3,96 +3,18 @@
 class TKEventW_Single_Day {
 	// all variables and methods should be 'static'
 
-	/**
-	 *
-	 * api-result-examples/dark_sky.txt
-	 *
-	 */
+	public static $start_time_timestamp = false;
 
-	// Transients
-	// @link https://codex.wordpress.org/Transients_API
-	// @link https://codex.wordpress.org/Easier_Expression_of_Time_Constants
+	public static $end_time_timestamp = false;
 
-	// build transient
-	// Make API call if nothing from Transients
-	// e.g. https://api.darksky.net/forecast/APIKEY/LATITUDE,LONGITUDE,TIME
-	// if invalid API key, returns 400 Bad Request
-	// API does not want any querying wrapped in brackets, as may be shown in the documentation -- brackets indicates OPTIONAL parameters, not to actually wrap in brackets for your request
-	//
-	// $api_data->currently is either 'right now' if no TIMESTAMP is part of the API or is the weather for the given TIMESTAMP even if in the past or future (yes, it still is called 'currently')
-	//
-	/*
-	*
-	*
-	* Example:
-	* Weather for the White House on Feb 1 at 4:30pm Eastern Time (as of 2016-01-25T03:01:09-06:00)
-	* API call in ISO 8601 format
-	* https://api.darksky.net/forecast/_______API_KEY_______/36.281445,-75.794662,2016-02-01T16:30:00-05:00?units=auto&exclude=alerts,daily,flags,hourly,minutely
-	* API call in Unix Timestamp format (same result)
-	* https://api.darksky.net/forecast/_______API_KEY_______/36.281445,-75.794662,1454362200?units=auto&exclude=alerts,daily,flags,hourly,minutely
-	* result:
-<!--
-TK Event Weather JSON Data
-{
-"latitude": 36.281445,
-"longitude": -75.794662,
-"timezone": "America\/New_York",
-"offset": -5,
-"currently": {
-	"time": 1454362200,
-	"summary": "Clear",
-	"icon": "clear-day",
-	"precipIntensity": 0.0008,
-	"precipProbability": 0.01,
-	"precipType": "rain",
-	"temperature": 56.9,
-	"apparentTemperature": 56.9,
-	"dewPoint": 48.64,
-	"humidity": 0.74,
-	"windSpeed": 1.91,
-	"windBearing": 163,
-	"cloudCover": 0,
-	"pressure": 1016.99,
-	"ozone": 280.52
-}
-}
--->
+	public static $day_number_of_span = false;
 
+	public static $api_data = false;
 
+	public static $api_data_debug = false;
 
+	public static $template_output = false;
 
-	*
-	*
-	*/
-
-
-	/*
-	Example var_dump($request) when bad data, like https://api.darksky.net/forecast/___API_KEY___/0.000000,0.000000,1466199900?exclude=minutely
-	object(stdClass)[100]
-	public 'latitude' => int 0
-	public 'longitude' => int 0
-	public 'timezone' => string 'Etc/GMT' (length=7)
-	public 'offset' => int 0
-	public 'currently' =>
-	object(stdClass)[677]
-		public 'time' => int 1466199900
-	public 'flags' =>
-	object(stdClass)[96]
-		public 'sources' =>
-			array (size=0)
-				empty
-		public 'units' => string 'us' (length=2)
-	*/
-
-
-	public static $result = array(
-		'start_time_timestamp' => false,
-		'end_time_timestamp'   => false,
-		'day_number_of_span'   => false,
-		'api_data'             => false,
-		'api_data_debug'       => false,
-		'template_output'      => false,
-	);
 
 	/**
 	 * TKEventW_Single_Day constructor.
@@ -102,24 +24,20 @@ TK Event Weather JSON Data
 	 * @param int $day_number_of_span
 	 */
 	public function __construct( $start_time_timestamp, $end_time_timestamp, $day_number_of_span ) {
-		self::$result['start_time_timestamp'] = TKEventW_Time::valid_timestamp( $start_time_timestamp );
-		self::$result['end_time_timestamp']   = TKEventW_Time::valid_timestamp( $end_time_timestamp );
+		self::$start_time_timestamp = TKEventW_Time::valid_timestamp( $start_time_timestamp );
+		self::$end_time_timestamp   = TKEventW_Time::valid_timestamp( $end_time_timestamp );
 
-		self::$result['day_number_of_span'] = (int) $day_number_of_span;
+		self::$day_number_of_span = (int) $day_number_of_span;
 
-		self::$result['api_data'] = self::build_api_data();
+		self::$api_data = self::build_api_data();
 
-		self::$result['template_output'] = self::build_template_output();
-	}
-
-	public static function get_result() {
-		return self::$result;
+		self::$template_output = self::build_template_output();
 	}
 
 	private static function build_api_data() {
-		$api_class = new TKEventW_API_Dark_Sky( self::$result['start_time_timestamp'], self::$result['end_time_timestamp'] );
+		$api_class = new TKEventW_API_Dark_Sky( self::$start_time_timestamp, self::$end_time_timestamp );
 
-		self::$result['api_data_debug'] = $api_class::get_debug_output();
+		self::$api_data_debug = $api_class::get_debug_output();
 
 		return $api_class::get_response_data();
 	}
@@ -131,14 +49,24 @@ TK Event Weather JSON Data
 
 		$template_data = TKEventW_Shortcode::$span_template_data;
 
+		/**
+		 * Pass along useful information from self::$result, but do NOT include
+		 * 'api_data', 'api_data_debug', or 'template_output' because then we'd
+		 * be causing duplicate output and/or circular reference.
+		 */
+		$template_data['start_time_timestamp'] = self::$start_time_timestamp;
+		$template_data['end_time_timestamp'] = self::$end_time_timestamp;
+		$template_data['day_number_of_span'] = self::$day_number_of_span;
+
+
 		// https://developer.wordpress.org/reference/functions/wp_list_pluck/
-		$hourly_timestamps = wp_list_pluck( self::$result['api_data']->hourly->data, 'time' );
+		$hourly_timestamps = wp_list_pluck( self::$api_data->hourly->data, 'time' );
 
 		$houly_hours_keys = array_keys( $hourly_timestamps );
 
 		// First hour to start pulling for Hourly Data
 		foreach ( $hourly_timestamps as $key => $value ) {
-			if ( intval( $value ) === intval( TKEventW_Time::timestamp_truncate_minutes( self::$result['start_time_timestamp'] ) ) ) {
+			if ( intval( $value ) === intval( TKEventW_Time::timestamp_truncate_minutes( self::$start_time_timestamp ) ) ) {
 				$weather_hourly_start_key = $key; // so we know where to start when pulling hourly weather
 				break;
 			}
@@ -146,7 +74,7 @@ TK Event Weather JSON Data
 
 		// Protect against odd hourly weather scenarios like location only having data from midnight to 8am and event start time is 9am
 		if ( ! isset( $weather_hourly_start_key ) ) { // need to allow for zero due to numeric array
-			$invalid_shortcode_message = sprintf( 'Event Start Time error. API did not return enough hourly data for %d to %d. Please troubleshoot', self::$result['start_time_timestamp'], self::$result['end_time_timestamp'] );
+			$invalid_shortcode_message = sprintf( 'Event Start Time error. API did not return enough hourly data for %d to %d. Please troubleshoot', self::$start_time_timestamp, self::$end_time_timestamp );
 			TKEventW_Functions::invalid_shortcode_message( $invalid_shortcode_message );
 
 			return TKEventW_Functions::$shortcode_error_message;
@@ -154,7 +82,7 @@ TK Event Weather JSON Data
 
 		// End Time Weather
 		foreach ( $hourly_timestamps as $key => $value ) {
-			if ( intval( $value ) >= intval( self::$result['end_time_timestamp'] ) ) {
+			if ( intval( $value ) >= intval( self::$end_time_timestamp ) ) {
 				$weather_hourly_end_key = $key;
 				break;
 			}
@@ -171,7 +99,7 @@ TK Event Weather JSON Data
 			return TKEventW_Functions::$shortcode_error_message;
 		}
 
-		$template_data['weather_last_hour_timestamp'] = TKEventW_Time::get_last_hour_hour_of_forecast( self::$result['end_time_timestamp'] );
+		$template_data['weather_last_hour_timestamp'] = TKEventW_Time::get_last_hour_hour_of_forecast( self::$end_time_timestamp );
 
 
 		$template_data['sunrise_sunset']['sunrise_timestamp']      = false;
@@ -183,8 +111,8 @@ TK Event Weather JSON Data
 
 		if ( ! empty( $template_data['sunrise_sunset']['on'] ) ) {
 			// might not be a sunrise this day
-			if ( isset( self::$result['api_data']->daily->data[0]->sunriseTime ) ) {
-				$template_data['sunrise_sunset']['sunrise_timestamp']      = TKEventW_Time::valid_timestamp( self::$result['api_data']->daily->data[0]->sunriseTime );
+			if ( isset( self::$api_data->daily->data[0]->sunriseTime ) ) {
+				$template_data['sunrise_sunset']['sunrise_timestamp']      = TKEventW_Time::valid_timestamp( self::$api_data->daily->data[0]->sunriseTime );
 				$template_data['sunrise_sunset']['sunrise_hour_timestamp'] = TKEventW_Time::timestamp_truncate_minutes( $template_data['sunrise_sunset']['sunrise_timestamp'] );
 				if ( $template_data['sunrise_sunset']['sunrise_timestamp'] >= TKEventW_Shortcode::$span_first_hour_timestamp ) {
 					$template_data['sunrise_sunset']['sunrise_to_be_inserted'] = true;
@@ -192,8 +120,8 @@ TK Event Weather JSON Data
 			}
 
 			// might not be a sunset this day
-			if ( isset( self::$result['api_data']->daily->data[0]->sunsetTime ) ) {
-				$template_data['sunrise_sunset']['sunset_timestamp']      = TKEventW_Time::valid_timestamp( self::$result['api_data']->daily->data[0]->sunsetTime );
+			if ( isset( self::$api_data->daily->data[0]->sunsetTime ) ) {
+				$template_data['sunrise_sunset']['sunset_timestamp']      = TKEventW_Time::valid_timestamp( self::$api_data->daily->data[0]->sunsetTime );
 				$template_data['sunrise_sunset']['sunset_hour_timestamp'] = TKEventW_Time::timestamp_truncate_minutes( $template_data['sunrise_sunset']['sunset_timestamp'] );
 				if ( $template_data['weather_last_hour_timestamp'] >= $template_data['sunrise_sunset']['sunset_timestamp'] ) {
 					$template_data['sunrise_sunset']['sunset_to_be_inserted'] = true;
@@ -210,7 +138,7 @@ TK Event Weather JSON Data
 		$index = $weather_hourly_start_key;
 
 		if ( is_integer( $index ) ) {
-			foreach ( self::$result['api_data']->hourly->data as $key => $value ) {
+			foreach ( self::$api_data->hourly->data as $key => $value ) {
 
 				if ( $key > $weather_hourly_end_key ) {
 					break;
@@ -246,85 +174,35 @@ TK Event Weather JSON Data
 		$template_data['weather_hourly_low'] = $weather_hourly_low;
 
 
-		$temperature_units = TKEventW_Functions::temperature_units( self::$result['api_data']->flags->units );
+		$temperature_units = TKEventW_Functions::temperature_units( self::$api_data->flags->units );
 
 		$template_data['temperature_units'] = $temperature_units;
 
-		$wind_speed_units = TKEventW_Functions::wind_speed_units( self::$result['api_data']->flags->units );
+		$wind_speed_units = TKEventW_Functions::wind_speed_units( self::$api_data->flags->units );
 
 		$template_data['wind_speed_units'] = $wind_speed_units;
-
-		// Total Days in Span won't be set at time of first day's run so don't try to include it
-		$class = sprintf( 'tk-event-weather__wrap_single_day %s tk-event-weather__span-%d-to-%d tk-event-weather__day-index-%d %s',
-			TKEventW_Shortcode::$span_template_data['template_class_name'],
-			TKEventW_Shortcode::$span_start_time_timestamp,
-			TKEventW_Shortcode::$span_end_time_timestamp,
-			self::$result['day_number_of_span'],
-			sanitize_html_class( $template_data['class'] )
-		);
-
-
-		$output = '';
-
-		if ( ! empty( TKEventW_Shortcode::$debug_enabled ) ) {
-			$output .= sprintf( '<!--%1$s%2$s -- Template Data converted to JSON%1$s%3$s%1$s-->%1$s',
-				PHP_EOL,
-				TKEventW_Setup::plugin_display_name(),
-				json_encode( $template_data, JSON_PRETTY_PRINT ) // JSON_PRETTY_PRINT option requires PHP 5.4
-			);
-
-		}
 
 		/**
 		 * Start Building Output!!!
 		 * All data should be set by now!!!
 		 */
 
-		// cannot do <style> tags inside template because it will break any open div (e.g. wrapper div)
-		$output .= sprintf( '<div class="%s">', esc_attr( $class ) );
-		$output .= PHP_EOL;
-
-		$output .= $template_data['before'];
-		$output .= PHP_EOL;
-
-		$output .= '<div class="tk-event-weather-template">';
-		$output .= PHP_EOL;
-
-		$output .= '<h4 class="tk-event-weather-day-name"';
-		if ( ! empty( self::$result['api_data']->daily->data[0]->summary ) ) { // Note "daily" instead of "hourly"
-			$output .= sprintf( ' title="%s"', esc_attr( self::$result['api_data']->daily->data[0]->summary ) );
-		}
-		$output .= sprintf( '>%s</h4>', esc_attr( date_i18n( TKEventW_Shortcode::$time_format_day, self::$result['start_time_timestamp'] ) ) );
-		$output .= PHP_EOL;
-
-		// Same as "title" attribute for Day Name but displayed below it so it is more noticeable
-		if ( ! empty( self::$result['api_data']->daily->data[0]->summary ) ) { // Note "daily" instead of "hourly"
-			$output .= sprintf( '<div class="tk-event-weather-day-summary">%s</div>', esc_html( self::$result['api_data']->daily->data[0]->summary ) );
-			$output .= PHP_EOL;
-		}
-
-		$output .= '<div class="tk-event-weather-single-day-weather">';
-		$output .= PHP_EOL;
-
 		// https://github.com/GaryJones/Gamajo-Template-Loader/issues/13#issuecomment-196046201
+		// it is because each template does echo() at the end
 		ob_start();
 
+		if ( ! empty( TKEventW_Shortcode::$debug_enabled ) ) {
+			printf( '<!--%1$s%2$s -- Template Data converted to JSON%1$s%3$s%1$s-->%1$s',
+				PHP_EOL,
+				TKEventW_Setup::plugin_display_name(),
+				json_encode( $template_data, JSON_PRETTY_PRINT ) // JSON_PRETTY_PRINT option requires PHP 5.4
+			);
+		}
+
+		TKEventW_Template::load_template( 'single_day_before', $template_data );
 		TKEventW_Template::load_template( $template_data['template'], $template_data );
-		$output .= ob_get_clean();
-
-		$output .= '</div>'; // .tk-event-weather-single-day-weather
-		$output .= PHP_EOL;
-
-		$output .= '</div>'; // .tk-event-weather-template
-		$output .= PHP_EOL;
-
-		$output .= '</div>'; // .$class
-		$output .= PHP_EOL;
-
-		$output .= $template_data['after'];
-		$output .= PHP_EOL;
-
-		return $output;
+		TKEventW_Template::load_template( 'single_day_after', $template_data );
+		return ob_get_clean();
 	}
 
 

@@ -228,6 +228,7 @@ Many thanks to the following:
 * Enhancement - Added Dark Sky's "language" setting to display the summary text(s) in one of the languages supported by Dark Sky.
 * Enhancement - Added a convenient link in the WP Admin Bar to edit the current URL in the Customizer, jumping right to TK Event Weather's settings panel. Removed the `tk_event_weather_customizer_link_to_core_section` filter, as it is irrelevant now.
 * Enhancement - Added tk_event_weather_gmaps_geocode_request_uri_query_args filter to allow adding things like <a href="https://developers.google.com/maps/documentation/geocoding/intro#RegionCodes">Region Biasing</a>.
+* Enhancement - Each day's Before and After content is generated via the existing template engine, allowing you to override them if desired.
 * Tweak - Improved the Customizer UI by breaking out all the plugin options from a single section to multiple sections.
 * Tweak - Manually set the WP Customizer's password-type fields for API keys to disable autocomplete and password prompts.
 * Tweak - Removed tk_event_weather_darksky_units_default and tk_event_weather_darksky_exclude_default filters. Added tk_event_weather_dark_sky_request_uri_query_args filter.

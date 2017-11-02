@@ -675,11 +675,10 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 		 * be getting set via the API, depending on the settings.
 		 */
 		$first_day_class = new TKEventW_Single_Day( self::$span_start_time_timestamp, self::$span_end_time_timestamp, 1 );
-		$first_day_data  = $first_day_class::get_result();
 
 		// Set the Timezone ASAP (after first day's API call), since it's needed to determine everything else
 		if ( empty( self::$timezone ) ) {
-			TKEventW_Time::set_timezone_from_api( TKEventW_Single_Day::$result['api_data']->timezone );
+			TKEventW_Time::set_timezone_from_api( TKEventW_Single_Day::$api_data->timezone );
 		}
 
 		if ( empty( self::$timezone ) ) {
@@ -701,7 +700,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 		self::$span_template_data['multi_day_limit'] = $multi_day_limit;
 
 		if ( ! empty( self::$debug_enabled ) ) {
-			$output .= $first_day_data['api_data_debug'] . PHP_EOL;
+			$output .= $first_day_class::$api_data_debug . PHP_EOL;
 		}
 
 		if ( ! empty( TKEventW_Functions::$shortcode_error_message ) ) {
@@ -762,7 +761,7 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 			|| false === self::$span_template_data['multi_day_start_at_today']
 			|| $today_midnight <= $midnight_first_day
 		) {
-			$output .= $first_day_data['template_output'];
+			$output .= $first_day_class::$template_output;
 		}
 
 		if ( $multi_day_limit < $total_days_in_span ) {
@@ -789,13 +788,12 @@ class TKEventW_Shortcode extends TkEventW__ShortCodeScriptLoader {
 				}
 
 				$day_class = new TKEventW_Single_Day( $midnight, self::$span_end_time_timestamp, $day_index );
-				$day_data  = $day_class::get_result();
 
 				if ( ! empty( self::$debug_enabled ) ) {
-					$output .= $day_data['api_data_debug'];
+					$output .= $day_class::$api_data_debug;
 				}
 
-				$output .= $day_data['template_output'];
+				$output .= $day_class::$template_output;
 
 				$day_index ++;
 			}
