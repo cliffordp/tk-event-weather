@@ -3,9 +3,9 @@
 // e.g. https://plugins.trac.wordpress.org/browser/form-to-post/trunk/FormToPost_Plugin.php
 
 include_once( 'LifeCycle.php' );
-require_once( 'class-TKEventW_Functions.php' );
+require_once( 'class-TKEventWeather_Functions.php' );
 
-class TkEventW__Plugin extends TkEventW__LifeCycle {
+class TKEventWeather_Plugin extends TKEventWeather_LifeCycle {
 
 	private static $customizer_flag = 'tk_event_weather';
 
@@ -66,7 +66,7 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 		$upgradeOk    = true;
 		$savedVersion = $this->getVersionSaved();
 		if ( $this->isVersionLessThan( $savedVersion, '1.5' ) ) {
-			// TODO: delete old options, including transients https://wordpress.stackexchange.com/a/75758/22702 -- delete leftover TkEventW__Plugin::$customizer_flag array keys like ^forecast_io%
+			// TODO: delete old options, including transients https://wordpress.stackexchange.com/a/75758/22702 -- delete leftover TKEventWeather_Plugin::$customizer_flag array keys like ^forecast_io%
 		}
 
 		// Post-upgrade, set the current version in the options
@@ -113,9 +113,9 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 		// Register short codes
 		// http://plugin.michael-simpson.com/?page_id=39
 
-		include_once( 'class-TKEventW_Shortcode.php' );
-		$sc = new TKEventW_Shortcode();
-		$sc->register( TKEventW_Setup::$shortcode_name );
+		include_once( 'class-TKEventWeather_Shortcode.php' );
+		$sc = new TKEventWeather_Shortcode();
+		$sc->register( TKEventWeather_Setup::$shortcode_name );
 
 
 		// Register AJAX hooks
@@ -128,8 +128,8 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 	//
 
 	public static function register_assets() {
-		TKEventW_Functions::register_css();
-		TKEventW_Functions::register_climacons_css();
+		TKEventWeather_Functions::register_css();
+		TKEventWeather_Functions::register_climacons_css();
 	}
 
 	/**
@@ -181,7 +181,7 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 		$url = self::convert_link_to_a_customizer_link( $url );
 
 		$wp_adminbar->add_node( array(
-			'id'     => 'tkeventw_edit_page',
+			'id'     => 'tkeventweather_edit_page',
 			'title'  => __( 'Open in TK Event Weather settings', 'tk-event-weather' ),
 			'parent' => 'customize',
 			'href'   => $url,
@@ -201,7 +201,7 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 
 	public function customizer_edit_shortcut_setting() {
 		// Always start at Dark Sky API Key if not entered
-		$darksky_api_key = TKEventW_Functions::array_get_value_by_key( TKEventW_Functions::plugin_options(), 'darksky_api_key' );
+		$darksky_api_key = TKEventWeather_Functions::array_get_value_by_key( TKEventWeather_Functions::plugin_options(), 'darksky_api_key' );
 
 		if ( empty( $darksky_api_key ) ) {
 			$setting = self::$customizer_flag . '[darksky_api_key]';
@@ -306,7 +306,7 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 				'section'     => self::$customizer_section_id . '_display',
 				'settings'    => self::$customizer_flag . '[display_template]',
 				'type'        => 'select',
-				'choices'     => TKEventW_Template::valid_display_templates( 'true' ),
+				'choices'     => TKEventWeather_Template::valid_display_templates( 'true' ),
 			)
 		);
 
@@ -533,7 +533,7 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 			self::$customizer_flag . '[multi_day_limit]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => array( 'TKEventW_Functions', 'sanitize_absint_allow_blank' ),
+				'sanitize_callback' => array( 'TKEventWeather_Functions', 'sanitize_absint_allow_blank' ),
 			)
 		);
 
@@ -571,7 +571,7 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 			self::$customizer_flag . '[cutoff_past_days]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => array( 'TKEventW_Functions', 'sanitize_absint_allow_blank' ),
+				'sanitize_callback' => array( 'TKEventWeather_Functions', 'sanitize_absint_allow_blank' ),
 			)
 		);
 
@@ -590,7 +590,7 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 			self::$customizer_flag . '[cutoff_future_days]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => array( 'TKEventW_Functions', 'sanitize_absint_allow_blank' ),
+				'sanitize_callback' => array( 'TKEventWeather_Functions', 'sanitize_absint_allow_blank' ),
 			)
 		);
 
@@ -619,7 +619,7 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 				'section'     => self:: $customizer_section_id . '_api_dark_sky',
 				'settings'    => self::$customizer_flag . '[darksky_units]',
 				'type'        => 'select',
-				'choices'     => TKEventW_API_Dark_Sky::valid_units( 'true' ),
+				'choices'     => TKEventWeather_API_Dark_Sky::valid_units( 'true' ),
 			)
 		);
 
@@ -638,7 +638,7 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 				'section'     => self:: $customizer_section_id . '_api_dark_sky',
 				'settings'    => self::$customizer_flag . '[darksky_language]',
 				'type'        => 'select',
-				'choices'     => TKEventW_API_Dark_Sky::valid_languages( 'true' ),
+				'choices'     => TKEventWeather_API_Dark_Sky::valid_languages( 'true' ),
 			)
 		);
 
@@ -657,7 +657,7 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 				'section'     => self:: $customizer_section_id . '_api_dark_sky',
 				'settings'    => self::$customizer_flag . '[timezone_source]',
 				'type'        => 'select',
-				'choices'     => TKEventW_Time::valid_timezone_sources( 'true' ),
+				'choices'     => TKEventWeather_Time::valid_timezone_sources( 'true' ),
 			)
 		);
 
@@ -690,7 +690,7 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 			self::$customizer_flag . '[transients_expiration_hours]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => array( 'TKEventW_Functions', 'sanitize_absint_allow_blank' ),
+				'sanitize_callback' => array( 'TKEventWeather_Functions', 'sanitize_absint_allow_blank' ),
 			)
 		);
 
@@ -756,7 +756,7 @@ class TkEventW__Plugin extends TkEventW__LifeCycle {
 						'section'			=> self:: $customizer_section_id . '_display',
 						'settings'			=> self::$customizer_flag . '[sunrise_sunset_off]',
 						'type'				=> 'select',
-						'choices'			=> TkEventW__Functions::valid_icon_type( 'true' ),
+						'choices'			=> TKEventWeather_Functions::valid_icon_type( 'true' ),
 					));
 		*/
 

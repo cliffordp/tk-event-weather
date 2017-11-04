@@ -20,7 +20,7 @@ if ( ! class_exists( 'Gamajo_Template_Loader' ) ) {
  * @package   TkEventW
  * @author    TourKick (Clifford Paulick)
  */
-class TKEventW_Template_Loader extends Gamajo_Template_Loader {
+class TKEventWeather_Template_Loader extends Gamajo_Template_Loader {
 
 	/**
 	 * Prefix for filter names.

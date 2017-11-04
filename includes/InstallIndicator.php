@@ -21,7 +21,7 @@
 
 include_once( 'OptionsManager.php' );
 
-class TkEventW__InstallIndicator extends TkEventW__OptionsManager {
+class TKEventWeather_InstallIndicator extends TKEventWeather_OptionsManager {
 
 	const optionInstalled = '_installed';
 	const optionVersion = '_version';
@@ -111,7 +111,7 @@ class TkEventW__InstallIndicator extends TkEventW__OptionsManager {
 	 * @link https://developer.wordpress.org/reference/functions/plugin_dir_path/
 	 */
 	protected function getPluginDir() {
-		return TKEventW_Setup::plugin_dir_path_root();
+		return TKEventWeather_Setup::plugin_dir_path_root();
 	}
 
 	/**

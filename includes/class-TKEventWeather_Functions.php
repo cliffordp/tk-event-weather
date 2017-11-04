@@ -1,6 +1,6 @@
 <?php
 
-class TKEventW_Functions {
+class TKEventWeather_Functions {
 	// all variables and methods should be 'static'
 
 	/**
@@ -27,11 +27,11 @@ class TKEventW_Functions {
 	 * handle is 'tk-event-weather'
 	 */
 	public static function register_css() {
-		wp_register_style( TKEventW_Setup::shortcode_name_hyphenated(), TKEventW_Setup::plugin_dir_url_root() . 'css/tk-event-weather.css', array(), tk_event_weather_version() );
+		wp_register_style( TKEventWeather_Setup::shortcode_name_hyphenated(), TKEventWeather_Setup::plugin_dir_url_root() . 'css/tk-event-weather.css', array(), tk_event_weather_version() );
 
-		wp_register_style( TKEventW_Setup::shortcode_name_hyphenated() . '-scroll-horizontal', TKEventW_Setup::plugin_dir_url_root() . 'css/tk-event-weather-scroll-horizontal.css', array(), tk_event_weather_version() );
+		wp_register_style( TKEventWeather_Setup::shortcode_name_hyphenated() . '-scroll-horizontal', TKEventWeather_Setup::plugin_dir_url_root() . 'css/tk-event-weather-scroll-horizontal.css', array(), tk_event_weather_version() );
 
-		wp_register_style( TKEventW_Setup::shortcode_name_hyphenated() . '-vertical-to-columns', TKEventW_Setup::plugin_dir_url_root() . 'css/tk-event-weather-vertical-to-columns.css', array(), tk_event_weather_version() );
+		wp_register_style( TKEventWeather_Setup::shortcode_name_hyphenated() . '-vertical-to-columns', TKEventWeather_Setup::plugin_dir_url_root() . 'css/tk-event-weather-vertical-to-columns.css', array(), tk_event_weather_version() );
 	}
 
 
@@ -46,7 +46,7 @@ class TKEventW_Functions {
 	// https://github.com/christiannaths/Climacons-Font/blob/master/webfont/demo.html
 	//
 	public static function register_climacons_css() {
-		wp_register_style( 'tkeventw-climacons', TKEventW_Setup::plugin_dir_url_vendor() . 'climacons/climacons-font.css', array(), tk_event_weather_version() );
+		wp_register_style( 'tkeventw-climacons', TKEventWeather_Setup::plugin_dir_url_vendor() . 'climacons/climacons-font.css', array(), tk_event_weather_version() );
 	}
 
 
@@ -145,9 +145,9 @@ class TKEventW_Functions {
 		$error_reason = str_replace( "'", "\'", $input );
 
 		if ( ! empty( $error_reason ) ) {
-			$message = sprintf( __( '%s for the `%s` shortcode to work correctly.', 'tk-event-weather' ), $error_reason, TKEventW_Setup::$shortcode_name );
+			$message = sprintf( __( '%s for the `%s` shortcode to work correctly.', 'tk-event-weather' ), $error_reason, TKEventWeather_Setup::$shortcode_name );
 		} else {
-			$message = sprintf( __( 'Invalid or incomplete usage of the `%s` shortcode.', 'tk-event-weather' ), TKEventW_Setup::$shortcode_name );
+			$message = sprintf( __( 'Invalid or incomplete usage of the `%s` shortcode.', 'tk-event-weather' ), TKEventWeather_Setup::$shortcode_name );
 		}
 
 		$message = sprintf( __( '%s (Error message only displayed to users with the `%s` capability.)', 'tk-event-weather' ), $message, $capability );
@@ -199,8 +199,8 @@ class TKEventW_Functions {
 		$output = '';
 
 		if (
-			empty( TKEventW_Shortcode::$span_template_data['darksky_credit_link_enabled'] )
-			&& empty( TKEventW_Shortcode::$span_template_data['plugin_credit_link_enabled'] )
+			empty( TKEventWeather_Shortcode::$span_template_data['darksky_credit_link_enabled'] )
+			&& empty( TKEventWeather_Shortcode::$span_template_data['plugin_credit_link_enabled'] )
 		) {
 			return $output;
 		}
@@ -217,8 +217,8 @@ class TKEventW_Functions {
 
 		if (
 			// both
-			! empty( TKEventW_Shortcode::$span_template_data['darksky_credit_link_enabled'] )
-			&& ! empty( TKEventW_Shortcode::$span_template_data['plugin_credit_link_enabled'] )
+			! empty( TKEventWeather_Shortcode::$span_template_data['darksky_credit_link_enabled'] )
+			&& ! empty( TKEventWeather_Shortcode::$span_template_data['plugin_credit_link_enabled'] )
 		) {
 			$output = sprintf(
 				'<a href="%s" target="_blank">%s %s</a> %s <a href="%s" target="_blank">%s</a>',
@@ -231,7 +231,7 @@ class TKEventW_Functions {
 			);
 		} elseif (
 			// only Dark Sky link
-		! empty( TKEventW_Shortcode::$span_template_data['darksky_credit_link_enabled'] )
+		! empty( TKEventWeather_Shortcode::$span_template_data['darksky_credit_link_enabled'] )
 		) {
 			$output = sprintf(
 				'<a href="%s" target="_blank">%s %s</a>',
@@ -241,7 +241,7 @@ class TKEventW_Functions {
 			);
 		} elseif (
 			// only plugin credit link
-		! empty( TKEventW_Shortcode::$span_template_data['plugin_credit_link_enabled'] )
+		! empty( TKEventWeather_Shortcode::$span_template_data['plugin_credit_link_enabled'] )
 		) {
 			$output = sprintf(
 				'<a href="%s" target="_blank">%s %s</a>',
@@ -869,7 +869,7 @@ class TKEventW_Functions {
 	 * @return bool|string|void
 	 */
 	public static function temperature_units( $input ) {
-		if ( empty( $input ) || ! array_key_exists( $input, TKEventW_API_Dark_Sky::valid_units() ) ) {
+		if ( empty( $input ) || ! array_key_exists( $input, TKEventWeather_API_Dark_Sky::valid_units() ) ) {
 			return false;
 		}
 
@@ -916,7 +916,7 @@ class TKEventW_Functions {
 	 *
 	 **/
 	public static function wind_speed_units( $input ) {
-		if ( empty( $input ) || ! array_key_exists( $input, TKEventW_API_Dark_Sky::valid_units() ) ) {
+		if ( empty( $input ) || ! array_key_exists( $input, TKEventWeather_API_Dark_Sky::valid_units() ) ) {
 			return false;
 		}
 
@@ -1072,7 +1072,7 @@ class TKEventW_Functions {
 	 * @return string
 	 */
 	public static function shortcode_error_class_name() {
-		$result = sanitize_html_class( strtolower( TKEventW_Setup::$shortcode_name ) ) . '__error';
+		$result = sanitize_html_class( strtolower( TKEventWeather_Setup::$shortcode_name ) ) . '__error';
 
 		return $result;
 	}

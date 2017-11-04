@@ -21,7 +21,7 @@
 
 include_once( 'InstallIndicator.php' );
 
-class TkEventW__LifeCycle extends TkEventW__InstallIndicator {
+class TKEventWeather_LifeCycle extends TKEventWeather_InstallIndicator {
 
 	public function install() {
 		// Initialize DB Tables used by the plugin

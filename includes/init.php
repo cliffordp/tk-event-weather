@@ -19,10 +19,10 @@
 	If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-function TkEventW__init( $file ) {
+function TKEventWeather_init( $file ) {
 
 	require_once( 'Plugin.php' );
-	$aPlugin = new TkEventW__Plugin();
+	$aPlugin = new TKEventWeather_Plugin();
 
 	// Install the plugin
 	// NOTE: this file gets run each time you *activate* the plugin.

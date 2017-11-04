@@ -1,6 +1,6 @@
 <?php
 
-class TKEventW_API_Dark_Sky {
+class TKEventWeather_API_Dark_Sky {
 	// all variables and methods should be 'static'
 
 	public static $start_time_timestamp = false;
@@ -17,10 +17,10 @@ class TKEventW_API_Dark_Sky {
 	 * @return string
 	 */
 	private static function request_uri() {
-		$api_key = urlencode( sanitize_key( TKEventW_Shortcode::$dark_sky_api_key ) );
+		$api_key = urlencode( sanitize_key( TKEventWeather_Shortcode::$dark_sky_api_key ) );
 
 		if ( empty( $api_key ) ) {
-			TKEventW_Functions::invalid_shortcode_message( 'Please enter your Dark Sky API Key' );
+			TKEventWeather_Functions::invalid_shortcode_message( 'Please enter your Dark Sky API Key' );
 
 			return '';
 		}
@@ -28,7 +28,7 @@ class TKEventW_API_Dark_Sky {
 		$uri_base = sprintf(
 			'https://api.darksky.net/forecast/%s/%s,%s',
 			$api_key,
-			TKEventW_Shortcode::$latitude_longitude,
+			TKEventWeather_Shortcode::$latitude_longitude,
 			self::$start_time_timestamp
 		);
 
@@ -46,7 +46,7 @@ class TKEventW_API_Dark_Sky {
 			$uri_query_args['lang'] = urlencode( $language );
 		}
 
-		$exclude = TKEventW_Shortcode::$dark_sky_api_exclude;
+		$exclude = TKEventWeather_Shortcode::$dark_sky_api_exclude;
 
 		if ( ! empty( $exclude ) ) {
 			$uri_query_args['exclude'] = urlencode( $exclude );
@@ -65,11 +65,11 @@ class TKEventW_API_Dark_Sky {
 	}
 
 	private static function get_request_uri_units() {
-		return TKEventW_Shortcode::$dark_sky_api_units;
+		return TKEventWeather_Shortcode::$dark_sky_api_units;
 	}
 
 	private static function get_request_uri_language() {
-		return TKEventW_Shortcode::$dark_sky_api_language;
+		return TKEventWeather_Shortcode::$dark_sky_api_language;
 	}
 
 	/**
@@ -121,14 +121,14 @@ class TKEventW_API_Dark_Sky {
 	 */
 	public static function set_timezone_if_needed( $use_this_timezone ) {
 		if (
-			! empty( TKEventW_Shortcode::$timezone )
+			! empty( TKEventWeather_Shortcode::$timezone )
 			|| ! in_array( $use_this_timezone, timezone_identifiers_list() )
 		) {
 			return false;
 		}
 
 		// set it from API if we're allowed to
-		TKEventW_Time::set_timezone_from_api( $use_this_timezone );
+		TKEventWeather_Time::set_timezone_from_api( $use_this_timezone );
 	}
 
 	public static function get_response_data() {
@@ -136,7 +136,7 @@ class TKEventW_API_Dark_Sky {
 		$transient_data = self::get_transient_value();
 
 		if ( true === self::valid_transient( $transient_data ) ) {
-			TKEventW_Shortcode::$dark_sky_api_transient_used = 'TRUE';
+			TKEventWeather_Shortcode::$dark_sky_api_transient_used = 'TRUE';
 
 			if ( ! empty( $transient_data->timezone ) ) {
 				self::set_timezone_if_needed( $transient_data->timezone );
@@ -149,32 +149,32 @@ class TKEventW_API_Dark_Sky {
 		$response = wp_safe_remote_get( esc_url_raw( self::request_uri() ) );
 
 		if ( is_wp_error( $response ) ) {
-			return TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API request sent but resulted in a WordPress Error. Please troubleshoot' );
+			return TKEventWeather_Functions::invalid_shortcode_message( 'Dark Sky API request sent but resulted in a WordPress Error. Please troubleshoot' );
 		}
 
 		$body = wp_remote_retrieve_body( $response );
 
 		if ( empty( $body ) ) {
-			return TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API request sent but nothing received. Please troubleshoot' );
+			return TKEventWeather_Functions::invalid_shortcode_message( 'Dark Sky API request sent but nothing received. Please troubleshoot' );
 		}
 
 		$data = json_decode( $body );
 
 		if ( empty( $data ) ) {
-			return TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API response received but some sort of data inconsistency. Please troubleshoot' );
+			return TKEventWeather_Functions::invalid_shortcode_message( 'Dark Sky API response received but some sort of data inconsistency. Please troubleshoot' );
 		}
 
 		if ( ! empty( $data->error ) ) {
-			return TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API responded with an error: ' . $data->error . ' - Please troubleshoot' );
+			return TKEventWeather_Functions::invalid_shortcode_message( 'Dark Sky API responded with an error: ' . $data->error . ' - Please troubleshoot' );
 		}
 
 		if ( empty( $data->hourly->data ) ) {
-			return TKEventW_Functions::invalid_shortcode_message( 'Dark Sky API responded but without hourly data. Please troubleshoot' );
+			return TKEventWeather_Functions::invalid_shortcode_message( 'Dark Sky API responded but without hourly data. Please troubleshoot' );
 		}
 
 		// Set transient if enabled and API call resulted in usable data.
-		if ( ! empty( TKEventW_Shortcode::$transients_enabled ) ) {
-			$transient_expiration_hours = absint( TKEventW_Shortcode::$transients_expiration_hours );
+		if ( ! empty( TKEventWeather_Shortcode::$transients_enabled ) ) {
+			$transient_expiration_hours = absint( TKEventWeather_Shortcode::$transients_expiration_hours );
 
 			if ( empty( $transient_expiration_hours ) ) {
 				$transient_expiration_hours = 12;
@@ -193,7 +193,7 @@ class TKEventW_API_Dark_Sky {
 	public static function get_debug_output() {
 		$output = '';
 
-		if ( empty( TKEventW_Shortcode::$debug_enabled ) ) {
+		if ( empty( TKEventWeather_Shortcode::$debug_enabled ) ) {
 			return $output;
 		}
 
@@ -214,8 +214,8 @@ class TKEventW_API_Dark_Sky {
 		 */
 		$output .= sprintf( '<!--%1$s%2$s -- Dark Sky API -- Obtained from Transient: %3$s -- Request URI:%1$s%4$s%1$s -- JSON Data:%1$s%5$s%1$s-->%1$s',
 			PHP_EOL,
-			TKEventW_Setup::plugin_display_name(),
-			TKEventW_Shortcode::$dark_sky_api_transient_used,
+			TKEventWeather_Setup::plugin_display_name(),
+			TKEventWeather_Shortcode::$dark_sky_api_transient_used,
 			self::request_uri(),
 			json_encode( $data, JSON_PRETTY_PRINT ) // JSON_PRETTY_PRINT option requires PHP 5.4
 		);
@@ -231,7 +231,7 @@ class TKEventW_API_Dark_Sky {
 	 * @return string
 	 */
 	private static function get_exclude_for_transient() {
-		$exclude = TKEventW_Shortcode::$dark_sky_api_exclude;
+		$exclude = TKEventWeather_Shortcode::$dark_sky_api_exclude;
 
 		$exclude_array = explode( ',', $exclude );
 
@@ -247,34 +247,34 @@ class TKEventW_API_Dark_Sky {
 	}
 
 	private static function get_start_time_top_of_hour_timestamp( $timestamp ) {
-		return TKEventW_Time::timestamp_truncate_minutes( $timestamp );
+		return TKEventWeather_Time::timestamp_truncate_minutes( $timestamp );
 	}
 
 	private static function get_transient_name() {
 		$name = sprintf(
 			'%s_%s_%s_%s_%s_%s_%s_%d',
-			TKEventW_Setup::$transient_name_prepend,
+			TKEventWeather_Setup::$transient_name_prepend,
 			'darksky',
-			TKEventW_Shortcode::$dark_sky_api_units,
-			TKEventW_Shortcode::$dark_sky_api_language,
+			TKEventWeather_Shortcode::$dark_sky_api_units,
+			TKEventWeather_Shortcode::$dark_sky_api_language,
 			self::get_exclude_for_transient(),
 			// latitude (before comma)
-			substr( strstr( TKEventW_Shortcode::$latitude_longitude, ',', true ), 0, 6 ), // Requires PHP 5.3.0+
+			substr( strstr( TKEventWeather_Shortcode::$latitude_longitude, ',', true ), 0, 6 ), // Requires PHP 5.3.0+
 			// first 6 (assuming period is in first 5, getting first 6 will result in 5 valid characters for transient name
 			// longitude (after comma)
-			substr( strstr( TKEventW_Shortcode::$latitude_longitude, ',', false ), 0, 7 ), // End at 7 because 0 is the comma (which gets removed downstream). Does not require PHP 5.3.0+
+			substr( strstr( TKEventWeather_Shortcode::$latitude_longitude, ',', false ), 0, 7 ), // End at 7 because 0 is the comma (which gets removed downstream). Does not require PHP 5.3.0+
 			substr( self::get_start_time_top_of_hour_timestamp( self::$start_time_timestamp ), - 5, 5 ) // last 5 of Start Time timestamp with minutes truncated
 		//substr( $end_time_timestamp, -5, 5 ) // last 5 of End Time timestamp
 		// noticed in testing sometimes leading zero(s) get truncated, possibly due to sanitize_key()... but, as long as it is consistent we are ok.
 		);
 
-		$name = TKEventW_Functions::sanitize_transient_name( $name );
+		$name = TKEventWeather_Functions::sanitize_transient_name( $name );
 
 		return $name;
 	}
 
 	private static function get_transient_value() {
-		return TKEventW_Functions::transient_get_or_delete( self::get_transient_name(), TKEventW_Shortcode::$transients_enabled );
+		return TKEventWeather_Functions::transient_get_or_delete( self::get_transient_name(), TKEventWeather_Shortcode::$transients_enabled );
 	}
 
 	/**
@@ -296,7 +296,7 @@ class TKEventW_API_Dark_Sky {
 		);
 
 		if ( 'true' == $prepend_empty ) {
-			$result = TKEventW_Functions::array_prepend_empty( $result );
+			$result = TKEventWeather_Functions::array_prepend_empty( $result );
 		}
 
 		return $result;
@@ -352,7 +352,7 @@ class TKEventW_API_Dark_Sky {
 		natcasesort( $result ); // sorts by values, maintains keys, sort natural, case insensitive
 
 		if ( 'true' == $prepend_empty ) {
-			$result = TKEventW_Functions::array_prepend_empty( $result );
+			$result = TKEventWeather_Functions::array_prepend_empty( $result );
 		}
 
 		return $result;
@@ -379,7 +379,7 @@ class TKEventW_API_Dark_Sky {
 		);
 
 		if ( 'true' == $prepend_empty ) {
-			$result = TKEventW_Functions::array_prepend_empty( $result );
+			$result = TKEventWeather_Functions::array_prepend_empty( $result );
 		}
 
 		return $result;

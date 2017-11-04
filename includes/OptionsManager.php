@@ -19,9 +19,9 @@
 		If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-require_once( 'class-TKEventW_Functions.php' );
+require_once( 'class-TKEventWeather_Functions.php' );
 
-class TkEventW__OptionsManager {
+class TKEventWeather_OptionsManager {
 
 	public function getOptionNamePrefix() {
 		return get_class( $this ) . '_';
@@ -256,7 +256,7 @@ class TkEventW__OptionsManager {
 			?>
 			<div style="width: 80%; padding: 20px; margin: 20px; background-color: #fff; font-size: 120%;">
 				<?php
-				$tourkick_logo = TKEventW_Setup::plugin_dir_url_images() . 'tourkick-logo-square-300.png';
+				$tourkick_logo = TKEventWeather_Setup::plugin_dir_url_images() . 'tourkick-logo-square-300.png';
 				printf( '<a href="http://tourkick.com/" target="_blank"><img style="float: left; margin: 5px 40px 10px 10px;" width="100" height="100" src="%s"></a>', $tourkick_logo );
 				?>
 				<?php
@@ -371,37 +371,37 @@ class TkEventW__OptionsManager {
 		// reference (outdated screenshots): https://docs.woothemes.com/document/understanding-the-woocommerce-system-status-report/
 		?>
 		<style>
-			table.tkeventw_status_table {
+			table.tkeventweather_status_table {
 				margin-bottom: 1em
 			}
 
-			table.tkeventw_status_table tr:nth-child(2n) td,
-			table.tkeventw_status_table tr:nth-child(2n) th {
+			table.tkeventweather_status_table tr:nth-child(2n) td,
+			table.tkeventweather_status_table tr:nth-child(2n) th {
 				background: #fcfcfc
 			}
 
-			table.tkeventw_status_table th {
+			table.tkeventweather_status_table th {
 				font-weight: 700;
 				padding: 9px
 			}
 
-			table.tkeventw_status_table td:first-child {
+			table.tkeventweather_status_table td:first-child {
 				width: 33%
 			}
 
-			table.tkeventw_status_table td mark {
+			table.tkeventweather_status_table td mark {
 				background: 0 0
 			}
 
-			table.tkeventw_status_table td mark.yes {
+			table.tkeventweather_status_table td mark.yes {
 				color: #7ad03a
 			}
 
-			table.tkeventw_status_table td mark.no {
+			table.tkeventweather_status_table td mark.no {
 				color: #999
 			}
 
-			table.tkeventw_status_table td mark.error {
+			table.tkeventweather_status_table td mark.error {
 				color: #a00
 			}
 
@@ -445,7 +445,7 @@ class TkEventW__OptionsManager {
 				<hr>
 				<p><?php _e( 'And/Or you might want to send your personal computer specifications:', 'tk-event-weather' ); ?></p>
 				<p><a target="_blank"
-					  href="<?php printf( 'http://supportdetails.com/?sender_name=%s&sender=%s&recipient=%s', urlencode( get_home_url() ), urlencode( get_bloginfo( 'admin_email' ) ), urlencode( TKEventW_Setup::$support_email_address ) ); ?>"
+					  href="<?php printf( 'http://supportdetails.com/?sender_name=%s&sender=%s&recipient=%s', urlencode( get_home_url() ), urlencode( get_bloginfo( 'admin_email' ) ), urlencode( TKEventWeather_Setup::$support_email_address ) ); ?>"
 					  class="button-secondary support-details"><?php _e( 'Get Personal Computer Details', 'tk-event-weather' ); ?></a>
 				</p>
 				<p>
@@ -454,7 +454,7 @@ class TkEventW__OptionsManager {
 			</div>
 		</div>
 
-		<table class="tkeventw_status_table widefat" cellspacing="0" id="status">
+		<table class="tkeventweather_status_table widefat" cellspacing="0" id="status">
 			<thead>
 			<tr>
 				<th colspan="3" data-export-label="WordPress Environment">
@@ -475,11 +475,11 @@ class TkEventW__OptionsManager {
 				<td data-export-label="WP Version"><?php _e( 'WP Version', 'tk-event-weather' ); ?>:</td>
 				<td><?php
 					$wordpress_version = get_bloginfo( 'version' );
-					if ( version_compare( $wordpress_version, TKEventW_Setup::$min_allowed_version_wordpress, '<' ) ) {
+					if ( version_compare( $wordpress_version, TKEventWeather_Setup::$min_allowed_version_wordpress, '<' ) ) {
 						echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf(
 								__( '%s - This plugin requires a minimum WordPress version of %s. See: %s', 'tk-event-weather' ),
 								esc_html( $wordpress_version ),
-								TKEventW_Setup::$min_allowed_version_wordpress,
+								TKEventWeather_Setup::$min_allowed_version_wordpress,
 								'<a href="https://codex.wordpress.org/WordPress_Versions" target="_blank">' . __( 'WordPress Version History', 'tk-event-weather' ) . '</a>'
 							) . '</mark>';
 					} else {
@@ -562,7 +562,7 @@ class TkEventW__OptionsManager {
 			</tr>
 			</tbody>
 		</table>
-		<table class="tkeventw_status_table widefat" cellspacing="0">
+		<table class="tkeventweather_status_table widefat" cellspacing="0">
 			<thead>
 			<tr>
 				<th colspan="3" data-export-label="Server Environment">
@@ -580,11 +580,11 @@ class TkEventW__OptionsManager {
 					// Check if phpversion function exists.
 					if ( function_exists( 'phpversion' ) ) {
 						$php_version = phpversion();
-						if ( version_compare( $php_version, TkEventW__minimalRequiredPhpVersion(), '<' ) ) {
+						if ( version_compare( $php_version, TKEventWeather_minimalRequiredPhpVersion(), '<' ) ) {
 							echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf(
 									__( '%s - This plugin requires a minimum PHP version of %s. See: %s', 'tk-event-weather' ),
 									esc_html( $php_version ),
-									TkEventW__minimalRequiredPhpVersion(),
+									TKEventWeather_minimalRequiredPhpVersion(),
 									'<a href="http://docs.woothemes.com/document/how-to-update-your-php-version/" target="_blank">' . __( 'How to update your PHP version', 'tk-event-weather' ) . '</a>'
 								) . '</mark>';
 						} else {
@@ -628,11 +628,11 @@ class TkEventW__OptionsManager {
 					/** @global wpdb $wpdb */
 					global $wpdb;
 					$mysql_version = $wpdb->db_version();
-					if ( version_compare( $mysql_version, TKEventW_Setup::$min_allowed_version_mysql, '<' ) ) {
+					if ( version_compare( $mysql_version, TKEventWeather_Setup::$min_allowed_version_mysql, '<' ) ) {
 						echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf(
 								__( '%s - This plugin requires a minimum MySQL version of %s. See: %s', 'tk-event-weather' ),
 								esc_html( $mysql_version ),
-								TKEventW_Setup::$min_allowed_version_mysql,
+								TKEventWeather_Setup::$min_allowed_version_mysql,
 								'<a href="https://wordpress.org/about/requirements/" target="_blank">' . __( 'WordPress Requirements', 'tk-event-weather' ) . '</a>'
 							) . '</mark>';
 					} else {
@@ -709,9 +709,9 @@ class TkEventW__OptionsManager {
 			} else {
 				$posting['wp_remote_get']['note'] = __( 'wp_remote_get() failed. This plugin won\'t work with your server. Contact your hosting provider.', 'tk-event-weather' );
 				if ( is_wp_error( $response ) ) {
-					$posting['wp_remote_get']['note'] .= ' ' . sprintf( __( 'Error: %s', 'tk-event-weather' ), TKEventW_Functions::tk_clean_var( $response->get_error_message() ) );
+					$posting['wp_remote_get']['note'] .= ' ' . sprintf( __( 'Error: %s', 'tk-event-weather' ), TKEventWeather_Functions::tk_clean_var( $response->get_error_message() ) );
 				} else {
-					$posting['wp_remote_get']['note'] .= ' ' . sprintf( __( 'Status code: %s', 'tk-event-weather' ), TKEventW_Functions::tk_clean_var( $response['response']['code'] ) );
+					$posting['wp_remote_get']['note'] .= ' ' . sprintf( __( 'Status code: %s', 'tk-event-weather' ), TKEventWeather_Functions::tk_clean_var( $response['response']['code'] ) );
 				}
 				$posting['wp_remote_get']['success'] = false;
 			}
@@ -734,7 +734,7 @@ class TkEventW__OptionsManager {
 			?>
 			</tbody>
 		</table>
-		<table class="tkeventw_status_table widefat" cellspacing="0">
+		<table class="tkeventweather_status_table widefat" cellspacing="0">
 			<thead>
 			<tr>
 				<th colspan="3" data-export-label="TK Event Weather Plugin Options">
@@ -743,7 +743,7 @@ class TkEventW__OptionsManager {
 			</thead>
 			<tbody>
 			<?php
-			$plugin_options = TKEventW_Functions::plugin_options();
+			$plugin_options = TKEventWeather_Functions::plugin_options();
 
 			if ( ! empty( $plugin_options ) && is_array( $plugin_options ) ) {
 				foreach ( $plugin_options as $key => $option ) {
@@ -772,7 +772,7 @@ class TkEventW__OptionsManager {
 			?>
 			</tbody>
 		</table>
-		<table class="tkeventw_status_table widefat" cellspacing="0">
+		<table class="tkeventweather_status_table widefat" cellspacing="0">
 			<thead>
 			<tr>
 				<th colspan="3"
@@ -810,7 +810,7 @@ class TkEventW__OptionsManager {
 			?>
 			</tbody>
 		</table>
-		<table class="tkeventw_status_table widefat" cellspacing="0">
+		<table class="tkeventweather_status_table widefat" cellspacing="0">
 			<thead>
 			<tr>
 				<th colspan="3" data-export-label="Theme"><h2><?php _e( 'Theme', 'tk-event-weather' ); ?></h2>
@@ -880,7 +880,7 @@ class TkEventW__OptionsManager {
 		<script type="text/javascript">
 			jQuery( 'a.debug-report' ).click( function () {
 				var report = '';
-				jQuery( '.tkeventw_status_table thead, .tkeventw_status_table tbody' ).each( function () {
+				jQuery( '.tkeventweather_status_table thead, .tkeventweather_status_table tbody' ).each( function () {
 					if ( jQuery( this ).is( 'thead' ) ) {
 						var label = jQuery( this ).find( 'th:eq(0)' ).data( 'export-label' ) || jQuery( this ).text();
 						report = report + '\n### ' + jQuery.trim( label ) + ' ###\n\n';
