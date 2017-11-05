@@ -5,7 +5,7 @@
 include_once( 'LifeCycle.php' );
 require_once( 'class-TKEventWeather_Functions.php' );
 
-class TKEventWeather_Plugin extends TKEventWeather_LifeCycle {
+class TKEventWeather_Plugin extends TKEventWeather_Life_Cycle {
 
 	private static $customizer_flag = 'tk_event_weather';
 
@@ -15,11 +15,11 @@ class TKEventWeather_Plugin extends TKEventWeather_LifeCycle {
 	public static $customizer_panel_id = 'tk_event_weather_panel';
 
 
-	public function getPluginDisplayName() {
+	public function get_plugin_display_name() {
 		return 'TK Event Weather';
 	}
 
-	protected function getMainPluginFileName() {
+	protected function get_main_plugin_file_name() {
 		return 'tk-event-weather.php';
 	}
 
@@ -31,9 +31,9 @@ class TKEventWeather_Plugin extends TKEventWeather_LifeCycle {
 	 * (2) make table names lower case only
 	 * @return void
 	 */
-	protected function installDatabaseTables() {
+	protected function install_database_tables() {
 		//				global $wpdb;
-		//				$tableName = $this->prefixTableName('mytable');
+		//				$tableName = $this->prefix_table_name('mytable');
 		//				$wpdb->query("CREATE TABLE IF NOT EXISTS `$tableName` (
 		//						`id` INTEGER NOT NULL");
 	}
@@ -43,9 +43,9 @@ class TKEventWeather_Plugin extends TKEventWeather_LifeCycle {
 	 * Drop plugin-created tables on uninstall.
 	 * @return void
 	 */
-	protected function unInstallDatabaseTables() {
+	protected function uninstall_database_tables() {
 		//				global $wpdb;
-		//				$tableName = $this->prefixTableName('mytable');
+		//				$tableName = $this->prefix_table_name('mytable');
 		//				$wpdb->query("DROP TABLE IF EXISTS `$tableName`");
 	}
 
@@ -63,28 +63,28 @@ class TKEventWeather_Plugin extends TKEventWeather_LifeCycle {
 	 * @return void
 	 */
 	public function upgrade() {
-		$upgradeOk    = true;
-		$savedVersion = $this->getVersionSaved();
-		if ( $this->isVersionLessThan( $savedVersion, '1.5' ) ) {
+		$upgrade_ok    = true;
+		$saved_version = $this->get_version_saved();
+		if ( $this->is_version_less_than( $saved_version, '1.5' ) ) {
 			// TODO: delete old options, including transients https://wordpress.stackexchange.com/a/75758/22702 -- delete leftover TKEventWeather_Plugin::$customizer_flag array keys like ^forecast_io%
 		}
 
 		// Post-upgrade, set the current version in the options
-		$codeVersion = $this->getVersion();
-		if ( $upgradeOk && $savedVersion != $codeVersion ) {
-			$this->saveInstalledVersion();
+		$code_version = $this->get_version();
+		if ( $upgrade_ok && $saved_version != $code_version ) {
+			$this->save_installed_version();
 		}
 	}
 
-	public function addActionsAndFilters() {
+	public function add_actions_and_filters() {
 
 		// Add options administration page
 		// http://plugin.michael-simpson.com/?page_id=47
-		add_action( 'admin_menu', array( $this, 'addSettingsSubMenuPage' ) );
+		add_action( 'admin_menu', array( $this, 'add_settings_sub_menu_page' ) );
 
 		// Example adding a script & style just for the options administration page
 		// http://plugin.michael-simpson.com/?page_id=47
-		//				if (strpos($_SERVER['REQUEST_URI'], $this->getSettingsSlug()) !== false) {
+		//				if (strpos($_SERVER['REQUEST_URI'], $this->get_settings_slug()) !== false) {
 		//						wp_enqueue_script('my-script', plugins_url('/js/my-script.js', __FILE__));
 		//						wp_enqueue_style('my-style', plugins_url('/css/my-style.css', __FILE__));
 		//				}
@@ -114,8 +114,8 @@ class TKEventWeather_Plugin extends TKEventWeather_LifeCycle {
 		// http://plugin.michael-simpson.com/?page_id=39
 
 		include_once( 'class-TKEventWeather_Shortcode.php' );
-		$sc = new TKEventWeather_Shortcode();
-		$sc->register( TKEventWeather_Setup::$shortcode_name );
+		$shortcode = new TKEventWeather_Shortcode();
+		$shortcode->register( TKEventWeather_Setup::$shortcode_name );
 
 
 		// Register AJAX hooks
@@ -240,7 +240,7 @@ class TKEventWeather_Plugin extends TKEventWeather_LifeCycle {
 		$wp_customize->add_panel(
 			self::$customizer_panel_id,
 			array(
-				'title'       => $this->getPluginDisplayName(),
+				'title'       => $this->get_plugin_display_name(),
 				'description' => esc_html__( 'Plugin options and settings', 'tk-event-weather' ),
 			)
 		);

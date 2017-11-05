@@ -28,30 +28,30 @@ include_once( 'ShortCodeLoader.php' );
  * The idea is you have a shortcode that needs a script loaded, but you only
  * want to load it if the shortcode is actually called.
  */
-abstract class TKEventWeather_ShortCodeScriptLoader extends TKEventWeather_ShortCodeLoader {
+abstract class TKEventWeather_Shortcode_Script_Loader extends TKEventWeather_Shortcode_Loader {
 
-	var $doAddScript;
+	var $do_add_script;
 
-	public function register( $shortcodeName ) {
-		$this->registerShortcodeToFunction( $shortcodeName, 'handleShortcodeWrapper' );
+	public function register( $shortcode_name ) {
+		$this->register_shortcode_to_function( $shortcode_name, 'handle_shortcode_wrapper' );
 
 		// It will be too late to enqueue the script in the header,
 		// but can add them to the footer
-		add_action( 'wp_footer', array( $this, 'addScriptWrapper' ) );
+		add_action( 'wp_footer', array( $this, 'add_script_wrapper' ) );
 	}
 
-	public function handleShortcodeWrapper( $atts ) {
+	public function handle_shortcode_wrapper( $atts ) {
 		// Flag that we need to add the script
-		$this->doAddScript = true;
+		$this->do_add_script = true;
 
-		return $this->handleShortcode( $atts );
+		return $this->handle_shortcode( $atts );
 	}
 
 
-	public function addScriptWrapper() {
+	public function add_script_wrapper() {
 		// Only add the script if the shortcode was actually called
-		if ( $this->doAddScript ) {
-			$this->addScript();
+		if ( $this->do_add_script ) {
+			$this->add_script();
 		}
 	}
 
@@ -62,6 +62,6 @@ abstract class TKEventWeather_ShortCodeScriptLoader extends TKEventWeather_Short
 	 *    wp_print_scripts('my-script');
 	 * @return void
 	 */
-	public abstract function addScript();
+	public abstract function add_script();
 
 }

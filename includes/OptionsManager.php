@@ -21,9 +21,9 @@
 
 require_once( 'class-TKEventWeather_Functions.php' );
 
-class TKEventWeather_OptionsManager {
+class TKEventWeather_Options_Manager {
 
-	public function getOptionNamePrefix() {
+	public function get_option_name_prefix() {
 		return get_class( $this ) . '_';
 	}
 
@@ -31,11 +31,11 @@ class TKEventWeather_OptionsManager {
 	 * Cleanup: remove all options from the DB
 	 * @return void
 	 */
-	protected function deleteSavedOptions() {
+	protected function delete_saved_options() {
 		/*
-        $optionMetaData = $this->getOptionMetaData();
-        if (is_array($optionMetaData)) {
-                foreach ($optionMetaData as $aOptionKey => $aOptionMeta) {
+        $option_metadata = $this->get_option_metadata();
+        if (is_array($option_metadata)) {
+                foreach ($option_metadata as $aOptionKey => $aOptionMeta) {
                         $prefixedOptionName = $this->prefix($aOptionKey); // how it is stored in DB
                         delete_option($prefixedOptionName);
                 }
@@ -47,7 +47,7 @@ class TKEventWeather_OptionsManager {
 	 * @return string display name of the plugin to show as a name/title in HTML.
 	 * Just returns the class name. Override this method to return something more readable
 	 */
-	public function getPluginDisplayName() {
+	public function get_plugin_display_name() {
 		return get_class( $this );
 	}
 
@@ -60,12 +60,12 @@ class TKEventWeather_OptionsManager {
 	 * @return string
 	 */
 	public function prefix( $name ) {
-		$optionNamePrefix = $this->getOptionNamePrefix();
-		if ( strpos( $name, $optionNamePrefix ) === 0 ) { // 0 but not false
+		$option_name_prefix = $this->get_option_name_prefix();
+		if ( strpos( $name, $option_name_prefix ) === 0 ) { // 0 but not false
 			return $name; // already prefixed
 		}
 
-		return $optionNamePrefix . $name;
+		return $option_name_prefix . $name;
 	}
 
 	/**
@@ -76,10 +76,10 @@ class TKEventWeather_OptionsManager {
 	 *
 	 * @return string $optionName without the prefix.
 	 */
-	public function &unPrefix( $name ) {
-		$optionNamePrefix = $this->getOptionNamePrefix();
-		if ( strpos( $name, $optionNamePrefix ) === 0 ) {
-			return substr( $name, strlen( $optionNamePrefix ) );
+	public function &un_prefix( $name ) {
+		$option_name_prefix = $this->get_option_name_prefix();
+		if ( strpos( $name, $option_name_prefix ) === 0 ) {
+			return substr( $name, strlen( $option_name_prefix ) );
 		}
 
 		return $name;
@@ -95,14 +95,14 @@ class TKEventWeather_OptionsManager {
 	 * @return string the value from delegated call to get_option(), or optional default value
 	 * if option is not set.
 	 */
-	public function getOption( $optionName, $default = null ) {
-		$prefixedOptionName = $this->prefix( $optionName ); // how it is stored in DB
-		$retVal             = get_option( $prefixedOptionName );
-		if ( ! $retVal && $default ) {
-			$retVal = $default;
+	public function get_option( $optionName, $default = null ) {
+		$prefixed_option_name = $this->prefix( $optionName ); // how it is stored in DB
+		$ret_val             = get_option( $prefixed_option_name );
+		if ( ! $ret_val && $default ) {
+			$ret_val = $default;
 		}
 
-		return $retVal;
+		return $ret_val;
 	}
 
 	/**
@@ -113,10 +113,10 @@ class TKEventWeather_OptionsManager {
 	 *
 	 * @return bool from delegated call to delete_option()
 	 */
-	public function deleteOption( $optionName ) {
-		$prefixedOptionName = $this->prefix( $optionName ); // how it is stored in DB
+	public function delete_option( $optionName ) {
+		$prefixed_option_name = $this->prefix( $optionName ); // how it is stored in DB
 
-		return delete_option( $prefixedOptionName );
+		return delete_option( $prefixed_option_name );
 	}
 
 	/**
@@ -128,14 +128,14 @@ class TKEventWeather_OptionsManager {
 	 *
 	 * @return null from delegated call to delete_option()
 	 */
-	public function updateOption( $optionName, $value ) {
-		$prefixedOptionName = $this->prefix( $optionName ); // how it is stored in DB
+	public function update_option( $optionName, $value ) {
+		$prefixed_option_name = $this->prefix( $optionName ); // how it is stored in DB
 
-		return update_option( $prefixedOptionName, $value );
+		return update_option( $prefixed_option_name, $value );
 	}
 
 	/**
-	 * A Role Option is an option defined in getOptionMetaData() as a choice of WP standard roles, e.g.
+	 * A Role Option is an option defined in get_option_metadata() as a choice of WP standard roles, e.g.
 	 * 'CanDoOperationX' => array('Can do Operation X', 'Administrator', 'Editor', 'Author', 'Contributor', 'Subscriber')
 	 * The idea is use an option to indicate what role level a user must minimally have in order to do some operation.
 	 * So if a Role Option 'CanDoOperationX' is set to 'Editor' then users which role 'Editor' or above should be
@@ -146,25 +146,25 @@ class TKEventWeather_OptionsManager {
 	 *
 	 * @return string role name
 	 */
-	public function getRoleOption( $optionName ) {
-		$roleAllowed = $this->getOption( $optionName );
-		if ( ! $roleAllowed || $roleAllowed == '' ) {
-			$roleAllowed = 'Administrator';
+	public function get_role_option( $optionName ) {
+		$role_allowed = $this->get_option( $optionName );
+		if ( ! $role_allowed || $role_allowed == '' ) {
+			$role_allowed = 'Administrator';
 		}
 
-		return $roleAllowed;
+		return $role_allowed;
 	}
 
 	/**
 	 * Given a WP role name, return a WP capability which only that role and roles above it have
 	 * http://codex.wordpress.org/Roles_and_Capabilities
 	 *
-	 * @param    $roleName
+	 * @param    $role_name
 	 *
 	 * @return string a WP capability or '' if unknown input role
 	 */
-	protected function roleToCapability( $roleName ) {
-		switch ( $roleName ) {
+	protected function role_to_capability( $role_name ) {
+		switch ( $role_name ) {
 			case 'Super Admin':
 				return 'manage_options';
 			case 'Administrator':
@@ -185,46 +185,46 @@ class TKEventWeather_OptionsManager {
 	}
 
 	/**
-	 * @param $roleName string a standard WP role name like 'Administrator'
+	 * @param $role_name string a standard WP role name like 'Administrator'
 	 *
 	 * @return bool
 	 */
-	public function isUserRoleEqualOrBetterThan( $roleName ) {
-		if ( 'Anyone' == $roleName ) {
+	public function is_user_role_equal_or_better_than( $role_name ) {
+		if ( 'Anyone' == $role_name ) {
 			return true;
 		}
-		$capability = $this->roleToCapability( $roleName );
+		$capability = $this->role_to_capability( $role_name );
 
 		return current_user_can( $capability );
 	}
 
 	/**
-	 * @param    $optionName string name of a Role option (see comments in getRoleOption())
+	 * @param    $option_name string name of a Role option (see comments in getRoleOption())
 	 *
 	 * @return bool indicates if the user has adequate permissions
 	 */
-	public function canUserDoRoleOption( $optionName ) {
-		$roleAllowed = $this->getRoleOption( $optionName );
-		if ( 'Anyone' == $roleAllowed ) {
+	public function can_user_do_role_option( $option_name ) {
+		$role_allowed = $this->get_role_option( $option_name );
+		if ( 'Anyone' == $role_allowed ) {
 			return true;
 		}
 
-		return $this->isUserRoleEqualOrBetterThan( $roleAllowed );
+		return $this->is_user_role_equal_or_better_than( $role_allowed );
 	}
 
 	/**
 	 * see: http://codex.wordpress.org/Creating_Options_Pages
 	 * @return void
 	 */
-	public function createSettingsMenu() {
-		$pluginName = $this->getPluginDisplayName();
+	public function create_settings_menu() {
+		$plugin_name = $this->get_plugin_display_name();
 		//create new top-level menu
 		add_menu_page(
-			$pluginName . ' Plugin Settings',
-			$pluginName,
+			$plugin_name . ' Plugin Settings',
+			$plugin_name,
 			'administrator',
 			get_class( $this ),
-			array( $this, 'settingsPage' )
+			array( $this, 'settings_page' )
 		/*,plugins_url('/images/icon.png', __FILE__)*/
 		); // if you call 'plugins_url; be sure to "require_once" it
 	}
@@ -235,7 +235,7 @@ class TKEventWeather_OptionsManager {
 	 * Override this method to create a customized page.
 	 * @return void
 	 */
-	public function settingsPage() {
+	public function settings_page() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( __( 'You do not have sufficient permissions to access this page.', 'tk-event-weather' ) );
 		}
@@ -247,7 +247,7 @@ class TKEventWeather_OptionsManager {
 
 
 		<div class="wrap">
-			<h1><?php echo $this->getPluginDisplayName();
+			<h1><?php echo $this->get_plugin_display_name();
 				echo ' ';
 				_e( 'Settings', 'tk-event-weather' ); ?></h1>
 
@@ -301,11 +301,11 @@ class TKEventWeather_OptionsManager {
 			$active_tab = wp_kses_post( esc_attr( $active_tab ) );
 			?>
 			<h2 class="nav-tab-wrapper">
-				<a href="<?php printf( '?page=%s&tab=options', $this->getSettingsSlug() ); ?>"
+				<a href="<?php printf( '?page=%s&tab=options', $this->get_settings_slug() ); ?>"
 				   class="nav-tab <?php echo $active_tab == 'options' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Options', 'tk-event-weather' ); ?></a>
-				<a href="<?php printf( '?page=%s&tab=tools', $this->getSettingsSlug() ); ?>"
+				<a href="<?php printf( '?page=%s&tab=tools', $this->get_settings_slug() ); ?>"
 				   class="nav-tab <?php echo $active_tab == 'tools' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Tools', 'tk-event-weather' ); ?></a>
-				<a href="<?php printf( '?page=%s&tab=help', $this->getSettingsSlug() ); ?>"
+				<a href="<?php printf( '?page=%s&tab=help', $this->get_settings_slug() ); ?>"
 				   class="nav-tab <?php echo $active_tab == 'help' ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Help', 'tk-event-weather' ); ?></a>
 			</h2>
 			<?php
@@ -580,11 +580,11 @@ class TKEventWeather_OptionsManager {
 					// Check if phpversion function exists.
 					if ( function_exists( 'phpversion' ) ) {
 						$php_version = phpversion();
-						if ( version_compare( $php_version, TKEventWeather_minimalRequiredPhpVersion(), '<' ) ) {
+						if ( version_compare( $php_version, tk_event_weather_min_php_version(), '<' ) ) {
 							echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf(
 									__( '%s - This plugin requires a minimum PHP version of %s. See: %s', 'tk-event-weather' ),
 									esc_html( $php_version ),
-									TKEventWeather_minimalRequiredPhpVersion(),
+									tk_event_weather_min_php_version(),
 									'<a href="http://docs.woothemes.com/document/how-to-update-your-php-version/" target="_blank">' . __( 'How to update your PHP version', 'tk-event-weather' ) . '</a>'
 								) . '</mark>';
 						} else {
@@ -934,13 +934,13 @@ class TKEventWeather_OptionsManager {
 	/**
 	 * Helper-function outputs the correct form element (input tag, select tag) for the given item
 	 *
-	 * @param    $aOptionKey       string name of the option (un-prefixed)
-	 * @param    $aOptionMeta      mixed meta-data for $aOptionKey (either a string display-name or an array(display-name, option1, option2, ...)
-	 * @param    $savedOptionValue string current value for $aOptionKey
+	 * @param    $a_option_key       string name of the option (un-prefixed)
+	 * @param    $a_option_meta      mixed meta-data for $aOptionKey (either a string display-name or an array(display-name, option1, option2, ...)
+	 * @param    $saved_option_value string current value for $aOptionKey
 	 *
 	 * @return void
 	 */
-	protected function createFormControl( $aOptionKey, $aOptionMeta, $savedOptionValue ) {
+	protected function create_form_control( $a_option_key, $a_option_meta, $saved_option_value ) {
 		$all_password_field_key_endings = array(
 			// enter lower-case here to match any case
 			'_api_key',
@@ -952,27 +952,27 @@ class TKEventWeather_OptionsManager {
 		$is_password_type_field = false;
 
 		foreach ( $all_password_field_key_endings as $password_ending ) {
-			$aOptionKey_strlen      = strlen( $aOptionKey );
+			$a_option_key_strlen      = strlen( $a_option_key );
 			$password_ending_strlen = strlen( $password_ending );
 			if (
 				1 <= $password_ending_strlen
-				&& 1 <= $aOptionKey_strlen
-				&& $password_ending_strlen <= $aOptionKey_strlen
-				&& 0 === substr_compare( $aOptionKey, $password_ending, $aOptionKey_strlen - $password_ending_strlen, $password_ending_strlen, true ) // added 1+ checks, above, so this function does not throw errors in PHP versions lower than 5.6.0 -- Reference: http://stackoverflow.com/a/619725/893907
+				&& 1 <= $a_option_key_strlen
+				&& $password_ending_strlen <= $a_option_key_strlen
+				&& 0 === substr_compare( $a_option_key, $password_ending, $a_option_key_strlen - $password_ending_strlen, $password_ending_strlen, true ) // added 1+ checks, above, so this function does not throw errors in PHP versions lower than 5.6.0 -- Reference: http://stackoverflow.com/a/619725/893907
 			) {
 				$is_password_type_field = true;
 			}
 		}
 
-		if ( is_array( $aOptionMeta ) && count( $aOptionMeta ) >= 2 ) { // Drop-down list
-			$choices = array_slice( $aOptionMeta, 1 );
+		if ( is_array( $a_option_meta ) && count( $a_option_meta ) >= 2 ) { // Drop-down list
+			$choices = array_slice( $a_option_meta, 1 );
 			?>
-			<p><select name="<?php echo $aOptionKey ?>" id="<?php echo $aOptionKey ?>">
+			<p><select name="<?php echo $a_option_key ?>" id="<?php echo $a_option_key ?>">
 					<?php
-					foreach ( $choices as $aChoice ) {
-						$selected = ( $aChoice == $savedOptionValue ) ? 'selected' : '';
+					foreach ( $choices as $a_choice ) {
+						$selected = ( $a_choice == $saved_option_value ) ? 'selected' : '';
 						?>
-						<option value="<?php echo $aChoice ?>" <?php echo $selected ?>><?php echo $this->getOptionValueI18nString( $aChoice ) ?></option>
+						<option value="<?php echo $a_choice ?>" <?php echo $selected ?>><?php echo $this->get_option_value_i18n_string( $a_choice ) ?></option>
 						<?php
 					}
 					?>
@@ -981,14 +981,14 @@ class TKEventWeather_OptionsManager {
 
 		} elseif ( true === $is_password_type_field ) { // Password/API Key Type field
 			?>
-			<p><input type="password" autocomplete="off" name="<?php echo $aOptionKey ?>" id="<?php echo $aOptionKey ?>"
-					  value="<?php echo esc_attr( $savedOptionValue ) ?>" size="50" /></p>
+			<p><input type="password" autocomplete="off" name="<?php echo $a_option_key ?>" id="<?php echo $a_option_key ?>"
+					  value="<?php echo esc_attr( $saved_option_value ) ?>" size="50" /></p>
 			<?php
 
 		} else { // Simple input field
 			?>
-			<p><input type="text" name="<?php echo $aOptionKey ?>" id="<?php echo $aOptionKey ?>"
-					  value="<?php echo esc_attr( $savedOptionValue ) ?>" size="50" /></p>
+			<p><input type="text" name="<?php echo $a_option_key ?>" id="<?php echo $a_option_key ?>"
+					  value="<?php echo esc_attr( $saved_option_value ) ?>" size="50" /></p>
 			<?php
 
 		}
@@ -1002,16 +1002,16 @@ class TKEventWeather_OptionsManager {
 	 * But when the the language is not English, you would like to display different strings
 	 * for 'true' and 'false' while still keeping the value of that option that is actually saved in
 	 * the DB as 'true' or 'false'.
-	 * To do this, follow the convention of defining option values in getOptionMetaData() as canonical names
+	 * To do this, follow the convention of defining option values in get_option_metadata() as canonical names
 	 * (what you want them to literally be, like 'true') and then add each one to the switch statement in this
 	 * function, returning the "__()" i18n name of that string.
 	 *
-	 * @param    $optionValue string
+	 * @param    $option_value string
 	 *
 	 * @return string __($optionValue) if it is listed in this method, otherwise just returns $optionValue
 	 */
-	protected function getOptionValueI18nString( $optionValue ) {
-		switch ( $optionValue ) {
+	protected function get_option_value_i18n_string( $option_value ) {
+		switch ( $option_value ) {
 			case 'true':
 				return __( 'true', 'tk-event-weather' );
 			case 'false':
@@ -1031,14 +1031,14 @@ class TKEventWeather_OptionsManager {
 				return __( 'Anyone', 'tk-event-weather' );
 		}
 
-		return $optionValue;
+		return $option_value;
 	}
 
 	/**
 	 * Query MySQL DB for its version
 	 * @return string|false
 	 */
-	protected function getMySqlVersion() {
+	protected function get_mysql_version() {
 		global $wpdb;
 		$rows = $wpdb->get_results( 'select version() as mysqlversion' );
 		if ( ! empty( $rows ) ) {
@@ -1056,7 +1056,7 @@ class TKEventWeather_OptionsManager {
 	 * from "wordpress@your-site.com"
 	 * @return string domain name
 	 */
-	public function getEmailDomain() {
+	public function get_email_domain() {
 		// Get the site domain and get rid of www.
 		$sitename = strtolower( $_SERVER['SERVER_NAME'] );
 		if ( substr( $sitename, 0, 4 ) == 'www.' ) {

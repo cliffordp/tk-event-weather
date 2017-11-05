@@ -124,7 +124,7 @@ function tk_event_weather_freemius() {
 				'has_addons'     => true,
 				'has_paid_plans' => false,
 				'menu'           => array(
-					'slug'   => 'TKEventWeather_pluginsettings',
+					'slug'   => 'tkeventweather_pluginsettings',
 					'parent' => array(
 						'slug' => 'options-general.php',
 					),
@@ -173,7 +173,7 @@ function tk_event_weather_freemius_plugin_icon() {
 tk_event_weather_freemius()->add_filter( 'plugin_icon', 'tk_event_weather_freemius_plugin_icon' );
 
 
-function TKEventWeather_minimalRequiredPhpVersion() {
+function tk_event_weather_min_php_version() {
 	return '5.4';
 }
 
@@ -181,18 +181,18 @@ function TKEventWeather_minimalRequiredPhpVersion() {
  * Check the PHP version and give a useful error message if the user's version is less than the required version
  * @return boolean true if version check passed. If false, triggers an error which WP will handle, by displaying an error message on the Admin page
  */
-function TKEventWeather_noticePhpVersionWrong() {
+function tkeventweather_notice_wrong_php_version() {
 	echo '<div class="updated fade">' .
 		__( 'Error: plugin "TK Event Weather" requires a newer version of PHP to be running.', 'tk-event-weather' ) .
-		'<br/>' . __( 'Minimal version of PHP required: ', 'tk-event-weather' ) . '<strong>' . TKEventWeather_minimalRequiredPhpVersion() . '</strong>' .
-		'<br/>' . __( 'Your server\'s PHP version: ', 'tk-event-weather' ) . '<strong>' . phpversion() . '</strong>' .
+		'<br/>' . __( 'Minimal version of PHP required: ', 'tk-event-weather' ) . '<strong>' . tk_event_weather_min_php_version() . '</strong>' .
+	     '<br/>' . __( 'Your server\'s PHP version: ', 'tk-event-weather' ) . '<strong>' . phpversion() . '</strong>' .
 		'</div>';
 }
 
 
-function TKEventWeather_PhpVersionCheck() {
-	if ( version_compare( phpversion(), TKEventWeather_minimalRequiredPhpVersion() ) < 0 ) {
-		add_action( 'admin_notices', 'TKEventWeather_noticePhpVersionWrong' );
+function tk_event_weather_php_version_check() {
+	if ( version_compare( phpversion(), tk_event_weather_min_php_version() ) < 0 ) {
+		add_action( 'admin_notices', 'tkeventweather_notice_wrong_php_version' );
 
 		return false;
 	}
@@ -210,7 +210,7 @@ function TKEventWeather_PhpVersionCheck() {
  * @return void
  */
 /*
-function TKEventWeather_i18n_init() {
+function tkeventweather_i18n_init() {
 	$pluginDir = dirname(plugin_basename(__FILE__));
 	load_plugin_textdomain('tk-event-weather', false, $pluginDir . '/languages/');
 }
@@ -223,12 +223,12 @@ function TKEventWeather_i18n_init() {
 
 // old code (goes with above)?
 // Initialize i18n
-// add_action('plugins_loaded','TKEventWeather_i18n_init');
+// add_action('plugins_loaded','tkeventweather_i18n_init');
 
 // Run the version check.
 // If it is successful, continue with initialization for this plugin
-if ( TKEventWeather_PhpVersionCheck() ) {
+if ( tk_event_weather_php_version_check() ) {
 	// Only load and run the init function if we know PHP version can parse it
 	include_once( 'includes/init.php' );
-	TKEventWeather_init( __FILE__ );
+	tk_event_weather_init( __FILE__ );
 }

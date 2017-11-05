@@ -21,24 +21,24 @@
 
 include_once( 'OptionsManager.php' );
 
-class TKEventWeather_InstallIndicator extends TKEventWeather_OptionsManager {
+class TKEventWeather_Install_Indicator extends TKEventWeather_Options_Manager {
 
-	const optionInstalled = '_installed';
-	const optionVersion = '_version';
+	const OPTION_INSTALLED = '_installed';
+	const OPTION_VERSION = '_version';
 
 	/**
 	 * @return bool indicating if the plugin is installed already
 	 */
-	public function isInstalled() {
-		return $this->getOption( self::optionInstalled ) == true;
+	public function is_installed() {
+		return $this->get_option( self::OPTION_INSTALLED ) == true;
 	}
 
 	/**
 	 * Note in DB that the plugin is installed
 	 * @return null
 	 */
-	protected function markAsInstalled() {
-		return $this->updateOption( self::optionInstalled, true );
+	protected function mark_as_installed() {
+		return $this->update_option( self::OPTION_INSTALLED, true );
 	}
 
 	/**
@@ -47,8 +47,8 @@ class TKEventWeather_InstallIndicator extends TKEventWeather_OptionsManager {
 	 * true implies the plugin was installed at the time of this call,
 	 * false implies it was not.
 	 */
-	protected function markAsUnInstalled() {
-		return $this->deleteOption( self::optionInstalled );
+	protected function mark_as_uninstalled() {
+		return $this->delete_option( self::OPTION_INSTALLED );
 	}
 
 	/**
@@ -57,8 +57,8 @@ class TKEventWeather_InstallIndicator extends TKEventWeather_OptionsManager {
 	 * upgrade housekeeping (e.g. changes to DB schema).
 	 * @return null
 	 */
-	protected function getVersionSaved() {
-		return $this->getOption( self::optionVersion );
+	protected function get_version_saved() {
+		return $this->get_option( self::OPTION_VERSION );
 	}
 
 	/**
@@ -70,15 +70,15 @@ class TKEventWeather_InstallIndicator extends TKEventWeather_OptionsManager {
 	 *
 	 * @return null
 	 */
-	protected function setVersionSaved( $version ) {
-		return $this->updateOption( self::optionVersion, $version );
+	protected function set_version_saved( $version ) {
+		return $this->update_option( self::OPTION_VERSION, $version );
 	}
 
 	/**
 	 * @return string name of the main plugin file that has the header section with
 	 * "Plugin Name", "Version", "Description", "Text Domain", etc.
 	 */
-	protected function getMainPluginFileName() {
+	protected function get_main_plugin_file_name() {
 		return basename( dirname( __FILE__ ) ) . 'php';
 	}
 
@@ -90,9 +90,9 @@ class TKEventWeather_InstallIndicator extends TKEventWeather_OptionsManager {
 	 *
 	 * @return string if found, otherwise null
 	 */
-	public function getPluginHeaderValue( $key ) {
+	public function get_plugin_header_value( $key ) {
 		// Read the string from the comment header of the main plugin file
-		$data  = file_get_contents( $this->getPluginDir() . $this->getMainPluginFileName() );
+		$data  = file_get_contents( $this->get_plugin_dir() . $this->get_main_plugin_file_name() );
 		$match = array();
 		preg_match( '/' . $key . ':\s*(\S+)/', $data, $match );
 		if ( count( $match ) >= 1 ) {
@@ -110,7 +110,7 @@ class TKEventWeather_InstallIndicator extends TKEventWeather_OptionsManager {
 	 *
 	 * @link https://developer.wordpress.org/reference/functions/plugin_dir_path/
 	 */
-	protected function getPluginDir() {
+	protected function get_plugin_dir() {
 		return TKEventWeather_Setup::plugin_dir_path_root();
 	}
 
@@ -121,7 +121,7 @@ class TKEventWeather_InstallIndicator extends TKEventWeather_OptionsManager {
 	 * NOTE: You should manually make this match the SVN tag for your main plugin file 'Version' release and 'Stable tag' in readme.txt
 	 * @return string
 	 */
-	public function getVersion() {
+	public function get_version() {
 		return tk_event_weather_version();
 	}
 
@@ -134,8 +134,8 @@ class TKEventWeather_InstallIndicator extends TKEventWeather_OptionsManager {
 	 * true indicates that new code is installed and this is the first time it is activated, so upgrade actions
 	 * should be taken. Assumes that version string comparable by version_compare, examples: '1', '1.1', '1.1.1', '2.0', etc.
 	 */
-	public function isInstalledCodeAnUpgrade() {
-		return $this->isSavedVersionLessThan( $this->getVersion() );
+	public function is_installed_code_an_upgrade() {
+		return $this->is_saved_version_less_than( $this->get_version() );
 	}
 
 	/**
@@ -145,23 +145,23 @@ class TKEventWeather_InstallIndicator extends TKEventWeather_OptionsManager {
 	 *
 	 * @return bool true if the saved version is earlier (by natural order) than the input version
 	 */
-	public function isSavedVersionLessThan( $aVersion ) {
-		return $this->isVersionLessThan( $this->getVersionSaved(), $aVersion );
+	public function is_saved_version_less_than( $aVersion ) {
+		return $this->is_version_less_than( $this->get_version_saved(), $aVersion );
 	}
 
 	/**
 	 * Used to see if the installed code is the same or earlier than the input version.
 	 * Useful when checking for an upgrade. If you haven't specified the number of the newer version yet,
 	 * but the last version (installed) was 2.3 (for example) you could check if
-	 * For example, $this->isSavedVersionLessThanEqual('2.3') == true indicates that the saved version is not upgraded
+	 * For example, $this->is_saved_version_less_than_equal('2.3') == true indicates that the saved version is not upgraded
 	 * past 2.3 yet and therefore you would perform some appropriate upgrade action.
 	 *
 	 * @param    $aVersion string
 	 *
 	 * @return bool true if the saved version is earlier (by natural order) than the input version
 	 */
-	public function isSavedVersionLessThanEqual( $aVersion ) {
-		return $this->isVersionLessThanEqual( $this->getVersionSaved(), $aVersion );
+	public function is_saved_version_less_than_equal( $aVersion ) {
+		return $this->is_version_less_than_equal( $this->get_version_saved(), $aVersion );
 	}
 
 	/**
@@ -170,7 +170,7 @@ class TKEventWeather_InstallIndicator extends TKEventWeather_OptionsManager {
 	 *
 	 * @return bool true if version_compare of $versions1 and $version2 shows $version1 as the same or earlier
 	 */
-	public function isVersionLessThanEqual( $version1, $version2 ) {
+	public function is_version_less_than_equal( $version1, $version2 ) {
 		return ( version_compare( $version1, $version2 ) <= 0 );
 	}
 
@@ -180,7 +180,7 @@ class TKEventWeather_InstallIndicator extends TKEventWeather_OptionsManager {
 	 *
 	 * @return bool true if version_compare of $versions1 and $version2 shows $version1 as earlier
 	 */
-	public function isVersionLessThan( $version1, $version2 ) {
+	public function is_version_less_than( $version1, $version2 ) {
 		return ( version_compare( $version1, $version2 ) < 0 );
 	}
 
@@ -190,8 +190,8 @@ class TKEventWeather_InstallIndicator extends TKEventWeather_OptionsManager {
 	 * upgrading to record the new current version
 	 * @return void
 	 */
-	protected function saveInstalledVersion() {
-		$this->setVersionSaved( $this->getVersion() );
+	protected function save_installed_version() {
+		$this->set_version_saved( $this->get_version() );
 	}
 
 }

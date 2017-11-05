@@ -19,10 +19,10 @@
 	If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-function TKEventWeather_init( $file ) {
+function tk_event_weather_init( $file ) {
 
 	require_once( 'Plugin.php' );
-	$aPlugin = new TKEventWeather_Plugin();
+	$a_plugin = new TKEventWeather_Plugin();
 
 	// Install the plugin
 	// NOTE: this file gets run each time you *activate* the plugin.
@@ -30,23 +30,23 @@ function TKEventWeather_init( $file ) {
 	// but it does not call any of its code.
 	// So here, the plugin tracks whether or not it has run its install operation, and we ensure it is run only once
 	// on the first activation
-	if ( ! $aPlugin->isInstalled() ) {
-		$aPlugin->install();
+	if ( ! $a_plugin->is_installed() ) {
+		$a_plugin->install();
 	} else {
 		// Perform any version-upgrade activities prior to activation (e.g. database changes)
-		$aPlugin->upgrade();
+		$a_plugin->upgrade();
 	}
 
 	// Add callbacks to hooks
-	$aPlugin->addActionsAndFilters();
+	$a_plugin->add_actions_and_filters();
 
 	if ( ! $file ) {
 		$file = __FILE__;
 	}
 	// Register the Plugin Activation Hook
-	register_activation_hook( $file, array( $aPlugin, 'activate' ) );
+	register_activation_hook( $file, array( $a_plugin, 'activate' ) );
 
 
 	// Register the Plugin Deactivation Hook
-	register_deactivation_hook( $file, array( $aPlugin, 'deactivate' ) );
+	register_deactivation_hook( $file, array( $a_plugin, 'deactivate' ) );
 }

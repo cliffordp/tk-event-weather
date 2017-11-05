@@ -21,27 +21,27 @@
 
 include_once( 'InstallIndicator.php' );
 
-class TKEventWeather_LifeCycle extends TKEventWeather_InstallIndicator {
+class TKEventWeather_Life_Cycle extends TKEventWeather_Install_Indicator {
 
 	public function install() {
 		// Initialize DB Tables used by the plugin
-		$this->installDatabaseTables();
+		$this->install_database_tables();
 
 		// Other Plugin initialization - for the plugin writer to override as needed
-		$this->otherInstall();
+		$this->other_install();
 
 		// Record the installed version
-		$this->saveInstalledVersion();
+		$this->save_installed_version();
 
 		// To avoid running install() more then once
-		$this->markAsInstalled();
+		$this->mark_as_installed();
 	}
 
 	public function uninstall() {
-		$this->otherUninstall();
-		$this->unInstallDatabaseTables();
-		$this->deleteSavedOptions();
-		$this->markAsUnInstalled();
+		$this->other_uninstall();
+		$this->uninstall_database_tables();
+		$this->delete_saved_options();
+		$this->mark_as_uninstalled();
 	}
 
 	/**
@@ -65,7 +65,7 @@ class TKEventWeather_LifeCycle extends TKEventWeather_InstallIndicator {
 	public function deactivate() {
 	}
 
-	public function addActionsAndFilters() {
+	public function add_actions_and_filters() {
 	}
 
 	/**
@@ -76,7 +76,7 @@ class TKEventWeather_LifeCycle extends TKEventWeather_InstallIndicator {
 	 * (2) make table names lower case only
 	 * @return void
 	 */
-	protected function installDatabaseTables() {
+	protected function install_database_tables() {
 	}
 
 	/**
@@ -84,7 +84,7 @@ class TKEventWeather_LifeCycle extends TKEventWeather_InstallIndicator {
 	 * Drop plugin-created tables on uninstall.
 	 * @return void
 	 */
-	protected function unInstallDatabaseTables() {
+	protected function uninstall_database_tables() {
 	}
 
 	/**
@@ -92,7 +92,7 @@ class TKEventWeather_LifeCycle extends TKEventWeather_InstallIndicator {
 	 * See: http://plugin.michael-simpson.com/?page_id=33
 	 * @return void
 	 */
-	protected function otherInstall() {
+	protected function other_install() {
 	}
 
 	/**
@@ -100,7 +100,7 @@ class TKEventWeather_LifeCycle extends TKEventWeather_InstallIndicator {
 	 * See: http://plugin.michael-simpson.com/?page_id=33
 	 * @return void
 	 */
-	protected function otherUninstall() {
+	protected function other_uninstall() {
 	}
 
 	/**
@@ -109,13 +109,13 @@ class TKEventWeather_LifeCycle extends TKEventWeather_InstallIndicator {
 	 * Override with an empty implementation if you don't want a configuration page
 	 * @return void
 	 */
-	public function addSettingsSubMenuPage() {
-		//$this->addSettingsSubMenuPageToPluginsMenu();
-		$this->addSettingsSubMenuPageToSettingsMenu();
+	public function add_settings_sub_menu_page() {
+		//$this->add_settings_submenu_page_to_plugins_menu();
+		$this->add_settings_submenu_page_to_settings_menu();
 	}
 
 
-	protected function requireExtraPluginFiles() {
+	protected function require_extra_plugin_files() {
 		require_once( ABSPATH . 'wp-includes/pluggable.php' );
 		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 	}
@@ -126,33 +126,33 @@ class TKEventWeather_LifeCycle extends TKEventWeather_InstallIndicator {
 	 *
 	 * Lower case to increase compatibility with Freemius and general standards
 	 */
-	protected function getSettingsSlug() {
-		return strtolower( get_class( $this ) . 'Settings' );
+	protected function get_settings_slug() {
+		return strtolower( get_class( $this ) . 'settings' );
 	}
 
-	protected function addSettingsSubMenuPageToPluginsMenu() {
-		$this->requireExtraPluginFiles();
-		$displayName = $this->getPluginDisplayName();
+	protected function add_settings_submenu_page_to_plugins_menu() {
+		$this->require_extra_plugin_files();
+		$display_name = $this->get_plugin_display_name();
 		add_submenu_page(
 			'plugins.php',
-			$displayName,
-			$displayName,
+			$display_name,
+			$display_name,
 			'manage_options',
-			$this->getSettingsSlug(),
-			array( $this, 'settingsPage' )
+			$this->get_settings_slug(),
+			array( $this, 'settings_page' )
 		);
 	}
 
 
-	protected function addSettingsSubMenuPageToSettingsMenu() {
-		$this->requireExtraPluginFiles();
-		$displayName = $this->getPluginDisplayName();
+	protected function add_settings_submenu_page_to_settings_menu() {
+		$this->require_extra_plugin_files();
+		$display_name = $this->get_plugin_display_name();
 		add_options_page(
-			$displayName,
-			$displayName,
+			$display_name,
+			$display_name,
 			'manage_options',
-			$this->getSettingsSlug(),
-			array( $this, 'settingsPage' )
+			$this->get_settings_slug(),
+			array( $this, 'settings_page' )
 		);
 	}
 
@@ -164,7 +164,7 @@ class TKEventWeather_LifeCycle extends TKEventWeather_InstallIndicator {
 	 * The plugin prefix is lower-cases as a best practice that all DB table names are lower case to
 	 * avoid issues on some platforms
 	 */
-	protected function prefixTableName( $name ) {
+	protected function prefix_table_name( $name ) {
 		global $wpdb;
 
 		return $wpdb->prefix . strtolower( $this->prefix( $name ) );
@@ -174,21 +174,21 @@ class TKEventWeather_LifeCycle extends TKEventWeather_InstallIndicator {
 	/**
 	 * Convenience function for creating AJAX URLs.
 	 *
-	 * @param $actionName string the name of the ajax action registered in a call like
-	 *                    add_action('wp_ajax_actionName', array($this, 'functionName'));
+	 * @param $action_name string the name of the ajax action registered in a call like
+	 *                    add_action('wp_ajax_action_name', array($this, 'function_name'));
 	 *                    and/or
-	 *                    add_action('wp_ajax_nopriv_actionName', array($this, 'functionName'));
+	 *                    add_action('wp_ajax_nopriv_action_name', array($this, 'function_name'));
 	 *
 	 * If have an additional parameters to add to the Ajax call, e.g. an "id" parameter,
 	 * you could call this function and append to the returned string like:
-	 *        $url = $this->getAjaxUrl('myaction&id=') . urlencode($id);
+	 *        $url = $this->get_ajax_url('myaction&id=') . urlencode($id);
 	 * or more complex:
-	 *        $url = sprintf($this->getAjaxUrl('myaction&id=%s&var2=%s&var3=%s'), urlencode($id), urlencode($var2), urlencode($var3));
+	 *        $url = sprintf($this->get_ajax_url('myaction&id=%s&var2=%s&var3=%s'), urlencode($id), urlencode($var2), urlencode($var3));
 	 *
-	 * @return string URL that can be used in a web page to make an Ajax call to $this->functionName
+	 * @return string URL that can be used in a web page to make an Ajax call to $this->function_name
 	 */
-	public function getAjaxUrl( $actionName ) {
-		return admin_url( 'admin-ajax.php' ) . '?action=' . $actionName;
+	public function get_ajax_url( $action_name ) {
+		return admin_url( 'admin-ajax.php' ) . '?action=' . $action_name;
 	}
 
 }

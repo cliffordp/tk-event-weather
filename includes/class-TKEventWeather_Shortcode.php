@@ -12,9 +12,9 @@ require_once( 'class-TKEventWeather_Template.php' );
 require_once( 'class-TKEventWeather_Template_Loader.php' );
 require_once( 'class-TKEventWeather_Time.php' );
 
-class TKEventWeather_Shortcode extends TKEventWeather_ShortCodeScriptLoader {
+class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 
-	private static $addedAlready = false;
+	private static $added_already = false;
 
 	public static $dark_sky_api_key = '';
 	public static $dark_sky_api_units = '';
@@ -70,7 +70,7 @@ class TKEventWeather_Shortcode extends TKEventWeather_ShortCodeScriptLoader {
 		return TKEventWeather_Setup::$shortcode_name;
 	}
 
-	public function handleShortcode( $atts ) {
+	public function handle_shortcode( $atts ) {
 
 		$plugin_options = TKEventWeather_Functions::plugin_options();
 
@@ -818,11 +818,11 @@ class TKEventWeather_Shortcode extends TKEventWeather_ShortCodeScriptLoader {
 	}
 
 	// This method must be declared because of extending an abstract class.
-	public function addScript() {
+	public function add_script() {
 		$plugin_options = TKEventWeather_Functions::plugin_options();
 
-		if ( ! self::$addedAlready ) {
-			self::$addedAlready = true;
+		if ( ! self::$added_already ) {
+			self::$added_already = true;
 
 			wp_enqueue_style( sanitize_html_class( TKEventWeather_Setup::shortcode_name_hyphenated() ) );
 

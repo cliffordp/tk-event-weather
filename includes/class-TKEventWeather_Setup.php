@@ -28,7 +28,7 @@ class TKEventWeather_Setup {
 	 */
 	public static function plugin_display_name() {
 		$this_plugin = new TKEventWeather_Plugin;
-		return $this_plugin->getPluginDisplayName();
+		return $this_plugin->get_plugin_display_name();
 	}
 
 	/**
