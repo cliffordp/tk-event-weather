@@ -1,4 +1,5 @@
 <?php
+namespace TKEventWeather;
 
 /*
 		"WordPress Plugin Template" Copyright (C) 2016 Michael Simpson	(email : michael.d.simpson@gmail.com)
@@ -20,7 +21,7 @@
 		If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-abstract class TKEventWeather_Shortcode_Loader {
+abstract class Shortcode_Loader {
 
 	/**
 	 * @param    $shortcode_name mixed either string name of the shortcode

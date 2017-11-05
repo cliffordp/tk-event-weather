@@ -1,4 +1,6 @@
 <?php
+namespace TKEventWeather;
+
 /*
 	"WordPress Plugin Template" Copyright (C) 2016 Michael Simpson	(email : michael.d.simpson@gmail.com)
 
@@ -19,8 +21,6 @@
 	If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-include_once( 'ShortCodeLoader.php' );
-
 /**
  * Adapted from this excellent article:
  * http://scribu.net/wordpress/optimal-script-loading.html
@@ -28,7 +28,7 @@ include_once( 'ShortCodeLoader.php' );
  * The idea is you have a shortcode that needs a script loaded, but you only
  * want to load it if the shortcode is actually called.
  */
-abstract class TKEventWeather_Shortcode_Script_Loader extends TKEventWeather_Shortcode_Loader {
+abstract class Shortcode_Script_Loader extends Shortcode_Loader {
 
 	var $do_add_script;
 

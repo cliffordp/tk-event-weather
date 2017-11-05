@@ -1,4 +1,6 @@
 <?php
+namespace TKEventWeather;
+
 /*
 		"WordPress Plugin Template" Copyright (C) 2016 Michael Simpson	(email : michael.d.simpson@gmail.com)
 
@@ -19,9 +21,7 @@
 		If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-require_once( 'class-TKEventWeather_Functions.php' );
-
-class TKEventWeather_Options_Manager {
+class Options_Manager {
 
 	public function get_option_name_prefix() {
 		return get_class( $this ) . '_';
@@ -226,7 +226,7 @@ class TKEventWeather_Options_Manager {
 			get_class( $this ),
 			array( $this, 'settings_page' )
 		/*,plugins_url('/images/icon.png', __FILE__)*/
-		); // if you call 'plugins_url; be sure to "require_once" it
+		);
 	}
 
 
@@ -256,7 +256,7 @@ class TKEventWeather_Options_Manager {
 			?>
 			<div style="width: 80%; padding: 20px; margin: 20px; background-color: #fff; font-size: 120%;">
 				<?php
-				$tourkick_logo = TKEventWeather_Setup::plugin_dir_url_images() . 'tourkick-logo-square-300.png';
+				$tourkick_logo = Setup::plugin_dir_url_images() . 'tourkick-logo-square-300.png';
 				printf( '<a href="http://tourkick.com/" target="_blank"><img style="float: left; margin: 5px 40px 10px 10px;" width="100" height="100" src="%s"></a>', $tourkick_logo );
 				?>
 				<?php
@@ -445,7 +445,7 @@ class TKEventWeather_Options_Manager {
 				<hr>
 				<p><?php _e( 'And/Or you might want to send your personal computer specifications:', 'tk-event-weather' ); ?></p>
 				<p><a target="_blank"
-					  href="<?php printf( 'http://supportdetails.com/?sender_name=%s&sender=%s&recipient=%s', urlencode( get_home_url() ), urlencode( get_bloginfo( 'admin_email' ) ), urlencode( TKEventWeather_Setup::$support_email_address ) ); ?>"
+					  href="<?php printf( 'http://supportdetails.com/?sender_name=%s&sender=%s&recipient=%s', urlencode( get_home_url() ), urlencode( get_bloginfo( 'admin_email' ) ), urlencode( Setup::$support_email_address ) ); ?>"
 					  class="button-secondary support-details"><?php _e( 'Get Personal Computer Details', 'tk-event-weather' ); ?></a>
 				</p>
 				<p>
@@ -475,11 +475,11 @@ class TKEventWeather_Options_Manager {
 				<td data-export-label="WP Version"><?php _e( 'WP Version', 'tk-event-weather' ); ?>:</td>
 				<td><?php
 					$wordpress_version = get_bloginfo( 'version' );
-					if ( version_compare( $wordpress_version, TKEventWeather_Setup::$min_allowed_version_wordpress, '<' ) ) {
+					if ( version_compare( $wordpress_version, Setup::$min_allowed_version_wordpress, '<' ) ) {
 						echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf(
 								__( '%s - This plugin requires a minimum WordPress version of %s. See: %s', 'tk-event-weather' ),
 								esc_html( $wordpress_version ),
-								TKEventWeather_Setup::$min_allowed_version_wordpress,
+								Setup::$min_allowed_version_wordpress,
 								'<a href="https://codex.wordpress.org/WordPress_Versions" target="_blank">' . __( 'WordPress Version History', 'tk-event-weather' ) . '</a>'
 							) . '</mark>';
 					} else {
@@ -628,11 +628,11 @@ class TKEventWeather_Options_Manager {
 					/** @global wpdb $wpdb */
 					global $wpdb;
 					$mysql_version = $wpdb->db_version();
-					if ( version_compare( $mysql_version, TKEventWeather_Setup::$min_allowed_version_mysql, '<' ) ) {
+					if ( version_compare( $mysql_version, Setup::$min_allowed_version_mysql, '<' ) ) {
 						echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf(
 								__( '%s - This plugin requires a minimum MySQL version of %s. See: %s', 'tk-event-weather' ),
 								esc_html( $mysql_version ),
-								TKEventWeather_Setup::$min_allowed_version_mysql,
+								Setup::$min_allowed_version_mysql,
 								'<a href="https://wordpress.org/about/requirements/" target="_blank">' . __( 'WordPress Requirements', 'tk-event-weather' ) . '</a>'
 							) . '</mark>';
 					} else {
@@ -709,9 +709,9 @@ class TKEventWeather_Options_Manager {
 			} else {
 				$posting['wp_remote_get']['note'] = __( 'wp_remote_get() failed. This plugin won\'t work with your server. Contact your hosting provider.', 'tk-event-weather' );
 				if ( is_wp_error( $response ) ) {
-					$posting['wp_remote_get']['note'] .= ' ' . sprintf( __( 'Error: %s', 'tk-event-weather' ), TKEventWeather_Functions::tk_clean_var( $response->get_error_message() ) );
+					$posting['wp_remote_get']['note'] .= ' ' . sprintf( __( 'Error: %s', 'tk-event-weather' ), Functions::tk_clean_var( $response->get_error_message() ) );
 				} else {
-					$posting['wp_remote_get']['note'] .= ' ' . sprintf( __( 'Status code: %s', 'tk-event-weather' ), TKEventWeather_Functions::tk_clean_var( $response['response']['code'] ) );
+					$posting['wp_remote_get']['note'] .= ' ' . sprintf( __( 'Status code: %s', 'tk-event-weather' ), Functions::tk_clean_var( $response['response']['code'] ) );
 				}
 				$posting['wp_remote_get']['success'] = false;
 			}
@@ -743,7 +743,7 @@ class TKEventWeather_Options_Manager {
 			</thead>
 			<tbody>
 			<?php
-			$plugin_options = TKEventWeather_Functions::plugin_options();
+			$plugin_options = Functions::plugin_options();
 
 			if ( ! empty( $plugin_options ) && is_array( $plugin_options ) ) {
 				foreach ( $plugin_options as $key => $option ) {

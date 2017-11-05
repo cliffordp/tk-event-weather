@@ -1,4 +1,6 @@
 <?php
+namespace TKEventWeather;
+
 /*
 	"WordPress Plugin Template" Copyright (C) 2016 Michael Simpson	(email : michael.d.simpson@gmail.com)
 
@@ -19,9 +21,7 @@
 	If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-include_once( 'OptionsManager.php' );
-
-class TKEventWeather_Install_Indicator extends TKEventWeather_Options_Manager {
+class Install_Indicator extends Options_Manager {
 
 	const OPTION_INSTALLED = '_installed';
 	const OPTION_VERSION = '_version';
@@ -111,7 +111,7 @@ class TKEventWeather_Install_Indicator extends TKEventWeather_Options_Manager {
 	 * @link https://developer.wordpress.org/reference/functions/plugin_dir_path/
 	 */
 	protected function get_plugin_dir() {
-		return TKEventWeather_Setup::plugin_dir_path_root();
+		return Setup::plugin_dir_path_root();
 	}
 
 	/**

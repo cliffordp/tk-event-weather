@@ -1,6 +1,8 @@
 <?php
 
-class TKEventWeather_Setup {
+namespace TKEventWeather;
+
+class Setup {
 	// all variables and methods should be 'static'
 
 	public static $shortcode_name = 'tk_event_weather'; // doesn't really allow for array, as possible per http://plugin.michael-simpson.com/?page_id=39, but we only have one shortcode in this entire plugin
@@ -27,7 +29,8 @@ class TKEventWeather_Setup {
 	 * @return string
 	 */
 	public static function plugin_display_name() {
-		$this_plugin = new TKEventWeather_Plugin;
+		$this_plugin = new Plugin;
+
 		return $this_plugin->get_plugin_display_name();
 	}
 
@@ -45,16 +48,8 @@ class TKEventWeather_Setup {
 		return self::plugin_dir_path_root() . 'images/'; // e.g. /Users/cmp/Documents/git/GitHub/tk-event-weather/images/
 	}
 
-	public static function plugin_dir_path_includes() {
-		return self::plugin_dir_path_root() . 'includes/'; // e.g. /Users/cmp/Documents/git/GitHub/tk-event-weather/includes/
-	}
-
 	public static function plugin_dir_path_vendor() {
-		return self::plugin_dir_path_includes() . 'vendor/'; // e.g. /Users/cmp/Documents/git/GitHub/tk-event-weather/includes/vendor/
-	}
-
-	public static function plugin_dir_path_views() {
-		return self::plugin_dir_path_includes() . 'views/'; // e.g. /Users/cmp/Documents/git/GitHub/tk-event-weather/includes/views/
+		return self::plugin_dir_path_root() . 'vendor/'; // e.g. /Users/cmp/Documents/git/GitHub/tk-event-weather/vendor/
 	}
 
 	/**
@@ -71,14 +66,7 @@ class TKEventWeather_Setup {
 		return self::plugin_dir_url_root() . 'images/'; // e.g. http://example.com/wp-content/plugins/tk-event-weather/images/
 	}
 
-	public static function plugin_dir_url_includes() {
-		return self::plugin_dir_url_root() . 'includes/'; // e.g. http://example.com/wp-content/plugins/tk-event-weather/includes/
-	}
-
 	public static function plugin_dir_url_vendor() {
-		return self::plugin_dir_url_includes() . 'vendor/';
+		return self::plugin_dir_url_root() . 'vendor/';
 	}
-
-	// no need for URL to 'views' directory
-
 }

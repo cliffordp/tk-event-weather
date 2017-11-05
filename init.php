@@ -20,16 +20,14 @@
 */
 
 function tk_event_weather_init( $file ) {
+	$a_plugin = new TKEventWeather\Plugin();
 
-	require_once( 'Plugin.php' );
-	$a_plugin = new TKEventWeather_Plugin();
-
-	// Install the plugin
-	// NOTE: this file gets run each time you *activate* the plugin.
-	// So in WP when you "install" the plugin, all that does it dump its files in the plugin-templates directory
-	// but it does not call any of its code.
-	// So here, the plugin tracks whether or not it has run its install operation, and we ensure it is run only once
-	// on the first activation
+	/**
+	 * Install the plugin
+	 * NOTE: this file gets run each time you *activate* the plugin.
+	 * So in WP when you "install" the plugin, all that does it dump its files in the plugin-templates directory but it does not call any of its code.
+	 * So here, the plugin tracks whether or not it has run its install operation, and we ensure it is run only once on the first activation
+	 */
 	if ( ! $a_plugin->is_installed() ) {
 		$a_plugin->install();
 	} else {

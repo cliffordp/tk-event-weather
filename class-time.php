@@ -1,6 +1,7 @@
 <?php
+namespace TKEventWeather;
 
-class TKEventWeather_Time {
+class Time {
 	// all variables and methods should be 'static'
 
 	/**
@@ -110,7 +111,7 @@ class TKEventWeather_Time {
 		}
 
 		if ( 'true' == $prepend_empty ) {
-			$result = TKEventWeather_Functions::array_prepend_empty( $result );
+			$result = Functions::array_prepend_empty( $result );
 		}
 
 		return $result;
@@ -127,24 +128,24 @@ class TKEventWeather_Time {
 	 */
 	public static function set_timezone_and_source_from_shortcode_args( $timezone = '', $source = '' ) {
 		// bail if we previously ran this successfully
-		if ( ! empty( TKEventWeather_Shortcode::$timezone ) ) {
+		if ( ! empty( Shortcode::$timezone ) ) {
 			return;
 		}
 
 		// STEP 1: Use hard-coded timezone if it exists and is valid.
 
 		// if timezone argument is set, use that, else set via timezone_source argument
-		$timezone = TKEventWeather_Functions::remove_all_whitespace( $timezone ); // do not strtolower()
+		$timezone = Functions::remove_all_whitespace( $timezone ); // do not strtolower()
 
 		if ( ! empty( $timezone ) ) {
 			if ( in_array( $timezone, timezone_identifiers_list() ) ) {
-				TKEventWeather_Shortcode::$timezone = $timezone;
+				Shortcode::$timezone = $timezone;
 
 				return;
 			} else {
 				// DO NOT allow manual offset (invalid for PHP) timezones via shortcode because it is not supported by the API and can open the door to unexpected behavior.
-				if ( in_array( $timezone, TKEventWeather_Time::wp_manual_utc_offsets_array() ) ) {
-					TKEventWeather_Functions::invalid_shortcode_message( $timezone . ' is a manual UTC offset, not a valid timezone name. Manual UTC offsets are allowed by WordPress but not supported by this plugin. Instead, please use a timezone name supported by PHP (https://secure.php.net/manual/timezones.php)' );
+				if ( in_array( $timezone, Time::wp_manual_utc_offsets_array() ) ) {
+					Functions::invalid_shortcode_message( $timezone . ' is a manual UTC offset, not a valid timezone name. Manual UTC offsets are allowed by WordPress but not supported by this plugin. Instead, please use a timezone name supported by PHP (https://secure.php.net/manual/timezones.php)' );
 
 					return;
 				}
@@ -154,8 +155,8 @@ class TKEventWeather_Time {
 		// STEP 2: If timezone isn't set yet, determine the timezone source.
 
 		// only run this if we did not previously set it
-		if ( empty( TKEventWeather_Shortcode::$timezone_source ) ) {
-			$source = TKEventWeather_Functions::remove_all_whitespace( strtolower( $source ) );
+		if ( empty( Shortcode::$timezone_source ) ) {
+			$source = Functions::remove_all_whitespace( strtolower( $source ) );
 
 			// if blank, set to API, else run through the WordPress logic
 			if ( empty( $source ) ) {
@@ -177,14 +178,14 @@ class TKEventWeather_Time {
 				}
 			}
 
-			if ( array_key_exists( $source, TKEventWeather_Time::valid_timezone_sources() ) ) {
-				TKEventWeather_Shortcode::$timezone_source = $source;
+			if ( array_key_exists( $source, Time::valid_timezone_sources() ) ) {
+				Shortcode::$timezone_source = $source;
 			} else {
 				// "wordpress" is removed as a valid option if timezone is not set in WordPress settings
 				if ( 'wordpress' == $source ) {
-					TKEventWeather_Functions::invalid_shortcode_message( 'Please set your sitewide timezone in WordPress General Settings or change your Timezone Source shortcode argument' );
+					Functions::invalid_shortcode_message( 'Please set your sitewide timezone in WordPress General Settings or change your Timezone Source shortcode argument' );
 				} else {
-					TKEventWeather_Functions::invalid_shortcode_message( 'Please fix your Timezone Source shortcode argument' );
+					Functions::invalid_shortcode_message( 'Please fix your Timezone Source shortcode argument' );
 				}
 
 				return;
@@ -194,7 +195,7 @@ class TKEventWeather_Time {
 		// STEP 3: If the timezone source is 'wordpress', the timezone is already known so set it.
 
 		if ( ! empty( $wp_timezone ) ) { // only set if 'wordpress' == $source and if a valid timezone, all from STEP 2
-			TKEventWeather_Shortcode::$timezone = $wp_timezone;
+			Shortcode::$timezone = $wp_timezone;
 
 			return;
 		}
@@ -208,30 +209,30 @@ class TKEventWeather_Time {
 	 * Therefore, the only option left for this method to do (if it hasn't
 	 * already been done) is to set the timezone from the API response.
 	 *
-	 * @see TKEventWeather_Time::set_timezone_and_source_from_shortcode_args()
+	 * @see Time::set_timezone_and_source_from_shortcode_args()
 	 * @see timezone_identifiers_list()
 	 *
 	 * @param string $timezone_from_api
 	 */
 	public static function set_timezone_from_api( $timezone_from_api = '' ) {
 		if (
-			empty( TKEventWeather_Shortcode::$timezone )
-			&& 'api' == TKEventWeather_Shortcode::$timezone_source // should always be true
+			empty( Shortcode::$timezone )
+			&& 'api' == Shortcode::$timezone_source // should always be true
 		) {
 			// Dark Sky API returns an escaped timezone string
 			$timezone = stripslashes( $timezone_from_api );
 
 			if ( in_array( $timezone, timezone_identifiers_list() ) ) {
-				TKEventWeather_Shortcode::$timezone = $timezone;
+				Shortcode::$timezone = $timezone;
 			} else {
-				TKEventWeather_Functions::invalid_shortcode_message( 'The Timezone could not be set via the Dark Sky API. Please enable debug and investigate further' );
+				Functions::invalid_shortcode_message( 'The Timezone could not be set via the Dark Sky API. Please enable debug and investigate further' );
 			}
 		}
 	}
 
 	public function get_timezone() {
-		if ( ! empty( TKEventWeather_Shortcode::$timezone ) ) {
-			return TKEventWeather_Shortcode::$timezone;
+		if ( ! empty( Shortcode::$timezone ) ) {
+			return Shortcode::$timezone;
 		}
 
 		self::set_timezone_and_source_from_shortcode_args();
@@ -258,7 +259,7 @@ class TKEventWeather_Time {
 		);
 
 		if ( 'true' == $prepend_empty ) {
-			$result = TKEventWeather_Functions::array_prepend_empty( $result );
+			$result = Functions::array_prepend_empty( $result );
 		}
 
 		return $result;
@@ -271,7 +272,7 @@ class TKEventWeather_Time {
 	 * else returns empty string
 	 */
 	public static function valid_timestamp( $input, $return_format = '' ) {
-		$result = TKEventWeather_Functions::remove_all_whitespace( $input ); // converts to string
+		$result = Functions::remove_all_whitespace( $input ); // converts to string
 
 		if ( is_numeric( $result ) ) {
 			$result = intval( $result ); // convert to integer
@@ -305,7 +306,7 @@ class TKEventWeather_Time {
 	 * @return bool|mixed|string
 	 */
 	public static function valid_iso_8601_date_time( $input, $return_format = '' ) {
-		$result = TKEventWeather_Functions::remove_all_whitespace( $input );
+		$result = Functions::remove_all_whitespace( $input );
 
 		if ( ! empty( $return_format ) && 'bool' != $return_format ) {
 			$return_format = '';
@@ -429,13 +430,13 @@ class TKEventWeather_Time {
 	 * @return bool
 	 */
 	public static function timestamp_is_during_today( $timestamp ) {
-		if ( empty( TKEventWeather_Shortcode::$timezone ) ) {
+		if ( empty( Shortcode::$timezone ) ) {
 			return false;
 		}
 
 		$now            = time();
-		$today_midnight = self::get_a_days_min_max_timestamp( $now, TKEventWeather_Shortcode::$timezone );
-		$today_end      = self::get_a_days_min_max_timestamp( $now, TKEventWeather_Shortcode::$timezone, true );
+		$today_midnight = self::get_a_days_min_max_timestamp( $now, Shortcode::$timezone );
+		$today_end      = self::get_a_days_min_max_timestamp( $now, Shortcode::$timezone, true );
 
 		if (
 			! empty( $today_midnight )
@@ -480,7 +481,7 @@ class TKEventWeather_Time {
 
 		date_default_timezone_set( $timezone );
 
-		$datetime = new DateTime();
+		$datetime = new \DateTime();
 
 		$datetime->setTimestamp( $timestamp );
 
@@ -519,8 +520,8 @@ class TKEventWeather_Time {
 
 		date_default_timezone_set( $timezone );
 
-		$start = new DateTime();
-		$end   = new DateTime();
+		$start = new \DateTime();
+		$end   = new \DateTime();
 
 		$start->setTimestamp( $start_time_timestamp );
 		$end->setTimestamp( $end_time_timestamp );

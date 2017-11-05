@@ -1,14 +1,16 @@
 <?php
+namespace TKEventWeather;
+
 /**
  *
  * @package        TkEventW
  * @author         TourKick (Clifford Paulick)
  * @link           https://github.com/GaryJones/Gamajo-Template-Loader#installation
  * @copyright      2016 TourKick (Clifford Paulick)
- * @license        GPL-2.0+
+ * @license        GPL-3.0+
  */
 
-if ( ! class_exists( 'Gamajo_Template_Loader' ) ) {
+if ( ! class_exists( '\Gamajo_Template_Loader' ) ) {
 	require 'vendor/gamajo-template-loader/class-gamajo-template-loader.php';
 }
 
@@ -20,7 +22,7 @@ if ( ! class_exists( 'Gamajo_Template_Loader' ) ) {
  * @package   TkEventW
  * @author    TourKick (Clifford Paulick)
  */
-class TKEventWeather_Template_Loader extends Gamajo_Template_Loader {
+class Template_Loader extends \Gamajo_Template_Loader {
 
 	/**
 	 * Prefix for filter names.
@@ -47,16 +49,4 @@ class TKEventWeather_Template_Loader extends Gamajo_Template_Loader {
 	 * @type string
 	 */
 	protected $plugin_directory = TK_EVENT_WEATHER_PLUGIN_ROOT_DIR; // cannot use a function so need to use a constant, which gets defined in the root plugin file
-
-	/**
-	 * Directory name where templates are found in this plugin.
-	 *
-	 * Can either be a defined constant, or a relative reference from where the subclass lives.
-	 *
-	 * @since 1.1.0
-	 *
-	 * @type string
-	 */
-	protected $plugin_template_directory = 'includes/templates'; // or includes/templates, etc.
-
 }

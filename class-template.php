@@ -1,6 +1,7 @@
 <?php
+namespace TKEventWeather;
 
-class TKEventWeather_Template {
+class Template {
 	/**
 	 * Views / Templates
 	 *
@@ -8,7 +9,7 @@ class TKEventWeather_Template {
 	 */
 
 	public static function new_template_loader() {
-		return new TKEventWeather_Template_Loader();
+		return new Template_Loader();
 	}
 
 	/**
@@ -42,7 +43,7 @@ class TKEventWeather_Template {
 		}
 
 		if ( 'true' == $prepend_empty ) {
-			$result = TKEventWeather_Functions::array_prepend_empty( $result );
+			$result = Functions::array_prepend_empty( $result );
 		}
 
 		return $result;

@@ -1,4 +1,6 @@
 <?php
+namespace TKEventWeather;
+
 /*
 	"WordPress Plugin Template" Copyright (C) 2016 Michael Simpson	(email : michael.d.simpson@gmail.com)
 
@@ -19,9 +21,7 @@
 	If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-include_once( 'InstallIndicator.php' );
-
-class TKEventWeather_Life_Cycle extends TKEventWeather_Install_Indicator {
+class Life_Cycle extends Install_Indicator {
 
 	public function install() {
 		// Initialize DB Tables used by the plugin

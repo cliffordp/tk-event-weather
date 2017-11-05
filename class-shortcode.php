@@ -1,18 +1,9 @@
 <?php
+namespace TKEventWeather;
 
 // Option 3 from http://plugin.michael-simpson.com/?page_id=39
 
-include_once( 'ShortCodeScriptLoader.php' );
-require_once( 'class-TKEventWeather_Setup.php' );
-require_once( 'class-TKEventWeather_Functions.php' );
-require_once( 'class-TKEventWeather_API_Google_Maps.php' );
-require_once( 'class-TKEventWeather_API_Dark_Sky.php' );
-require_once( 'class-TKEventWeather_Single_Day.php' );
-require_once( 'class-TKEventWeather_Template.php' );
-require_once( 'class-TKEventWeather_Template_Loader.php' );
-require_once( 'class-TKEventWeather_Time.php' );
-
-class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
+class Shortcode extends Shortcode_Script_Loader {
 
 	private static $added_already = false;
 
@@ -30,9 +21,9 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 	public static $transients_enabled = true;
 	public static $transients_expiration_hours = 0;
 
-	// ONLY set via TKEventWeather_Time::set_timezone_and_source_from_shortcode_args()
+	// ONLY set via Time::set_timezone_and_source_from_shortcode_args()
 	public static $timezone_source = ''; // can be blank if timezone is set manually via shortcode argument
-	public static $timezone = ''; // cannot be blank, possibly set via TKEventWeather_Time::set_timezone_from_api()
+	public static $timezone = ''; // cannot be blank, possibly set via Time::set_timezone_from_api()
 
 	public static $time_format_day = '';
 	public static $time_format_hours = '';
@@ -67,58 +58,58 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 	public static $latitude_longitude = '';
 
 	public static function shortcode_name() {
-		return TKEventWeather_Setup::$shortcode_name;
+		return Setup::$shortcode_name;
 	}
 
 	public function handle_shortcode( $atts ) {
 
-		$plugin_options = TKEventWeather_Functions::plugin_options();
+		$plugin_options = Functions::plugin_options();
 
 		if ( empty( $plugin_options ) ) {
-			TKEventWeather_Functions::invalid_shortcode_message( 'Please complete the initial setup' );
+			Functions::invalid_shortcode_message( 'Please complete the initial setup' );
 
-			return TKEventWeather_Functions::$shortcode_error_message;
+			return Functions::$shortcode_error_message;
 		} else {
-			$api_key_option = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'darksky_api_key' );
+			$api_key_option = Functions::array_get_value_by_key( $plugin_options, 'darksky_api_key' );
 
-			$multi_day_limit_option = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'multi_day_limit' );
+			$multi_day_limit_option = Functions::array_get_value_by_key( $plugin_options, 'multi_day_limit' );
 
-			$multi_day_ignore_start_at_today_option = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'multi_day_ignore_start_at_today' );
+			$multi_day_ignore_start_at_today_option = Functions::array_get_value_by_key( $plugin_options, 'multi_day_ignore_start_at_today' );
 
-			$gmaps_api_key_option = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'google_maps_api_key' );
+			$gmaps_api_key_option = Functions::array_get_value_by_key( $plugin_options, 'google_maps_api_key' );
 
-			$text_before = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'text_before' );
+			$text_before = Functions::array_get_value_by_key( $plugin_options, 'text_before' );
 
-			$text_after = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'text_after' );
+			$text_after = Functions::array_get_value_by_key( $plugin_options, 'text_after' );
 
-			$display_template_option = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'display_template' );
+			$display_template_option = Functions::array_get_value_by_key( $plugin_options, 'display_template' );
 
-			$time_format_day_option = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'time_format_day', 'M j' );
+			$time_format_day_option = Functions::array_get_value_by_key( $plugin_options, 'time_format_day', 'M j' );
 
-			$time_format_hours_option = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'time_format_hours', 'ga' );
+			$time_format_hours_option = Functions::array_get_value_by_key( $plugin_options, 'time_format_hours', 'ga' );
 
-			$time_format_minutes_option = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'time_format_minutes', 'g:i' );
+			$time_format_minutes_option = Functions::array_get_value_by_key( $plugin_options, 'time_format_minutes', 'g:i' );
 
-			$cutoff_past_days_option   = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'cutoff_past_days', 30 );
-			$cutoff_future_days_option = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'cutoff_future_days', 365 );
+			$cutoff_past_days_option   = Functions::array_get_value_by_key( $plugin_options, 'cutoff_past_days', 30 );
+			$cutoff_future_days_option = Functions::array_get_value_by_key( $plugin_options, 'cutoff_future_days', 365 );
 
-			$units_option = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'darksky_units', 'auto' );
+			$units_option = Functions::array_get_value_by_key( $plugin_options, 'darksky_units', 'auto' );
 
-			$language_option = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'darksky_language', '' );
+			$language_option = Functions::array_get_value_by_key( $plugin_options, 'darksky_language', '' );
 
-			$transients_off_option              = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'transients_off' );
-			$transients_expiration_hours_option = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'transients_expiration_hours', 12 );
+			$transients_off_option              = Functions::array_get_value_by_key( $plugin_options, 'transients_off' );
+			$transients_expiration_hours_option = Functions::array_get_value_by_key( $plugin_options, 'transients_expiration_hours', 12 );
 
-			$timezone_source_option = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'timezone_source', 'api' );
+			$timezone_source_option = Functions::array_get_value_by_key( $plugin_options, 'timezone_source', 'api' );
 
-			$sunrise_sunset_off_option = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'sunrise_sunset_off' );
+			$sunrise_sunset_off_option = Functions::array_get_value_by_key( $plugin_options, 'sunrise_sunset_off' );
 
-			//$icons_option = TKEventWeather_Functions::array_get_value_by_key ( $plugin_options, 'icons' );
+			//$icons_option = Functions::array_get_value_by_key ( $plugin_options, 'icons' );
 
-			$plugin_credit_link_on_option   = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'plugin_credit_link_on' );
-			$darksky_credit_link_off_option = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'darksky_credit_link_off' );
+			$plugin_credit_link_on_option   = Functions::array_get_value_by_key( $plugin_options, 'plugin_credit_link_on' );
+			$darksky_credit_link_off_option = Functions::array_get_value_by_key( $plugin_options, 'darksky_credit_link_off' );
 
-			$debug_on_option = TKEventWeather_Functions::array_get_value_by_key( $plugin_options, 'debug_on' );
+			$debug_on_option = Functions::array_get_value_by_key( $plugin_options, 'debug_on' );
 
 		}
 
@@ -211,14 +202,14 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 		$output .= PHP_EOL;
 
 		// Template
-		$display_template = TKEventWeather_Functions::remove_all_whitespace( strtolower( $atts['template'] ) );
+		$display_template = Functions::remove_all_whitespace( strtolower( $atts['template'] ) );
 
-		if ( ! array_key_exists( $display_template, TKEventWeather_Template::valid_display_templates() ) ) {
+		if ( ! array_key_exists( $display_template, Template::valid_display_templates() ) ) {
 			$display_template = 'hourly_horizontal';
 		}
 
 		self::$span_template_data['template']            = $display_template;
-		self::$span_template_data['template_class_name'] = TKEventWeather_Template::template_class_name( $display_template );
+		self::$span_template_data['template_class_name'] = Template::template_class_name( $display_template );
 
 		$output .= sprintf( '<div class="tk-event-weather__wrap_weather %s">', $display_template );
 		$output .= PHP_EOL;
@@ -265,7 +256,7 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 			self::$latitude_longitude = get_post_meta( $post_id, $atts['lat_long_custom_field'], true );
 		}
 
-		self::$latitude_longitude = TKEventWeather_Functions::valid_lat_long( self::$latitude_longitude );
+		self::$latitude_longitude = Functions::valid_lat_long( self::$latitude_longitude );
 
 		// if no lat,long yet then build via separate lat and long
 		if ( empty ( self::$latitude_longitude ) ) {
@@ -285,7 +276,7 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 
 			// combine into comma-separated
 			self::$latitude_longitude = sprintf( '%F,%F', $latitude, $longitude );
-			self::$latitude_longitude = TKEventWeather_Functions::valid_lat_long( self::$latitude_longitude );
+			self::$latitude_longitude = Functions::valid_lat_long( self::$latitude_longitude );
 		}
 
 		if ( empty( self::$latitude_longitude ) ) {
@@ -302,18 +293,18 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 		// Get lat,long from Google Maps API
 		if ( ! empty( self::$location ) ) {
 
-			self::$google_maps_api_key = TKEventWeather_Functions::sanitize_key_allow_uppercase( $atts['gmaps_api_key'] );
+			self::$google_maps_api_key = Functions::sanitize_key_allow_uppercase( $atts['gmaps_api_key'] );
 
 			// Fetch from transient or Google Maps Geocoding API
-			self::$latitude_longitude = TKEventWeather_API_Google_Maps::get_lat_long();
+			self::$latitude_longitude = API_Google_Maps::get_lat_long();
 
-			$output .= TKEventWeather_API_Google_Maps::get_debug_output();
+			$output .= API_Google_Maps::get_debug_output();
 		}
 
 		if ( empty( self::$latitude_longitude ) ) {
-			TKEventWeather_Functions::invalid_shortcode_message( 'Please enter valid Latitude and Longitude coordinates (or a Location that Google Maps can get coordinates for)' );
+			Functions::invalid_shortcode_message( 'Please enter valid Latitude and Longitude coordinates (or a Location that Google Maps can get coordinates for)' );
 
-			return TKEventWeather_Functions::$shortcode_error_message;
+			return Functions::$shortcode_error_message;
 		}
 
 		self::$span_template_data['latitude_longitude'] = self::$latitude_longitude;
@@ -330,14 +321,14 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 
 		if ( '' != $start_time ) {
 			// check ISO 8601 first because it's stricter
-			if ( true === TKEventWeather_Time::valid_iso_8601_date_time( $start_time, 'bool' ) ) {
-				$start_time           = TKEventWeather_Time::valid_iso_8601_date_time( $start_time );
+			if ( true === Time::valid_iso_8601_date_time( $start_time, 'bool' ) ) {
+				$start_time           = Time::valid_iso_8601_date_time( $start_time );
 				$start_time_iso_8601  = $start_time;
 				$start_time_timestamp = date( 'U', strtotime( $start_time ) );
 			} // check timestamp
-			elseif ( true === TKEventWeather_Time::valid_timestamp( $start_time, 'bool' ) ) {
-				$start_time           = TKEventWeather_Time::valid_timestamp( $start_time );
-				$start_time_iso_8601  = date( DateTime::ATOM, $start_time ); // DateTime::ATOM is same as 'c'
+			elseif ( true === Time::valid_timestamp( $start_time, 'bool' ) ) {
+				$start_time           = Time::valid_timestamp( $start_time );
+				$start_time_iso_8601  = date( \DateTime::ATOM, $start_time ); // \DateTime::ATOM is same as 'c'
 				$start_time_timestamp = $start_time;
 			} // strtotime() or invalid (and therefore clear out)
 			else {
@@ -348,7 +339,7 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 					$start_time_timestamp = '';
 				} else {
 					$start_time_timestamp = $start_time;
-					$start_time_iso_8601  = date( DateTime::ATOM, $start_time ); // DateTime::ATOM is same as 'c'
+					$start_time_iso_8601  = date( \DateTime::ATOM, $start_time ); // \DateTime::ATOM is same as 'c'
 				}
 			}
 		}
@@ -358,19 +349,19 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 			$start_time_timestamp = '';
 		}
 
-		$start_time_timestamp = TKEventWeather_Time::valid_timestamp( $start_time_timestamp );
+		$start_time_timestamp = Time::valid_timestamp( $start_time_timestamp );
 
 
 		if ( empty( $start_time_timestamp ) ) {
-			TKEventWeather_Functions::invalid_shortcode_message( 'Please enter a valid Start Time format' );
+			Functions::invalid_shortcode_message( 'Please enter a valid Start Time format' );
 
-			return TKEventWeather_Functions::$shortcode_error_message;
+			return Functions::$shortcode_error_message;
 		}
 
 		self::$span_start_time_timestamp = $start_time_timestamp;
-		self::$span_first_hour_timestamp = TKEventWeather_Time::timestamp_truncate_minutes( $start_time_timestamp );
+		self::$span_first_hour_timestamp = Time::timestamp_truncate_minutes( $start_time_timestamp );
 
-		self::$span_template_data['span_first_hour_timestamp'] = TKEventWeather_Shortcode::$span_first_hour_timestamp;
+		self::$span_template_data['span_first_hour_timestamp'] = Shortcode::$span_first_hour_timestamp;
 
 
 		// cutoff_past
@@ -393,21 +384,21 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 			}
 		}
 
-		$min_timestamp = TKEventWeather_Time::valid_timestamp( $min_timestamp );
+		$min_timestamp = Time::valid_timestamp( $min_timestamp );
 
-		if ( ! empty( $min_timestamp ) && '' != TKEventWeather_Shortcode::$span_first_hour_timestamp ) {
-			if ( $min_timestamp > TKEventWeather_Shortcode::$span_first_hour_timestamp ) {
-				TKEventWeather_Functions::invalid_shortcode_message( 'Event Start Time needs to be more recent than the Past Cutoff Time' );
+		if ( ! empty( $min_timestamp ) && '' != Shortcode::$span_first_hour_timestamp ) {
+			if ( $min_timestamp > Shortcode::$span_first_hour_timestamp ) {
+				Functions::invalid_shortcode_message( 'Event Start Time needs to be more recent than the Past Cutoff Time' );
 
-				return TKEventWeather_Functions::$shortcode_error_message;
+				return Functions::$shortcode_error_message;
 			}
 		}
 
 		// max 60 years in the past, per API docs
-		if ( strtotime( '-60 years' ) > TKEventWeather_Shortcode::$span_first_hour_timestamp ) {
-			TKEventWeather_Functions::invalid_shortcode_message( 'Event Start Time needs to be more recent than 60 years in the past, per Dark Sky API docs,' );
+		if ( strtotime( '-60 years' ) > Shortcode::$span_first_hour_timestamp ) {
+			Functions::invalid_shortcode_message( 'Event Start Time needs to be more recent than 60 years in the past, per Dark Sky API docs,' );
 
-			return TKEventWeather_Functions::$shortcode_error_message;
+			return Functions::$shortcode_error_message;
 		}
 
 		// End Time
@@ -422,14 +413,14 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 
 		if ( '' != $end_time ) {
 			// check ISO 8601 first because it's stricter
-			if ( true === TKEventWeather_Time::valid_iso_8601_date_time( $end_time, 'bool' ) ) {
-				$end_time           = TKEventWeather_Time::valid_iso_8601_date_time( $end_time );
+			if ( true === Time::valid_iso_8601_date_time( $end_time, 'bool' ) ) {
+				$end_time           = Time::valid_iso_8601_date_time( $end_time );
 				$end_time_iso_8601  = $end_time;
-				$end_time_timestamp = TKEventWeather_Time::valid_timestamp( date( 'U', strtotime( $end_time ) ) ); // date() returns a string
+				$end_time_timestamp = Time::valid_timestamp( date( 'U', strtotime( $end_time ) ) ); // date() returns a string
 			} // check timestamp
-			elseif ( true === TKEventWeather_Time::valid_timestamp( $end_time, 'bool' ) ) {
-				$end_time           = TKEventWeather_Time::valid_timestamp( $end_time );
-				$end_time_iso_8601  = date( DateTime::ATOM, $end_time ); // DateTime::ATOM is same as 'c'
+			elseif ( true === Time::valid_timestamp( $end_time, 'bool' ) ) {
+				$end_time           = Time::valid_timestamp( $end_time );
+				$end_time_iso_8601  = date( \DateTime::ATOM, $end_time ); // \DateTime::ATOM is same as 'c'
 				$end_time_timestamp = $end_time;
 			} // strtotime() or invalid (and therefore clear out)
 			else {
@@ -440,7 +431,7 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 					$end_time_timestamp = '';
 				} else {
 					$end_time_timestamp = $end_time;
-					$end_time_iso_8601  = date( DateTime::ATOM, $end_time ); // DateTime::ATOM is same as 'c'
+					$end_time_iso_8601  = date( \DateTime::ATOM, $end_time ); // \DateTime::ATOM is same as 'c'
 				}
 			}
 		}
@@ -450,27 +441,27 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 			$end_time_timestamp = '';
 		}
 
-		$end_time_timestamp = TKEventWeather_Time::valid_timestamp( $end_time_timestamp );
+		$end_time_timestamp = Time::valid_timestamp( $end_time_timestamp );
 
 		if ( '' == $end_time_timestamp ) {
-			$end_time_timestamp = TKEventWeather_Shortcode::$span_first_hour_timestamp + DAY_IN_SECONDS; // just padding it on through the next day
+			$end_time_timestamp = Shortcode::$span_first_hour_timestamp + DAY_IN_SECONDS; // just padding it on through the next day
 			$total_days_in_span = 1; // and then manually setting Total Days to 1 because of fudging the End Time (because we do not yet have the timezone)
 		}
 
 		self::$span_end_time_timestamp = $end_time_timestamp;
 
 		// if Event Start and End times are the same
-		if ( TKEventWeather_Shortcode::$span_first_hour_timestamp == $end_time_timestamp ) {
+		if ( Shortcode::$span_first_hour_timestamp == $end_time_timestamp ) {
 			// this is allowed as of version 1.4
-			// TKEventWeather_Functions::invalid_shortcode_message( 'Please make sure Event Start Time and Event End Time are not the same' );
-			// return TKEventWeather_Functions::$shortcode_error_message;
+			// Functions::invalid_shortcode_message( 'Please make sure Event Start Time and Event End Time are not the same' );
+			// return Functions::$shortcode_error_message;
 		}
 
 		// if Event End time is before Start time
-		if ( TKEventWeather_Shortcode::$span_first_hour_timestamp > $end_time_timestamp ) {
-			TKEventWeather_Functions::invalid_shortcode_message( 'Event Start Time must be earlier than Event End Time' );
+		if ( Shortcode::$span_first_hour_timestamp > $end_time_timestamp ) {
+			Functions::invalid_shortcode_message( 'Event Start Time must be earlier than Event End Time' );
 
-			return TKEventWeather_Functions::$shortcode_error_message;
+			return Functions::$shortcode_error_message;
 		}
 
 
@@ -495,26 +486,26 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 			}
 		}
 
-		$max_timestamp = TKEventWeather_Time::valid_timestamp( $max_timestamp );
+		$max_timestamp = Time::valid_timestamp( $max_timestamp );
 
 		if ( ! empty( $max_timestamp ) && '' != $end_time_timestamp ) {
 			if ( $end_time_timestamp > $max_timestamp ) {
-				TKEventWeather_Functions::invalid_shortcode_message( 'Event End Time needs to be more recent than Future Cutoff Time' );
+				Functions::invalid_shortcode_message( 'Event End Time needs to be more recent than Future Cutoff Time' );
 
-				return TKEventWeather_Functions::$shortcode_error_message;
+				return Functions::$shortcode_error_message;
 			}
 		}
 
 		// max 10 years future, per API docs
 		if ( $end_time_timestamp > strtotime( '+10 years' ) ) {
-			TKEventWeather_Functions::invalid_shortcode_message( 'Event End Time needs to be less than 10 years in the future, per Dark Sky API docs,' );
+			Functions::invalid_shortcode_message( 'Event End Time needs to be less than 10 years in the future, per Dark Sky API docs,' );
 
-			return TKEventWeather_Functions::$shortcode_error_message;
+			return Functions::$shortcode_error_message;
 		}
 
 
 		//
-		// TKEventWeather_Shortcode::$span_first_hour_timestamp is equal to or greater than $min_timestamp and $end_time_timestamp is less than or equal to $max_timestamp
+		// Shortcode::$span_first_hour_timestamp is equal to or greater than $min_timestamp and $end_time_timestamp is less than or equal to $max_timestamp
 		// or $min_timestamp and/or $max_timestamp were set to zero (i.e. no limits)
 		// so continue...
 		//
@@ -566,18 +557,18 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 		self::$time_format_minutes = $time_format_minutes;
 
 		// Units
-		$units = TKEventWeather_Functions::remove_all_whitespace( strtolower( $atts['units'] ) );
+		$units = Functions::remove_all_whitespace( strtolower( $atts['units'] ) );
 
-		if ( ! array_key_exists( $units, TKEventWeather_API_Dark_Sky::valid_units() ) ) {
+		if ( ! array_key_exists( $units, API_Dark_Sky::valid_units() ) ) {
 			$units = $units_option;
 		}
 
 		self::$dark_sky_api_units = $units;
 
 		// Language
-		$language = TKEventWeather_Functions::remove_all_whitespace( strtolower( $atts['language'] ) );
+		$language = Functions::remove_all_whitespace( strtolower( $atts['language'] ) );
 
-		if ( ! array_key_exists( $language, TKEventWeather_API_Dark_Sky::valid_languages() ) ) {
+		if ( ! array_key_exists( $language, API_Dark_Sky::valid_languages() ) ) {
 			$language = $language_option;
 		}
 
@@ -587,14 +578,14 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 		$exclude = '';
 
 		// shortcode argument's value
-		$exclude_arg = TKEventWeather_Functions::remove_all_whitespace( strtolower( $atts['exclude'] ) );
+		$exclude_arg = Functions::remove_all_whitespace( strtolower( $atts['exclude'] ) );
 
 		if ( ! empty( $exclude ) ) {
 			$exclude_arg_array = explode( ',', $exclude_arg );
 
 			if ( is_array( $exclude_arg_array ) ) {
 				sort( $exclude_arg_array );
-				$possible_excludes = TKEventWeather_API_Dark_Sky::valid_excludes();
+				$possible_excludes = API_Dark_Sky::valid_excludes();
 
 				foreach ( $exclude_arg_array as $key => $value ) {
 					// if valid 'exclude' then keep it, else ignore it
@@ -635,7 +626,7 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 		if (
 			empty( $icons )
 			|| 'climacons' == $icons
-			|| ! in_array( $icons, TKEventWeather_Functions::valid_icon_type() )
+			|| ! in_array( $icons, Functions::valid_icon_type() )
 		) {
 			$icons = 'climacons_font';
 		}
@@ -662,10 +653,10 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 		self::$span_template_data['class'] = $atts['class'];
 
 
-		TKEventWeather_Time::set_timezone_and_source_from_shortcode_args( $atts['timezone'], $atts['timezone_source'] );
+		Time::set_timezone_and_source_from_shortcode_args( $atts['timezone'], $atts['timezone_source'] );
 
-		if ( ! empty( TKEventWeather_Functions::$shortcode_error_message ) ) {
-			return TKEventWeather_Functions::$shortcode_error_message;
+		if ( ! empty( Functions::$shortcode_error_message ) ) {
+			return Functions::$shortcode_error_message;
 		}
 
 		// Multi-Day Start at Today
@@ -681,21 +672,21 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 		 * Must be done before setting Timezone because the timezone might
 		 * be getting set via the API, depending on the settings.
 		 */
-		$first_day_class = new TKEventWeather_Single_Day( self::$span_start_time_timestamp, self::$span_end_time_timestamp, 1 );
+		$first_day_class = new Single_Day( self::$span_start_time_timestamp, self::$span_end_time_timestamp, 1 );
 
 		// Set the Timezone ASAP (after first day's API call), since it's needed to determine everything else
 		if ( empty( self::$timezone ) ) {
-			TKEventWeather_Time::set_timezone_from_api( TKEventWeather_Single_Day::$api_data->timezone );
+			Time::set_timezone_from_api( Single_Day::$api_data->timezone );
 		}
 
 		if ( empty( self::$timezone ) ) {
-			TKEventWeather_Functions::invalid_shortcode_message( 'Timezone was unable to be determined from the API and is required to continue. You might want to enable Debug Mode and investigate if there was a problem with this specific API response or some other error' );
+			Functions::invalid_shortcode_message( 'Timezone was unable to be determined from the API and is required to continue. You might want to enable Debug Mode and investigate if there was a problem with this specific API response or some other error' );
 
-			return TKEventWeather_Functions::$shortcode_error_message;
+			return Functions::$shortcode_error_message;
 		}
 
-		$midnight_first_day = TKEventWeather_Time::get_a_days_min_max_timestamp( self::$span_start_time_timestamp, self::$timezone );
-		$midnight_last_day  = TKEventWeather_Time::get_a_days_min_max_timestamp( self::$span_end_time_timestamp, self::$timezone );
+		$midnight_first_day = Time::get_a_days_min_max_timestamp( self::$span_start_time_timestamp, self::$timezone );
+		$midnight_last_day  = Time::get_a_days_min_max_timestamp( self::$span_end_time_timestamp, self::$timezone );
 
 		// Multi-Day Limit
 		$multi_day_limit = absint( $atts['multi_day_limit'] );
@@ -710,13 +701,13 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 			$output .= $first_day_class::$api_data_debug . PHP_EOL;
 		}
 
-		if ( ! empty( TKEventWeather_Functions::$shortcode_error_message ) ) {
-			return TKEventWeather_Functions::$shortcode_error_message;
+		if ( ! empty( Functions::$shortcode_error_message ) ) {
+			return Functions::$shortcode_error_message;
 		}
 
 		// Only calculate Total Days in Span if not already set because it might have been forced to 1 (if no End Time was set)
 		if ( empty( $total_days_in_span ) ) {
-			$total_days_in_span = TKEventWeather_Time::count_start_end_cal_days_span( self::$span_start_time_timestamp, self::$span_end_time_timestamp, self::$timezone );
+			$total_days_in_span = Time::count_start_end_cal_days_span( self::$span_start_time_timestamp, self::$span_end_time_timestamp, self::$timezone );
 		}
 
 		$midnight_timestamps_except_first_day = array();
@@ -746,7 +737,7 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 		}
 
 		// if entire span is in the past, set back to FALSE
-		$today_midnight = TKEventWeather_Time::get_a_days_min_max_timestamp( time(), self::$timezone );
+		$today_midnight = Time::get_a_days_min_max_timestamp( time(), self::$timezone );
 
 		if (
 			true === self::$span_template_data['multi_day_start_at_today']
@@ -765,7 +756,7 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 		}
 
 		if ( $multi_day_limit < $total_days_in_span ) {
-			TKEventWeather_Functions::invalid_shortcode_message(
+			Functions::invalid_shortcode_message(
 				sprintf( 'Multi-Day Forecasting is limited to %d days per shortcode, and this shortcode spans %d days. Please adjust the plugin settings or correct the Event Times or use the `multi_day_limit` argument for this specific shortcode',
 					$multi_day_limit,
 					$total_days_in_span
@@ -773,8 +764,8 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 			);
 		}
 
-		if ( ! empty( TKEventWeather_Functions::$shortcode_error_message ) ) {
-			return TKEventWeather_Functions::$shortcode_error_message;
+		if ( ! empty( Functions::$shortcode_error_message ) ) {
+			return Functions::$shortcode_error_message;
 		}
 
 		$day_index = 2;
@@ -787,7 +778,7 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 					continue;
 				}
 
-				$day_class = new TKEventWeather_Single_Day( $midnight, self::$span_end_time_timestamp, $day_index );
+				$day_class = new Single_Day( $midnight, self::$span_end_time_timestamp, $day_index );
 
 				if ( ! empty( self::$debug_enabled ) ) {
 					$output .= $day_class::$api_data_debug;
@@ -800,15 +791,15 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 		}
 
 		// one last check just to make sure
-		if ( ! empty( TKEventWeather_Functions::$shortcode_error_message ) ) {
-			return TKEventWeather_Functions::$shortcode_error_message;
+		if ( ! empty( Functions::$shortcode_error_message ) ) {
+			return Functions::$shortcode_error_message;
 		}
 
 		$output .= '</div>'; // .tk-event-weather__wrap_weather
 		$output .= PHP_EOL;
 
 		// Credit links are outside .tk-event-weather__wrap_weather to avoid getting caught up in flexbox (if applicable, like with vertical columns) and to ensure it outputs only once at the end instead of within each day.
-		$output .= TKEventWeather_Functions::get_credit_links(); // empty if should not display either
+		$output .= Functions::get_credit_links(); // empty if should not display either
 		$output .= PHP_EOL;
 
 		$output .= '</div>'; // .tk-event-weather__wrapper
@@ -819,19 +810,19 @@ class TKEventWeather_Shortcode extends TKEventWeather_Shortcode_Script_Loader {
 
 	// This method must be declared because of extending an abstract class.
 	public function add_script() {
-		$plugin_options = TKEventWeather_Functions::plugin_options();
+		$plugin_options = Functions::plugin_options();
 
 		if ( ! self::$added_already ) {
 			self::$added_already = true;
 
-			wp_enqueue_style( sanitize_html_class( TKEventWeather_Setup::shortcode_name_hyphenated() ) );
+			wp_enqueue_style( sanitize_html_class( Setup::shortcode_name_hyphenated() ) );
 
 			if ( empty( $plugin_options['scroll_horizontal_off'] ) ) {
-				wp_enqueue_style( sanitize_html_class( TKEventWeather_Setup::shortcode_name_hyphenated() . '-scroll-horizontal' ) );
+				wp_enqueue_style( sanitize_html_class( Setup::shortcode_name_hyphenated() . '-scroll-horizontal' ) );
 			}
 
 			if ( empty( $plugin_options['vertical_to_columns_off'] ) ) {
-				wp_enqueue_style( sanitize_html_class( TKEventWeather_Setup::shortcode_name_hyphenated() . '-vertical-to-columns' ) );
+				wp_enqueue_style( sanitize_html_class( Setup::shortcode_name_hyphenated() . '-vertical-to-columns' ) );
 			}
 		}
 	}

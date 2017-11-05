@@ -1,4 +1,6 @@
 <?php
+namespace TKEventWeather;
+
 /**
  * Template: After Single Day (plain text)
  *
