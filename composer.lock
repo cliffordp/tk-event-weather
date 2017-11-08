@@ -1,0 +1,133 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "abf4deaea125eb355ae0c918a095f6b0",
+    "packages": [
+        {
+            "name": "climacons-webfont/climacons-webfont",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cliffordp/climacons-webfont.git",
+                "reference": "fb2f02293fd75c5901e86f47af9664cc15cdff53"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cliffordp/climacons-webfont/zipball/fb2f02293fd75c5901e86f47af9664cc15cdff53",
+                "reference": "fb2f02293fd75c5901e86f47af9664cc15cdff53",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Adam Whitcroft",
+                    "email": "hello@adamwhitcroft.com",
+                    "homepage": "http://adamwhitcroft.com/",
+                    "role": "Designer"
+                },
+                {
+                    "name": "Christian Naths",
+                    "email": "christiannaths@gmail.com",
+                    "homepage": "https://christiannaths.com/",
+                    "role": "Developer"
+                },
+                {
+                    "name": "TourKick LLC (Clifford Paulick)",
+                    "email": "tko+tkeventw@tourkick.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "The Climacons webfont. Climacons created by Adam Whitcroft. Credit also to Christian Naths for webfont version.",
+            "time": "2017-11-05T06:19:06+00:00"
+        },
+        {
+            "name": "freemius/wordpress-sdk",
+            "version": "1.2.2.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Freemius/wordpress-sdk.git",
+                "reference": "1992b7ffd07d5a6c169a4fa587aa335a6ef78021"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Freemius/wordpress-sdk/zipball/1992b7ffd07d5a6c169a4fa587aa335a6ef78021",
+                "reference": "1992b7ffd07d5a6c169a4fa587aa335a6ef78021",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "description": "Freemius WordPress SDK",
+            "homepage": "https://freemius.com",
+            "keywords": [
+                "freemius",
+                "plugin",
+                "sdk",
+                "wordpress"
+            ],
+            "time": "2017-08-31T07:35:00+00:00"
+        },
+        {
+            "name": "gamajo/template-loader",
+            "version": "1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/GaryJones/Gamajo-Template-Loader.git",
+                "reference": "05057216f60baebfc4939e1a2b9aae6e89d25c91"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/GaryJones/Gamajo-Template-Loader/zipball/05057216f60baebfc4939e1a2b9aae6e89d25c91",
+                "reference": "05057216f60baebfc4939e1a2b9aae6e89d25c91",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.4"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "class-gamajo-template-loader.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Gary Jones",
+                    "email": "gamajo@gamajo.com",
+                    "homepage": "http://gamajo.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A class for your WordPress plugin, to allow loading template parts with fallback through the child theme > parent theme > plugin",
+            "homepage": "http://github.com/GaryJones/Gamajo-Template-Loader",
+            "keywords": [
+                "templates",
+                "wordpress"
+            ],
+            "time": "2017-03-24T17:28:34+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=5.4"
+    },
+    "platform-dev": []
+}

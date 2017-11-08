@@ -1,4 +1,5 @@
 <?php
+namespace TKEventWeather;
 /*
 	"WordPress Plugin Template" Copyright (C) 2016 Michael Simpson	(email : michael.d.simpson@gmail.com)
 
@@ -20,7 +21,7 @@
 */
 
 function tk_event_weather_init( $file ) {
-	$a_plugin = new TKEventWeather\Plugin();
+	$a_plugin = new Plugin();
 
 	/**
 	 * Install the plugin

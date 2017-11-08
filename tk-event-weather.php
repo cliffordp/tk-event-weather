@@ -51,7 +51,7 @@ namespace TKEventWeather;
  * - add 'demo' option to output all icons (e.g. for styling/testing)
  * - weather advisory alerts (only happen in real-time so probably not going to happen)
  * - color options for styling SVGs (e.g. yellow sun with gray cloud) -- not possible with as-is SVGs because they're flattened (no CSS classes to "fill")
- * - Add support for https://wordpress.org/plugins/shortcode-ui/
+ * - Add support for https://wordpress.org/plugins/shortcode-ui/ and/or Gutenberg
  */
 
 
@@ -75,7 +75,7 @@ define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_URL', plugin_dir_url( __FILE__ ) ); // e.g
 define( 'TK_EVENT_WEATHER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) ); // e.g. tk-event-weather/tk-event-weather.php
 
 // used by core plugin and by add-on implementations of Freemius
-define( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE', dirname( __FILE__ ) . '/vendor/freemius/start.php' );
+define( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE', dirname( __FILE__ ) . '/vendor/freemius/wordpress-sdk/start.php' );
 
 
 // adapted from http://wpbackoffice.com/get-current-woocommerce-version-number/
@@ -231,7 +231,7 @@ function tkeventweather_i18n_init() {
 // If it is successful, continue with initialization for this plugin
 if ( tk_event_weather_php_version_check() ) {
 	// Only load and run everything if we know PHP version can parse it
-	require_once( 'lib/autoload.php' );
+	require_once( 'vendor/autoload.php' );
 	include_once( 'init.php' );
 	tk_event_weather_init( __FILE__ );
 }
