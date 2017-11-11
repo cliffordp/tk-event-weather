@@ -336,6 +336,8 @@ class Options_Manager {
 			} // options tab
 			elseif ( $active_tab == 'tools' ) {
 			?>
+			<!-- Hide because of overlapping Google Map iframe -->
+			<style type="text/css">#wpfooter { display: none; }</style>
 			<h2><?php _e( 'Shortcode Examples', 'tk-event-weather' ); ?></h2>
 			<p><?php printf( __( "For your reference, over a dozen examples are available at %sthis plugin's WordPress.org FAQs%s. (link opens in new window)", 'tk-event-weather' ), '<a href="https://wordpress.org/plugins-wp/tk-event-weather/#faq" target="_blank">', '</a>' ); ?>
 			</p>
