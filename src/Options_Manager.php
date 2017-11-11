@@ -38,6 +38,12 @@ class Options_Manager {
 	}
 
 		return $prefix . '_';
+	public function get_option_metadata() {
+		//  http://plugin.michael-simpson.com/?page_id=31
+		return array(
+			//'_version' => array('Installed Version'), // Leave this one commented-out. Uncomment to test upgrades.
+			//'DropOnUninstall' => array(__('Drop this plugin\'s Database table on uninstall', 'TEXT_DOMAIN'), 'false', 'true')
+		);
 	}
 
 	/**
