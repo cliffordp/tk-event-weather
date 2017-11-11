@@ -39,9 +39,6 @@ namespace TKEventWeather;
  * - refresh screenshots
  * - wp-admin notice if you have a supported plugin active (e.g. The Events Calendar) but its applicable add-on is not (either to activate it or to buy it).
  * - add Customizer option to input a Post ID to default to when viewing the customizer from the plugin's Settings Button (could auto-set it if an Event exists)
- * - look into https://developer.wordpress.org/plugins/the-basics/uninstall-methods/
- * - why it currently states "will also delete its data"
- * - should we add an option to "delete its data" on uninstall?
  * - truncate seconds off all timestamps? -- avoid 10pm hour + 10pm sunset, like http://cl.ly/430H1J0p2R07 -- No.
  * - the Dark Sky API "apparentTemperature" value is the "feels like" temperature
  * - inspiration from http://darkskyapp.com/

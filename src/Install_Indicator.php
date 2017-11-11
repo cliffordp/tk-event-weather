@@ -44,12 +44,22 @@ class Install_Indicator extends Options_Manager {
 
 	/**
 	 * Note in DB that the plugin is uninstalled
-	 * @return bool returned form delete_option.
+	 * @return bool returned from delete_option.
 	 * true implies the plugin was installed at the time of this call,
 	 * false implies it was not.
 	 */
 	protected function mark_as_uninstalled() {
-		return $this->delete_option( self::OPTION_INSTALLED );
+		$installed = $this->delete_option( self::OPTION_INSTALLED );
+		$version = $this->delete_option( self::OPTION_VERSION );
+
+		if (
+			$installed
+			|| $version
+		) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**

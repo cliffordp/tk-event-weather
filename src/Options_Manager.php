@@ -37,7 +37,6 @@ class Options_Manager {
 		return TK_EVENT_WEATHER_PLUGIN_SLUG . '_';
 	}
 
-		return $prefix . '_';
 	public function get_option_metadata() {
 		//  http://plugin.michael-simpson.com/?page_id=31
 		return array(
@@ -48,18 +47,27 @@ class Options_Manager {
 
 	/**
 	 * Cleanup: remove all options from the DB
-	 * @return void
 	 */
 	protected function delete_saved_options() {
-		/*
-        $option_metadata = $this->get_option_metadata();
-        if (is_array($option_metadata)) {
-                foreach ($option_metadata as $aOptionKey => $aOptionMeta) {
-                        $prefixedOptionName = $this->prefix($aOptionKey); // how it is stored in DB
-                        delete_option($prefixedOptionName);
-                }
-        }
-		*/
+		$customizer_options = get_option( TK_EVENT_WEATHER_PLUGIN_SLUG );
+
+		if ( ! empty( $customizer_options['uninstall_delete_all_data'] ) ) {
+			// delete customizer options
+			delete_option( TK_EVENT_WEATHER_PLUGIN_SLUG );
+
+			// delete all other options is handled via mark_as_uninstalled()
+
+			// delete all our transients
+			global $wpdb;
+
+			$table_name        = "{$wpdb->prefix}options";
+			$general_transient = '%\_transient\_%';
+			$our_transient     = '%\_tkeventw_%';
+
+			$sql = $wpdb->prepare( "DELETE FROM `$table_name` WHERE option_name LIKE `$table_name`.`%s` AND option_name LIKE `$table_name`.`%s`", $general_transient, $our_transient );
+
+			$transients_deleted = $wpdb->query( $sql ); // Number of rows affected/selected or false on error
+		}
 	}
 
 	/**
