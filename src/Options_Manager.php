@@ -269,9 +269,6 @@ class Options_Manager {
 							'</a>'
 						);
 						?>
-					<ul style="list-style: disc; list-style-position: inside;">
-						<li>TK Event Weather for The Events Calendar by Modern Tribe</li>
-					</ul>
 					</p>
 					<?php
 				}
