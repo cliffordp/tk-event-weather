@@ -18,33 +18,6 @@ class Plugin extends Life_Cycle {
 		return 'tk-event-weather.php';
 	}
 
-	/**
-	 * See: http://plugin.michael-simpson.com/?page_id=101
-	 * Called by install() to create any database tables if needed.
-	 * Best Practice:
-	 * (1) Prefix all table names with $wpdb->prefix
-	 * (2) make table names lower case only
-	 * @return void
-	 */
-	protected function install_database_tables() {
-		//				global $wpdb;
-		//				$tableName = $this->prefix_table_name('mytable');
-		//				$wpdb->query("CREATE TABLE IF NOT EXISTS `$tableName` (
-		//						`id` INTEGER NOT NULL");
-	}
-
-	/**
-	 * See: http://plugin.michael-simpson.com/?page_id=101
-	 * Drop plugin-created tables on uninstall.
-	 * @return void
-	 */
-	protected function uninstall_database_tables() {
-		//				global $wpdb;
-		//				$tableName = $this->prefix_table_name('mytable');
-		//				$wpdb->query("DROP TABLE IF EXISTS `$tableName`");
-	}
-
-
 	public function activate() {
 
 	}
