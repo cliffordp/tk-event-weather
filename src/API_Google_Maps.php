@@ -1,4 +1,5 @@
 <?php
+
 namespace TKEventWeather;
 
 class API_Google_Maps {
@@ -124,10 +125,10 @@ class API_Google_Maps {
 		 * api-result-examples/google_maps.txt
 		 *
 		 * Example Debug Output:
-		<!--
-		TK Event Weather -- Google Maps Geocoding API -- Request URI
-		https://maps.googleapis.com/maps/api/geocode/json?address=The+White+House
-		-->
+		 * <!--
+		 * TK Event Weather -- Google Maps Geocoding API -- Request URI
+		 * https://maps.googleapis.com/maps/api/geocode/json?address=The+White+House
+		 * -->
 		 */
 		$output .= sprintf(
 			'<!--%1$s%2$s -- Google Maps Geocoding API -- Obtained from Transient: %3$s -- Request URI:%1$s%4$s%1$s -- JSON Data:%1$s%5$s%1$s-->%1$s',

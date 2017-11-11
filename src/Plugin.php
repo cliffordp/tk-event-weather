@@ -1,4 +1,5 @@
 <?php
+
 namespace TKEventWeather;
 
 // e.g. https://plugins.trac.wordpress.org/browser/form-to-post/trunk/FormToPost_Plugin.php
@@ -80,10 +81,10 @@ class Plugin extends Life_Cycle {
 
 			// Delete old Customizer options, such as tk_event_weather[forecast_io...]
 			$current_options = get_option( self::$customizer_flag );
-			$needs_update = false;
+			$needs_update    = false;
 			foreach ( $current_options as $sub_option => $value ) {
-				if ( 0 ===strpos( $sub_option, 'forecast_io' ) ) {
-					unset( $current_options[$sub_option] );
+				if ( 0 === strpos( $sub_option, 'forecast_io' ) ) {
+					unset( $current_options[ $sub_option ] );
 					$needs_update = true;
 				}
 			}

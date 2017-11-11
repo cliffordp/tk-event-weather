@@ -1,4 +1,5 @@
 <?php
+
 namespace TKEventWeather;
 
 /*
@@ -25,9 +26,9 @@ abstract class Shortcode_Loader {
 
 	/**
 	 * @param    $shortcode_name mixed either string name of the shortcode
-	 *                          (as it would appear in a post, e.g. [shortcode_name])
-	 *                          or an array of such names in case you want to have more than one name
-	 *                          for the same shortcode
+	 *                           (as it would appear in a post, e.g. [shortcode_name])
+	 *                           or an array of such names in case you want to have more than one name
+	 *                           for the same shortcode
 	 *
 	 * @return void
 	 */
@@ -37,11 +38,11 @@ abstract class Shortcode_Loader {
 
 	/**
 	 * @param    $shortcode_name mixed either string name of the shortcode
-	 *                          (as it would appear in a post, e.g. [shortcode_name])
-	 *                          or an array of such names in case you want to have more than one name
-	 *                          for the same shortcode
+	 *                           (as it would appear in a post, e.g. [shortcode_name])
+	 *                           or an array of such names in case you want to have more than one name
+	 *                           for the same shortcode
 	 * @param    $function_name  string name of public function in this class to call as the
-	 *                          shortcode handler
+	 *                           shortcode handler
 	 *
 	 * @return void
 	 */

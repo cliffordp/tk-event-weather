@@ -1,4 +1,5 @@
 <?php
+
 namespace TKEventWeather;
 
 /*
@@ -129,6 +130,7 @@ class Life_Cycle extends Install_Indicator {
 	protected function get_settings_slug() {
 		$slug = get_class( $this ) . '_settings';
 		$slug = sanitize_key( $slug );
+
 		return $slug;
 	}
 
@@ -177,9 +179,9 @@ class Life_Cycle extends Install_Indicator {
 	 * Convenience function for creating AJAX URLs.
 	 *
 	 * @param $action_name string the name of the ajax action registered in a call like
-	 *                    add_action('wp_ajax_action_name', array($this, 'function_name'));
-	 *                    and/or
-	 *                    add_action('wp_ajax_nopriv_action_name', array($this, 'function_name'));
+	 *                     add_action('wp_ajax_action_name', array($this, 'function_name'));
+	 *                     and/or
+	 *                     add_action('wp_ajax_nopriv_action_name', array($this, 'function_name'));
 	 *
 	 * If have an additional parameters to add to the Ajax call, e.g. an "id" parameter,
 	 * you could call this function and append to the returned string like:

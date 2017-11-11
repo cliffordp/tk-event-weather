@@ -1,4 +1,5 @@
 <?php
+
 namespace TKEventWeather;
 
 /*
@@ -109,7 +110,9 @@ class Options_Manager {
 	 */
 	public function get_option( $optionName, $default = null ) {
 		$prefixed_option_name = $this->prefix( $optionName ); // how it is stored in DB
-		$ret_val             = get_option( $prefixed_option_name );
+
+		$ret_val = get_option( $prefixed_option_name );
+
 		if ( ! $ret_val && $default ) {
 			$ret_val = $default;
 		}
@@ -298,11 +301,16 @@ class Options_Manager {
 				<p>
 					<a href="http://b.tourkick.com/github-tk-event-weather" target="_blank">Contribute via GitHub</a>
 				</p>
-				<p><?php esc_html_e( 'Find me online', 'tk-event-weather' ); ?>: <a
-						href="http://b.tourkick.com/twitter-follow-tourkick" target="_blank">Twitter</a> | <a
-						href="http://b.tourkick.com/facebook-tourkick" target="_blank">Facebook</a> | <a
+				<p><?php esc_html_e( 'Find me online', 'tk-event-weather' ); ?>:
+					<a
+						href="http://b.tourkick.com/twitter-follow-tourkick" target="_blank">Twitter</a> |
+					<a
+						href="http://b.tourkick.com/facebook-tourkick" target="_blank">Facebook</a> |
+					<a
 						href="http://b.tourkick.com/cliffpaulick-w-org-profile-plugins" target="_blank">WordPress
-						Profile</a> | <a href="http://b.tourkick.com/tourkick-com" target="_blank">Website</a></p>
+						Profile</a> |
+					<a href="http://b.tourkick.com/tourkick-com" target="_blank">Website</a>
+				</p>
 				<hr>
 				<p style="font-style: italic;"><?php echo tk_event_weather_terms_agreement_text(); ?></p>
 			</div>
@@ -349,7 +357,9 @@ class Options_Manager {
 			elseif ( $active_tab == 'tools' ) {
 			?>
 			<!-- Hide because of overlapping Google Map iframe -->
-			<style type="text/css">#wpfooter { display: none; }</style>
+			<style type="text/css">#wpfooter {
+					display: none;
+				}</style>
 			<h2><?php _e( 'Shortcode Examples', 'tk-event-weather' ); ?></h2>
 			<p><?php printf( __( "For your reference, over a dozen examples are available at %sthis plugin's WordPress.org FAQs%s. (link opens in new window)", 'tk-event-weather' ), '<a href="https://wordpress.org/plugins-wp/tk-event-weather/#faq" target="_blank">', '</a>' ); ?>
 			</p>
@@ -472,7 +482,8 @@ class Options_Manager {
 			<thead>
 			<tr>
 				<th colspan="3" data-export-label="WordPress Environment">
-					<h2><?php _e( 'WordPress Environment', 'tk-event-weather' ); ?></h2></th>
+					<h2><?php _e( 'WordPress Environment', 'tk-event-weather' ); ?></h2>
+				</th>
 			</tr>
 			</thead>
 			<tbody>
@@ -531,7 +542,8 @@ class Options_Manager {
 				<td data-export-label="WP Debug Mode"><?php _e( 'WP Debug Mode', 'tk-event-weather' ); ?>:</td>
 				<td>
 					<?php if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) : ?>
-						<mark class="yes"><span class="dashicons dashicons-yes"></span></mark>
+						<mark class="yes">
+							<span class="dashicons dashicons-yes"></span></mark>
 					<?php else : ?>
 						<mark class="no">&ndash;</mark>
 					<?php endif; ?>
@@ -543,7 +555,8 @@ class Options_Manager {
 					<?php if ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) : ?>
 						<mark class="no">&ndash;</mark>
 					<?php else : ?>
-						<mark class="yes"><span class="dashicons dashicons-yes"></span></mark>
+						<mark class="yes">
+							<span class="dashicons dashicons-yes"></span></mark>
 					<?php endif; ?>
 				</td>
 			</tr>
@@ -580,7 +593,8 @@ class Options_Manager {
 			<thead>
 			<tr>
 				<th colspan="3" data-export-label="Server Environment">
-					<h2><?php _e( 'Server Environment', 'tk-event-weather' ); ?></h2></th>
+					<h2><?php _e( 'Server Environment', 'tk-event-weather' ); ?></h2>
+				</th>
 			</tr>
 			</thead>
 			<tbody>
@@ -752,7 +766,8 @@ class Options_Manager {
 			<thead>
 			<tr>
 				<th colspan="3" data-export-label="TK Event Weather Plugin Options">
-					<h2><?php _e( 'TK Event Weather Plugin Options', 'tk-event-weather' ); ?></h2></th>
+					<h2><?php _e( 'TK Event Weather Plugin Options', 'tk-event-weather' ); ?></h2>
+				</th>
 			</tr>
 			</thead>
 			<tbody>
@@ -792,7 +807,8 @@ class Options_Manager {
 				<th colspan="3"
 					data-export-label="Active Plugins (<?php echo count( (array) get_option( 'active_plugins' ) ); ?>)">
 					<h2><?php _e( 'Active Plugins', 'tk-event-weather' ); ?>
-						(<?php echo count( (array) get_option( 'active_plugins' ) ); ?>)</h2></th>
+						(<?php echo count( (array) get_option( 'active_plugins' ) ); ?>)</h2>
+				</th>
 			</tr>
 			</thead>
 			<tbody>
@@ -827,7 +843,8 @@ class Options_Manager {
 		<table class="tkeventweather_status_table widefat" cellspacing="0">
 			<thead>
 			<tr>
-				<th colspan="3" data-export-label="Theme"><h2><?php _e( 'Theme', 'tk-event-weather' ); ?></h2>
+				<th colspan="3" data-export-label="Theme">
+					<h2><?php _e( 'Theme', 'tk-event-weather' ); ?></h2>
 				</th>
 			</tr>
 			</thead>
@@ -966,7 +983,7 @@ class Options_Manager {
 		$is_password_type_field = false;
 
 		foreach ( $all_password_field_key_endings as $password_ending ) {
-			$a_option_key_strlen      = strlen( $a_option_key );
+			$a_option_key_strlen    = strlen( $a_option_key );
 			$password_ending_strlen = strlen( $password_ending );
 			if (
 				1 <= $password_ending_strlen
@@ -981,7 +998,8 @@ class Options_Manager {
 		if ( is_array( $a_option_meta ) && count( $a_option_meta ) >= 2 ) { // Drop-down list
 			$choices = array_slice( $a_option_meta, 1 );
 			?>
-			<p><select name="<?php echo $a_option_key ?>" id="<?php echo $a_option_key ?>">
+			<p>
+				<select name="<?php echo $a_option_key ?>" id="<?php echo $a_option_key ?>">
 					<?php
 					foreach ( $choices as $a_choice ) {
 						$selected = ( $a_choice == $saved_option_value ) ? 'selected' : '';
@@ -995,14 +1013,18 @@ class Options_Manager {
 
 		} elseif ( true === $is_password_type_field ) { // Password/API Key Type field
 			?>
-			<p><input type="password" autocomplete="off" name="<?php echo $a_option_key ?>" id="<?php echo $a_option_key ?>"
-					  value="<?php echo esc_attr( $saved_option_value ) ?>" size="50" /></p>
+			<p>
+				<input type="password" autocomplete="off" name="<?php echo $a_option_key ?>" id="<?php echo $a_option_key ?>"
+					   value="<?php echo esc_attr( $saved_option_value ) ?>" size="50" />
+			</p>
 			<?php
 
 		} else { // Simple input field
 			?>
-			<p><input type="text" name="<?php echo $a_option_key ?>" id="<?php echo $a_option_key ?>"
-					  value="<?php echo esc_attr( $saved_option_value ) ?>" size="50" /></p>
+			<p>
+				<input type="text" name="<?php echo $a_option_key ?>" id="<?php echo $a_option_key ?>"
+					   value="<?php echo esc_attr( $saved_option_value ) ?>" size="50" />
+			</p>
 			<?php
 
 		}

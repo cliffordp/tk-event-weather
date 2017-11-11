@@ -1,4 +1,5 @@
 <?php
+
 namespace TKEventWeather;
 
 class API_Dark_Sky {

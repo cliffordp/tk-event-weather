@@ -1,4 +1,5 @@
 <?php
+
 namespace TKEventWeather;
 
 class Single_Day {
@@ -57,8 +58,8 @@ class Single_Day {
 		 * elsewhere) and/or circular references (JSON encoding its own output).
 		 */
 		$template_data['start_time_timestamp'] = self::$start_time_timestamp;
-		$template_data['end_time_timestamp'] = self::$end_time_timestamp;
-		$template_data['day_number_of_span'] = self::$day_number_of_span;
+		$template_data['end_time_timestamp']   = self::$end_time_timestamp;
+		$template_data['day_number_of_span']   = self::$day_number_of_span;
 
 
 		// https://developer.wordpress.org/reference/functions/wp_list_pluck/
@@ -204,6 +205,7 @@ class Single_Day {
 		Template::load_template( 'single_day_before', $template_data );
 		Template::load_template( $template_data['template'], $template_data );
 		Template::load_template( 'single_day_after', $template_data );
+
 		return ob_get_clean();
 	}
 
