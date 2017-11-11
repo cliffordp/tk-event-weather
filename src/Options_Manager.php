@@ -23,8 +23,20 @@ namespace TKEventWeather;
 
 class Options_Manager {
 
+	/**
+	 * Generates the prefix for the various database option names.
+	 *
+	 * Lowercase, ending with an underscore.
+	 * Example prefix: tkeventweatherplugin_
+	 * Becomes this database option: tkeventweatherplugin_installed
+	 *
+	 * @return string
+	 */
 	public function get_option_name_prefix() {
-		return get_class( $this ) . '_';
+		$prefix = get_class( $this );
+		$prefix = sanitize_key( $prefix );
+
+		return $prefix . '_';
 	}
 
 	/**

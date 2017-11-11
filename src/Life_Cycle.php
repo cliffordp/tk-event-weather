@@ -127,7 +127,9 @@ class Life_Cycle extends Install_Indicator {
 	 * Lower case to increase compatibility with Freemius and general standards
 	 */
 	protected function get_settings_slug() {
-		return strtolower( get_class( $this ) . 'settings' );
+		$slug = get_class( $this ) . '_settings';
+		$slug = sanitize_key( $slug );
+		return $slug;
 	}
 
 	protected function add_settings_submenu_page_to_plugins_menu() {

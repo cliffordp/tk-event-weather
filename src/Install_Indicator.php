@@ -23,8 +23,8 @@ namespace TKEventWeather;
 
 class Install_Indicator extends Options_Manager {
 
-	const OPTION_INSTALLED = '_installed';
-	const OPTION_VERSION = '_version';
+	const OPTION_INSTALLED = 'installed';
+	const OPTION_VERSION = 'version';
 
 	/**
 	 * @return bool indicating if the plugin is installed already

@@ -63,8 +63,33 @@ class Plugin extends Life_Cycle {
 	public function upgrade() {
 		$upgrade_ok    = true;
 		$saved_version = $this->get_version_saved();
-		if ( $this->is_version_less_than( $saved_version, '1.5' ) ) {
-			// TODO: delete old options, including transients https://wordpress.stackexchange.com/a/75758/22702 -- delete leftover Plugin::$customizer_flag array keys like ^forecast_io%
+		if ( $this->is_version_less_than( $saved_version, '1.5.0' ) ) {
+			$all_options = wp_load_alloptions();
+
+			// Delete options that start with old capitals.
+			// Will also delete various add-ons' options, such as Installed and Version.
+			// @link https://wordpress.stackexchange.com/a/242906/22702
+			foreach ( $all_options as $option => $value ) {
+				if (
+					0 === strpos( $option, 'TKEventW' )
+					|| 0 === strpos( $option, 'TkEventW' )
+				) {
+					delete_option( $option );
+				}
+			}
+
+			// Delete old Customizer options, such as tk_event_weather[forecast_io...]
+			$current_options = get_option( self::$customizer_flag );
+			$needs_update = false;
+			foreach ( $current_options as $sub_option => $value ) {
+				if ( 0 ===strpos( $sub_option, 'forecast_io' ) ) {
+					unset( $current_options[$sub_option] );
+					$needs_update = true;
+				}
+			}
+			if ( $needs_update ) {
+				update_option( self::$customizer_flag, $current_options );
+			}
 		}
 
 		// Post-upgrade, set the current version in the options
