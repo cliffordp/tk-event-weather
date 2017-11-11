@@ -164,7 +164,7 @@ function tk_event_weather_freemius_custom_connect_message(
 	$freemius_link
 ) {
 	$tk_custom_message = sprintf(
-		__fs( 'hey-x' ) . '<br><br>' . __( 'The <strong>%2$s</strong> plugin is ready to go! Want to help make %2$s more awesome? Securely share some data to get the best experience and stay informed.', 'tk-event-weather' ),
+		fs_text( 'hey-x' ) . '<br><br>' . __( 'The <strong>%2$s</strong> plugin is ready to go! Want to help make %2$s more awesome? Securely share some data to get the best experience and stay informed.', 'tk-event-weather' ),
 		$user_first_name,
 		$plugin_title,
 		'<strong>' . $user_login . '</strong>',
