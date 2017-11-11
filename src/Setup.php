@@ -76,15 +76,21 @@ class Setup {
 	 *
 	 */
 
-	public static function plugin_dir_url_root() {
-		return TK_EVENT_WEATHER_PLUGIN_ROOT_URL; // from root plugin file
-	}
-
+	/**
+	 * Example: http://example.com/wp-content/plugins/tk-event-weather/images/
+	 *
+	 * @return string
+	 */
 	public static function plugin_dir_url_images() {
-		return self::plugin_dir_url_root() . 'images/'; // e.g. http://example.com/wp-content/plugins/tk-event-weather/images/
+		return TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'images/';
 	}
 
+	/**
+	 * Example: http://example.com/wp-content/plugins/tk-event-weather/vendor/
+	 *
+	 * @return string
+	 */
 	public static function plugin_dir_url_vendor() {
-		return self::plugin_dir_url_root() . 'vendor/';
+		return TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'vendor/';
 	}
 }
