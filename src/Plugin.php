@@ -6,17 +6,13 @@ namespace TKEventWeather;
 
 class Plugin extends Life_Cycle {
 
-	private static $customizer_flag = 'tk_event_weather';
+	private static $customizer_flag = TK_EVENT_WEATHER_PLUGIN_SLUG;
 
 	private static $customizer_section_id = 'tk_event_weather_section';
 
 	// public so add-ons can reference it
 	public static $customizer_panel_id = 'tk_event_weather_panel';
 
-
-	public function get_plugin_display_name() {
-		return 'TK Event Weather';
-	}
 
 	protected function get_main_plugin_file_name() {
 		return 'tk-event-weather.php';

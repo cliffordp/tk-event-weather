@@ -65,6 +65,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Defines
  */
+
+/**
+ * Used as the shortcode name, to prefix options, and elsewhere.
+ *
+ * Must be lower-case and underscores instead of hyphens.
+ *
+ * @since 1.5.0
+ */
+define( 'TK_EVENT_WEATHER_PLUGIN_SLUG', 'tk_event_weather' );
+
 // Required for Template Loader. Also used elsewhere.
 define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) ); // e.g. /.../.../example-com/wp-content/plugins/tk-event-weather/
 
@@ -127,7 +137,7 @@ function tk_event_weather_freemius() {
 				'has_addons'     => true,
 				'has_paid_plans' => false,
 				'menu'           => array(
-					'slug'   => 'tkeventweather_pluginsettings',
+					'slug'   => TK_EVENT_WEATHER_PLUGIN_SLUG . '_settings',
 					'parent' => array(
 						'slug' => 'options-general.php',
 					),

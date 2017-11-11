@@ -111,7 +111,6 @@ class Life_Cycle extends Install_Indicator {
 	 * @return void
 	 */
 	public function add_settings_sub_menu_page() {
-		//$this->add_settings_submenu_page_to_plugins_menu();
 		$this->add_settings_submenu_page_to_settings_menu();
 	}
 
@@ -122,31 +121,14 @@ class Life_Cycle extends Install_Indicator {
 	}
 
 	/**
-	 * @return string Slug name for the URL to the Setting page
-	 * (i.e. the page for setting options)
+	 * Must be lower case to increase compatibility with Freemius.
 	 *
-	 * Lower case to increase compatibility with Freemius and general standards
+	 * @return string Slug name for the URL to the Setting page
+	 * (i.e. the page for setting options).
 	 */
 	protected function get_settings_slug() {
-		$slug = get_class( $this ) . '_settings';
-		$slug = sanitize_key( $slug );
-
-		return $slug;
+		return TK_EVENT_WEATHER_PLUGIN_SLUG . '_settings';
 	}
-
-	protected function add_settings_submenu_page_to_plugins_menu() {
-		$this->require_extra_plugin_files();
-		$display_name = $this->get_plugin_display_name();
-		add_submenu_page(
-			'plugins.php',
-			$display_name,
-			$display_name,
-			'manage_options',
-			$this->get_settings_slug(),
-			array( $this, 'settings_page' )
-		);
-	}
-
 
 	protected function add_settings_submenu_page_to_settings_menu() {
 		$this->require_extra_plugin_files();

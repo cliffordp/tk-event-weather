@@ -13,10 +13,15 @@ class Functions {
 	public static $shortcode_error_message = '';
 
 	/**
+	 * Get the 'tk_event_weather' database option.
+	 *
+	 * Note that this does not get the 'tk_event_weather_installed'
+	 * or 'tk_event_weather_version' options.
+	 *
 	 * @return bool|mixed
 	 */
 	public static function plugin_options() {
-		$plugin_options = get_option( 'tk_event_weather' );
+		$plugin_options = get_option( TK_EVENT_WEATHER_PLUGIN_SLUG );
 		if ( ! empty( $plugin_options ) ) {
 			return $plugin_options;
 		} else {
@@ -29,11 +34,11 @@ class Functions {
 	 * handle is 'tk-event-weather'
 	 */
 	public static function register_css() {
-		wp_register_style( Setup::shortcode_name_hyphenated(), Setup::plugin_dir_url_root() . 'css/tk-event-weather.css', array(), tk_event_weather_version() );
+		wp_register_style( Setup::shortcode_name_hyphenated(), TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/tk-event-weather.css', array(), tk_event_weather_version() );
 
-		wp_register_style( Setup::shortcode_name_hyphenated() . '-scroll-horizontal', Setup::plugin_dir_url_root() . 'css/tk-event-weather-scroll-horizontal.css', array(), tk_event_weather_version() );
+		wp_register_style( Setup::shortcode_name_hyphenated() . '-scroll-horizontal', TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/tk-event-weather-scroll-horizontal.css', array(), tk_event_weather_version() );
 
-		wp_register_style( Setup::shortcode_name_hyphenated() . '-vertical-to-columns', Setup::plugin_dir_url_root() . 'css/tk-event-weather-vertical-to-columns.css', array(), tk_event_weather_version() );
+		wp_register_style( Setup::shortcode_name_hyphenated() . '-vertical-to-columns', TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/tk-event-weather-vertical-to-columns.css', array(), tk_event_weather_version() );
 	}
 
 

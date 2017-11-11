@@ -28,14 +28,14 @@ class Options_Manager {
 	 * Generates the prefix for the various database option names.
 	 *
 	 * Lowercase, ending with an underscore.
-	 * Example prefix: tkeventweatherplugin_
-	 * Becomes this database option: tkeventweatherplugin_installed
+	 * Example prefix: tk_event_weather_
+	 * Becomes this database option: tk_event_weather_installed
 	 *
 	 * @return string
 	 */
 	public function get_option_name_prefix() {
-		$prefix = get_class( $this );
-		$prefix = sanitize_key( $prefix );
+		return TK_EVENT_WEATHER_PLUGIN_SLUG . '_';
+	}
 
 		return $prefix . '_';
 	}
@@ -61,7 +61,7 @@ class Options_Manager {
 	 * Just returns the class name. Override this method to return something more readable
 	 */
 	public function get_plugin_display_name() {
-		return get_class( $this );
+		return esc_html__( 'TK Event Weather', 'tk-event-weather' );
 	}
 
 	/**
@@ -228,24 +228,6 @@ class Options_Manager {
 	}
 
 	/**
-	 * see: http://codex.wordpress.org/Creating_Options_Pages
-	 * @return void
-	 */
-	public function create_settings_menu() {
-		$plugin_name = $this->get_plugin_display_name();
-		//create new top-level menu
-		add_menu_page(
-			$plugin_name . ' Plugin Settings',
-			$plugin_name,
-			'administrator',
-			get_class( $this ),
-			array( $this, 'settings_page' )
-		/*,plugins_url('/images/icon.png', __FILE__)*/
-		);
-	}
-
-
-	/**
 	 * Creates HTML for the Administration page to set options for this plugin.
 	 * Override this method to create a customized page.
 	 * @return void
@@ -255,8 +237,9 @@ class Options_Manager {
 			wp_die( __( 'You do not have sufficient permissions to access this page.', 'tk-event-weather' ) );
 		}
 
+		// TODO: Unused variable.
 		// HTML for the page
-		$settingsGroup = get_class( $this ) . '-settings-group';
+		$settings_group = TK_EVENT_WEATHER_PLUGIN_SLUG . '-settings-group';
 
 		?>
 

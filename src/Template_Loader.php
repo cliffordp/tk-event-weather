@@ -31,7 +31,7 @@ class Template_Loader extends \Gamajo_Template_Loader {
 	 * @since 1.0.0
 	 * @type string
 	 */
-	protected $filter_prefix = 'tk_event_weather';
+	protected $filter_prefix = TK_EVENT_WEATHER_PLUGIN_SLUG;
 
 	/**
 	 * Directory name where custom templates for this plugin should be found in the theme.
