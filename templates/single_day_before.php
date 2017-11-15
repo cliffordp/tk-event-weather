@@ -19,12 +19,24 @@ if ( empty( $context ) || ! is_object( $context ) ) {
 
 $output = '';
 
+if ( true === Time::timestamp_is_during_today( $context->start_time_timestamp ) ) {
+	$day_type = 'today';
+} elseif ( \time() < $context->start_time_timestamp ) {
+	$day_type = 'future';
+} elseif ( \time() > $context->start_time_timestamp ) {
+	$day_type = 'past';
+} else {
+	// unexpected but here to protect against undefined variable
+	$day_type = '';
+}
+
 // Total Days in Span won't be set at time of first day's run so don't try to include it
-$class = sprintf( 'tk-event-weather__wrap_single_day %s tk-event-weather__span-%d-to-%d tk-event-weather__day-index-%d %s',
+$class = sprintf( 'tk-event-weather__wrap_single_day %s tk-event-weather__span-%d-to-%d tk-event-weather__day-index-%d tk-event-weather__day-type-%s %s',
 	Shortcode::$span_template_data['template_class_name'],
 	Shortcode::$span_start_time_timestamp,
 	Shortcode::$span_end_time_timestamp,
 	$context->day_number_of_span,
+	sanitize_html_class( $day_type ),
 	sanitize_html_class( $context->class )
 );
 

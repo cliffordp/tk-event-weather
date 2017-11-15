@@ -230,6 +230,7 @@ Many thanks to the following:
 * Enhancement - Added tk_event_weather_gmaps_geocode_request_uri_query_args filter to allow adding things like <a href="https://developers.google.com/maps/documentation/geocoding/intro#RegionCodes">Region Biasing</a>.
 * Enhancement - Each day's Before and After content is generated via the existing template engine, allowing you to override them if desired.
 * Enhancement - Whenever viewing today's weather forecast, the day name will be "Today" (a translatable string) instead of something like "Dec 7". This may be disabled either via template override or via a filter hook... but we think it's nifty!
+* Enhancement - Each day now has a class of "tk-event-weather__day-type-future" (or instead ending with "today" or "past") to make it easy to style past, today, and future days to your liking.
 * Enhancement - Added an option to delete all this plugin's data when this plugin is uninstalled via the wp-admin Plugins settings page.
 * Tweak - Improved the Customizer UI by breaking out all the plugin options from a single section to multiple sections.
 * Tweak - Manually set the WP Customizer's password-type fields for API keys to disable autocomplete and password prompts.
