@@ -4,10 +4,10 @@ namespace TKEventWeather;
 
 /*
 	Plugin Name: TK Event Weather
-	Plugin URI: http://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
+	Plugin URI: https://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
 	Version: 1.5.0
 	Author: TourKick (Clifford Paulick)
-	Author URI: http://tourkick.com/?utm_source=author-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
+	Author URI: https://tourkick.com/?utm_source=author-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
 	Description: Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 	Text Domain: tk-event-weather
 	License: GPL version 3 or any later version
@@ -111,7 +111,7 @@ function tk_event_weather_version() {
 function tk_event_weather_terms_agreement_text() {
 	return sprintf(
 		__( 'By using this plugin, you agree to %s and %s Terms.', 'tk-event-weather' ),
-		'<a target="_blank" href="http://tourkick.com/terms/?utm_source=terms_agreement_text&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather">TourKick\'s</a>',
+		'<a target="_blank" href="https://tourkick.com/terms/?utm_source=terms_agreement_text&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather">TourKick\'s</a>',
 		'<a target="_blank" href="https://freemius.com/terms/">Freemius\'</a>'
 	);
 }
@@ -161,7 +161,7 @@ function tk_event_weather_freemius_custom_connect_message(
 	$freemius_link
 ) {
 	$tk_custom_message = sprintf(
-		fs_text( 'hey-x' ) . '<br><br>' . __( 'The <strong>%2$s</strong> plugin is ready to go! Want to help make %2$s more awesome? Securely share some data to get the best experience and stay informed.', 'tk-event-weather' ),
+		__( 'Hi, %1$s.', 'tk-event-weather' ) . '<br><br>' . __( 'The <strong>%2$s</strong> plugin is ready to go! Want to help make %2$s more awesome? Securely share some data to get the best experience and stay informed.', 'tk-event-weather' ),
 		$user_first_name,
 		$plugin_title,
 		'<strong>' . $user_login . '</strong>',
@@ -174,14 +174,14 @@ function tk_event_weather_freemius_custom_connect_message(
 	return $tk_custom_message;
 }
 
-tk_event_weather_freemius()->add_filter( 'connect_message', 'tk_event_weather_freemius_custom_connect_message', 10, 6 );
+tk_event_weather_freemius()->add_filter( 'connect_message', 'TKEventWeather\tk_event_weather_freemius_custom_connect_message', 10, 6 );
 
 
 function tk_event_weather_freemius_plugin_icon() {
 	return TK_EVENT_WEATHER_PLUGIN_ROOT_DIR . 'images/icon.svg';
 }
 
-tk_event_weather_freemius()->add_filter( 'plugin_icon', 'tk_event_weather_freemius_plugin_icon' );
+tk_event_weather_freemius()->add_filter( 'plugin_icon', 'TKEventWeather\tk_event_weather_freemius_plugin_icon' );
 
 
 function tk_event_weather_min_php_version() {

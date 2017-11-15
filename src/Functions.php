@@ -196,6 +196,38 @@ class Functions {
 	}
 
 	/**
+	 * PHP size notation string to integer value.
+	 *
+	 * This function transforms the php.ini notation for numbers (like '64M')
+	 * to an integer value (like `64`) of the number of bytes.
+	 *
+	 * @link https://github.com/woocommerce/woocommerce/blob/3.2.3/includes/wc-formatting-functions.php#L519-L543
+	 *
+	 * @param  string $size Size value.
+	 *
+	 * @return int
+	 */
+	public static function php_size_string_to_integer( $size ) {
+		$letter = substr( $size, - 1 ); // e.g. 'M'
+		$number = substr( $size, 0, - 1 ); // e.g. '64'
+
+		switch ( strtoupper( $letter ) ) {
+			case 'P':
+				$number *= 1024;
+			case 'T':
+				$number *= 1024;
+			case 'G':
+				$number *= 1024;
+			case 'M':
+				$number *= 1024;
+			case 'K':
+				$number *= 1024;
+		}
+
+		return $number;
+	}
+
+	/**
 	 * Get the credit link(s) to comply with https://developer.darksky.net/
 	 * and/or to spread the news about this plugin existing by linking to
 	 * https://tourkick.com/plugins/tk-event-weather/

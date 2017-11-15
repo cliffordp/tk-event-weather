@@ -520,12 +520,13 @@ class Options_Manager {
 				<td data-export-label="WP Memory Limit"><?php _e( 'WP Memory Limit', 'tk-event-weather' ); ?>:
 				</td>
 				<td><?php
-					$memory = WP_MEMORY_LIMIT;
+					$memory = Functions::php_size_string_to_integer( \WP_MEMORY_LIMIT );
 					if ( function_exists( 'memory_get_usage' ) ) {
 						$system_memory = @ini_get( 'memory_limit' );
+						$system_memory = Functions::php_size_string_to_integer( $system_memory );
 						$memory        = max( $memory, $system_memory );
 					}
-					if ( $memory < 67108864 ) {
+					if ( $memory < 67108864 ) { // '64M' in bytes
 						echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf( __( '%s - We recommend setting memory to at least 64MB. See: %s', 'tk-event-weather' ), size_format( $memory ), '<a href="http://codex.wordpress.org/Editing_wp-config.php#Increasing_memory_allocated_to_PHP" target="_blank">' . __( 'Increasing memory allocated to PHP', 'tk-event-weather' ) . '</a>' ) . '</mark>';
 					} else {
 						echo '<mark class="yes">' . size_format( $memory ) . '</mark>';
@@ -622,7 +623,11 @@ class Options_Manager {
 					<td data-export-label="PHP Post Max Size"><?php _e( 'PHP Post Max Size', 'tk-event-weather' ); ?>
 						:
 					</td>
-					<td><?php echo size_format( ini_get( 'post_max_size' ) ); ?></td>
+					<td><?php
+						$post_max_size = ini_get( 'post_max_size' );
+						$post_max_size = Functions::php_size_string_to_integer( $post_max_size );
+						echo size_format( $post_max_size );
+						?></td>
 				</tr>
 				<tr>
 					<td data-export-label="PHP Time Limit"><?php _e( 'PHP Timeout Limit', 'tk-event-weather' ); ?>
@@ -1096,4 +1101,3 @@ class Options_Manager {
 		return $sitename;
 	}
 }
-
