@@ -5,12 +5,6 @@ namespace TKEventWeather;
 class Setup {
 	// all variables and methods should be 'static'
 
-	public static $shortcode_name = TK_EVENT_WEATHER_PLUGIN_SLUG; // doesn't really allow for array, as possible per http://plugin.michael-simpson.com/?page_id=39, but we only have one shortcode in this entire plugin
-
-	public static function shortcode_name_hyphenated() {
-		return sanitize_html_class( str_replace( '_', '-', self::$shortcode_name ) );
-	}
-
 	public static $transient_name_prepend = 'tkeventw';
 
 	// https://wordpress.org/about/requirements/
@@ -34,16 +28,6 @@ class Setup {
 		return $this_plugin->get_plugin_display_name();
 	}
 
-	/**
-	 *
-	 * Plugin Directories
-	 *
-	 */
-
-	public static function plugin_dir_path_root() {
-		return TK_EVENT_WEATHER_PLUGIN_ROOT_DIR; // from root plugin file
-	}
-
 	public static function plugin_dir_path_images( $append = '' ) {
 		$path = self::plugin_dir_path_root() . 'images/'; // e.g. /Users/cmp/Documents/git/GitHub/tk-event-weather/images/
 
@@ -55,6 +39,17 @@ class Setup {
 		}
 
 		return trailingslashit( $path );
+	}
+
+	/**
+	 *
+	 * Plugin Directories
+	 *
+	 */
+
+	// TODO use constant only
+	public static function plugin_dir_path_root() {
+		return TK_EVENT_WEATHER_PLUGIN_ROOT_DIR; // from root plugin file
 	}
 
 	public static function plugin_dir_path_vendor( $append = '' ) {

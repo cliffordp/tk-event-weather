@@ -4,6 +4,18 @@ namespace TKEventWeather;
 
 class Template {
 	/**
+	 * @param       $slug
+	 * @param array $data
+	 * @param null  $name
+	 * @param bool  $load
+	 */
+	public static function load_template( $slug, $data = array(), $name = null, $load = true ) {
+		$template_loader = self::new_template_loader();
+		$template_loader->set_template_data( $data, 'context' ); // passed-through data becomes accessible as $context->piece_of_data within template
+		$template_loader->get_template_part( $slug, $name, $load );
+	}
+
+	/**
 	 * Views / Templates
 	 *
 	 * @link https://pippinsplugins.com/template-file-loaders-plugins/
@@ -14,15 +26,18 @@ class Template {
 	}
 
 	/**
-	 * @param       $slug
-	 * @param array $data
-	 * @param null  $name
-	 * @param bool  $load
+	 * @param string $template_name
+	 *
+	 * @return string
 	 */
-	public static function load_template( $slug, $data = array(), $name = null, $load = true ) {
-		$template_loader = self::new_template_loader();
-		$template_loader->set_template_data( $data, 'context' ); // passed-through data becomes accessible as $context->piece_of_data within template
-		$template_loader->get_template_part( $slug, $name, $load );
+	public static function template_class_name( $template_name = '' ) {
+		$result = '';
+
+		if ( array_key_exists( $template_name, self::valid_display_templates() ) ) {
+			$result = sanitize_html_class( sprintf( 'template-%s', $template_name ) );
+		}
+
+		return $result;
 	}
 
 	/**
@@ -50,23 +65,9 @@ class Template {
 		return $result;
 	}
 
-	/**
-	 * @param string $template_name
-	 *
-	 * @return string
-	 */
-	public static function template_class_name( $template_name = '' ) {
-		$result = '';
-
-		if ( array_key_exists( $template_name, self::valid_display_templates() ) ) {
-			$result = sanitize_html_class( sprintf( 'template-%s', $template_name ) );
-		}
-
-		return $result;
-	}
-
 	// does NOT close the opening DIV tag
 	// could add optional argument to customize element (div, span, etc)
+
 	public static function template_start_of_each_item( $template_class_name = '', $index = '' ) {
 		$result = '<div class="';
 

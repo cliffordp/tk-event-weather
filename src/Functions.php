@@ -34,11 +34,11 @@ class Functions {
 	 * handle is 'tk-event-weather'
 	 */
 	public static function register_css() {
-		wp_register_style( Setup::shortcode_name_hyphenated(), TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/tk-event-weather.css', array(), tk_event_weather_version() );
+		wp_register_style( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED, TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/tk-event-weather.css', array(), tk_event_weather_version() );
 
-		wp_register_style( Setup::shortcode_name_hyphenated() . '-scroll-horizontal', TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/tk-event-weather-scroll-horizontal.css', array(), tk_event_weather_version() );
+		wp_register_style( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '-scroll-horizontal', TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/tk-event-weather-scroll-horizontal.css', array(), tk_event_weather_version() );
 
-		wp_register_style( Setup::shortcode_name_hyphenated() . '-vertical-to-columns', TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/tk-event-weather-vertical-to-columns.css', array(), tk_event_weather_version() );
+		wp_register_style( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '-vertical-to-columns', TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/tk-event-weather-vertical-to-columns.css', array(), tk_event_weather_version() );
 	}
 
 
@@ -53,7 +53,7 @@ class Functions {
 	// https://github.com/christiannaths/Climacons-Font/blob/master/webfont/demo.html
 	//
 	public static function register_climacons_css() {
-		wp_register_style( 'tkeventw-climacons', Setup::plugin_dir_url_vendor() . 'climacons-webfont/climacons-webfont/climacons-font.css', array(), tk_event_weather_version() );
+		wp_register_style( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '-climacons', Setup::plugin_dir_url_vendor() . 'climacons-webfont/climacons-webfont/climacons-font.css', array(), tk_event_weather_version() );
 	}
 
 
@@ -66,6 +66,19 @@ class Functions {
 	 */
 	public static function tk_clean_var( $var ) {
 		return is_array( $var ) ? array_map( 'tk_clean_var', $var ) : sanitize_text_field( $var );
+	}
+
+	/**
+	 * Get the current URL we are loading.
+	 *
+	 * Excerpted from wp_admin_bar_customize_menu().
+	 *
+	 * @return string
+	 */
+	public static function get_current_url() {
+		$current_url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+		return $current_url;
 	}
 
 	/**
@@ -90,18 +103,62 @@ class Functions {
 	}
 
 	/**
-	 * @param $input
+	 * @param string $input
+	 * @param string $link
+	 * @param string $link_text
 	 *
-	 * @return array|bool
+	 * @return null
 	 */
-	public static function array_prepend_empty( $input ) {
-		if ( ! is_array( $input ) ) {
-			$result = false;
-		} else {
-			$result = array( '' => '' ) + $input;
+	public static function invalid_shortcode_message( $input = '', $link = '', $link_text = '' ) {
+		// Avoid overwriting the current message if one already exists.
+		if ( ! empty( self::$shortcode_error_message ) ) {
+			return;
 		}
 
-		return $result;
+		$capability = apply_filters( 'tk_event_weather_shortcode_msg_cap', 'edit_theme_options' );
+
+		if ( ! in_array( $capability, self::all_valid_wp_capabilities() ) ) {
+			$capability = 'customize';
+		}
+
+		// escape single apostrophes
+		$error_reason = str_replace( "'", "\'", $input );
+
+		if ( ! empty( $error_reason ) ) {
+			$message = sprintf( __( '%s for the `%s` shortcode to work correctly.', 'tk-event-weather' ), $error_reason, TK_EVENT_WEATHER_PLUGIN_SLUG );
+		} else {
+			$message = sprintf( __( 'Invalid or incomplete usage of the `%s` shortcode.', 'tk-event-weather' ), TK_EVENT_WEATHER_PLUGIN_SLUG );
+		}
+
+		$message = sprintf( __( '%s (Error message only displayed to users with the `%s` capability.)', 'tk-event-weather' ), $message, $capability );
+
+		$result = '';
+		if ( current_user_can( $capability ) ) {
+			$result .= sprintf(
+				'<div class="%s">%s</div>',
+				self::shortcode_error_class_name(),
+				esc_html( $message )
+			);
+
+			$link = esc_url( $link );
+
+			if ( ! empty( $link ) ) {
+				$link_text = esc_html__( $link_text, 'tk-event-weather' );
+
+				if ( empty( $link_text ) ) {
+					$link_text = $link;
+				}
+
+				$result .= sprintf(
+					'%1$s<a href="%2$s">%3$s</a>%1$s',
+					PHP_EOL,
+					$link,
+					$link_text
+				);
+			}
+		}
+
+		self::$shortcode_error_message = $result;
 	}
 
 	/**
@@ -131,66 +188,15 @@ class Functions {
 	}
 
 	/**
-	 * @param string $input
-	 * @param string $capability
-	 *
-	 * @return null
+	 * @return string
 	 */
-	public static function invalid_shortcode_message( $input = '', $capability = 'edit_theme_options' ) {
-		// Avoid overwriting the current message if one already exists.
-		if ( ! empty( self::$shortcode_error_message ) ) {
-			return;
-		}
-
-		$capability = apply_filters( 'tk_event_weather_shortcode_msg_cap', $capability );
-
-		if ( ! in_array( $capability, self::all_valid_wp_capabilities() ) ) {
-			$capability = 'edit_theme_options';
-		}
-
-		// escape single apostrophes
-		$error_reason = str_replace( "'", "\'", $input );
-
-		if ( ! empty( $error_reason ) ) {
-			$message = sprintf( __( '%s for the `%s` shortcode to work correctly.', 'tk-event-weather' ), $error_reason, Setup::$shortcode_name );
-		} else {
-			$message = sprintf( __( 'Invalid or incomplete usage of the `%s` shortcode.', 'tk-event-weather' ), Setup::$shortcode_name );
-		}
-
-		$message = sprintf( __( '%s (Error message only displayed to users with the `%s` capability.)', 'tk-event-weather' ), $message, $capability );
-
-		$result = '';
-		if ( current_user_can( $capability ) ) {
-			$result .= sprintf(
-				'<div class="%s">%s</div>',
-				self::shortcode_error_class_name(),
-				esc_html( $message )
-			);
-		}
-
-		self::$shortcode_error_message = $result;
-	}
-
-	/**
-	 * round value to zero or custom decimals (e.g. used for temperatures)
-	 * does not "pad with zeros" if rounded to 5 decimals and $input is only 2 decimals, will output as 2 decimals
-	 *
-	 * @param     $input
-	 * @param int $decimals
-	 *
-	 * @return float
-	 */
-	public static function rounded_float_value( $input, $decimals = 0 ) {
-		$input = self::remove_all_whitespace( strtolower( $input ) );
-
-		$input = floatval( $input );
-
-		$decimals = intval( $decimals );
-		if ( 0 > $decimals ) {
-			$decimals = 0;
-		}
-
-		$result = round( $input, $decimals );
+	public static function shortcode_error_class_name() {
+		$result = sprintf(
+			'%s %s',
+			sanitize_html_class( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '__wrapper' ), // so the customizer auto-links to it
+			sanitize_html_class( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '__error' // for the custom CSS targeting
+			)
+		);
 
 		return $result;
 	}
@@ -293,20 +299,10 @@ class Functions {
 		}
 
 		if ( ! empty( $output ) ) {
-			$output = sprintf( '<div class="tk-event-weather__credit-links">%s</div>', $output );
+			$output = sprintf( '<div class="%s__credit-links">%s</div>', TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED, $output );
 		}
 
 		return $output;
-	}
-
-
-	/**
-	 * @param $input
-	 *
-	 * @return mixed
-	 */
-	public static function remove_all_whitespace( $input ) {
-		return preg_replace( '/\s+/', '', $input );
 	}
 
 	/**
@@ -338,6 +334,15 @@ class Functions {
 		$result = preg_replace( '/[^A-Za-z0-9_\-]/', '', $result );
 
 		return $result;
+	}
+
+	/**
+	 * @param $input
+	 *
+	 * @return mixed
+	 */
+	public static function remove_all_whitespace( $input ) {
+		return preg_replace( '/\s+/', '', $input );
 	}
 
 	/**
@@ -398,31 +403,6 @@ class Functions {
 		return $result;
 	}
 
-	// in case wanting to add sunrise/sunset to the hourly weather data and then re-sort by 'time' key -- but not used so commented out
-	// adapted from http://www.firsttube.com/read/sorting-a-multi-dimensional-array-with-php/
-	/*
-		public static function sort_multidim_array_by_sub_key( $multidim_array, $sub_key ) {
-			// first check if we have a multidimensional array
-			if ( count( $multidim_array ) == count( $multidim_array, COUNT_RECURSIVE ) ) {
-				return false;
-			} else {
-				$a = $multidim_array;
-			}
-	
-			foreach( $a as $k => $v ) {
-				$b[$k] = strtolower( $v[$subkey] );
-			}
-	
-			asort( $b );
-	
-			foreach( $b as $key => $val ) {
-				$c[] = $a[$key];
-			}
-			return $c;
-		}
-	*/
-
-
 	/**
 	 * Verify string is valid latitude,longitude
 	 * Dark Sky does not allow certain lat,long -- such as 0,0
@@ -481,6 +461,121 @@ class Functions {
 		}
 	}
 
+	// in case wanting to add sunrise/sunset to the hourly weather data and then re-sort by 'time' key -- but not used so commented out
+	// adapted from http://www.firsttube.com/read/sorting-a-multi-dimensional-array-with-php/
+	/*
+		public static function sort_multidim_array_by_sub_key( $multidim_array, $sub_key ) {
+			// first check if we have a multidimensional array
+			if ( count( $multidim_array ) == count( $multidim_array, COUNT_RECURSIVE ) ) {
+				return false;
+			} else {
+				$a = $multidim_array;
+			}
+	
+			foreach( $a as $k => $v ) {
+				$b[$k] = strtolower( $v[$subkey] );
+			}
+	
+			asort( $b );
+	
+			foreach( $b as $key => $val ) {
+				$c[] = $a[$key];
+			}
+			return $c;
+		}
+	*/
+
+	/**
+	 * @param        $input
+	 * @param string $icon_type
+	 *
+	 * @return mixed|string
+	 */
+	public static function icon_html( $input, $icon_type = 'climacons_font' ) {
+		$input = self::remove_all_whitespace( strtolower( $input ) );
+
+		if ( ! in_array( $input, self::valid_api_icon() ) ) {
+			return '';
+		}
+
+		if ( ! in_array( $icon_type, self::valid_icon_type() ) ) {
+			$icon_type = 'climacons_font';
+		}
+
+		$result = '';
+
+		$climacons_font = array(
+			'clear-day'           => 'sun',
+			'clear-night'         => 'moon',
+			'rain'                => 'rain',
+			'snow'                => 'snow',
+			'sleet'               => 'sleet',
+			'wind'                => 'wind',
+			'fog'                 => 'fog',
+			'cloudy'              => 'cloud',
+			'partly-cloudy-day'   => 'cloud sun',
+			'partly-cloudy-night' => 'cloud moon',
+			'sunrise'             => 'sunrise',
+			'sunset'              => 'sunset',
+			'compass-north'       => 'compass north',
+		);
+
+		// If you use SVGs, you'll need to add your own styling to make them appear more inline.
+		// https://github.com/christiannaths/Climacons-Font/tree/master/SVG
+		$climacons_svg = array(
+			'clear-day'           => self::climacons_svg_sun(),
+			'clear-night'         => self::climacons_svg_moon(),
+			'rain'                => self::climacons_svg_cloud_rain(),
+			'snow'                => self::climacons_svg_cloud_snow(),
+			'sleet'               => self::climacons_svg_cloud_hail(),
+			'wind'                => self::climacons_svg_wind(),
+			'fog'                 => self::climacons_svg_cloud_fog(),
+			'cloudy'              => self::climacons_svg_cloud(),
+			'partly-cloudy-day'   => self::climacons_svg_cloud_sun(),
+			'partly-cloudy-night' => self::climacons_svg_cloud_moon(),
+			'sunrise'             => self::climacons_svg_sunrise(),
+			'sunset'              => self::climacons_svg_sunset(),
+			'compass-north'       => self::climacons_svg_compass_north(),
+		);
+
+		// Font Awesome is really not usable (not enough weather-related icons). Plus, you would need to add the icon font yourself (e.g. via https://wordpress.org/plugins/better-font-awesome/ )
+		/*
+				$fa_icons = array(
+					'clear-day'					=> 'fa-sun-o',
+					'clear-night'				=> 'fa-moon-o',
+					'rain'								=> 'fa-umbrella',
+					'snow'								=> 'fa-tint',
+					'sleet'							=> 'fa-tint',
+					'wind'								=> 'fa-send',
+					'fog'								=> 'fa-shield',
+					'cloudy'							=> 'fa-cloud',
+					'partly-cloudy-day'	=> 'fa-cloud',
+					'partly-cloudy-night' => 'fa-star-half',
+					'sunrise'						=> 'fa-arrow-up',
+					'sunset'							=> 'fa-arrow-down',
+					'compass-north'			=> 'fa-arrow-circle-o-up',
+				);
+		*/
+
+		if ( 'climacons_font' == $icon_type ) {
+			$icon   = $climacons_font[ $input ];
+			$result = sprintf( '<i class="climacon %s"></i>', $icon );
+		} elseif ( 'climacons_svg' == $icon_type ) {
+			$icon   = $climacons_svg[ $input ];
+			$result = $icon;
+		} /*
+		elseif ( 'font_awesome' == $icon_type ) {
+			$icon = $fa_icons[$input];
+			$result = sprintf( '<i class="fa %s"></i>', $icon );
+		}
+		*/
+		else {
+			// nothing
+		}
+
+		return $result;
+	}
+
 	/**
 	 * @param string $prepend_empty
 	 *
@@ -511,6 +606,26 @@ class Functions {
 	}
 
 	/**
+	 * @param $input
+	 *
+	 * @return array|bool
+	 */
+	public static function array_prepend_empty( $input ) {
+		if ( ! is_array( $input ) ) {
+			$result = false;
+		} else {
+			$result = array( '' => '' ) + $input;
+		}
+
+		return $result;
+	}
+
+	// 
+	// Climacons SVGs
+	// https://github.com/christiannaths/Climacons-Font/tree/master/SVG
+	// 
+
+	/**
 	 * @param string $prepend_empty
 	 *
 	 * @return array|bool
@@ -530,10 +645,6 @@ class Functions {
 		return $result;
 	}
 
-	// 
-	// Climacons SVGs
-	// https://github.com/christiannaths/Climacons-Font/tree/master/SVG
-	// 
 	public static function climacons_svg_sun() {
 		return '<?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)	-->
@@ -587,6 +698,8 @@ class Functions {
 </svg>';
 	}
 
+	// used for Sleet
+
 	public static function climacons_svg_cloud_snow() {
 		return '<?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)	-->
@@ -607,7 +720,6 @@ class Functions {
 </svg>';
 	}
 
-	// used for Sleet
 	public static function climacons_svg_cloud_hail() {
 		return '<?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)	-->
@@ -788,97 +900,6 @@ class Functions {
 	 * @param        $input
 	 * @param string $icon_type
 	 *
-	 * @return mixed|string
-	 */
-	public static function icon_html( $input, $icon_type = 'climacons_font' ) {
-		$input = self::remove_all_whitespace( strtolower( $input ) );
-
-		if ( ! in_array( $input, self::valid_api_icon() ) ) {
-			return '';
-		}
-
-		if ( ! in_array( $icon_type, self::valid_icon_type() ) ) {
-			$icon_type = 'climacons_font';
-		}
-
-		$result = '';
-
-		$climacons_font = array(
-			'clear-day'           => 'sun',
-			'clear-night'         => 'moon',
-			'rain'                => 'rain',
-			'snow'                => 'snow',
-			'sleet'               => 'sleet',
-			'wind'                => 'wind',
-			'fog'                 => 'fog',
-			'cloudy'              => 'cloud',
-			'partly-cloudy-day'   => 'cloud sun',
-			'partly-cloudy-night' => 'cloud moon',
-			'sunrise'             => 'sunrise',
-			'sunset'              => 'sunset',
-			'compass-north'       => 'compass north',
-		);
-
-		// If you use SVGs, you'll need to add your own styling to make them appear more inline.
-		// https://github.com/christiannaths/Climacons-Font/tree/master/SVG
-		$climacons_svg = array(
-			'clear-day'           => self::climacons_svg_sun(),
-			'clear-night'         => self::climacons_svg_moon(),
-			'rain'                => self::climacons_svg_cloud_rain(),
-			'snow'                => self::climacons_svg_cloud_snow(),
-			'sleet'               => self::climacons_svg_cloud_hail(),
-			'wind'                => self::climacons_svg_wind(),
-			'fog'                 => self::climacons_svg_cloud_fog(),
-			'cloudy'              => self::climacons_svg_cloud(),
-			'partly-cloudy-day'   => self::climacons_svg_cloud_sun(),
-			'partly-cloudy-night' => self::climacons_svg_cloud_moon(),
-			'sunrise'             => self::climacons_svg_sunrise(),
-			'sunset'              => self::climacons_svg_sunset(),
-			'compass-north'       => self::climacons_svg_compass_north(),
-		);
-
-		// Font Awesome is really not usable (not enough weather-related icons). Plus, you would need to add the icon font yourself (e.g. via https://wordpress.org/plugins/better-font-awesome/ )
-		/*
-				$fa_icons = array(
-					'clear-day'					=> 'fa-sun-o',
-					'clear-night'				=> 'fa-moon-o',
-					'rain'								=> 'fa-umbrella',
-					'snow'								=> 'fa-tint',
-					'sleet'							=> 'fa-tint',
-					'wind'								=> 'fa-send',
-					'fog'								=> 'fa-shield',
-					'cloudy'							=> 'fa-cloud',
-					'partly-cloudy-day'	=> 'fa-cloud',
-					'partly-cloudy-night' => 'fa-star-half',
-					'sunrise'						=> 'fa-arrow-up',
-					'sunset'							=> 'fa-arrow-down',
-					'compass-north'			=> 'fa-arrow-circle-o-up',
-				);
-		*/
-
-		if ( 'climacons_font' == $icon_type ) {
-			$icon   = $climacons_font[ $input ];
-			$result = sprintf( '<i class="climacon %s"></i>', $icon );
-		} elseif ( 'climacons_svg' == $icon_type ) {
-			$icon   = $climacons_svg[ $input ];
-			$result = $icon;
-		} /*
-		elseif ( 'font_awesome' == $icon_type ) {
-			$icon = $fa_icons[$input];
-			$result = sprintf( '<i class="fa %s"></i>', $icon );
-		}
-		*/
-		else {
-			// nothing
-		}
-
-		return $result;
-	}
-
-	/**
-	 * @param        $input
-	 * @param string $icon_type
-	 *
 	 * @return bool|string
 	 */
 	public static function wind_bearing_to_icon( $input, $icon_type = 'climacons_font' ) {
@@ -892,7 +913,7 @@ class Functions {
 
 
 		if ( 'climacons_font' == $icon_type ) {
-			$result = sprintf( '<i style="-ms-transform: rotate(%1$ddeg); -webkit-transform: rotate(%1$ddeg); transform: rotate(%1$ddeg);" class="tk-event-weather__wind-direction-icon climacon compass north"></i>', $input );
+			$result = sprintf( '<i style="-ms-transform: rotate(%1$ddeg); -webkit-transform: rotate(%1$ddeg); transform: rotate(%1$ddeg);" class="%2$s__wind-direction-icon climacon compass north"></i>', $input, TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED );
 		} elseif ( 'climacons_svg' == $icon_type ) {
 			// $result = $climacons_svg;
 		} else {
@@ -944,7 +965,40 @@ class Functions {
 		return $result;
 	}
 
+	/**
+	 * round value to zero or custom decimals (e.g. used for temperatures)
+	 * does not "pad with zeros" if rounded to 5 decimals and $input is only 2 decimals, will output as 2 decimals
+	 *
+	 * @param     $input
+	 * @param int $decimals
+	 *
+	 * @return float
+	 */
+	public static function rounded_float_value( $input, $decimals = 0 ) {
+		$input = self::remove_all_whitespace( strtolower( $input ) );
 
+		$input = floatval( $input );
+
+		$decimals = intval( $decimals );
+		if ( 0 > $decimals ) {
+			$decimals = 0;
+		}
+
+		$result = round( $input, $decimals );
+
+		return $result;
+	}
+
+
+	/**
+	 *
+	 * https://en.wikipedia.org/wiki/Cardinal_direction
+	 * https://en.wikipedia.org/wiki/Points_of_the_compass
+	 * http://stackoverflow.com/questions/7490660/converting-wind-direction-in-angles-to-text-words
+	 * http://climate.umn.edu/snow_fence/components/winddirectionanddegreeswithouttable3.htm
+	 *
+	 **/
+	// required to be an integer
 	/**
 	 *
 	 * http://www.srh.noaa.gov/epz/?n=wxcalc_windconvert
@@ -971,15 +1025,6 @@ class Functions {
 	}
 
 
-	/**
-	 *
-	 * https://en.wikipedia.org/wiki/Cardinal_direction
-	 * https://en.wikipedia.org/wiki/Points_of_the_compass
-	 * http://stackoverflow.com/questions/7490660/converting-wind-direction-in-angles-to-text-words
-	 * http://climate.umn.edu/snow_fence/components/winddirectionanddegreeswithouttable3.htm
-	 *
-	 **/
-	// required to be an integer
 	public static function wind_bearing_to_direction( $input, $direction_initials = true, $precision = 8 ) {
 		if ( ! is_integer( $input ) ) { // not empty() because of allowable Zero
 			return false;
@@ -1102,16 +1147,6 @@ class Functions {
 				// should not happen
 			}
 		}
-
-		return $result;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public static function shortcode_error_class_name() {
-		$result = sanitize_html_class( strtolower( Setup::$shortcode_name ) ) . '__error';
 
 		return $result;
 	}

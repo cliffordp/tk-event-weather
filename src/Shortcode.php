@@ -6,39 +6,31 @@ namespace TKEventWeather;
 
 class Shortcode extends Shortcode_Script_Loader {
 
-	private static $added_already = false;
-
 	public static $dark_sky_api_key = '';
 	public static $dark_sky_api_units = '';
 	public static $dark_sky_api_language = '';
 	public static $dark_sky_api_exclude = '';
 	public static $dark_sky_api_uri_query_args = array();
 	public static $dark_sky_api_transient_used = 'FALSE';
-
 	public static $google_maps_api_key = '';
 	public static $google_maps_api_transient_used = 'FALSE';
-
 	public static $debug_enabled = false;
 	public static $transients_enabled = true;
 	public static $transients_expiration_hours = 0;
+public static $timezone_source = '';
 
 	// ONLY set via Time::set_timezone_and_source_from_shortcode_args()
-	public static $timezone_source = ''; // can be blank if timezone is set manually via shortcode argument
-	public static $timezone = ''; // cannot be blank, possibly set via Time::set_timezone_from_api()
-
-	public static $time_format_day = '';
+	public static $timezone = ''; // can be blank if timezone is set manually via shortcode argument
+		public static $time_format_day = ''; // cannot be blank, possibly set via Time::set_timezone_from_api()
 	public static $time_format_hours = '';
 	public static $time_format_minutes = '';
+	public static $span_start_time_timestamp = false;
 
 	// Variables named with "span" are for the entire timespan, such as multiday.
-	public static $span_start_time_timestamp = false;
-	public static $span_first_hour_timestamp = false; // Start time's timestamp with minutes truncated. Should be equal to or less than $span_start_time_timestamp.
-	public static $span_end_time_timestamp = false;
-
+public static $span_first_hour_timestamp = false;
+		public static $span_end_time_timestamp = false; // Start time's timestamp with minutes truncated. Should be equal to or less than $span_start_time_timestamp.
 	public static $span_total_days_in_span = false;
-
 	public static $span_template_data = array();
-
 	/**
 	 * The street address that you want to geocode, in the format used by the
 	 * national postal service of the country concerned. Additional address
@@ -50,24 +42,20 @@ class Shortcode extends Shortcode_Script_Loader {
 	 * @var string
 	 */
 	public static $location = '';
-
 	/**
 	 * The comma-separated latitude,longitude coordinates to send to Dark Sky API.
 	 *
 	 * @var string
 	 */
 	public static $latitude_longitude = '';
-
-	public static function shortcode_name() {
-		return Setup::$shortcode_name;
-	}
+	private static $added_already = false;
 
 	public function handle_shortcode( $atts ) {
 
 		$plugin_options = Functions::plugin_options();
 
 		if ( empty( $plugin_options ) ) {
-			Functions::invalid_shortcode_message( 'Please complete the initial setup' );
+			Functions::invalid_shortcode_message( 'Please complete the initial setup', Plugin::customizer_link_to_edit_current_url( array() ), 'Get Started!' );
 
 			return Functions::$shortcode_error_message;
 		} else {
@@ -634,7 +622,7 @@ class Shortcode extends Shortcode_Script_Loader {
 
 		// enqueue CSS file if using Climacons Icon Font
 		if ( 'climacons_font' == $icons ) {
-			wp_enqueue_style( 'tkeventw-climacons' );
+			wp_enqueue_style( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '-climacons' );
 		}
 
 		self::$span_template_data['icons'] = $icons;
@@ -820,16 +808,16 @@ class Shortcode extends Shortcode_Script_Loader {
 			self::$added_already = true;
 
 			// need the basic styling even if plugin options are not yet set, e.g. nice-looking error messages
-			wp_enqueue_style( sanitize_html_class( Setup::shortcode_name_hyphenated() ) );
+			wp_enqueue_style( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED );
 
 			// only include these styles if plugin options are set
 			if ( ! empty( $plugin_options ) ) {
 				if ( empty( $plugin_options['scroll_horizontal_off'] ) ) {
-					wp_enqueue_style( sanitize_html_class( Setup::shortcode_name_hyphenated() . '-scroll-horizontal' ) );
+					wp_enqueue_style( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '-scroll-horizontal' );
 				}
 
 				if ( empty( $plugin_options['vertical_to_columns_off'] ) ) {
-					wp_enqueue_style( sanitize_html_class( Setup::shortcode_name_hyphenated() . '-vertical-to-columns' ) );
+					wp_enqueue_style( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '-vertical-to-columns' );
 				}
 			}
 		}

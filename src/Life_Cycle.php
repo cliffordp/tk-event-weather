@@ -38,11 +38,46 @@ class Life_Cycle extends Install_Indicator {
 		$this->mark_as_installed();
 	}
 
+	/**
+	 * See: http://plugin.michael-simpson.com/?page_id=101
+	 * Called by install() to create any database tables if needed.
+	 * Best Practice:
+	 * (1) Prefix all table names with $wpdb->prefix
+	 * (2) make table names lower case only
+	 * @return void
+	 */
+	protected function install_database_tables() {
+	}
+
+	/**
+	 * Override to add any additional actions to be done at install time
+	 * See: http://plugin.michael-simpson.com/?page_id=33
+	 * @return void
+	 */
+	protected function other_install() {
+	}
+
 	public function uninstall() {
 		$this->other_uninstall();
 		$this->uninstall_database_tables();
 		$this->delete_saved_options();
 		$this->mark_as_uninstalled();
+	}
+
+	/**
+	 * Override to add any additional actions to be done at uninstall time
+	 * See: http://plugin.michael-simpson.com/?page_id=33
+	 * @return void
+	 */
+	protected function other_uninstall() {
+	}
+
+	/**
+	 * See: http://plugin.michael-simpson.com/?page_id=101
+	 * Drop plugin-created tables on uninstall.
+	 * @return void
+	 */
+	protected function uninstall_database_tables() {
 	}
 
 	/**
@@ -70,41 +105,6 @@ class Life_Cycle extends Install_Indicator {
 	}
 
 	/**
-	 * See: http://plugin.michael-simpson.com/?page_id=101
-	 * Called by install() to create any database tables if needed.
-	 * Best Practice:
-	 * (1) Prefix all table names with $wpdb->prefix
-	 * (2) make table names lower case only
-	 * @return void
-	 */
-	protected function install_database_tables() {
-	}
-
-	/**
-	 * See: http://plugin.michael-simpson.com/?page_id=101
-	 * Drop plugin-created tables on uninstall.
-	 * @return void
-	 */
-	protected function uninstall_database_tables() {
-	}
-
-	/**
-	 * Override to add any additional actions to be done at install time
-	 * See: http://plugin.michael-simpson.com/?page_id=33
-	 * @return void
-	 */
-	protected function other_install() {
-	}
-
-	/**
-	 * Override to add any additional actions to be done at uninstall time
-	 * See: http://plugin.michael-simpson.com/?page_id=33
-	 * @return void
-	 */
-	protected function other_uninstall() {
-	}
-
-	/**
 	 * Puts the configuration page in the Plugins menu by default.
 	 * Override to put it elsewhere or create a set of submenus
 	 * Override with an empty implementation if you don't want a configuration page
@@ -114,6 +114,17 @@ class Life_Cycle extends Install_Indicator {
 		$this->add_settings_submenu_page_to_settings_menu();
 	}
 
+	protected function add_settings_submenu_page_to_settings_menu() {
+		$this->require_extra_plugin_files();
+		$display_name = $this->get_plugin_display_name();
+		add_options_page(
+			$display_name,
+			$display_name,
+			'manage_options',
+			$this->get_settings_slug(),
+			array( $this, 'settings_page' )
+		);
+	}
 
 	protected function require_extra_plugin_files() {
 		require_once( ABSPATH . 'wp-includes/pluggable.php' );
@@ -129,33 +140,6 @@ class Life_Cycle extends Install_Indicator {
 	protected function get_settings_slug() {
 		return TK_EVENT_WEATHER_PLUGIN_SLUG . '_settings';
 	}
-
-	protected function add_settings_submenu_page_to_settings_menu() {
-		$this->require_extra_plugin_files();
-		$display_name = $this->get_plugin_display_name();
-		add_options_page(
-			$display_name,
-			$display_name,
-			'manage_options',
-			$this->get_settings_slug(),
-			array( $this, 'settings_page' )
-		);
-	}
-
-	/**
-	 * @param    $name string name of a database table
-	 *
-	 * @return string input prefixed with the WordPress DB table prefix
-	 * plus the prefix for this plugin (lower-cased) to avoid table name collisions.
-	 * The plugin prefix is lower-cases as a best practice that all DB table names are lower case to
-	 * avoid issues on some platforms
-	 */
-	protected function prefix_table_name( $name ) {
-		global $wpdb;
-
-		return $wpdb->prefix . strtolower( $this->prefix( $name ) );
-	}
-
 
 	/**
 	 * Convenience function for creating AJAX URLs.
@@ -175,6 +159,20 @@ class Life_Cycle extends Install_Indicator {
 	 */
 	public function get_ajax_url( $action_name ) {
 		return admin_url( 'admin-ajax.php' ) . '?action=' . $action_name;
+	}
+
+	/**
+	 * @param    $name string name of a database table
+	 *
+	 * @return string input prefixed with the WordPress DB table prefix
+	 * plus the prefix for this plugin (lower-cased) to avoid table name collisions.
+	 * The plugin prefix is lower-cases as a best practice that all DB table names are lower case to
+	 * avoid issues on some platforms
+	 */
+	protected function prefix_table_name( $name ) {
+		global $wpdb;
+
+		return $wpdb->prefix . strtolower( $this->prefix( $name ) );
 	}
 
 }

@@ -60,6 +60,7 @@ class Single_Day {
 		$template_data['start_time_timestamp'] = self::$start_time_timestamp;
 		$template_data['end_time_timestamp']   = self::$end_time_timestamp;
 		$template_data['day_number_of_span']   = self::$day_number_of_span;
+		$template_data['api_data']             = self::$api_data;
 
 
 		// https://developer.wordpress.org/reference/functions/wp_list_pluck/

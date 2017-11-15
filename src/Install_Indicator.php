@@ -35,65 +35,6 @@ class Install_Indicator extends Options_Manager {
 	}
 
 	/**
-	 * Note in DB that the plugin is installed
-	 * @return null
-	 */
-	protected function mark_as_installed() {
-		return $this->update_option( self::OPTION_INSTALLED, true );
-	}
-
-	/**
-	 * Note in DB that the plugin is uninstalled
-	 * @return bool returned from delete_option.
-	 * true implies the plugin was installed at the time of this call,
-	 * false implies it was not.
-	 */
-	protected function mark_as_uninstalled() {
-		$installed = $this->delete_option( self::OPTION_INSTALLED );
-		$version = $this->delete_option( self::OPTION_VERSION );
-
-		if (
-			$installed
-			|| $version
-		) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * Set a version string in the options. This is useful if you install upgrade and
-	 * need to check if an older version was installed to see if you need to do certain
-	 * upgrade housekeeping (e.g. changes to DB schema).
-	 * @return null
-	 */
-	protected function get_version_saved() {
-		return $this->get_option( self::OPTION_VERSION );
-	}
-
-	/**
-	 * Set a version string in the options.
-	 * need to check if
-	 *
-	 * @param    $version string best practice: use a dot-delimited string like '1.2.3' so version strings can be easily
-	 *                    compared using version_compare (http://php.net/manual/en/function.version-compare.php)
-	 *
-	 * @return null
-	 */
-	protected function set_version_saved( $version ) {
-		return $this->update_option( self::OPTION_VERSION, $version );
-	}
-
-	/**
-	 * @return string name of the main plugin file that has the header section with
-	 * "Plugin Name", "Version", "Description", "Text Domain", etc.
-	 */
-	protected function get_main_plugin_file_name() {
-		return basename( dirname( __FILE__ ) ) . 'php';
-	}
-
-	/**
 	 * Get a value for input key in the header section of main plugin file.
 	 * E.g. "Plugin Name", "Version", "Description", "Text Domain", etc.
 	 *
@@ -126,16 +67,12 @@ class Install_Indicator extends Options_Manager {
 	}
 
 	/**
-	 * Version of this code.
-	 * Best practice: define version strings to be easily compared using version_compare()
-	 * (http://php.net/manual/en/function.version-compare.php)
-	 * NOTE: You should manually make this match the SVN tag for your main plugin file 'Version' release and 'Stable tag' in readme.txt
-	 * @return string
+	 * @return string name of the main plugin file that has the header section with
+	 * "Plugin Name", "Version", "Description", "Text Domain", etc.
 	 */
-	public function get_version() {
-		return tk_event_weather_version();
+	protected function get_main_plugin_file_name() {
+		return basename( dirname( __FILE__ ) ) . 'php';
 	}
-
 
 	/**
 	 * Useful when checking for upgrades, can tell if the currently installed version is earlier than the
@@ -158,6 +95,37 @@ class Install_Indicator extends Options_Manager {
 	 */
 	public function is_saved_version_less_than( $aVersion ) {
 		return $this->is_version_less_than( $this->get_version_saved(), $aVersion );
+	}
+
+	/**
+	 * @param    $version1 string a version string such as '1', '1.1', '1.1.1', '2.0', etc.
+	 * @param    $version2 string a version string such as '1', '1.1', '1.1.1', '2.0', etc.
+	 *
+	 * @return bool true if version_compare of $versions1 and $version2 shows $version1 as earlier
+	 */
+	public function is_version_less_than( $version1, $version2 ) {
+		return ( version_compare( $version1, $version2 ) < 0 );
+	}
+
+	/**
+	 * Set a version string in the options. This is useful if you install upgrade and
+	 * need to check if an older version was installed to see if you need to do certain
+	 * upgrade housekeeping (e.g. changes to DB schema).
+	 * @return null
+	 */
+	protected function get_version_saved() {
+		return $this->get_option( self::OPTION_VERSION );
+	}
+
+	/**
+	 * Version of this code.
+	 * Best practice: define version strings to be easily compared using version_compare()
+	 * (http://php.net/manual/en/function.version-compare.php)
+	 * NOTE: You should manually make this match the SVN tag for your main plugin file 'Version' release and 'Stable tag' in readme.txt
+	 * @return string
+	 */
+	public function get_version() {
+		return tk_event_weather_version();
 	}
 
 	/**
@@ -186,13 +154,31 @@ class Install_Indicator extends Options_Manager {
 	}
 
 	/**
-	 * @param    $version1 string a version string such as '1', '1.1', '1.1.1', '2.0', etc.
-	 * @param    $version2 string a version string such as '1', '1.1', '1.1.1', '2.0', etc.
-	 *
-	 * @return bool true if version_compare of $versions1 and $version2 shows $version1 as earlier
+	 * Note in DB that the plugin is installed
+	 * @return null
 	 */
-	public function is_version_less_than( $version1, $version2 ) {
-		return ( version_compare( $version1, $version2 ) < 0 );
+	protected function mark_as_installed() {
+		return $this->update_option( self::OPTION_INSTALLED, true );
+	}
+
+	/**
+	 * Note in DB that the plugin is uninstalled
+	 * @return bool returned from delete_option.
+	 * true implies the plugin was installed at the time of this call,
+	 * false implies it was not.
+	 */
+	protected function mark_as_uninstalled() {
+		$installed = $this->delete_option( self::OPTION_INSTALLED );
+		$version   = $this->delete_option( self::OPTION_VERSION );
+
+		if (
+			$installed
+			|| $version
+		) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -203,6 +189,19 @@ class Install_Indicator extends Options_Manager {
 	 */
 	protected function save_installed_version() {
 		$this->set_version_saved( $this->get_version() );
+	}
+
+	/**
+	 * Set a version string in the options.
+	 * need to check if
+	 *
+	 * @param    $version string best practice: use a dot-delimited string like '1.2.3' so version strings can be easily
+	 *                    compared using version_compare (http://php.net/manual/en/function.version-compare.php)
+	 *
+	 * @return null
+	 */
+	protected function set_version_saved( $version ) {
+		return $this->update_option( self::OPTION_VERSION, $version );
 	}
 
 }

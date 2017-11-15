@@ -6,203 +6,6 @@ class Time {
 	// all variables and methods should be 'static'
 
 	/**
-	 * Numeric array of WordPress' own UTC offset options.
-	 *
-	 * Examples: 'UTC+0', 'UTC-5', 'UTC+8.75'
-	 *
-	 * @see wp_timezone_choice()
-	 *
-	 * @return array
-	 */
-	public static function wp_manual_utc_offsets_array() {
-		$result = array();
-
-		// Manual UTC offsets, code borrowed from https://developer.wordpress.org/reference/functions/wp_timezone_choice/
-		$offset_range = array(
-			- 12,
-			- 11.5,
-			- 11,
-			- 10.5,
-			- 10,
-			- 9.5,
-			- 9,
-			- 8.5,
-			- 8,
-			- 7.5,
-			- 7,
-			- 6.5,
-			- 6,
-			- 5.5,
-			- 5,
-			- 4.5,
-			- 4,
-			- 3.5,
-			- 3,
-			- 2.5,
-			- 2,
-			- 1.5,
-			- 1,
-			- 0.5,
-			0,
-			0.5,
-			1,
-			1.5,
-			2,
-			2.5,
-			3,
-			3.5,
-			4,
-			4.5,
-			5,
-			5.5,
-			5.75,
-			6,
-			6.5,
-			7,
-			7.5,
-			8,
-			8.5,
-			8.75,
-			9,
-			9.5,
-			10,
-			10.5,
-			11,
-			11.5,
-			12,
-			12.75,
-			13,
-			13.75,
-			14
-		);
-
-		foreach ( $offset_range as $offset ) {
-			if ( 0 <= $offset ) {
-				$offset_value = '+' . $offset;
-			} else {
-				$offset_value = (string) $offset;
-			}
-
-			$offset_value = 'UTC' . $offset_value;
-
-			$result[] = esc_attr( $offset_value );
-		}
-
-		return $result;
-	}
-
-	/**
-	 * Timezone Sources options
-	 *
-	 * @param string $prepend_empty
-	 *
-	 * @return array
-	 */
-	public static function valid_timezone_sources( $prepend_empty = 'false' ) {
-
-		$result = array(
-			'api'       => __( 'From API (i.e. Location-specific)', 'tk-event-weather' ),
-			'wordpress' => __( 'From WordPress General Settings', 'tk-event-weather' ),
-		);
-
-		// do not give WordPress option if option is not set
-		$wp_timezone = get_option( 'timezone_string' ); // could return NULL
-		if ( empty( $wp_timezone ) ) {
-			unset( $result['wordpress'] );
-		}
-
-		if ( 'true' == $prepend_empty ) {
-			$result = Functions::array_prepend_empty( $result );
-		}
-
-		return $result;
-	}
-
-	/**
-	 * Taking the shortcode's input and the API's response (if available),
-	 * determine the timezone source and the timezone.
-	 *
-	 * Run this before ever trying to use the timezone, such as template output.
-	 *
-	 * @param string $source   The raw 'timezone_source' shortcode value.
-	 * @param string $timezone The raw 'timezone' shortcode value.
-	 */
-	public static function set_timezone_and_source_from_shortcode_args( $timezone = '', $source = '' ) {
-		// bail if we previously ran this successfully
-		if ( ! empty( Shortcode::$timezone ) ) {
-			return;
-		}
-
-		// STEP 1: Use hard-coded timezone if it exists and is valid.
-
-		// if timezone argument is set, use that, else set via timezone_source argument
-		$timezone = Functions::remove_all_whitespace( $timezone ); // do not strtolower()
-
-		if ( ! empty( $timezone ) ) {
-			if ( in_array( $timezone, timezone_identifiers_list() ) ) {
-				Shortcode::$timezone = $timezone;
-
-				return;
-			} else {
-				// DO NOT allow manual offset (invalid for PHP) timezones via shortcode because it is not supported by the API and can open the door to unexpected behavior.
-				if ( in_array( $timezone, Time::wp_manual_utc_offsets_array() ) ) {
-					Functions::invalid_shortcode_message( $timezone . ' is a manual UTC offset, not a valid timezone name. Manual UTC offsets are allowed by WordPress but not supported by this plugin. Instead, please use a timezone name supported by PHP (https://secure.php.net/manual/timezones.php)' );
-
-					return;
-				}
-			}
-		}
-
-		// STEP 2: If timezone isn't set yet, determine the timezone source.
-
-		// only run this if we did not previously set it
-		if ( empty( Shortcode::$timezone_source ) ) {
-			$source = Functions::remove_all_whitespace( strtolower( $source ) );
-
-			// if blank, set to API, else run through the WordPress logic
-			if ( empty( $source ) ) {
-				$source = 'api';
-			} else {
-				if ( 'wp' == $source ) {
-					$source = 'wordpress';
-				}
-
-				if ( 'wordpress' == $source ) {
-					$wp_timezone = get_option( 'timezone_string' );
-
-					if (
-						empty( $wp_timezone ) // will be NULL if using a manual UTC offset
-						|| ! in_array( $wp_timezone, timezone_identifiers_list() ) // shouldn't ever happen
-					) {
-						$source = 'api';
-					}
-				}
-			}
-
-			if ( array_key_exists( $source, Time::valid_timezone_sources() ) ) {
-				Shortcode::$timezone_source = $source;
-			} else {
-				// "wordpress" is removed as a valid option if timezone is not set in WordPress settings
-				if ( 'wordpress' == $source ) {
-					Functions::invalid_shortcode_message( 'Please set your sitewide timezone in WordPress General Settings or change your Timezone Source shortcode argument' );
-				} else {
-					Functions::invalid_shortcode_message( 'Please fix your Timezone Source shortcode argument' );
-				}
-
-				return;
-			}
-		}
-
-		// STEP 3: If the timezone source is 'wordpress', the timezone is already known so set it.
-
-		if ( ! empty( $wp_timezone ) ) { // only set if 'wordpress' == $source and if a valid timezone, all from STEP 2
-			Shortcode::$timezone = $wp_timezone;
-
-			return;
-		}
-	}
-
-	/**
 	 * Get the timezone from the API response if necessary and then set it.
 	 *
 	 * If hard-coded from shortcode, that will already be set. If WordPress is
@@ -231,14 +34,6 @@ class Time {
 		}
 	}
 
-	public function get_timezone() {
-		if ( ! empty( Shortcode::$timezone ) ) {
-			return Shortcode::$timezone;
-		}
-
-		self::set_timezone_and_source_from_shortcode_args();
-	}
-
 	/**
 	 * TODO: Unused function
 	 * Valid strtotime() relative time
@@ -264,40 +59,6 @@ class Time {
 		}
 
 		return $result;
-	}
-
-
-	/**
-	 * if valid timestamp, returns integer timestamp
-	 * or returns boolean if $return_format = 'bool' and is valid timestamp
-	 * else returns empty string
-	 */
-	public static function valid_timestamp( $input, $return_format = '' ) {
-		$result = Functions::remove_all_whitespace( $input ); // converts to string
-
-		if ( is_numeric( $result ) ) {
-			$result = intval( $result ); // convert to integer
-		}
-
-		if ( ! empty( $return_format ) && 'bool' != $return_format ) {
-			$return_format = '';
-		}
-
-		// is valid timestamp
-		if ( is_int( $result ) && date( 'U', $result ) == intval( $result ) ) {
-			if ( '' == $return_format ) {
-				return intval( $result );
-			} else {
-				return true;
-			}
-		} // is NOT valid
-		else {
-			if ( '' == $return_format ) {
-				return '';
-			} else {
-				return false;
-			}
-		}
 	}
 
 	/**
@@ -328,13 +89,13 @@ class Time {
 				Should match ISO 8601 datetime for Dark Sky API:
 				[YYYY]-[MM]-[DD]T[HH]:[MM]:[SS]
 				with an optional timezone formatted as Z for UTC time or {+,-}[HH]:[MM] (with or without separating colon) for an offset
-	
+
 				Does Match:
 				2008-09-15T15:53:00
 				2007-03-01T13:00:00Z
 				2015-10-05T21:46:54-1500
 				2015-10-05T21:46:54+07:00
-	
+
 				Does Not Match:
 				2015-10-05T21:46:54-02
 				0
@@ -358,21 +119,6 @@ class Time {
 			} else {
 				return false;
 			}
-		}
-	}
-
-	// e.g. 4:45pm -> 4:00pm
-	public static function timestamp_truncate_minutes( $timestamp = '' ) {
-		// timestamp
-		if ( false === self::valid_timestamp( $timestamp, 'bool' ) ) {
-			return false;
-		} else {
-			// modulus
-			// 1 hour = 3600 seconds
-			// e.g. 2:30 --> 30 minutes = 1800 seconds --> $timestamp = $timestamp - 1800;
-			$timestamp -= $timestamp % 3600;
-
-			return self::valid_timestamp( $timestamp );
 		}
 	}
 
@@ -419,8 +165,41 @@ class Time {
 		// set back to what date_default_timezone_get() was
 		date_default_timezone_set( $existing_timezone );
 
-		// return 
+		// return
 		return $date;
+	}
+
+	/**
+	 * if valid timestamp, returns integer timestamp
+	 * or returns boolean if $return_format = 'bool' and is valid timestamp
+	 * else returns empty string
+	 */
+	public static function valid_timestamp( $input, $return_format = '' ) {
+		$result = Functions::remove_all_whitespace( $input ); // converts to string
+
+		if ( is_numeric( $result ) ) {
+			$result = intval( $result ); // convert to integer
+		}
+
+		if ( ! empty( $return_format ) && 'bool' != $return_format ) {
+			$return_format = '';
+		}
+
+		// is valid timestamp
+		if ( is_int( $result ) && date( 'U', $result ) == intval( $result ) ) {
+			if ( '' == $return_format ) {
+				return intval( $result );
+			} else {
+				return true;
+			}
+		} // is NOT valid
+		else {
+			if ( '' == $return_format ) {
+				return '';
+			} else {
+				return false;
+			}
+		}
 	}
 
 	/**
@@ -546,6 +325,8 @@ class Time {
 		return $diff;
 	}
 
+	// e.g. 4:45pm -> 4:00pm
+
 	public static function get_last_hour_hour_of_forecast( $end_time_timestamp ) {
 		/**
 		 * Helps with setting 'sunset_to_be_inserted'
@@ -561,6 +342,225 @@ class Time {
 			$result = $top_of_hour;
 		} else {
 			$result = $top_of_next_hour;
+		}
+
+		return $result;
+	}
+
+	public static function timestamp_truncate_minutes( $timestamp = '' ) {
+		// timestamp
+		if ( false === self::valid_timestamp( $timestamp, 'bool' ) ) {
+			return false;
+		} else {
+			// modulus
+			// 1 hour = 3600 seconds
+			// e.g. 2:30 --> 30 minutes = 1800 seconds --> $timestamp = $timestamp - 1800;
+			$timestamp -= $timestamp % 3600;
+
+			return self::valid_timestamp( $timestamp );
+		}
+	}
+
+	public function get_timezone() {
+		if ( ! empty( Shortcode::$timezone ) ) {
+			return Shortcode::$timezone;
+		}
+
+		self::set_timezone_and_source_from_shortcode_args();
+	}
+
+	/**
+	 * Taking the shortcode's input and the API's response (if available),
+	 * determine the timezone source and the timezone.
+	 *
+	 * Run this before ever trying to use the timezone, such as template output.
+	 *
+	 * @param string $source   The raw 'timezone_source' shortcode value.
+	 * @param string $timezone The raw 'timezone' shortcode value.
+	 */
+	public static function set_timezone_and_source_from_shortcode_args( $timezone = '', $source = '' ) {
+		// bail if we previously ran this successfully
+		if ( ! empty( Shortcode::$timezone ) ) {
+			return;
+		}
+
+		// STEP 1: Use hard-coded timezone if it exists and is valid.
+
+		// if timezone argument is set, use that, else set via timezone_source argument
+		$timezone = Functions::remove_all_whitespace( $timezone ); // do not strtolower()
+
+		if ( ! empty( $timezone ) ) {
+			if ( in_array( $timezone, timezone_identifiers_list() ) ) {
+				Shortcode::$timezone = $timezone;
+
+				return;
+			} else {
+				// DO NOT allow manual offset (invalid for PHP) timezones via shortcode because it is not supported by the API and can open the door to unexpected behavior.
+				if ( in_array( $timezone, Time::wp_manual_utc_offsets_array() ) ) {
+					Functions::invalid_shortcode_message( $timezone . ' is a manual UTC offset, not a valid timezone name. Manual UTC offsets are allowed by WordPress but not supported by this plugin. Instead, please use a timezone name supported by PHP.', 'https://secure.php.net/manual/timezones.php', 'Timezones Supported by PHP' );
+
+					return;
+				}
+			}
+		}
+
+		// STEP 2: If timezone isn't set yet, determine the timezone source.
+
+		// only run this if we did not previously set it
+		if ( empty( Shortcode::$timezone_source ) ) {
+			$source = Functions::remove_all_whitespace( strtolower( $source ) );
+
+			// if blank, set to API, else run through the WordPress logic
+			if ( empty( $source ) ) {
+				$source = 'api';
+			} else {
+				if ( 'wp' == $source ) {
+					$source = 'wordpress';
+				}
+
+				if ( 'wordpress' == $source ) {
+					$wp_timezone = get_option( 'timezone_string' );
+
+					if (
+						empty( $wp_timezone ) // will be NULL if using a manual UTC offset
+						|| ! in_array( $wp_timezone, timezone_identifiers_list() ) // shouldn't ever happen
+					) {
+						$source = 'api';
+					}
+				}
+			}
+
+			if ( array_key_exists( $source, Time::valid_timezone_sources() ) ) {
+				Shortcode::$timezone_source = $source;
+			} else {
+				// "wordpress" is removed as a valid option if timezone is not set in WordPress settings
+				if ( 'wordpress' == $source ) {
+					Functions::invalid_shortcode_message( 'Please set your sitewide timezone in WordPress General Settings or change your Timezone Source shortcode argument' );
+				} else {
+					Functions::invalid_shortcode_message( 'Please fix your Timezone Source shortcode argument' );
+				}
+
+				return;
+			}
+		}
+
+		// STEP 3: If the timezone source is 'wordpress', the timezone is already known so set it.
+
+		if ( ! empty( $wp_timezone ) ) { // only set if 'wordpress' == $source and if a valid timezone, all from STEP 2
+			Shortcode::$timezone = $wp_timezone;
+
+			return;
+		}
+	}
+
+	/**
+	 * Numeric array of WordPress' own UTC offset options.
+	 *
+	 * Examples: 'UTC+0', 'UTC-5', 'UTC+8.75'
+	 *
+	 * @see wp_timezone_choice()
+	 *
+	 * @return array
+	 */
+	public static function wp_manual_utc_offsets_array() {
+		$result = array();
+
+		// Manual UTC offsets, code borrowed from https://developer.wordpress.org/reference/functions/wp_timezone_choice/
+		$offset_range = array(
+			- 12,
+			- 11.5,
+			- 11,
+			- 10.5,
+			- 10,
+			- 9.5,
+			- 9,
+			- 8.5,
+			- 8,
+			- 7.5,
+			- 7,
+			- 6.5,
+			- 6,
+			- 5.5,
+			- 5,
+			- 4.5,
+			- 4,
+			- 3.5,
+			- 3,
+			- 2.5,
+			- 2,
+			- 1.5,
+			- 1,
+			- 0.5,
+			0,
+			0.5,
+			1,
+			1.5,
+			2,
+			2.5,
+			3,
+			3.5,
+			4,
+			4.5,
+			5,
+			5.5,
+			5.75,
+			6,
+			6.5,
+			7,
+			7.5,
+			8,
+			8.5,
+			8.75,
+			9,
+			9.5,
+			10,
+			10.5,
+			11,
+			11.5,
+			12,
+			12.75,
+			13,
+			13.75,
+			14
+		);
+
+		foreach ( $offset_range as $offset ) {
+			if ( 0 <= $offset ) {
+				$offset_value = '+' . $offset;
+			} else {
+				$offset_value = (string) $offset;
+			}
+
+			$offset_value = 'UTC' . $offset_value;
+
+			$result[] = esc_attr( $offset_value );
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Timezone Sources options
+	 *
+	 * @param string $prepend_empty
+	 *
+	 * @return array
+	 */
+	public static function valid_timezone_sources( $prepend_empty = 'false' ) {
+
+		$result = array(
+			'api'       => __( 'From API (i.e. Location-specific)', 'tk-event-weather' ),
+			'wordpress' => __( 'From WordPress General Settings', 'tk-event-weather' ),
+		);
+
+		// do not give WordPress option if option is not set
+		$wp_timezone = get_option( 'timezone_string' ); // could return NULL
+		if ( empty( $wp_timezone ) ) {
+			unset( $result['wordpress'] );
+		}
+
+		if ( 'true' == $prepend_empty ) {
+			$result = Functions::array_prepend_empty( $result );
 		}
 
 		return $result;

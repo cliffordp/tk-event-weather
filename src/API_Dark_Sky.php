@@ -13,124 +13,37 @@ class API_Dark_Sky {
 		self::$end_time_timestamp   = $end_time_timestamp;
 	}
 
-	/**
-	 * @link https://darksky.net/dev/docs#time-machine-request
-	 *
-	 * @return string
-	 */
-	private static function request_uri() {
-		$api_key = urlencode( sanitize_key( Shortcode::$dark_sky_api_key ) );
+	public static function get_debug_output() {
+		$output = '';
 
-		if ( empty( $api_key ) ) {
-			Functions::invalid_shortcode_message( 'Please enter your Dark Sky API Key' );
-
-			return '';
+		if ( empty( Shortcode::$debug_enabled ) ) {
+			return $output;
 		}
 
-		$uri_base = sprintf(
-			'https://api.darksky.net/forecast/%s/%s,%s',
-			$api_key,
-			Shortcode::$latitude_longitude,
-			self::$start_time_timestamp
-		);
+		$data = self::get_response_data();
 
-		$uri_query_args = array();
-
-		$units = self::get_request_uri_units();
-
-		if ( ! empty( $units ) ) {
-			$uri_query_args['units'] = urlencode( $units );
-		}
-
-		$language = self::get_request_uri_language();
-
-		if ( ! empty( $language ) ) {
-			$uri_query_args['lang'] = urlencode( $language );
-		}
-
-		$exclude = Shortcode::$dark_sky_api_exclude;
-
-		if ( ! empty( $exclude ) ) {
-			$uri_query_args['exclude'] = urlencode( $exclude );
+		if ( empty( $data ) ) {
+			return $output;
 		}
 
 		/**
-		 * Filter to allow overriding Units, Language, and/or Exclude.
+		 * Example Debug Output:
 		 *
-		 * @link https://darksky.net/dev/docs#time-machine-request-parameters
+		 * api-result-examples/dark_sky.txt
+		 * <!--
+		 * TK Event Weather -- Dark Sky API -- Request URI
+		 * https://api.darksky.net/forecast/___API_KEY___/38.897676,-77.036530,1464604200?units=auto&exclude=minutely,alerts
+		 * -->
 		 */
-		$uri_query_args = apply_filters( 'tk_event_weather_dark_sky_request_uri_query_args', $uri_query_args );
+		$output .= sprintf( '<!--%1$s%2$s -- Dark Sky API -- Obtained from Transient: %3$s -- Request URI:%1$s%4$s%1$s -- JSON Data:%1$s%5$s%1$s-->%1$s',
+			PHP_EOL,
+			Setup::plugin_display_name(),
+			Shortcode::$dark_sky_api_transient_used,
+			self::request_uri(),
+			json_encode( $data, JSON_PRETTY_PRINT ) // JSON_PRETTY_PRINT option requires PHP 5.4
+		);
 
-		$uri = add_query_arg( $uri_query_args, $uri_base );
-
-		return $uri;
-	}
-
-	private static function get_request_uri_units() {
-		return Shortcode::$dark_sky_api_units;
-	}
-
-	private static function get_request_uri_language() {
-		return Shortcode::$dark_sky_api_language;
-	}
-
-	/**
-	 * @param $transient
-	 *
-	 * @return bool
-	 */
-	private static function valid_transient( $transient ) {
-		if ( ! empty( $transient ) ) {
-			if (
-				// WordPress error
-				is_wp_error( $transient )
-
-				// expected result of json_decode() of API response
-				|| ! is_object( $transient )
-
-				/**
-				 * if API doesn't technically error out but does return an API error message
-				 * examples:
-				 * {"code":400,"error":"An invalid time was specified."}
-				 * {"code":400,"error":"An invalid units parameter was provided."}
-				 * {"code":400,"error":"The given location (or time) is invalid."}
-				 */
-				|| ! empty( $transient->error )
-			) {
-				$transient = '';
-				// will be deleted if it exists, regardless of expiration date
-				delete_transient( self::get_transient_name() );
-			}
-		}
-
-		if ( ! empty( $transient ) ) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * Set timezone as soon as possible because so many other things rely on it.
-	 *
-	 * We usually want the timezone set via the API, but we need the timezone
-	 * set ASAP because of running the API data through the display template
-	 * or using functions requiring the timezone.
-	 *
-	 * @param $use_this_timezone
-	 *
-	 * @return bool
-	 */
-	public static function set_timezone_if_needed( $use_this_timezone ) {
-		if (
-			! empty( Shortcode::$timezone )
-			|| ! in_array( $use_this_timezone, timezone_identifiers_list() )
-		) {
-			return false;
-		}
-
-		// set it from API if we're allowed to
-		Time::set_timezone_from_api( $use_this_timezone );
+		return $output;
 	}
 
 	public static function get_response_data() {
@@ -192,37 +105,31 @@ class API_Dark_Sky {
 		return $data;
 	}
 
-	public static function get_debug_output() {
-		$output = '';
+	private static function get_transient_value() {
+		return Functions::transient_get_or_delete( self::get_transient_name(), Shortcode::$transients_enabled );
+	}
 
-		if ( empty( Shortcode::$debug_enabled ) ) {
-			return $output;
-		}
-
-		$data = self::get_response_data();
-
-		if ( empty( $data ) ) {
-			return $output;
-		}
-
-		/**
-		 * Example Debug Output:
-		 *
-		 * api-result-examples/dark_sky.txt
-		 * <!--
-		 * TK Event Weather -- Dark Sky API -- Request URI
-		 * https://api.darksky.net/forecast/___API_KEY___/38.897676,-77.036530,1464604200?units=auto&exclude=minutely,alerts
-		 * -->
-		 */
-		$output .= sprintf( '<!--%1$s%2$s -- Dark Sky API -- Obtained from Transient: %3$s -- Request URI:%1$s%4$s%1$s -- JSON Data:%1$s%5$s%1$s-->%1$s',
-			PHP_EOL,
-			Setup::plugin_display_name(),
-			Shortcode::$dark_sky_api_transient_used,
-			self::request_uri(),
-			json_encode( $data, JSON_PRETTY_PRINT ) // JSON_PRETTY_PRINT option requires PHP 5.4
+	private static function get_transient_name() {
+		$name = sprintf(
+			'%s_%s_%s_%s_%s_%s_%s_%d',
+			Setup::$transient_name_prepend,
+			'darksky',
+			Shortcode::$dark_sky_api_units,
+			Shortcode::$dark_sky_api_language,
+			self::get_exclude_for_transient(),
+			// latitude (before comma)
+			substr( strstr( Shortcode::$latitude_longitude, ',', true ), 0, 6 ), // Requires PHP 5.3.0+
+			// first 6 (assuming period is in first 5, getting first 6 will result in 5 valid characters for transient name
+			// longitude (after comma)
+			substr( strstr( Shortcode::$latitude_longitude, ',', false ), 0, 7 ), // End at 7 because 0 is the comma (which gets removed downstream). Does not require PHP 5.3.0+
+			substr( self::get_start_time_top_of_hour_timestamp( self::$start_time_timestamp ), - 5, 5 ) // last 5 of Start Time timestamp with minutes truncated
+		//substr( $end_time_timestamp, -5, 5 ) // last 5 of End Time timestamp
+		// noticed in testing sometimes leading zero(s) get truncated, possibly due to sanitize_key()... but, as long as it is consistent we are ok.
 		);
 
-		return $output;
+		$name = Functions::sanitize_transient_name( $name );
+
+		return $name;
 	}
 
 	/**
@@ -252,31 +159,124 @@ class API_Dark_Sky {
 		return Time::timestamp_truncate_minutes( $timestamp );
 	}
 
-	private static function get_transient_name() {
-		$name = sprintf(
-			'%s_%s_%s_%s_%s_%s_%s_%d',
-			Setup::$transient_name_prepend,
-			'darksky',
-			Shortcode::$dark_sky_api_units,
-			Shortcode::$dark_sky_api_language,
-			self::get_exclude_for_transient(),
-			// latitude (before comma)
-			substr( strstr( Shortcode::$latitude_longitude, ',', true ), 0, 6 ), // Requires PHP 5.3.0+
-			// first 6 (assuming period is in first 5, getting first 6 will result in 5 valid characters for transient name
-			// longitude (after comma)
-			substr( strstr( Shortcode::$latitude_longitude, ',', false ), 0, 7 ), // End at 7 because 0 is the comma (which gets removed downstream). Does not require PHP 5.3.0+
-			substr( self::get_start_time_top_of_hour_timestamp( self::$start_time_timestamp ), - 5, 5 ) // last 5 of Start Time timestamp with minutes truncated
-		//substr( $end_time_timestamp, -5, 5 ) // last 5 of End Time timestamp
-		// noticed in testing sometimes leading zero(s) get truncated, possibly due to sanitize_key()... but, as long as it is consistent we are ok.
-		);
+	/**
+	 * @param $transient
+	 *
+	 * @return bool
+	 */
+	private static function valid_transient( $transient ) {
+		if ( ! empty( $transient ) ) {
+			if (
+				// WordPress error
+				is_wp_error( $transient )
 
-		$name = Functions::sanitize_transient_name( $name );
+				// expected result of json_decode() of API response
+				|| ! is_object( $transient )
 
-		return $name;
+				/**
+				 * if API doesn't technically error out but does return an API error message
+				 * examples:
+				 * {"code":400,"error":"An invalid time was specified."}
+				 * {"code":400,"error":"An invalid units parameter was provided."}
+				 * {"code":400,"error":"The given location (or time) is invalid."}
+				 */
+				|| ! empty( $transient->error )
+			) {
+				$transient = '';
+				// will be deleted if it exists, regardless of expiration date
+				delete_transient( self::get_transient_name() );
+			}
+		}
+
+		if ( ! empty( $transient ) ) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
-	private static function get_transient_value() {
-		return Functions::transient_get_or_delete( self::get_transient_name(), Shortcode::$transients_enabled );
+	/**
+	 * Set timezone as soon as possible because so many other things rely on it.
+	 *
+	 * We usually want the timezone set via the API, but we need the timezone
+	 * set ASAP because of running the API data through the display template
+	 * or using functions requiring the timezone.
+	 *
+	 * @param $use_this_timezone
+	 *
+	 * @return bool
+	 */
+	public static function set_timezone_if_needed( $use_this_timezone ) {
+		if (
+			! empty( Shortcode::$timezone )
+			|| ! in_array( $use_this_timezone, timezone_identifiers_list() )
+		) {
+			return false;
+		}
+
+		// set it from API if we're allowed to
+		Time::set_timezone_from_api( $use_this_timezone );
+	}
+
+	/**
+	 * @link https://darksky.net/dev/docs#time-machine-request
+	 *
+	 * @return string
+	 */
+	private static function request_uri() {
+		$api_key = urlencode( sanitize_key( Shortcode::$dark_sky_api_key ) );
+
+		if ( empty( $api_key ) ) {
+			Functions::invalid_shortcode_message( 'Please enter your Dark Sky API Key', Plugin::customizer_link_to_edit_current_url( array( 'autofocus[control]' => TK_EVENT_WEATHER_PLUGIN_SLUG . '_darksky_api_key_control' ) ), 'Enter your Dark Sky API Key' );
+
+			return '';
+		}
+
+		$uri_base = sprintf(
+			'https://api.darksky.net/forecast/%s/%s,%s',
+			$api_key,
+			Shortcode::$latitude_longitude,
+			self::$start_time_timestamp
+		);
+
+		$uri_query_args = array();
+
+		$units = self::get_request_uri_units();
+
+		if ( ! empty( $units ) ) {
+			$uri_query_args['units'] = urlencode( $units );
+		}
+
+		$language = self::get_request_uri_language();
+
+		if ( ! empty( $language ) ) {
+			$uri_query_args['lang'] = urlencode( $language );
+		}
+
+		$exclude = Shortcode::$dark_sky_api_exclude;
+
+		if ( ! empty( $exclude ) ) {
+			$uri_query_args['exclude'] = urlencode( $exclude );
+		}
+
+		/**
+		 * Filter to allow overriding Units, Language, and/or Exclude.
+		 *
+		 * @link https://darksky.net/dev/docs#time-machine-request-parameters
+		 */
+		$uri_query_args = apply_filters( 'tk_event_weather_dark_sky_request_uri_query_args', $uri_query_args );
+
+		$uri = add_query_arg( $uri_query_args, $uri_base );
+
+		return $uri;
+	}
+
+	private static function get_request_uri_units() {
+		return Shortcode::$dark_sky_api_units;
+	}
+
+	private static function get_request_uri_language() {
+		return Shortcode::$dark_sky_api_language;
 	}
 
 	/**

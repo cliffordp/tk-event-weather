@@ -7,15 +7,119 @@ namespace TKEventWeather;
 class Plugin extends Life_Cycle {
 
 	// TODO: move to function to use constant
-	private static $customizer_section_id = 'tk_event_weather_section';
-
-	// public so add-ons can reference it
 	public static $customizer_panel_id = 'tk_event_weather_panel';
 
+	// public so add-ons can reference it
+	private static $customizer_section_id = 'tk_event_weather_section';
 
-	protected function get_main_plugin_file_name() {
-		return 'tk-event-weather.php';
+	public static function register_assets() {
+		Functions::register_css();
+		Functions::register_climacons_css();
 	}
+
+	/**
+	 * WP Admin Bar: add TK Event Weather settings link under Customizer item
+	 *
+	 * Based on wp_admin_bar_customize_menu()
+	 *
+	 * @param $wp_adminbar
+	 */
+	public static function customizer_link_to_edit_current_url_add_to_wp_adminbar( $wp_adminbar ) {
+		if (
+			is_customize_preview()
+			|| is_admin()
+		) {
+			return;
+		}
+
+		$wp_adminbar->add_node( array(
+			'id'     => 'tkeventweather_edit_page',
+			'title'  => __( 'Open in TK Event Weather settings', 'tk-event-weather' ),
+			'parent' => 'customize',
+			'href'   => self::customizer_link_to_edit_current_url(),
+			'meta'   => array(
+				'class' => 'hide-if-no-customize',
+			),
+		) );
+	}
+
+	/**
+	 * Get the current URL's WP Customizer edit URL, with optional query
+	 * arguments associative array.
+	 *
+	 * @param array $query_args An associative array to pass to add_query_arg().
+	 *
+	 * @return string
+	 */
+	public static function customizer_link_to_edit_current_url( $query_args = array() ) {
+		if (
+			is_customize_preview()
+			|| is_admin()
+		) {
+			return;
+		}
+
+		$current_url = Functions::get_current_url();
+
+		$current_url_array = array(
+			'url' => $current_url,
+		);
+
+		// array_merge() will overwrite the first array's associative keys with the second's. So you should not have a 'url' key in your $query_args, as it will be overwritten.
+		$query_args = array_merge( $query_args, $current_url_array );
+
+		$url = add_query_arg( $query_args, \wp_customize_url() );
+
+		$url = self::convert_link_to_a_customizer_link( $url );
+
+		return $url;
+	}
+
+	/**
+	 * Add Customizer URL query parameters to a given link.
+	 *
+	 * @param $url                  The URL to add Customizer URL query
+	 *                              parameters to.
+	 * @param $deep_link_to_section Optional to deep link into a particular
+	 *                              section, such as 'display', 'api_dark_sky',
+	 *                              'api_google', or 'advanced'.
+	 *
+	 * @return string
+	 */
+	private static function convert_link_to_a_customizer_link( $url, $deep_link_to_section = '' ) {
+		if (
+			is_customize_preview()
+			|| is_admin()
+		) {
+			return;
+		}
+
+		// add flag in the Customizer url so we know we're in this plugin's Customizer Section
+		$url = add_query_arg( TK_EVENT_WEATHER_PLUGIN_SLUG, 'true', $url );
+
+		// auto-open the panel
+		$url = add_query_arg( 'autofocus[panel]', self::$customizer_panel_id, $url );
+
+		if ( ! empty( $deep_link_to_section ) ) {
+			// e.g. 'display' becomes self::$customizer_section_id . '_display'
+			$section_id = sprintf( '%s_%s', self::$customizer_section_id, $deep_link_to_section );
+			$url        = add_query_arg( 'autofocus[section]', $section_id, $url );
+		}
+
+		return $url;
+	}
+
+	public static function customizer_options_link() {
+		$url = \wp_customize_url();
+
+		$url = self::convert_link_to_a_customizer_link( $url );
+
+		return $url;
+	}
+
+	//
+	// Start of Cliff's custom functions
+	//
 
 	public function activate() {
 
@@ -88,7 +192,7 @@ class Plugin extends Life_Cycle {
 		add_action( 'template_redirect', array( $this, 'register_assets' ), 0 );
 
 		// WP Admin Bar: add TK Event Weather settings link under Customizer item
-		add_action( 'admin_bar_menu', array( $this, 'customizer_link_to_edit_current_url' ) );
+		add_action( 'admin_bar_menu', array( $this, 'customizer_link_to_edit_current_url_add_to_wp_adminbar' ) );
 
 
 		// Adding scripts & styles to all pages
@@ -106,7 +210,7 @@ class Plugin extends Life_Cycle {
 		// http://plugin.michael-simpson.com/?page_id=39
 
 		$shortcode = new Shortcode();
-		$shortcode->register( Setup::$shortcode_name );
+		$shortcode->register( TK_EVENT_WEATHER_PLUGIN_SLUG );
 
 
 		// Register AJAX hooks
@@ -114,100 +218,7 @@ class Plugin extends Life_Cycle {
 
 	}
 
-	//
-	// Start of Cliff's custom functions
-	//
-
-	public static function register_assets() {
-		Functions::register_css();
-		Functions::register_climacons_css();
-	}
-
-	/**
-	 * Add Customizer URL query parameters to a given link.
-	 *
-	 * @param $url                  The URL to add Customizer URL query
-	 *                              parameters to.
-	 * @param $deep_link_to_section Optional to deep link into a particular
-	 *                              section, such as 'display', 'api_dark_sky',
-	 *                              'api_google', or 'advanced'.
-	 *
-	 * @return string
-	 */
-	private static function convert_link_to_a_customizer_link( $url, $deep_link_to_section = '' ) {
-		// add flag in the Customizer url so we know we're in this plugin's Customizer Section
-		$url = add_query_arg( TK_EVENT_WEATHER_PLUGIN_SLUG, 'true', $url );
-
-		// auto-open the panel
-		$url = add_query_arg( 'autofocus[panel]', self::$customizer_panel_id, $url );
-
-		if ( ! empty( $deep_link_to_section ) ) {
-			// e.g. 'display' becomes self::$customizer_section_id . '_display'
-			$section_id = sprintf( '%s_%s', self::$customizer_section_id, $deep_link_to_section );
-			$url        = add_query_arg( 'autofocus[section]', $section_id, $url );
-		}
-
-		return $url;
-	}
-
-	/**
-	 * WP Admin Bar: add TK Event Weather settings link under Customizer item
-	 *
-	 * Based on wp_admin_bar_customize_menu()
-	 *
-	 * @param $wp_adminbar
-	 */
-	public static function customizer_link_to_edit_current_url( $wp_adminbar ) {
-		if (
-			is_customize_preview()
-			|| is_admin()
-		) {
-			return;
-		}
-
-		$current_url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
-		$url = add_query_arg( 'url', urlencode( $current_url ), wp_customize_url() );
-
-		$url = self::convert_link_to_a_customizer_link( $url );
-
-		$wp_adminbar->add_node( array(
-			'id'     => 'tkeventweather_edit_page',
-			'title'  => __( 'Open in TK Event Weather settings', 'tk-event-weather' ),
-			'parent' => 'customize',
-			'href'   => $url,
-			'meta'   => array(
-				'class' => 'hide-if-no-customize',
-			),
-		) );
-	}
-
-	public static function customizer_options_link() {
-		$url = wp_customize_url();
-
-		$url = self::convert_link_to_a_customizer_link( $url );
-
-		return $url;
-	}
-
-	public function customizer_edit_shortcut_setting() {
-		// Always start at Dark Sky API Key if not entered
-		$darksky_api_key = Functions::array_get_value_by_key( Functions::plugin_options(), 'darksky_api_key' );
-
-		if ( empty( $darksky_api_key ) ) {
-			$setting = TK_EVENT_WEATHER_PLUGIN_SLUG . '[darksky_api_key]';
-
-			// purposefully not filterable
-			return $setting;
-		}
-
-		// default to Display Template
-		$setting = TK_EVENT_WEATHER_PLUGIN_SLUG . '[display_template]';
-
-		return apply_filters( 'tk_event_weather_customizer_edit_shortcut_setting', $setting );
-	}
-
-	/**
+/**
 	 * Add plugin options to Customizer
 	 * See: https://developer.wordpress.org/themes/customize-api/
 	 */
@@ -217,7 +228,7 @@ class Plugin extends Life_Cycle {
 		// https://developer.wordpress.org/themes/customize-api/tools-for-improved-user-experience/#selective-refresh-fast-accurate-updates
 		$wp_customize->selective_refresh->add_partial(
 			self::customizer_edit_shortcut_setting(), array(
-				'selector'            => '.tk-event-weather__wrapper',
+				'selector'            => '.' . TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '__wrapper',
 				'container_inclusive' => true,
 				'render_callback'     => function () {
 					// purposefully not set because the setting is dynamic
@@ -771,6 +782,27 @@ class Plugin extends Life_Cycle {
 		*/
 
 
+	}
+
+	public function customizer_edit_shortcut_setting() {
+		// Always start at Dark Sky API Key if not entered
+		$darksky_api_key = Functions::array_get_value_by_key( Functions::plugin_options(), 'darksky_api_key' );
+
+		if ( empty( $darksky_api_key ) ) {
+			$setting = TK_EVENT_WEATHER_PLUGIN_SLUG . '[darksky_api_key]';
+
+			// purposefully not filterable
+			return $setting;
+		}
+
+		// default to Display Template
+		$setting = TK_EVENT_WEATHER_PLUGIN_SLUG . '[display_template]';
+
+		return apply_filters( 'tk_event_weather_customizer_edit_shortcut_setting', $setting );
+	}
+
+		protected function get_main_plugin_file_name() {
+		return 'tk-event-weather.php';
 	} // end customizer_options()
 
 }

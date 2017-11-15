@@ -24,6 +24,31 @@ namespace TKEventWeather;
 
 class Options_Manager {
 
+	public function get_option_metadata() {
+		//  http://plugin.michael-simpson.com/?page_id=31
+		return array(
+			//'_version' => array('Installed Version'), // Leave this one commented-out. Uncomment to test upgrades.
+			//'DropOnUninstall' => array(__('Drop this plugin\'s Database table on uninstall', 'TEXT_DOMAIN'), 'false', 'true')
+		);
+	}
+
+	/**
+	 * Remove the prefix from the input $name.
+	 * Idempotent: If no prefix found, just returns what was input.
+	 *
+	 * @param    $name string
+	 *
+	 * @return string $optionName without the prefix.
+	 */
+	public function &un_prefix( $name ) {
+		$option_name_prefix = $this->get_option_name_prefix();
+		if ( strpos( $name, $option_name_prefix ) === 0 ) {
+			return substr( $name, strlen( $option_name_prefix ) );
+		}
+
+		return $name;
+	}
+
 	/**
 	 * Generates the prefix for the various database option names.
 	 *
@@ -37,45 +62,18 @@ class Options_Manager {
 		return TK_EVENT_WEATHER_PLUGIN_SLUG . '_';
 	}
 
-	public function get_option_metadata() {
-		//  http://plugin.michael-simpson.com/?page_id=31
-		return array(
-			//'_version' => array('Installed Version'), // Leave this one commented-out. Uncomment to test upgrades.
-			//'DropOnUninstall' => array(__('Drop this plugin\'s Database table on uninstall', 'TEXT_DOMAIN'), 'false', 'true')
-		);
-	}
-
 	/**
-	 * Cleanup: remove all options from the DB
+	 * A wrapper function delegating to WP delete_option() but it prefixes the input $optionName
+	 * to enforce "scoping" the options in the WP options table thereby avoiding name conflicts
+	 *
+	 * @param    $optionName string defined in settings.php and set as keys of $this->optionMetaData
+	 *
+	 * @return bool from delegated call to delete_option()
 	 */
-	protected function delete_saved_options() {
-		$customizer_options = get_option( TK_EVENT_WEATHER_PLUGIN_SLUG );
+	public function delete_option( $optionName ) {
+		$prefixed_option_name = $this->prefix( $optionName ); // how it is stored in DB
 
-		if ( ! empty( $customizer_options['uninstall_delete_all_data'] ) ) {
-			// delete customizer options
-			delete_option( TK_EVENT_WEATHER_PLUGIN_SLUG );
-
-			// delete all other options is handled via mark_as_uninstalled()
-
-			// delete all our transients
-			global $wpdb;
-
-			$table_name        = "{$wpdb->prefix}options";
-			$general_transient = '%\_transient\_%';
-			$our_transient     = '%\_tkeventw_%';
-
-			$sql = $wpdb->prepare( "DELETE FROM `$table_name` WHERE option_name LIKE `$table_name`.`%s` AND option_name LIKE `$table_name`.`%s`", $general_transient, $our_transient );
-
-			$transients_deleted = $wpdb->query( $sql ); // Number of rows affected/selected or false on error
-		}
-	}
-
-	/**
-	 * @return string display name of the plugin to show as a name/title in HTML.
-	 * Just returns the class name. Override this method to return something more readable
-	 */
-	public function get_plugin_display_name() {
-		return esc_html__( 'TK Event Weather', 'tk-event-weather' );
+		return delete_option( $prefixed_option_name );
 	}
 
 	/**
@@ -96,20 +94,53 @@ class Options_Manager {
 	}
 
 	/**
-	 * Remove the prefix from the input $name.
-	 * Idempotent: If no prefix found, just returns what was input.
+	 * A wrapper function delegating to WP add_option() but it prefixes the input $optionName
+	 * to enforce "scoping" the options in the WP options table thereby avoiding name conflicts
 	 *
-	 * @param    $name string
+	 * @param    $optionName string defined in settings.php and set as keys of $this->optionMetaData
+	 * @param    $value      mixed the new value
 	 *
-	 * @return string $optionName without the prefix.
+	 * @return null from delegated call to delete_option()
 	 */
-	public function &un_prefix( $name ) {
-		$option_name_prefix = $this->get_option_name_prefix();
-		if ( strpos( $name, $option_name_prefix ) === 0 ) {
-			return substr( $name, strlen( $option_name_prefix ) );
+	public function update_option( $optionName, $value ) {
+		$prefixed_option_name = $this->prefix( $optionName ); // how it is stored in DB
+
+		return update_option( $prefixed_option_name, $value );
+	}
+
+	/**
+	 * @param    $option_name string name of a Role option (see comments in getRoleOption())
+	 *
+	 * @return bool indicates if the user has adequate permissions
+	 */
+	public function can_user_do_role_option( $option_name ) {
+		$role_allowed = $this->get_role_option( $option_name );
+		if ( 'Anyone' == $role_allowed ) {
+			return true;
 		}
 
-		return $name;
+		return $this->is_user_role_equal_or_better_than( $role_allowed );
+	}
+
+	/**
+	 * A Role Option is an option defined in get_option_metadata() as a choice of WP standard roles, e.g.
+	 * 'CanDoOperationX' => array('Can do Operation X', 'Administrator', 'Editor', 'Author', 'Contributor', 'Subscriber')
+	 * The idea is use an option to indicate what role level a user must minimally have in order to do some operation.
+	 * So if a Role Option 'CanDoOperationX' is set to 'Editor' then users which role 'Editor' or above should be
+	 * able to do Operation X.
+	 * Also see: canUserDoRoleOption()
+	 *
+	 * @param    $optionName
+	 *
+	 * @return string role name
+	 */
+	public function get_role_option( $optionName ) {
+		$role_allowed = $this->get_option( $optionName );
+		if ( ! $role_allowed || $role_allowed == '' ) {
+			$role_allowed = 'Administrator';
+		}
+
+		return $role_allowed;
 	}
 
 	/**
@@ -135,58 +166,22 @@ class Options_Manager {
 	}
 
 	/**
-	 * A wrapper function delegating to WP delete_option() but it prefixes the input $optionName
-	 * to enforce "scoping" the options in the WP options table thereby avoiding name conflicts
+	 * @param $role_name string a standard WP role name like 'Administrator'
 	 *
-	 * @param    $optionName string defined in settings.php and set as keys of $this->optionMetaData
-	 *
-	 * @return bool from delegated call to delete_option()
+	 * @return bool
 	 */
-	public function delete_option( $optionName ) {
-		$prefixed_option_name = $this->prefix( $optionName ); // how it is stored in DB
-
-		return delete_option( $prefixed_option_name );
-	}
-
-	/**
-	 * A wrapper function delegating to WP add_option() but it prefixes the input $optionName
-	 * to enforce "scoping" the options in the WP options table thereby avoiding name conflicts
-	 *
-	 * @param    $optionName string defined in settings.php and set as keys of $this->optionMetaData
-	 * @param    $value      mixed the new value
-	 *
-	 * @return null from delegated call to delete_option()
-	 */
-	public function update_option( $optionName, $value ) {
-		$prefixed_option_name = $this->prefix( $optionName ); // how it is stored in DB
-
-		return update_option( $prefixed_option_name, $value );
-	}
-
-	/**
-	 * A Role Option is an option defined in get_option_metadata() as a choice of WP standard roles, e.g.
-	 * 'CanDoOperationX' => array('Can do Operation X', 'Administrator', 'Editor', 'Author', 'Contributor', 'Subscriber')
-	 * The idea is use an option to indicate what role level a user must minimally have in order to do some operation.
-	 * So if a Role Option 'CanDoOperationX' is set to 'Editor' then users which role 'Editor' or above should be
-	 * able to do Operation X.
-	 * Also see: canUserDoRoleOption()
-	 *
-	 * @param    $optionName
-	 *
-	 * @return string role name
-	 */
-	public function get_role_option( $optionName ) {
-		$role_allowed = $this->get_option( $optionName );
-		if ( ! $role_allowed || $role_allowed == '' ) {
-			$role_allowed = 'Administrator';
+	public function is_user_role_equal_or_better_than( $role_name ) {
+		if ( 'Anyone' == $role_name ) {
+			return true;
 		}
+		$capability = $this->role_to_capability( $role_name );
 
-		return $role_allowed;
+		return current_user_can( $capability );
 	}
 
 	/**
 	 * Given a WP role name, return a WP capability which only that role and roles above it have
-	 * http://codex.wordpress.org/Roles_and_Capabilities
+	 * @link https://codex.wordpress.org/Roles_and_Capabilities#User_Level_to_Role_Conversion
 	 *
 	 * @param    $role_name
 	 *
@@ -194,10 +189,12 @@ class Options_Manager {
 	 */
 	protected function role_to_capability( $role_name ) {
 		switch ( $role_name ) {
-			case 'Super Admin':
-				return 'manage_options';
+			case 'Network Administrator':
+				return 'manage_network'; // multisite only
 			case 'Administrator':
 				return 'manage_options';
+			case 'Customizer': // applies to Administrators by default
+				return 'customize'; // since WP 4.0
 			case 'Editor':
 				return 'publish_pages';
 			case 'Author':
@@ -214,47 +211,16 @@ class Options_Manager {
 	}
 
 	/**
-	 * @param $role_name string a standard WP role name like 'Administrator'
-	 *
-	 * @return bool
-	 */
-	public function is_user_role_equal_or_better_than( $role_name ) {
-		if ( 'Anyone' == $role_name ) {
-			return true;
-		}
-		$capability = $this->role_to_capability( $role_name );
-
-		return current_user_can( $capability );
-	}
-
-	/**
-	 * @param    $option_name string name of a Role option (see comments in getRoleOption())
-	 *
-	 * @return bool indicates if the user has adequate permissions
-	 */
-	public function can_user_do_role_option( $option_name ) {
-		$role_allowed = $this->get_role_option( $option_name );
-		if ( 'Anyone' == $role_allowed ) {
-			return true;
-		}
-
-		return $this->is_user_role_equal_or_better_than( $role_allowed );
-	}
-
-	/**
 	 * Creates HTML for the Administration page to set options for this plugin.
 	 * Override this method to create a customized page.
 	 * @return void
 	 */
 	public function settings_page() {
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! current_user_can( 'customize' ) ) {
 			wp_die( __( 'You do not have sufficient permissions to access this page.', 'tk-event-weather' ) );
 		}
 
-		// TODO: Unused variable.
 		// HTML for the page
-		$settings_group = TK_EVENT_WEATHER_PLUGIN_SLUG . '-settings-group';
-
 		?>
 
 
@@ -962,6 +928,57 @@ class Options_Manager {
 	}
 
 	/**
+	 * @return string display name of the plugin to show as a name/title in HTML.
+	 * Just returns the class name. Override this method to return something more readable
+	 */
+	public function get_plugin_display_name() {
+		return esc_html__( 'TK Event Weather', 'tk-event-weather' );
+	}
+
+	/**
+	 * If you want to generate an email address like "no-reply@your-site.com" then
+	 * you can use this to get the domain name part.
+	 * E.g.    'no-reply@' . $this->getEmailDomain();
+	 * This code was stolen from the wp_mail function, where it generates a default
+	 * from "wordpress@your-site.com"
+	 * @return string domain name
+	 */
+	public function get_email_domain() {
+		// Get the site domain and get rid of www.
+		$sitename = strtolower( $_SERVER['SERVER_NAME'] );
+		if ( substr( $sitename, 0, 4 ) == 'www.' ) {
+			$sitename = substr( $sitename, 4 );
+		}
+
+		return $sitename;
+	}
+
+	/**
+	 * Cleanup: remove all options from the DB
+	 */
+	protected function delete_saved_options() {
+		$customizer_options = get_option( TK_EVENT_WEATHER_PLUGIN_SLUG );
+
+		if ( ! empty( $customizer_options['uninstall_delete_all_data'] ) ) {
+			// delete customizer options
+			delete_option( TK_EVENT_WEATHER_PLUGIN_SLUG );
+
+			// delete all other options is handled via mark_as_uninstalled()
+
+			// delete all our transients
+			global $wpdb;
+
+			$table_name        = "{$wpdb->prefix}options";
+			$general_transient = '%\_transient\_%';
+			$our_transient     = '%\_tkeventw_%';
+
+			$sql = $wpdb->prepare( "DELETE FROM `$table_name` WHERE option_name LIKE `$table_name`.`%s` AND option_name LIKE `$table_name`.`%s`", $general_transient, $our_transient );
+
+			$transients_deleted = $wpdb->query( $sql ); // Number of rows affected/selected or false on error
+		}
+	}
+
+	/**
 	 * Helper-function outputs the correct form element (input tag, select tag) for the given item
 	 *
 	 * @param    $a_option_key       string name of the option (un-prefixed)
@@ -1081,23 +1098,5 @@ class Options_Manager {
 		}
 
 		return false;
-	}
-
-	/**
-	 * If you want to generate an email address like "no-reply@your-site.com" then
-	 * you can use this to get the domain name part.
-	 * E.g.    'no-reply@' . $this->getEmailDomain();
-	 * This code was stolen from the wp_mail function, where it generates a default
-	 * from "wordpress@your-site.com"
-	 * @return string domain name
-	 */
-	public function get_email_domain() {
-		// Get the site domain and get rid of www.
-		$sitename = strtolower( $_SERVER['SERVER_NAME'] );
-		if ( substr( $sitename, 0, 4 ) == 'www.' ) {
-			$sitename = substr( $sitename, 4 );
-		}
-
-		return $sitename;
 	}
 }

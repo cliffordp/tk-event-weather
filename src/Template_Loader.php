@@ -39,7 +39,7 @@ class Template_Loader extends \Gamajo_Template_Loader {
 	 * @since 1.0.0
 	 * @type string
 	 */
-	protected $theme_template_directory = 'tk-event-weather';
+	protected $theme_template_directory = TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED;
 
 	/**
 	 * Reference to the root directory path of this plugin.
