@@ -1,4 +1,5 @@
 <?php
+
 namespace TKEventWeather;
 
 // Option 3 from http://plugin.michael-simpson.com/?page_id=39
@@ -675,7 +676,10 @@ class Shortcode extends Shortcode_Script_Loader {
 		$first_day_class = new Single_Day( self::$span_start_time_timestamp, self::$span_end_time_timestamp, 1 );
 
 		// Set the Timezone ASAP (after first day's API call), since it's needed to determine everything else
-		if ( empty( self::$timezone ) ) {
+		if (
+			empty( self::$timezone )
+			&& ! empty( Single_Day::$api_data->timezone )
+		) {
 			Time::set_timezone_from_api( Single_Day::$api_data->timezone );
 		}
 
@@ -815,14 +819,18 @@ class Shortcode extends Shortcode_Script_Loader {
 		if ( ! self::$added_already ) {
 			self::$added_already = true;
 
+			// need the basic styling even if plugin options are not yet set, e.g. nice-looking error messages
 			wp_enqueue_style( sanitize_html_class( Setup::shortcode_name_hyphenated() ) );
 
-			if ( empty( $plugin_options['scroll_horizontal_off'] ) ) {
-				wp_enqueue_style( sanitize_html_class( Setup::shortcode_name_hyphenated() . '-scroll-horizontal' ) );
-			}
+			// only include these styles if plugin options are set
+			if ( ! empty( $plugin_options ) ) {
+				if ( empty( $plugin_options['scroll_horizontal_off'] ) ) {
+					wp_enqueue_style( sanitize_html_class( Setup::shortcode_name_hyphenated() . '-scroll-horizontal' ) );
+				}
 
-			if ( empty( $plugin_options['vertical_to_columns_off'] ) ) {
-				wp_enqueue_style( sanitize_html_class( Setup::shortcode_name_hyphenated() . '-vertical-to-columns' ) );
+				if ( empty( $plugin_options['vertical_to_columns_off'] ) ) {
+					wp_enqueue_style( sanitize_html_class( Setup::shortcode_name_hyphenated() . '-vertical-to-columns' ) );
+				}
 			}
 		}
 	}
