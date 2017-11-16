@@ -6,11 +6,25 @@ namespace TKEventWeather;
 
 class Plugin extends Life_Cycle {
 
-	// TODO: move to function to use constant
-	public static $customizer_panel_id = 'tk_event_weather_panel';
+	/**
+	 * Customizer Panel ID.
+	 *
+	 * Public so add-ons may access it.
+	 *
+	 * @return string
+	 */
+	public static function customizer_panel_id() {
+		return TK_EVENT_WEATHER_UNDERSCORES . '_panel';
+	}
 
-	// public so add-ons can reference it
-	private static $customizer_section_id = 'tk_event_weather_section';
+	/**
+	 * Customizer Section ID.
+	 *
+	 * @return string
+	 */
+	private static function customizer_section_id() {
+		return TK_EVENT_WEATHER_UNDERSCORES . '_section';
+	}
 
 	public static function register_assets() {
 		Functions::register_css();
@@ -96,11 +110,11 @@ class Plugin extends Life_Cycle {
 		$url = add_query_arg( TK_EVENT_WEATHER_UNDERSCORES, 'true', $url );
 
 		// auto-open the panel
-		$url = add_query_arg( 'autofocus[panel]', self::$customizer_panel_id, $url );
+		$url = add_query_arg( 'autofocus[panel]', self::customizer_panel_id(), $url );
 
 		if ( ! empty( $deep_link_to_section ) ) {
-			// e.g. 'display' becomes self::$customizer_section_id . '_display'
-			$section_id = sprintf( '%s_%s', self::$customizer_section_id, $deep_link_to_section );
+			// e.g. 'display' becomes self::customizer_section_id() . '_display'
+			$section_id = sprintf( '%s_%s', self::customizer_section_id(), $deep_link_to_section );
 			$url        = add_query_arg( 'autofocus[section]', $section_id, $url );
 		}
 
@@ -233,7 +247,7 @@ class Plugin extends Life_Cycle {
 
 		// Customizer Panel
 		$wp_customize->add_panel(
-			self::$customizer_panel_id,
+			self::customizer_panel_id(),
 			array(
 				'title'       => $this->get_plugin_display_name(),
 				'description' => esc_html__( 'Plugin options and settings', 'tk-event-weather' ),
@@ -243,44 +257,44 @@ class Plugin extends Life_Cycle {
 
 		// Customizer Sections
 		$wp_customize->add_section(
-			self::$customizer_section_id . '_display',
+			self::customizer_section_id() . '_display',
 			array(
 				'title'       => __( 'Display', 'tk-event-weather' ),
 				'description' => __( 'Templates, Text, and Date/Time Format settings', 'tk-event-weather' ),
 				'priority'    => 10,
-				'panel'       => self::$customizer_panel_id,
+				'panel'       => self::customizer_panel_id(),
 			)
 		);
 
 		$wp_customize->add_section(
-			self::$customizer_section_id . '_api_dark_sky',
+			self::customizer_section_id() . '_api_dark_sky',
 			array(
 				'title'       => __( 'Dark Sky API', 'tk-event-weather' ),
 				'description' => __( 'Dark Sky API settings', 'tk-event-weather' ),
 				'priority'    => 30,
 				// comment out if not using a custom Panel. With high priority within panel, add-ons will display below this "Core Settings" section
-				'panel'       => self::$customizer_panel_id,
+				'panel'       => self::customizer_panel_id(),
 			)
 		);
 
 		$wp_customize->add_section(
-			self::$customizer_section_id . '_api_google',
+			self::customizer_section_id() . '_api_google',
 			array(
 				'title'       => __( 'Google Maps API', 'tk-event-weather' ),
 				'description' => __( 'Google Maps API settings', 'tk-event-weather' ),
 				'priority'    => 40,
 				// comment out if not using a custom Panel. With high priority within panel, add-ons will display below this "Core Settings" section
-				'panel'       => self::$customizer_panel_id,
+				'panel'       => self::customizer_panel_id(),
 			)
 		);
 
 		$wp_customize->add_section(
-			self::$customizer_section_id . '_advanced',
+			self::customizer_section_id() . '_advanced',
 			array(
 				'title'       => __( 'Advanced', 'tk-event-weather' ),
 				'description' => __( 'Transients and Debug settings', 'tk-event-weather' ),
 				'priority'    => 50,
-				'panel'       => self::$customizer_panel_id,
+				'panel'       => self::customizer_panel_id(),
 			)
 		);
 
@@ -298,7 +312,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_display_template_control', array(
 				'label'       => esc_html__( 'Default Display Template', 'tk-event-weather' ),
 				'description' => esc_html__( 'Choose your default Display Template. If left blank, default will be "Hourly Horizontal".', 'tk-event-weather' ),
-				'section'     => self::$customizer_section_id . '_display',
+				'section'     => self::customizer_section_id() . '_display',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[display_template]',
 				'type'        => 'select',
 				'choices'     => Template::valid_display_templates( 'true' ),
@@ -317,7 +331,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_scroll_horizontal_off_control', array(
 				'label'       => esc_html__( 'Disable Horizontal Scrolling', 'tk-event-weather' ),
 				'description' => __( 'If checked, the horizontal scrolling stylesheet will not load and, therefore, it will wrap to multiple rows and there will not be a horizontal scroll bar.', 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_display',
+				'section'     => self::customizer_section_id() . '_display',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[scroll_horizontal_off]',
 				'type'        => 'checkbox',
 				'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
@@ -336,7 +350,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_vertical_to_columns_off_control', array(
 				'label'       => esc_html__( 'Disable Vertical to Columns', 'tk-event-weather' ),
 				'description' => __( 'If checked, the vertical columns stylesheet will not load and, therefore, each day displayed vertically will be below the previous day.', 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_display',
+				'section'     => self::customizer_section_id() . '_display',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[vertical_to_columns_off]',
 				'type'        => 'checkbox',
 				'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
@@ -355,7 +369,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_sunrise_sunset_off_control', array(
 				'label'       => esc_html__( 'Disable Sunrise/Sunset', 'tk-event-weather' ),
 				'description' => __( 'Check this box to disable including sunrise and sunset times into the hourly weather views.', 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_display',
+				'section'     => self::customizer_section_id() . '_display',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[sunrise_sunset_off]',
 				'type'        => 'checkbox',
 				'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
@@ -375,7 +389,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_text_before_control', array(
 				'label'       => esc_html__( 'Text before Forecast display', 'tk-event-weather' ),
 				'description' => __( 'What text should be displayed before the hourly weather? (h3 tag)<br>Example: Forecast<br>Default: none', 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_display',
+				'section'     => self::customizer_section_id() . '_display',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[text_before]',
 				'type'        => 'text',
 			)
@@ -394,7 +408,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_text_after_control', array(
 				'label'       => esc_html__( 'Text after Forecast display', 'tk-event-weather' ),
 				'description' => __( 'What text should be displayed after the hourly weather? (p tag)<br>Example: a disclaimer about the weather not being guaranteed<br>Default: none', 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_display',
+				'section'     => self::customizer_section_id() . '_display',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[text_after]',
 				'type'        => 'text',
 			)
@@ -413,7 +427,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_time_format_day_control', array(
 				'label'       => esc_html__( 'Day Format', 'tk-event-weather' ),
 				'description' => sprintf( __( "Per day date format. Default: M j (e.g. Oct 7)%sReference %s and %sthe Codex's Formatting Date and Time%s for available time formats (links open in new window).", 'tk-event-weather' ), '<br>', '<a href="https://codex.wordpress.org/Function_Reference/date_i18n" target="_blank">date_i18n()</a>', '<a href="https://codex.wordpress.org/Formatting_Date_and_Time" target="_blank">', '</a>' ),
-				'section'     => self:: $customizer_section_id . '_display',
+				'section'     => self::customizer_section_id() . '_display',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[time_format_day]',
 				'type'        => 'text',
 			)
@@ -432,7 +446,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_time_format_hours_control', array(
 				'label'       => esc_html__( 'Hourly Time Format', 'tk-event-weather' ),
 				'description' => __( 'Per hour time format. Default: ga (e.g. 7am)', 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_display',
+				'section'     => self::customizer_section_id() . '_display',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[time_format_hours]',
 				'type'        => 'text',
 			)
@@ -451,7 +465,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_time_format_minutes_control', array(
 				'label'       => esc_html__( 'Minutes Time Format', 'tk-event-weather' ),
 				'description' => esc_html__( 'Time format used for sunrises and sunsets. Default: g:i (e.g. 7:12am)' ),
-				'section'     => self:: $customizer_section_id . '_display',
+				'section'     => self::customizer_section_id() . '_display',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[time_format_minutes]',
 				'type'        => 'text',
 			)
@@ -469,7 +483,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_plugin_credit_link_on_control', array(
 				'label'       => esc_html__( 'Enable display of the plugin credit link', 'tk-event-weather' ),
 				'description' => __( "<strong>Check this box to turn on</strong> linking to the TK Event Weather plugin's home page. <strong>We sure appreciate it!</strong>", 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_display',
+				'section'     => self::customizer_section_id() . '_display',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[plugin_credit_link_on]',
 				'type'        => 'checkbox',
 				'choices'     => array( 'true' => __( 'Enable', 'tk-event-weather' ) ),
@@ -488,7 +502,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_darksky_credit_link_off_control', array(
 				'label'       => esc_html__( 'Disable display of the Dark Sky credit link', 'tk-event-weather' ),
 				'description' => __( "Check this box to disable linking to Dark Sky.<br>You should not check this box without permission from Dark Sky, per their Terms of Use.", 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_display',
+				'section'     => self::customizer_section_id() . '_display',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[darksky_credit_link_off]',
 				'type'        => 'checkbox',
 				'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
@@ -507,7 +521,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_darksky_api_key_control', array(
 				'label'       => esc_html__( 'Dark Sky API Key', 'tk-event-weather' ),
 				'description' => __( 'Enter your <a href="https://darksky.net/dev/" target="_blank">Dark Sky API Key</a> (link opens in new window)', 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_api_dark_sky',
+				'section'     => self::customizer_section_id() . '_api_dark_sky',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[darksky_api_key]',
 				'type'        => 'password',
 				/**
@@ -536,7 +550,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_multi_day_limit_control', array(
 				'label'       => esc_html__( 'Multi-day forecast limit', 'tk-event-weather' ),
 				'description' => __( "This is to protect you against too many API calls at once due to a typo between the Start Date and End Date, for example. <strong>Change this to 1 to disable multi-day forecasts</strong>, or increase it beyond 10 if you really want to. Note that each calendar day of a forecast request will cost 1 Dark Sky API credit. Example: December 2 at 7pm to December 4 at 5am would be 3 days.<br><strong>Default: 10</strong>", 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_api_dark_sky',
+				'section'     => self::customizer_section_id() . '_api_dark_sky',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[multi_day_limit]',
 				'type'        => 'text',
 			)
@@ -554,7 +568,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_multi_day_ignore_start_at_today_control', array(
 				'label'       => esc_html__( 'Disable considering Today into multi-day forecasts', 'tk-event-weather' ),
 				'description' => __( 'If a multi-day forecast starts prior to Today but ends on or after Today, the multi-day forecast will start at Today. Once the entire multi-day span is in the past, the entire span of days will display according to your "Past cutoff (in days)" setting. Example: Today is July 7 and the forecast spans July 6-10; with this box unchecked, July 7-10 will be displayed. On July 11, July 6-10 will be displayed.', 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_api_dark_sky',
+				'section'     => self::customizer_section_id() . '_api_dark_sky',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[multi_day_ignore_start_at_today]',
 				'type'        => 'checkbox',
 				'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
@@ -574,7 +588,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_cutoff_past_days_control', array(
 				'label'       => esc_html__( 'Past cutoff (in days)', 'tk-event-weather' ),
 				'description' => __( 'If datetime is this far in the past, do not output the forecast. Enter zero for "no limit".<br>Example: "30" would disable weather more than 30 days in the past.<br>Default: 30', 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_api_dark_sky',
+				'section'     => self::customizer_section_id() . '_api_dark_sky',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[cutoff_past_days]',
 				'type'        => 'text',
 			)
@@ -593,7 +607,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_cutoff_future_days_control', array(
 				'label'       => esc_html__( 'Future cutoff (in days)', 'tk-event-weather' ),
 				'description' => __( 'If datetime is this far in the future, do not output the forecast. Enter zero for "no limit".<br>Example: "365" would disable weather more than 1 year in the future.<br>Default: 365', 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_api_dark_sky',
+				'section'     => self::customizer_section_id() . '_api_dark_sky',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[cutoff_future_days]',
 				'type'        => 'text',
 			)
@@ -611,7 +625,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_darksky_units_control', array(
 				'label'       => esc_html__( 'Units', 'tk-event-weather' ),
 				'description' => __( 'Although it is recommended to leave this as "Auto", you may choose to force returning the weather data in specific units.<br>Reference: <a href="https://darksky.net/dev/docs#request-parameters" target="_blank">Dark Sky API Docs</a> (link opens in new window)', 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_api_dark_sky',
+				'section'     => self::customizer_section_id() . '_api_dark_sky',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[darksky_units]',
 				'type'        => 'select',
 				'choices'     => API_Dark_Sky::valid_units( 'true' ),
@@ -630,7 +644,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_darksky_language_control', array(
 				'label'       => esc_html__( 'Language', 'tk-event-weather' ),
 				'description' => __( 'Language for the summary text(s).<br>Reference: <a href="https://darksky.net/dev/docs#request-parameters" target="_blank">Dark Sky API Docs</a> (link opens in new window)<br><strong>Default: English</strong>', 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_api_dark_sky',
+				'section'     => self::customizer_section_id() . '_api_dark_sky',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[darksky_language]',
 				'type'        => 'select',
 				'choices'     => API_Dark_Sky::valid_languages( 'true' ),
@@ -649,7 +663,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_timezone_source_control', array(
 				'label'       => esc_html__( 'Timezone Source', 'tk-event-weather' ),
 				'description' => __( "In which timezone should hourly times be displayed?<br><strong>From API</strong> means times will be displayed per location. For example, if an event on your site is in New York City, the weather times get displayed in New York City time even if your WordPress timezone is set to Honolulu, Hawaii or UTC-10.<br><strong>From Wordpress</strong> means all weather times display in your WordPress timezone. From the example above, the event in New York City would have its weather displayed in Honolulu time.<br>(If you do not see WordPress as an option here, please first set it in your General Settings.)<br>Default: From API", 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_api_dark_sky',
+				'section'     => self::customizer_section_id() . '_api_dark_sky',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[timezone_source]',
 				'type'        => 'select',
 				'choices'     => Time::valid_timezone_sources( 'true' ),
@@ -670,7 +684,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_google_maps_api_key_control', array(
 				'label'       => esc_html__( 'Google Maps Geocoding API Key', 'tk-event-weather' ),
 				'description' => __( 'Input your Standard (Free) or Premium <a href="https://developers.google.com/maps/documentation/geocoding/get-api-key" target="_blank">Google Maps Geocoding API Key</a> (link opens in new window) to use the <strong>location</strong> shortcode argument. When creating an API key: for "Where will you be calling the API from?", choose "Web server (e.g. node.js, Tomcat)".<br>Important Terms are documentend in the Tools tab of the plugin settings page.', 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_api_google',
+				'section'     => self::customizer_section_id() . '_api_google',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[google_maps_api_key]',
 				'type'        => 'password',
 				'input_attrs' => array(
@@ -693,7 +707,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_transients_expiration_hours_control', array(
 				'label'       => esc_html__( 'Dark Sky transient expiration (in hours)', 'tk-event-weather' ),
 				'description' => __( 'If stored Dark Sky API data is older than this many hours, pull fresh weather data from the API.<br>Default: 12<br>Note: Google Maps Geocoding API transients are always set to 30 days.', 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_advanced',
+				'section'     => self::customizer_section_id() . '_advanced',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[transients_expiration_hours]',
 				'type'        => 'text',
 			)
@@ -711,7 +725,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_transients_off_control', array(
 				'label'       => esc_html__( 'Disable Transients', 'tk-event-weather' ),
 				'description' => __( 'The <a href="https://codex.wordpress.org/Transients_API" target="_blank">WordPress Transients API</a> (link opens in new window) is used to reduce repetitive API calls and improve performance. Check this box if you wish to disable using Transients (suggested only for testing purposes).<br>Note: Applies to both Dark Sky and Google Maps Geocoding API transients.', 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_advanced',
+				'section'     => self::customizer_section_id() . '_advanced',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[transients_off]',
 				'type'        => 'checkbox',
 				'choices'     => array( 'true' => __( 'Disable', 'tk-event-weather' ) ),
@@ -730,7 +744,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_debug_on_control', array(
 				'label'       => esc_html__( 'Enable Debug Mode for this plugin', 'tk-event-weather' ),
 				'description' => __( 'Prints extra information to the page only for Administrators.<br>Warning: Likely exposes your API key(s) to all Administrators.', 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_advanced',
+				'section'     => self::customizer_section_id() . '_advanced',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[debug_on]',
 				'type'        => 'checkbox',
 				'choices'     => array( 'true' => __( 'Enable', 'tk-event-weather' ) ),
@@ -749,7 +763,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '_uninstall_delete_all_data_control', array(
 				'label'       => esc_html__( 'Delete all data on uninstall', 'tk-event-weather' ),
 				'description' => __( 'Check this box to delete all data associated with this plugin when deleted (not just deactivated) via the wp-admin Plugins page (not via SFTP).', 'tk-event-weather' ),
-				'section'     => self:: $customizer_section_id . '_advanced',
+				'section'     => self::customizer_section_id() . '_advanced',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[uninstall_delete_all_data]',
 				'type'        => 'checkbox',
 				'choices'     => array( 'true' => __( 'Enable', 'tk-event-weather' ) ),
@@ -767,7 +781,7 @@ class Plugin extends Life_Cycle {
 					$wp_customize->add_control( TK_EVENT_WEATHER_UNDERSCORES . '_icons_control', array(
 						'label'				=> esc_html__( 'Icons settings', 'tk-event-weather' ),
 						'description'		=> __( '', 'tk-event-weather' ),
-						'section'			=> self:: $customizer_section_id . '_display',
+						'section'			=> self::customizer_section_id() . '_display',
 						'settings'			=> TK_EVENT_WEATHER_UNDERSCORES . '[sunrise_sunset_off]',
 						'type'				=> 'select',
 						'choices'			=> Functions::valid_icon_type( 'true' ),
