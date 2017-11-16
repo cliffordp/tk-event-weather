@@ -204,8 +204,13 @@ public static $span_first_hour_timestamp = false;
 		$output .= PHP_EOL;
 
 
-		// Debug
-		self::$debug_enabled = (bool) $atts['debug_on']; // TODO not used at all? -- maybe var_dump( get_defined_vars() ) somewhere?
+		// Enable Debug only if user is logged in and can use Customizer (an Admin).
+		if (
+			current_user_can( 'customize' )
+			&& true === (bool) $atts['debug_on']
+		) {
+			self::$debug_enabled = true;
+		}
 
 
 		// if false === $transients, clear existing and set new transients
