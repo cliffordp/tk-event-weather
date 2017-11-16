@@ -71,7 +71,7 @@ class Install_Indicator extends Options_Manager {
 	 * "Plugin Name", "Version", "Description", "Text Domain", etc.
 	 */
 	protected function get_main_plugin_file_name() {
-		return basename( dirname( __FILE__ ) ) . 'php';
+		return TK_EVENT_WEATHER_HYPHENS . 'php';
 	}
 
 	/**

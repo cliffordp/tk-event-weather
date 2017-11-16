@@ -794,8 +794,6 @@ class Plugin extends Life_Cycle {
 		return apply_filters( 'tk_event_weather_customizer_edit_shortcut_setting', $setting );
 	}
 
-		protected function get_main_plugin_file_name() {
-		return 'tk-event-weather.php';
-	} // end customizer_options()
+	// end customizer_options()
 
 }
