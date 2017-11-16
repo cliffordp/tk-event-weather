@@ -6,7 +6,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.6
 Tested up to: 4.9
 Requires PHP: 5.4
-Stable tag: 1.5
+Stable tag: 1.5.0
 
 Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 
@@ -219,8 +219,9 @@ Many thanks to the following:
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
 
-= Version 1.5 =
-* November 3, 2017
+= Version 1.5.0 =
+* November 20, 2017
+* 80 development hours since the last release! Enjoy the fruits of my labor and please consider purchasing a paid add-on to help both of us! :)
 * Enhancement - Added support for forecasting across multiple days. To avoid accidental excess usage of API credits (each day's weather costs 1 API credit), the multi-day limit per shortcode is limited to 10 by default, customizable from 1 to as many as you want. Any shortcode that tries to span more days than the limit will result in an error with helpful tips to adjust the shortcode.
 * Enhancement - Multi-day forecasts will trim days from the beginning only if Today is in the span of days. This can be disabled in the plugin settings.
 * Enhancement - Added "vertical columns" mode option for displaying multiple days adjascent using CSS Flexbox.
