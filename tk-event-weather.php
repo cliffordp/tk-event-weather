@@ -173,14 +173,21 @@ function tk_event_weather_freemius() {
 		$tk_event_weather_freemius = \fs_dynamic_init(
 			array(
 				'id'             => '240',
-				'slug'           => TK_EVENT_WEATHER_UNDERSCORES,
+				'slug'           => TK_EVENT_WEATHER_HYPHENS,
 				'public_key'     => 'pk_b6902fc0051f10b5e36bea21fb0e7',
 				'is_premium'     => false,
 				'has_addons'     => true,
 				'has_paid_plans' => false,
 				'menu'           => array(
-					// slug is where we get redirected to upon plugin activation so it should match the options page name and location we generate
-					'slug'   => TK_EVENT_WEATHER_UNDERSCORES . '_settings',
+					/**
+					 * The Freemius slug is to where we get redirected upon
+					 * plugin activation (and to where submenu items get
+					 * attached) so it should match the options page URL
+					 * we generate.
+					 *
+					 * @see Life_Cycle::get_settings_slug()
+					 */
+					'slug'   => TK_EVENT_WEATHER_HYPHENS . '-settings',
 					'parent' => array(
 						'slug' => 'options-general.php',
 					),
@@ -251,7 +258,6 @@ if ( tk_event_weather_php_version_check() ) {
 	tk_event_weather_freemius();
 	tk_event_weather_freemius()->add_filter( 'connect_message', 'TKEventWeather\tk_event_weather_freemius_custom_connect_message', 10, 6 );
 	tk_event_weather_freemius()->add_filter( 'plugin_icon', 'TKEventWeather\tk_event_weather_freemius_plugin_icon' );
-
 
 	require_once( 'vendor/autoload.php' );
 	include_once( 'init.php' );

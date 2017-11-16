@@ -132,13 +132,13 @@ class Life_Cycle extends Install_Indicator {
 	}
 
 	/**
-	 * Must be lower case to increase compatibility with Freemius.
+	 * Must be lower-case and hyphenated to increase compatibility with Freemius.
 	 *
 	 * @return string Slug name for the URL to the Setting page
 	 * (i.e. the page for setting options).
 	 */
 	protected function get_settings_slug() {
-		return TK_EVENT_WEATHER_UNDERSCORES . '_settings';
+		return TK_EVENT_WEATHER_HYPHENS . '-settings';
 	}
 
 	/**
