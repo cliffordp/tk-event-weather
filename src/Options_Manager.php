@@ -59,7 +59,7 @@ class Options_Manager {
 	 * @return string
 	 */
 	public function get_option_name_prefix() {
-		return TK_EVENT_WEATHER_PLUGIN_SLUG . '_';
+		return TK_EVENT_WEATHER_UNDERSCORES . '_';
 	}
 
 	/**
@@ -957,11 +957,11 @@ class Options_Manager {
 	 * Cleanup: remove all options from the DB
 	 */
 	protected function delete_saved_options() {
-		$customizer_options = get_option( TK_EVENT_WEATHER_PLUGIN_SLUG );
+		$customizer_options = get_option( TK_EVENT_WEATHER_UNDERSCORES );
 
 		if ( ! empty( $customizer_options['uninstall_delete_all_data'] ) ) {
 			// delete customizer options
-			delete_option( TK_EVENT_WEATHER_PLUGIN_SLUG );
+			delete_option( TK_EVENT_WEATHER_UNDERSCORES );
 
 			// delete all other options is handled via mark_as_uninstalled()
 

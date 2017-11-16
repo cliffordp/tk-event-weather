@@ -71,8 +71,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.5.0
  */
-define( 'TK_EVENT_WEATHER_PLUGIN_SLUG', 'tk_event_weather' );
-define( 'TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED', 'tk-event-weather' );
+define( 'TK_EVENT_WEATHER_UNDERSCORES', 'tk_event_weather' );
+
+/**
+ * Used for file names and directories, HTML class names, etc.
+ *
+ * @since 1.5.0
+ */
+define( 'TK_EVENT_WEATHER_HYPHENS', 'tk-event-weather' );
 
 // Required for Template Loader. Also used elsewhere.
 define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) ); // e.g. /.../.../example-com/wp-content/plugins/tk-event-weather/
@@ -130,13 +136,13 @@ function tk_event_weather_freemius() {
 		$tk_event_weather_freemius = fs_dynamic_init(
 			array(
 				'id'             => '240',
-				'slug'           => TK_EVENT_WEATHER_PLUGIN_SLUG,
+				'slug'           => TK_EVENT_WEATHER_UNDERSCORES,
 				'public_key'     => 'pk_b6902fc0051f10b5e36bea21fb0e7',
 				'is_premium'     => false,
 				'has_addons'     => true,
 				'has_paid_plans' => false,
 				'menu'           => array(
-					'slug'   => TK_EVENT_WEATHER_PLUGIN_SLUG . '_settings',
+					'slug'   => TK_EVENT_WEATHER_UNDERSCORES . '_settings',
 					'parent' => array(
 						'slug' => 'options-general.php',
 					),

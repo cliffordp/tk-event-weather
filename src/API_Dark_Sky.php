@@ -227,7 +227,7 @@ class API_Dark_Sky {
 		$api_key = urlencode( sanitize_key( Shortcode::$dark_sky_api_key ) );
 
 		if ( empty( $api_key ) ) {
-			Functions::invalid_shortcode_message( 'Please enter your Dark Sky API Key', Plugin::customizer_link_to_edit_current_url( array( 'autofocus[control]' => TK_EVENT_WEATHER_PLUGIN_SLUG . '_darksky_api_key_control' ) ), 'Enter your Dark Sky API Key' );
+			Functions::invalid_shortcode_message( 'Please enter your Dark Sky API Key', Plugin::customizer_link_to_edit_current_url( array( 'autofocus[control]' => TK_EVENT_WEATHER_UNDERSCORES . '_darksky_api_key_control' ) ), 'Enter your Dark Sky API Key' );
 
 			return '';
 		}

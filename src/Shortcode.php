@@ -627,7 +627,7 @@ public static $span_first_hour_timestamp = false;
 
 		// enqueue CSS file if using Climacons Icon Font
 		if ( 'climacons_font' == $icons ) {
-			wp_enqueue_style( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '-climacons' );
+			wp_enqueue_style( TK_EVENT_WEATHER_HYPHENS . '-climacons' );
 		}
 
 		self::$span_template_data['icons'] = $icons;
@@ -813,16 +813,16 @@ public static $span_first_hour_timestamp = false;
 			self::$added_already = true;
 
 			// need the basic styling even if plugin options are not yet set, e.g. nice-looking error messages
-			wp_enqueue_style( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED );
+			wp_enqueue_style( TK_EVENT_WEATHER_HYPHENS );
 
 			// only include these styles if plugin options are set
 			if ( ! empty( $plugin_options ) ) {
 				if ( empty( $plugin_options['scroll_horizontal_off'] ) ) {
-					wp_enqueue_style( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '-scroll-horizontal' );
+					wp_enqueue_style( TK_EVENT_WEATHER_HYPHENS . '-scroll-horizontal' );
 				}
 
 				if ( empty( $plugin_options['vertical_to_columns_off'] ) ) {
-					wp_enqueue_style( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '-vertical-to-columns' );
+					wp_enqueue_style( TK_EVENT_WEATHER_HYPHENS . '-vertical-to-columns' );
 				}
 			}
 		}

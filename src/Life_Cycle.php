@@ -138,7 +138,7 @@ class Life_Cycle extends Install_Indicator {
 	 * (i.e. the page for setting options).
 	 */
 	protected function get_settings_slug() {
-		return TK_EVENT_WEATHER_PLUGIN_SLUG . '_settings';
+		return TK_EVENT_WEATHER_UNDERSCORES . '_settings';
 	}
 
 	/**

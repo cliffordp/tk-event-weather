@@ -21,7 +21,7 @@ class Functions {
 	 * @return bool|mixed
 	 */
 	public static function plugin_options() {
-		$plugin_options = get_option( TK_EVENT_WEATHER_PLUGIN_SLUG );
+		$plugin_options = get_option( TK_EVENT_WEATHER_UNDERSCORES );
 		if ( ! empty( $plugin_options ) ) {
 			return $plugin_options;
 		} else {
@@ -34,11 +34,11 @@ class Functions {
 	 * handle is 'tk-event-weather'
 	 */
 	public static function register_css() {
-		wp_register_style( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED, TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/tk-event-weather.css', array(), tk_event_weather_version() );
+		wp_register_style( TK_EVENT_WEATHER_HYPHENS, TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/tk-event-weather.css', array(), tk_event_weather_version() );
 
-		wp_register_style( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '-scroll-horizontal', TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/tk-event-weather-scroll-horizontal.css', array(), tk_event_weather_version() );
+		wp_register_style( TK_EVENT_WEATHER_HYPHENS . '-scroll-horizontal', TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/tk-event-weather-scroll-horizontal.css', array(), tk_event_weather_version() );
 
-		wp_register_style( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '-vertical-to-columns', TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/tk-event-weather-vertical-to-columns.css', array(), tk_event_weather_version() );
+		wp_register_style( TK_EVENT_WEATHER_HYPHENS . '-vertical-to-columns', TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/tk-event-weather-vertical-to-columns.css', array(), tk_event_weather_version() );
 	}
 
 
@@ -53,7 +53,7 @@ class Functions {
 	// https://github.com/christiannaths/Climacons-Font/blob/master/webfont/demo.html
 	//
 	public static function register_climacons_css() {
-		wp_register_style( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '-climacons', Setup::plugin_dir_url_vendor() . 'climacons-webfont/climacons-webfont/climacons-font.css', array(), tk_event_weather_version() );
+		wp_register_style( TK_EVENT_WEATHER_HYPHENS . '-climacons', Setup::plugin_dir_url_vendor() . 'climacons-webfont/climacons-webfont/climacons-font.css', array(), tk_event_weather_version() );
 	}
 
 
@@ -125,9 +125,9 @@ class Functions {
 		$error_reason = str_replace( "'", "\'", $input );
 
 		if ( ! empty( $error_reason ) ) {
-			$message = sprintf( __( '%s for the `%s` shortcode to work correctly.', 'tk-event-weather' ), $error_reason, TK_EVENT_WEATHER_PLUGIN_SLUG );
+			$message = sprintf( __( '%s for the `%s` shortcode to work correctly.', 'tk-event-weather' ), $error_reason, TK_EVENT_WEATHER_UNDERSCORES );
 		} else {
-			$message = sprintf( __( 'Invalid or incomplete usage of the `%s` shortcode.', 'tk-event-weather' ), TK_EVENT_WEATHER_PLUGIN_SLUG );
+			$message = sprintf( __( 'Invalid or incomplete usage of the `%s` shortcode.', 'tk-event-weather' ), TK_EVENT_WEATHER_UNDERSCORES );
 		}
 
 		$message = sprintf( __( '%s (Error message only displayed to users with the `%s` capability.)', 'tk-event-weather' ), $message, $capability );
@@ -193,8 +193,8 @@ class Functions {
 	public static function shortcode_error_class_name() {
 		$result = sprintf(
 			'%s %s',
-			sanitize_html_class( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '__wrapper' ), // so the customizer auto-links to it
-			sanitize_html_class( TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '__error' // for the custom CSS targeting
+			sanitize_html_class( TK_EVENT_WEATHER_HYPHENS . '__wrapper' ), // so the customizer auto-links to it
+			sanitize_html_class( TK_EVENT_WEATHER_HYPHENS . '__error' // for the custom CSS targeting
 			)
 		);
 
@@ -299,7 +299,7 @@ class Functions {
 		}
 
 		if ( ! empty( $output ) ) {
-			$output = sprintf( '<div class="%s__credit-links">%s</div>', TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED, $output );
+			$output = sprintf( '<div class="%s__credit-links">%s</div>', TK_EVENT_WEATHER_HYPHENS, $output );
 		}
 
 		return $output;
@@ -913,7 +913,7 @@ class Functions {
 
 
 		if ( 'climacons_font' == $icon_type ) {
-			$result = sprintf( '<i style="-ms-transform: rotate(%1$ddeg); -webkit-transform: rotate(%1$ddeg); transform: rotate(%1$ddeg);" class="%2$s__wind-direction-icon climacon compass north"></i>', $input, TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED );
+			$result = sprintf( '<i style="-ms-transform: rotate(%1$ddeg); -webkit-transform: rotate(%1$ddeg); transform: rotate(%1$ddeg);" class="%2$s__wind-direction-icon climacon compass north"></i>', $input, TK_EVENT_WEATHER_HYPHENS );
 		} elseif ( 'climacons_svg' == $icon_type ) {
 			// $result = $climacons_svg;
 		} else {

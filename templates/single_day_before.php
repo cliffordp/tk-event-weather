@@ -32,7 +32,7 @@ if ( true === Time::timestamp_is_during_today( $context->start_time_timestamp ) 
 
 // Total Days in Span won't be set at time of first day's run so don't try to include it
 $class = sprintf( '%1$s__wrap_single_day %2$s %1$s__span-%3$d-to-%4$d %1$s__day-index-%5$d %1$s__day-type-%6$s %7$s',
-	TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED,
+	TK_EVENT_WEATHER_HYPHENS,
 	Shortcode::$span_template_data['template_class_name'],
 	Shortcode::$span_start_time_timestamp,
 	Shortcode::$span_end_time_timestamp,
@@ -47,10 +47,10 @@ $output .= PHP_EOL;
 $output .= $context->before;
 $output .= PHP_EOL;
 
-$output .= '<div class="' . TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '-template">';
+$output .= '<div class="' . TK_EVENT_WEATHER_HYPHENS . '-template">';
 $output .= PHP_EOL;
 
-$output .= '<h4 class="' . TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '-day-name"';
+$output .= '<h4 class="' . TK_EVENT_WEATHER_HYPHENS . '-day-name"';
 if ( ! empty( $context->api_data->daily->data[0]->summary ) ) { // Note "daily" instead of "hourly"
 	$output .= sprintf( ' title="%s"', esc_attr( $context->api_data->daily->data[0]->summary ) );
 }
@@ -78,11 +78,11 @@ $output .= PHP_EOL;
 
 // Same as "title" attribute for Day Name but displayed below it so it is more noticeable
 if ( ! empty( $context->api_data->daily->data[0]->summary ) ) { // Note "daily" instead of "hourly"
-	$output .= sprintf( '<div class="%s-day-summary">%s</div>', TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED, esc_html( $context->api_data->daily->data[0]->summary ) );
+	$output .= sprintf( '<div class="%s-day-summary">%s</div>', TK_EVENT_WEATHER_HYPHENS, esc_html( $context->api_data->daily->data[0]->summary ) );
 	$output .= PHP_EOL;
 }
 
-$output .= '<div class="' . TK_EVENT_WEATHER_PLUGIN_SLUG_HYPHENATED . '-single-day-weather">';
+$output .= '<div class="' . TK_EVENT_WEATHER_HYPHENS . '-single-day-weather">';
 $output .= PHP_EOL;
 
 echo $output;
