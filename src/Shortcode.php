@@ -55,7 +55,7 @@ public static $span_first_hour_timestamp = false;
 		$plugin_options = Functions::plugin_options();
 
 		if ( empty( $plugin_options ) ) {
-			Functions::invalid_shortcode_message( 'Please complete the initial setup', Plugin::customizer_link_to_edit_current_url( array() ), 'Get Started!' );
+			Functions::invalid_shortcode_message( 'Please complete the initial setup', Plugin::customizer_link_to_edit_current_url(), 'Get Started!' );
 
 			return Functions::$shortcode_error_message;
 		} else {
