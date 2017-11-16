@@ -115,7 +115,7 @@ class Functions {
 			return;
 		}
 
-		$capability = apply_filters( 'tk_event_weather_shortcode_msg_cap', 'edit_theme_options' );
+		$capability = apply_filters( 'tk_event_weather_shortcode_msg_cap', 'customize' );
 
 		if ( ! in_array( $capability, self::all_valid_wp_capabilities() ) ) {
 			$capability = 'customize';
