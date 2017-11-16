@@ -87,10 +87,8 @@ class Plugin extends Life_Cycle {
 	 * @return string
 	 */
 	private static function convert_link_to_a_customizer_link( $url, $deep_link_to_section = '' ) {
-		if (
-			is_customize_preview()
-			|| is_admin()
-		) {
+		// Disallow generating a Customizer link if we are already in the Customizer because they will not be permitted to work anyway (cursor disabled) by the Customizer.
+		if ( is_customize_preview() ) {
 			return;
 		}
 
