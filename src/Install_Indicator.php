@@ -63,7 +63,7 @@ class Install_Indicator extends Options_Manager {
 	 * @link https://developer.wordpress.org/reference/functions/plugin_dir_path/
 	 */
 	protected function get_plugin_dir() {
-		return Setup::plugin_dir_path_root();
+		return TK_EVENT_WEATHER_PLUGIN_ROOT_DIR;
 	}
 
 	/**

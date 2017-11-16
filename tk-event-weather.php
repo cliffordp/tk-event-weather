@@ -105,8 +105,8 @@ function tk_event_weather_version() {
 		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 	}
 	// Create the plugins folder and file variables
-	$plugin_folder = get_plugins( '/tk-event-weather' );
-	$plugin_file   = 'tk-event-weather.php';
+	$plugin_folder = get_plugins( '/' . TK_EVENT_WEATHER_HYPHENS );
+	$plugin_file   = TK_EVENT_WEATHER_HYPHENS . '.php';
 
 	// If the plugin version number is set, return it
 	if ( isset( $plugin_folder[ $plugin_file ]['Version'] ) ) {
@@ -130,7 +130,7 @@ function tkeventweather_notice_wrong_php_version() {
 	echo '<div class="updated fade">' .
 	     __( 'Error: plugin "TK Event Weather" requires a newer version of PHP to be running.', 'tk-event-weather' ) .
 	     '<br/>' . __( 'Minimum required PHP version: ', 'tk-event-weather' ) . '<strong>' . tk_event_weather_min_php_version() . '</strong>' .
-	     '<br/>' . __( 'Your server\'s PHP version: ', 'tk-event-weather' ) . '<strong>' . \phpversion() . '</strong>' .
+	     '<br/>' . __( "Your server's PHP version: ", 'tk-event-weather' ) . '<strong>' . \phpversion() . '</strong>' .
 	     '</div>';
 }
 
@@ -152,7 +152,7 @@ function tk_event_weather_php_version_check() {
 
 function tk_event_weather_terms_agreement_text() {
 	return sprintf(
-		__( 'By using this plugin, you agree to %s and %s Terms.', 'tk-event-weather' ),
+		__( 'By using this plugin, you agree to %s and %s terms.', 'tk-event-weather' ),
 		'<a target="_blank" href="https://tourkick.com/terms/?utm_source=terms_agreement_text&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather">TourKick\'s</a>',
 		'<a target="_blank" href="https://freemius.com/terms/">Freemius\'</a>'
 	);

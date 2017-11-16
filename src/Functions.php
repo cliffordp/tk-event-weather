@@ -30,15 +30,12 @@ class Functions {
 	}
 
 
-	/*
-	 * handle is 'tk-event-weather'
-	 */
 	public static function register_css() {
-		wp_register_style( TK_EVENT_WEATHER_HYPHENS, TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/tk-event-weather.css', array(), tk_event_weather_version() );
+		wp_register_style( TK_EVENT_WEATHER_HYPHENS, TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/' . TK_EVENT_WEATHER_HYPHENS . '.css', array(), tk_event_weather_version() );
 
-		wp_register_style( TK_EVENT_WEATHER_HYPHENS . '-scroll-horizontal', TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/tk-event-weather-scroll-horizontal.css', array(), tk_event_weather_version() );
+		wp_register_style( TK_EVENT_WEATHER_HYPHENS . '-scroll-horizontal', TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/' . TK_EVENT_WEATHER_HYPHENS . '-scroll-horizontal.css', array(), tk_event_weather_version() );
 
-		wp_register_style( TK_EVENT_WEATHER_HYPHENS . '-vertical-to-columns', TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/tk-event-weather-vertical-to-columns.css', array(), tk_event_weather_version() );
+		wp_register_style( TK_EVENT_WEATHER_HYPHENS . '-vertical-to-columns', TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/' . TK_EVENT_WEATHER_HYPHENS . '-vertical-to-columns.css', array(), tk_event_weather_version() );
 	}
 
 

@@ -29,7 +29,7 @@ class Setup {
 	}
 
 	public static function plugin_dir_path_images( $append = '' ) {
-		$path = self::plugin_dir_path_root() . 'images/'; // e.g. /Users/cmp/Documents/git/GitHub/tk-event-weather/images/
+		$path = TK_EVENT_WEATHER_PLUGIN_ROOT_DIR . 'images/'; // e.g. /Users/cmp/Documents/git/GitHub/tk-event-weather/images/
 
 		if (
 			! empty( $append )
@@ -47,13 +47,8 @@ class Setup {
 	 *
 	 */
 
-	// TODO use constant only
-	public static function plugin_dir_path_root() {
-		return TK_EVENT_WEATHER_PLUGIN_ROOT_DIR; // from root plugin file
-	}
-
 	public static function plugin_dir_path_vendor( $append = '' ) {
-		$path = self::plugin_dir_path_root() . 'vendor/'; // e.g. /Users/cmp/Documents/git/GitHub/tk-event-weather/vendor/
+		$path = TK_EVENT_WEATHER_PLUGIN_ROOT_DIR . 'vendor/'; // e.g. /Users/cmp/Documents/git/GitHub/tk-event-weather/vendor/
 
 		if (
 			! empty( $append )
