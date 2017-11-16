@@ -11,25 +11,37 @@
 	margin: 2em auto;
 }
 
+.tk-event-weather__wrap_single_day {
+	margin-top: 2rem;
+}
+
+h4.tk-event-weather-day-name {
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+}
+
+.tk-event-weather__after {
+	margin-top: 0.5rem;
+}
+
 /* TK Event Weather and Dark Sky credit links */
 
 .tk-event-weather__credit-links {
-	margin-top: 2em;
-	line-height: 1.5;
-	font-size: 50%;
+	margin-top: 2rem;
+	font-size: 0.5em;
 }
 
 .tk-event-weather-day-name {
-	margin-top: 1em;
+	margin-top: 1rem;
 }
 
 .tk-event-weather-day-summary {
-	margin-bottom: 1em;
+	margin-bottom: 1rem;
 }
 
 .tk-event-weather__wind-direction-icon {
 	display: inline-block; /* so icon rotation works */
-	font-size: 2em;
+	font-size: 2rem;
 	text-align: center;
 	vertical-align: middle;
 }
@@ -47,7 +59,7 @@
 }
 
 .tk-event-weather__wrapper .template-hourly_horizontal__icon {
-	font-size: 2em;
+	font-size: 2rem;
 }
 
 /* hourly_vertical */
@@ -58,7 +70,7 @@
 }
 
 .tk-event-weather__wrapper .template-hourly_vertical__icon {
-	font-size: 2em;
+	font-size: 2rem;
 	text-align: center;
 	vertical-align: middle;
 }
