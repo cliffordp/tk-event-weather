@@ -259,8 +259,7 @@ if ( tk_event_weather_php_version_check() ) {
 	tk_event_weather_freemius()->add_filter( 'connect_message', 'TKEventWeather\tk_event_weather_freemius_custom_connect_message', 10, 6 );
 	tk_event_weather_freemius()->add_filter( 'plugin_icon', 'TKEventWeather\tk_event_weather_freemius_plugin_icon' );
 
-	require_once( 'vendor/autoload.php' );
-	include_once( 'init.php' );
+	require_once( 'init.php' );
 	tk_event_weather_init( __FILE__ );
 
 	do_action( 'tk_event_weather_loaded' );

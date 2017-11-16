@@ -221,7 +221,7 @@ Many thanks to the following:
 
 = Version 1.5.0 =
 * November 20, 2017
-* 80 development hours since the last release! Enjoy the fruits of my labor and please consider purchasing a paid add-on to help both of us! :)
+* Over 80 development hours since the last release! Enjoy the fruits of my labor and, if you're using alongside a calendar plugin, please consider purchasing a paid add-on to help me and make your life easier! :)
 * Enhancement - Added support for forecasting across multiple days. To avoid accidental excess usage of API credits (each day's weather costs 1 API credit), the multi-day limit per shortcode is limited to 10 by default, customizable from 1 to as many as you want. Any shortcode that tries to span more days than the limit will result in an error with helpful tips to adjust the shortcode.
 * Enhancement - Multi-day forecasts will trim days from the beginning only if Today is in the span of days. This can be disabled in the plugin settings.
 * Enhancement - Added "vertical columns" mode option for displaying multiple days adjascent using CSS Flexbox.

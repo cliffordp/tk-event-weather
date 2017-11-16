@@ -57,6 +57,10 @@ class Life_Cycle extends Install_Indicator {
 	protected function other_install() {
 	}
 
+	/**
+	 * This should only ever get called from uninstall.php in the plugin's
+	 * root directory.
+	 */
 	public function uninstall() {
 		$this->other_uninstall();
 		$this->uninstall_database_tables();

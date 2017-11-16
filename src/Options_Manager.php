@@ -955,6 +955,8 @@ class Options_Manager {
 
 	/**
 	 * Cleanup: remove all options from the DB
+	 *
+	 * @link https://coderwall.com/p/yrqrkw/delete-all-existing-wordpress-transients-in-mysql-database
 	 */
 	protected function delete_saved_options() {
 		$customizer_options = get_option( TK_EVENT_WEATHER_UNDERSCORES );
@@ -970,9 +972,9 @@ class Options_Manager {
 
 			$table_name        = "{$wpdb->prefix}options";
 			$general_transient = '%\_transient\_%';
-			$our_transient     = '%\_tkeventw_%';
+			$our_transient     = '%\_' . Setup::$transient_name_prepend . '_%';
 
-			$sql = $wpdb->prepare( "DELETE FROM `$table_name` WHERE option_name LIKE `$table_name`.`%s` AND option_name LIKE `$table_name`.`%s`", $general_transient, $our_transient );
+			$sql = $wpdb->prepare( "DELETE FROM `$table_name` WHERE `option_name` LIKE ( %s ) AND `option_name` LIKE ( %s )", $general_transient, $our_transient );
 
 			$transients_deleted = $wpdb->query( $sql ); // Number of rows affected/selected or false on error
 		}
