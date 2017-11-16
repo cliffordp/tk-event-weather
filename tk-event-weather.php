@@ -50,7 +50,7 @@ namespace TKEventWeather;
  * - add 'demo' option to output all icons (e.g. for styling/testing)
  * - weather advisory alerts (only happen in real-time so probably not going to happen)
  * - color options for styling SVGs (e.g. yellow sun with gray cloud) -- not possible with as-is SVGs because they're flattened (no CSS classes to "fill")
- * - Add support for https://wordpress.org/plugins/shortcode-ui/ and/or Gutenberg
+ * - Add support for https://wordpress.org/plugins/shortcode-ui/ and/or Gutenberg: https://wordpress.org/gutenberg/handbook/block-api/
  */
 
 
