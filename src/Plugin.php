@@ -117,12 +117,7 @@ class Plugin extends Life_Cycle {
 		return $url;
 	}
 
-	//
-	// Start of Cliff's custom functions
-	//
-
 	public function activate() {
-
 	}
 
 	public function deactivate() {

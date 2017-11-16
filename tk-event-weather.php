@@ -94,6 +94,10 @@ define( 'TK_EVENT_WEATHER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) ); // e.
 define( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE', dirname( __FILE__ ) . '/vendor/freemius/wordpress-sdk/start.php' );
 
 
+/**
+ * Versions
+ */
+
 // adapted from http://wpbackoffice.com/get-current-woocommerce-version-number/
 function tk_event_weather_version() {
 	// If get_plugins() isn't available, require it
@@ -114,6 +118,37 @@ function tk_event_weather_version() {
 
 }
 
+function tk_event_weather_min_php_version() {
+	return '5.4';
+}
+
+/**
+ * Check the PHP version and give a useful error message if the user's version is less than the required version
+ * @return boolean true if version check passed. If false, triggers an error which WP will handle, by displaying an error message on the Admin page
+ */
+function tkeventweather_notice_wrong_php_version() {
+	echo '<div class="updated fade">' .
+	     __( 'Error: plugin "TK Event Weather" requires a newer version of PHP to be running.', 'tk-event-weather' ) .
+	     '<br/>' . __( 'Minimum required PHP version: ', 'tk-event-weather' ) . '<strong>' . tk_event_weather_min_php_version() . '</strong>' .
+	     '<br/>' . __( 'Your server\'s PHP version: ', 'tk-event-weather' ) . '<strong>' . \phpversion() . '</strong>' .
+	     '</div>';
+}
+
+
+function tk_event_weather_php_version_check() {
+	if ( 0 > version_compare( \phpversion(), tk_event_weather_min_php_version() ) ) {
+		add_action( 'admin_notices', 'TKEventWeather\tkeventweather_notice_wrong_php_version' );
+
+		return false;
+	}
+
+	return true;
+}
+
+
+/**
+ * Freemius setup
+ */
 
 function tk_event_weather_terms_agreement_text() {
 	return sprintf(
@@ -123,17 +158,19 @@ function tk_event_weather_terms_agreement_text() {
 	);
 }
 
-// Implement Freemius
-//
-// Create a helper function for easy SDK access.
+// A helper function for easy Freemius SDK access.
 function tk_event_weather_freemius() {
 	global $tk_event_weather_freemius;
 
-	if ( ! isset( $tk_event_weather_freemius ) && defined( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE' ) && file_exists( TK_EVENT_WEATHER_FREEMIUS_START_FILE ) ) {
+	if (
+		! isset( $tk_event_weather_freemius )
+		&& defined( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE' )
+		&& file_exists( TK_EVENT_WEATHER_FREEMIUS_START_FILE )
+	) {
 		// Include Freemius SDK.
-		require_once TK_EVENT_WEATHER_FREEMIUS_START_FILE;
+		require_once( TK_EVENT_WEATHER_FREEMIUS_START_FILE );
 
-		$tk_event_weather_freemius = fs_dynamic_init(
+		$tk_event_weather_freemius = \fs_dynamic_init(
 			array(
 				'id'             => '240',
 				'slug'           => TK_EVENT_WEATHER_UNDERSCORES,
@@ -142,6 +179,7 @@ function tk_event_weather_freemius() {
 				'has_addons'     => true,
 				'has_paid_plans' => false,
 				'menu'           => array(
+					// slug is where we get redirected to upon plugin activation so it should match the options page name and location we generate
 					'slug'   => TK_EVENT_WEATHER_UNDERSCORES . '_settings',
 					'parent' => array(
 						'slug' => 'options-general.php',
@@ -153,10 +191,6 @@ function tk_event_weather_freemius() {
 
 	return $tk_event_weather_freemius;
 }
-
-// Init Freemius.
-tk_event_weather_freemius();
-do_action( 'tk_event_weather_loaded' );
 
 // Freemius: customize the new user message
 function tk_event_weather_freemius_custom_connect_message(
@@ -181,41 +215,8 @@ function tk_event_weather_freemius_custom_connect_message(
 	return $tk_custom_message;
 }
 
-tk_event_weather_freemius()->add_filter( 'connect_message', 'TKEventWeather\tk_event_weather_freemius_custom_connect_message', 10, 6 );
-
-
 function tk_event_weather_freemius_plugin_icon() {
 	return TK_EVENT_WEATHER_PLUGIN_ROOT_DIR . 'images/icon.svg';
-}
-
-tk_event_weather_freemius()->add_filter( 'plugin_icon', 'TKEventWeather\tk_event_weather_freemius_plugin_icon' );
-
-
-function tk_event_weather_min_php_version() {
-	return '5.4';
-}
-
-/**
- * Check the PHP version and give a useful error message if the user's version is less than the required version
- * @return boolean true if version check passed. If false, triggers an error which WP will handle, by displaying an error message on the Admin page
- */
-function tkeventweather_notice_wrong_php_version() {
-	echo '<div class="updated fade">' .
-	     __( 'Error: plugin "TK Event Weather" requires a newer version of PHP to be running.', 'tk-event-weather' ) .
-	     '<br/>' . __( 'Minimal version of PHP required: ', 'tk-event-weather' ) . '<strong>' . tk_event_weather_min_php_version() . '</strong>' .
-	     '<br/>' . __( 'Your server\'s PHP version: ', 'tk-event-weather' ) . '<strong>' . phpversion() . '</strong>' .
-	     '</div>';
-}
-
-
-function tk_event_weather_php_version_check() {
-	if ( version_compare( phpversion(), tk_event_weather_min_php_version() ) < 0 ) {
-		add_action( 'admin_notices', 'tkeventweather_notice_wrong_php_version' );
-
-		return false;
-	}
-
-	return true;
 }
 
 
@@ -241,13 +242,20 @@ function tkeventweather_i18n_init() {
 
 // old code (goes with above)?
 // Initialize i18n
-// add_action('plugins_loaded','tkeventweather_i18n_init');
+// add_action('plugins_loaded','TKEventWeather\tkeventweather_i18n_init');
 
 // Run the version check.
 // If it is successful, continue with initialization for this plugin
 if ( tk_event_weather_php_version_check() ) {
 	// Only load and run everything if we know PHP version can parse it
+	tk_event_weather_freemius();
+	tk_event_weather_freemius()->add_filter( 'connect_message', 'TKEventWeather\tk_event_weather_freemius_custom_connect_message', 10, 6 );
+	tk_event_weather_freemius()->add_filter( 'plugin_icon', 'TKEventWeather\tk_event_weather_freemius_plugin_icon' );
+
+
 	require_once( 'vendor/autoload.php' );
 	include_once( 'init.php' );
 	tk_event_weather_init( __FILE__ );
+
+	do_action( 'tk_event_weather_loaded' );
 }
