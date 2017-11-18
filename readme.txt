@@ -81,7 +81,7 @@ I'll consider making whichever add-ons I receive the most requests for (and are 
 * You can check the [Dark Sky API's Status Updates](http://status.darksky.net/) to read its news.
 * The [Dark Sky Terms of Use](https://darksky.net/dev/docs/terms) states, "You agree that any application or service which incorporates data obtained from the Service shall prominently display the message "Powered by Dark Sky" in a legible manner near the data or any information derived from any data from the Service. This message must, if possible, open a link to [https://darksky.net/poweredby/](https://darksky.net/poweredby/) when clicked or touched."
 * This plugin's output will automatically add a compliant link; however, there is a setting to disable outputting this link. This is because your site may not be a "public or user-facing application" (although it probably is) or because you've emailed to the address in their Terms of Use to request (and have been approved for) their extremely-affordable *white-label* account.
-* This plugin and its author are not affiliated with or endorsed by The Dark Sky Company, LLC.
+* This plugin and its author are not affiliated with or endorsed by The Dark Sky Company, LLC or any of the other plugins mentioned (including ones for which an add-on is available).
 * This plugin utilizes [Freemius](https://freemius.com/wordpress/). All data collected via Freemius will be available to both Freemius and this plugin's author to be used in responsible ways. By opting-in to Freemius, you'll help us learn how we can make this plugin better and possibly communicate with you regarding the plugin's development.
 * This plugin may contain affiliate links.
 
@@ -89,7 +89,7 @@ I'll consider making whichever add-ons I receive the most requests for (and are 
 * [Leave a great review](https://wordpress.org/support/view/plugin-reviews/tk-event-weather?rate=5#postform)
 * Buy one of my available paid add-ons or tell me about one you'd be interested in purchasing!
 * [View my other plugins](http://tourkick.com/plugins/)
-* [Hire Me for Customizations](http://tourkick.com/)
+* [Hire Me for Custom Integrations and other Customizations](http://tourkick.com/)
 * [Contribute code via GitHub](https://github.com/cliffordp/tk-event-weather)
 * **[Tweet this plugin](https://twitter.com/home?status=I%20love%20the%20free%20TK%20Event%20Weather%20%23WordPress%20plugin%20by%20%40TourKick.%20http%3A//tourkick.com/plugins/tk-event-weather/%20-%20weather%20for%20any%20event!)**
 
