@@ -14,6 +14,10 @@ Display beautiful, accurate, and free hourly weather forecasts between a start a
 
 Display beautiful, accurate, and free hourly weather forecasts between a start and end time on the same day. Perfect for event calendars. Includes sunrise, sunset, temperature, wind speed and direction, and is very customizable.
 
+https://www.youtube.com/watch?v=KXyWZrfgL4k
+
+https://www.youtube.com/watch?v=fbGS_LtX-es
+
 = Highlights =
 
 * Registers the `[tk_event_weather]` shortcode for use anywhere on your site (not just for your site calendar's event-specific information) so its usage is very flexible as long as there is a valid Dark Sky API key, latitude, longitude, and time (timestamp or ISO 8601 format)
