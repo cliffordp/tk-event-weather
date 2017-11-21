@@ -3,7 +3,7 @@ Contributors: cliffpaulick, freemius
 Tags: calendar, events, forecast, shortcode, weather
 License: GPL version 3 or any later version
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
-Requires at least: 4.6
+Requires at least: 4.5
 Tested up to: 4.9
 Requires PHP: 5.4
 Stable tag: 1.5.0
@@ -218,7 +218,7 @@ Many thanks to the following:
 
 = Version 1.5.0 =
 * November 21, 2017
-* Over 90 development hours since the last release! Enjoy the fruits of my labor and, if you're using alongside a calendar plugin, please consider purchasing a paid add-on to help me and make your life easier! :)
+* Over 100 development hours since the last release! Enjoy the fruits of my labor and, if you're using this alongside a calendar plugin, please consider purchasing (or requesting) its paid add-on to help me and make your life easier! :)
 
 Enhancements:
 
