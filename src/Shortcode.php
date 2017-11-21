@@ -6,6 +6,19 @@ namespace TKEventWeather;
 
 class Shortcode extends Shortcode_Script_Loader {
 
+	/**
+	 * Allows us to pass a custom context (set via shortcode argument) to all
+	 * action and filter hooks.
+	 *
+	 * All calendar-specific/integration add-ons that run this shortcode should
+	 * set this so the calendar-/integration-specific settings may choose to
+	 * only affect shortcodes in those contexts, not site-wide while the add-on
+	 * is active.
+	 *
+	 * @var string
+	 */
+	public static $custom_context = '';
+
 	public static $dark_sky_api_key = '';
 	public static $dark_sky_api_units = '';
 	public static $dark_sky_api_language = '';
@@ -17,20 +30,21 @@ class Shortcode extends Shortcode_Script_Loader {
 	public static $debug_enabled = false;
 	public static $transients_enabled = true;
 	public static $transients_expiration_hours = 0;
-public static $timezone_source = '';
+	public static $timezone_source = '';
 
 	// ONLY set via Time::set_timezone_and_source_from_shortcode_args()
 	public static $timezone = ''; // can be blank if timezone is set manually via shortcode argument
-		public static $time_format_day = ''; // cannot be blank, possibly set via Time::set_timezone_from_api()
+	public static $time_format_day = ''; // cannot be blank, possibly set via Time::set_timezone_from_api()
 	public static $time_format_hours = '';
 	public static $time_format_minutes = '';
 	public static $span_start_time_timestamp = false;
 
 	// Variables named with "span" are for the entire timespan, such as multiday.
-public static $span_first_hour_timestamp = false;
-		public static $span_end_time_timestamp = false; // Start time's timestamp with minutes truncated. Should be equal to or less than $span_start_time_timestamp.
+	public static $span_first_hour_timestamp = false;
+	public static $span_end_time_timestamp = false; // Start time's timestamp with minutes truncated. Should be equal to or less than $span_start_time_timestamp.
 	public static $span_total_days_in_span = false;
 	public static $span_template_data = array();
+
 	/**
 	 * The street address that you want to geocode, in the format used by the
 	 * national postal service of the country concerned. Additional address
@@ -42,16 +56,17 @@ public static $span_first_hour_timestamp = false;
 	 * @var string
 	 */
 	public static $location = '';
+
 	/**
 	 * The comma-separated latitude,longitude coordinates to send to Dark Sky API.
 	 *
 	 * @var string
 	 */
 	public static $latitude_longitude = '';
+
 	private static $added_already = false;
 
 	public function handle_shortcode( $atts ) {
-
 		$plugin_options = Functions::plugin_options();
 
 		if ( empty( $plugin_options ) ) {
@@ -110,84 +125,68 @@ public static $span_first_hour_timestamp = false;
 		*/
 		// Attributes
 		$defaults = array(
+			'custom_context'                  => '',
 			'api_key'                         => $api_key_option,
 			'multi_day_limit'                 => $multi_day_limit_option,
 			'multi_day_ignore_start_at_today' => $multi_day_ignore_start_at_today_option,
 			'gmaps_api_key'                   => $gmaps_api_key_option,
-			'post_id'                         => get_the_ID(),
-			// The ID of the current post
+			'post_id'                         => get_the_ID(), // The ID of the current post
 			// if lat_long argument is used, it will override the 2 individual latitude and longitude arguments if all 3 arguments exist.
-			'lat_long'                        => '',
-			// manually entered
-			'lat_long_custom_field'           => '',
-			// get custom field value
+			'lat_long'                        => '', // manually entered
+			'lat_long_custom_field'           => '', // get custom field value
 			// separate latitude
-			'lat'                             => '',
-			// manually entered
-			'lat_custom_field'                => '',
-			// get custom field value
+			'lat'                             => '', // manually entered
+			'lat_custom_field'                => '', // get custom field value
 			// separate longitude
-			'long'                            => '',
-			// manually entered
-			'long_custom_field'               => '',
-			// get custom field value
+			'long'                            => '', // manually entered
+			'long_custom_field'               => '', // get custom field value
 			// location/address -- to be geocoded by Google Maps
-			'location'                        => '',
-			// manually entered
-			'location_custom_field'           => '',
-			// get custom field value
+			'location'                        => '', // manually entered
+			'location_custom_field'           => '', // get custom field value
 			// time (ISO 8601 or Unix Timestamp)
-			'start_time'                      => '',
-			// manually entered
-			'start_time_custom_field'         => '',
-			// get custom field value
-			'end_time'                        => '',
-			// manually entered
-			'end_time_custom_field'           => '',
-			// get custom field value
+			'start_time'                      => '', // manually entered
+			'start_time_custom_field'         => '', // get custom field value
+			'end_time'                        => '', // manually entered
+			'end_time_custom_field'           => '', // get custom field value
 			// time constraints in strtotime relative dates
 			'cutoff_past'                     => $cutoff_past_days_option,
 			'cutoff_future'                   => $cutoff_future_days_option,
 			// API options -- see https://darksky.net/dev/docs/time-machine
-			'exclude'                         => '',
-			// comma-separated. Default/fallback is $exclude_default
-			'transients_off'                  => $transients_off_option,
-			// "true" is the only valid value
+			'exclude'                         => '', // comma-separated. Default/fallback is $exclude_default
+			'transients_off'                  => $transients_off_option, // "true" is the only valid value
 			'transients_expiration'           => $transients_expiration_hours_option,
 			// Display Customizations
 			'before'                          => $text_before,
 			'after'                           => $text_after,
 			'time_format_day'                 => $time_format_day_option,
 			'time_format_hours'               => $time_format_hours_option,
-			'time_format_minutes'             => $time_format_minutes_option,
-			// default/fallback is $units_default
+			'time_format_minutes'             => $time_format_minutes_option, // default/fallback is $units_default
 			'units'                           => '',
 			'language'                        => '',
-			'timezone'                        => '',
-			// allow entering specific timezone -- see https://secure.php.net/manual/timezones.php -- does NOT support Manual Offset (e.g. UTC+10), even though WordPress provides these options.
+			'timezone'                        => '', // allow entering specific timezone -- see https://secure.php.net/manual/timezones.php -- does NOT support Manual Offset (e.g. UTC+10), even though WordPress provides these options.
 			'timezone_source'                 => $timezone_source_option,
-			'sunrise_sunset_off'              => $sunrise_sunset_off_option,
-			// "true" is the only valid value
+			'sunrise_sunset_off'              => $sunrise_sunset_off_option, // "true" is the only valid value
 			'icons'                           => '',
-			'plugin_credit_link_on'           => $plugin_credit_link_on_option,
-			// "true" is the only valid value
-			'darksky_credit_link_off'         => $darksky_credit_link_off_option,
-			// anything !empty()
+			'plugin_credit_link_on'           => $plugin_credit_link_on_option, // "true" is the only valid value
+			'darksky_credit_link_off'         => $darksky_credit_link_off_option, // anything !empty()
 			// HTML
-			'class'                           => '',
-			// custom class
+			'class'                           => '', // custom class
 			'template'                        => $display_template_option,
 			// Debug Mode
-			'debug_on'                        => $debug_on_option,
-			// anything !empty()
+			'debug_on'                        => $debug_on_option, // anything !empty()
 		);
 
 		$atts = shortcode_atts( $defaults, $atts, 'tk-event-weather' );
 
 		// Code
 
+		// Custom Context (e.g. for add-ons)
+		self::$custom_context = trim( $atts['custom_context'] );
+
+		self::$span_template_data['custom_context'] = trim( $atts['custom_context'] ); // also passed to $context in the templates so they don't need an additional parameter in the hook
+
 		// Initialize output
-		$output = '<div class="tk-event-weather__wrapper">';
+		$output = sprintf( '<div class="%s__wrapper">', TK_EVENT_WEATHER_HYPHENS );
 		$output .= PHP_EOL;
 
 		// Template
@@ -200,13 +199,32 @@ public static $span_first_hour_timestamp = false;
 		self::$span_template_data['template']            = $display_template;
 		self::$span_template_data['template_class_name'] = Template::template_class_name( $display_template );
 
-		$output .= sprintf( '<div class="tk-event-weather__wrap_weather %s">', $display_template );
+		$output .= sprintf( '<div class="%s__wrap_weather %s">', TK_EVENT_WEATHER_HYPHENS, $display_template );
 		$output .= PHP_EOL;
 
+		// Text Before Shortcode Output (not per day -- there's a filter for that)
+		$before = sanitize_text_field( $atts['before'] );
+
+		$before_filtered = apply_filters( TK_EVENT_WEATHER_UNDERSCORES . '_before_full_html', $before, self::$custom_context ); // if you filter it, you're responsible for the entire HTML (e.g. wrapping in h4 tag)
+
+		if (
+			'' != $before
+			|| '' != $before_filtered
+		) {
+			if ( $before_filtered === $before ) {
+				$before = sprintf( '<h4 class="%s__before">%s</h4>', TK_EVENT_WEATHER_HYPHENS, $before );
+			} else {
+				$before = $before_filtered;
+			}
+		}
+
+		$output .= $before;
+		$output .= PHP_EOL;
 
 		// Enable Debug only if user is logged in and can use Customizer (an Admin).
+		$capability = required_capability();
 		if (
-			current_user_can( 'customize' )
+			current_user_can( $capability )
 			&& true === (bool) $atts['debug_on']
 		) {
 			self::$debug_enabled = true;
@@ -505,36 +523,6 @@ public static $span_first_hour_timestamp = false;
 		//
 
 
-		// Before Text
-		$before = sanitize_text_field( $atts['before'] );
-
-		$before_filtered = apply_filters( 'tk_event_weather_before_full_html', $before ); // if you filter it, you're responsible for the entire HTML (e.g. wrapping in h4 tag)
-
-		if ( '' != $before || '' != $before_filtered ) {
-			if ( $before_filtered === $before ) {
-				$before = sprintf( '<h4 class="tk-event-weather__before">%s</h4>', $before );
-			} else {
-				$before = $before_filtered;
-			}
-		}
-
-		self::$span_template_data['before'] = $before;
-
-		// After Text
-		$after = sanitize_text_field( $atts['after'] );
-
-		$after_filtered = apply_filters( 'tk_event_weather_after_full_html', $after ); // if you filter it, you're responsible for the entire HTML (e.g. wrapping in p tag)
-
-		if ( '' != $after || '' != $after_filtered ) {
-			if ( $after_filtered === $after ) {
-				$after = sprintf( '<p class="tk-event-weather__after">%s</p>', $after );
-			} else {
-				$after = $after_filtered;
-			}
-		}
-
-		self::$span_template_data['after'] = $after;
-
 		// time_format_day
 		$time_format_day = sanitize_text_field( $atts['time_format_day'] );
 
@@ -795,8 +783,27 @@ public static $span_first_hour_timestamp = false;
 		$output .= '</div>'; // .tk-event-weather__wrap_weather
 		$output .= PHP_EOL;
 
-		// Credit links are outside .tk-event-weather__wrap_weather to avoid getting caught up in flexbox (if applicable, like with vertical columns) and to ensure it outputs only once at the end instead of within each day.
+		// These are outside .tk-event-weather__wrap_weather to avoid getting caught up in flexbox (if applicable, like with vertical columns) and to ensure it outputs only once at the end instead of within each day.
 		$output .= Functions::get_credit_links(); // empty if should not display either
+		$output .= PHP_EOL;
+
+		// Text After Shortcode Output (not per day -- there's a filter for that)
+		$after = sanitize_text_field( $atts['after'] );
+
+		$after_filtered = apply_filters( TK_EVENT_WEATHER_UNDERSCORES . '_after_full_html', $after, self::$custom_context ); // if you filter it, you're responsible for the entire HTML (e.g. wrapping in p tag)
+
+		if (
+			'' != $after
+			|| '' != $after_filtered
+		) {
+			if ( $after_filtered === $after ) {
+				$after = sprintf( '<p class="%s__after">%s</p>', TK_EVENT_WEATHER_HYPHENS, $after );
+			} else {
+				$after = $after_filtered;
+			}
+		}
+
+		$output .= $after;
 		$output .= PHP_EOL;
 
 		$output .= '</div>'; // .tk-event-weather__wrapper

@@ -183,7 +183,7 @@ class Plugin extends Life_Cycle {
 
 		// Add options administration page
 		// http://plugin.michael-simpson.com/?page_id=47
-		add_action( 'admin_menu', array( $this, 'add_settings_sub_menu_page' ) );
+		add_action( 'admin_menu', array( $this, 'add_settings_submenu_page' ) );
 
 		// Example adding a script & style just for the options administration page
 		// http://plugin.michael-simpson.com/?page_id=47
@@ -211,7 +211,7 @@ class Plugin extends Life_Cycle {
 
 		add_action( 'customize_register', array( $this, 'customizer_options' ) );
 
-		add_filter( 'tk_event_weather_customizer_link', array( $this, 'customizer_options_link' ), 20 );
+		add_filter( TK_EVENT_WEATHER_UNDERSCORES . '_customizer_link', array( $this, 'customizer_options_link' ), 20 );
 
 		// Register short codes
 		// http://plugin.michael-simpson.com/?page_id=39
@@ -381,14 +381,14 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[text_before]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => 'sanitize_text_field',
+				'sanitize_callback' => '\sanitize_text_field',
 			)
 		);
 
 		$wp_customize->add_control(
 			TK_EVENT_WEATHER_UNDERSCORES . '_text_before_control', array(
-				'label'       => esc_html__( 'Text before Forecast display', 'tk-event-weather' ),
-				'description' => __( 'What text should be displayed before the hourly weather? (h3 tag)<br>Example: Forecast<br>Default: none', 'tk-event-weather' ),
+				'label'       => esc_html__( 'Text before forecast display', 'tk-event-weather' ),
+				'description' => __( 'What text should be displayed at the beginning of the shortcode output (not each day of a multi-day forecast)? (h4 tag)<br>Example: Forecast<br>Default: none', 'tk-event-weather' ),
 				'section'     => self::customizer_section_id() . '_display',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[text_before]',
 				'type'        => 'text',
@@ -400,14 +400,14 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[text_after]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => 'sanitize_text_field',
+				'sanitize_callback' => '\sanitize_text_field',
 			)
 		);
 
 		$wp_customize->add_control(
 			TK_EVENT_WEATHER_UNDERSCORES . '_text_after_control', array(
-				'label'       => esc_html__( 'Text after Forecast display', 'tk-event-weather' ),
-				'description' => __( 'What text should be displayed after the hourly weather? (p tag)<br>Example: a disclaimer about the weather not being guaranteed<br>Default: none', 'tk-event-weather' ),
+				'label'       => esc_html__( 'Text after forecast display', 'tk-event-weather' ),
+				'description' => __( 'What text should be displayed at the end of the shortcode output? (p tag)<br>Example: a disclaimer about the weather not being guaranteed<br>Default: none', 'tk-event-weather' ),
 				'section'     => self::customizer_section_id() . '_display',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[text_after]',
 				'type'        => 'text',
@@ -419,7 +419,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[time_format_day]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => 'sanitize_text_field',
+				'sanitize_callback' => '\sanitize_text_field',
 			)
 		);
 
@@ -438,7 +438,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[time_format_hours]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => 'sanitize_text_field',
+				'sanitize_callback' => '\sanitize_text_field',
 			)
 		);
 
@@ -457,7 +457,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[time_format_minutes]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => 'sanitize_text_field',
+				'sanitize_callback' => '\sanitize_text_field',
 			)
 		);
 
@@ -513,7 +513,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[darksky_api_key]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => 'sanitize_key',
+				'sanitize_callback' => '\sanitize_key',
 			)
 		);
 
@@ -542,7 +542,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[multi_day_limit]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => array( 'Functions', 'sanitize_absint_allow_blank' ),
+				'sanitize_callback' => array( 'TKEventWeather\Functions', 'sanitize_absint_allow_blank' ),
 			)
 		);
 
@@ -580,7 +580,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[cutoff_past_days]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => array( 'Functions', 'sanitize_absint_allow_blank' ),
+				'sanitize_callback' => array( 'TKEventWeather\Functions', 'sanitize_absint_allow_blank' ),
 			)
 		);
 
@@ -599,7 +599,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[cutoff_future_days]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => array( 'Functions', 'sanitize_absint_allow_blank' ),
+				'sanitize_callback' => array( 'TKEventWeather\Functions', 'sanitize_absint_allow_blank' ),
 			)
 		);
 
@@ -676,7 +676,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[google_maps_api_key]', array(
 				'type'    => 'option',
 				'default' => '',
-				// 'sanitize_callback'	=> 'sanitize_key', // cannot use this because need to allow uppercase
+				// 'sanitize_callback'	=> '\sanitize_key', // cannot use this because need to allow uppercase
 			)
 		);
 
@@ -699,7 +699,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[transients_expiration_hours]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => array( 'Functions', 'sanitize_absint_allow_blank' ),
+				'sanitize_callback' => array( 'TKEventWeather\Functions', 'sanitize_absint_allow_blank' ),
 			)
 		);
 
@@ -805,7 +805,7 @@ class Plugin extends Life_Cycle {
 		// default to Display Template
 		$setting = TK_EVENT_WEATHER_UNDERSCORES . '[display_template]';
 
-		return apply_filters( 'tk_event_weather_customizer_edit_shortcut_setting', $setting );
+		return apply_filters( TK_EVENT_WEATHER_UNDERSCORES . '_customizer_edit_shortcut_setting', $setting );
 	}
 
 	// end customizer_options()

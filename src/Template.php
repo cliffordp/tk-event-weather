@@ -52,7 +52,7 @@ class Template {
 			'low_high'          => __( 'Low-High Temperature', 'tk-event-weather' ),
 		);
 
-		$custom_display_templates = apply_filters( 'tk_event_weather_custom_display_templates', array() );
+		$custom_display_templates = apply_filters( TK_EVENT_WEATHER_UNDERSCORES . '_custom_display_templates', array(), Shortcode::$custom_context );
 
 		if ( ! empty( $custom_display_templates ) ) {
 			$result = array_merge( $result, $custom_display_templates );

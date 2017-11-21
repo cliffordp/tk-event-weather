@@ -25,9 +25,6 @@ namespace TKEventWeather;
 class Life_Cycle extends Install_Indicator {
 
 	public function install() {
-		// Initialize DB Tables used by the plugin
-		$this->install_database_tables();
-
 		// Other Plugin initialization - for the plugin writer to override as needed
 		$this->other_install();
 
@@ -36,17 +33,6 @@ class Life_Cycle extends Install_Indicator {
 
 		// To avoid running install() more then once
 		$this->mark_as_installed();
-	}
-
-	/**
-	 * See: http://plugin.michael-simpson.com/?page_id=101
-	 * Called by install() to create any database tables if needed.
-	 * Best Practice:
-	 * (1) Prefix all table names with $wpdb->prefix
-	 * (2) make table names lower case only
-	 * @return void
-	 */
-	protected function install_database_tables() {
 	}
 
 	/**
@@ -63,7 +49,6 @@ class Life_Cycle extends Install_Indicator {
 	 */
 	public function uninstall() {
 		$this->other_uninstall();
-		$this->uninstall_database_tables();
 		$this->delete_saved_options();
 		$this->mark_as_uninstalled();
 	}
@@ -74,14 +59,6 @@ class Life_Cycle extends Install_Indicator {
 	 * @return void
 	 */
 	protected function other_uninstall() {
-	}
-
-	/**
-	 * See: http://plugin.michael-simpson.com/?page_id=101
-	 * Drop plugin-created tables on uninstall.
-	 * @return void
-	 */
-	protected function uninstall_database_tables() {
 	}
 
 	/**
@@ -114,7 +91,7 @@ class Life_Cycle extends Install_Indicator {
 	 * Override with an empty implementation if you don't want a configuration page
 	 * @return void
 	 */
-	public function add_settings_sub_menu_page() {
+	public function add_settings_submenu_page() {
 		$this->add_settings_submenu_page_to_settings_menu();
 	}
 
@@ -164,19 +141,4 @@ class Life_Cycle extends Install_Indicator {
 	public function get_ajax_url( $action_name ) {
 		return admin_url( 'admin-ajax.php' ) . '?action=' . $action_name;
 	}
-
-	/**
-	 * @param    $name string name of a database table
-	 *
-	 * @return string input prefixed with the WordPress DB table prefix
-	 * plus the prefix for this plugin (lower-cased) to avoid table name collisions.
-	 * The plugin prefix is lower-cases as a best practice that all DB table names are lower case to
-	 * avoid issues on some platforms
-	 */
-	protected function prefix_table_name( $name ) {
-		global $wpdb;
-
-		return $wpdb->prefix . strtolower( $this->prefix( $name ) );
-	}
-
 }

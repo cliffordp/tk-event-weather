@@ -151,7 +151,7 @@ class API_Google_Maps {
 		 *
 		 * @link https://developers.google.com/maps/documentation/geocoding/intro#RegionCodes
 		 */
-		$uri_query_args = apply_filters( 'tk_event_weather_gmaps_geocode_request_uri_query_args', $uri_query_args );
+		$uri_query_args = apply_filters( TK_EVENT_WEATHER_UNDERSCORES . '_gmaps_geocode_request_uri_query_args', $uri_query_args, Shortcode::$custom_context );
 
 		$uri = add_query_arg( $uri_query_args, $uri_base );
 

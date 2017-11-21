@@ -13,7 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // make sure we have data to work with!
-if ( empty( $context ) || ! is_object( $context ) ) {
+if (
+	empty( $context )
+	|| ! is_object( $context )
+) {
 	return false;
 }
 
@@ -44,7 +47,7 @@ $class = sprintf( '%1$s__wrap_single_day %2$s %1$s__span-%3$d-to-%4$d %1$s__day-
 $output .= sprintf( '<div class="%s">', esc_attr( $class ) );
 $output .= PHP_EOL;
 
-$output .= $context->before;
+$output .= apply_filters( TK_EVENT_WEATHER_UNDERSCORES . '_before_each_day', '', $context );
 $output .= PHP_EOL;
 
 $output .= '<div class="' . TK_EVENT_WEATHER_HYPHENS . '-template">';
@@ -64,7 +67,7 @@ $day_name = date_i18n( Shortcode::$time_format_day, $context->start_time_timesta
  * @param $today_text
  * @param $day_name
  */
-$change_day_name_to_today = apply_filters( 'tk_event_weather_change_day_name_if_is_today', true, $day_name );
+$change_day_name_to_today = apply_filters( TK_EVENT_WEATHER_UNDERSCORES . '_change_day_name_if_is_today', true, $day_name, $context );
 
 if (
 	! empty( $change_day_name_to_today )

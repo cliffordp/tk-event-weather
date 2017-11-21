@@ -36,6 +36,7 @@ namespace TKEventWeather;
 
 /** TODO:
  * - sign up for newsletter
+ * - uninstall deletes add-on's data too?, maybe via filter
  * - refresh screenshots
  * - wp-admin notice if you have a supported plugin active (e.g. The Events Calendar) but its applicable add-on is not (either to activate it or to buy it).
  * - add Customizer option to input a Post ID to default to when viewing the customizer from the plugin's Settings Button (could auto-set it if an Event exists)
@@ -62,6 +63,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Defines
+ * define() without prepending a namespace puts it in the global scope (i.e. non-namespaced). Must be prepended with a slash (global namespace) when getting it from outside the TKEventWeather namespace (even if in a sub namespace).
  */
 
 /**
@@ -93,6 +95,18 @@ define( 'TK_EVENT_WEATHER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) ); // e.
 // used by core plugin and by add-on implementations of Freemius
 define( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE', dirname( __FILE__ ) . '/vendor/freemius/wordpress-sdk/start.php' );
 
+/**
+ * Capability required to access the settings and be shown the shortcode errors.
+ *
+ * By default, 'customize' is mapped to 'edit_theme_options' (Administrator).
+ *
+ * @link  https://developer.wordpress.org/themes/customize-api/advanced-usage/
+ *
+ * @since 1.5.0
+ */
+function required_capability() {
+	return apply_filters( TK_EVENT_WEATHER_UNDERSCORES . '_required_capability', 'customize' );
+}
 
 /**
  * Versions
@@ -262,5 +276,5 @@ if ( tk_event_weather_php_version_check() ) {
 	require_once( 'init.php' );
 	tk_event_weather_init( __FILE__ );
 
-	do_action( 'tk_event_weather_loaded' );
+	do_action( TK_EVENT_WEATHER_UNDERSCORES . '_loaded' );
 }

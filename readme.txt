@@ -218,25 +218,34 @@ Many thanks to the following:
 
 = Version 1.5.0 =
 * November 20, 2017
-* Over 80 development hours since the last release! Enjoy the fruits of my labor and, if you're using alongside a calendar plugin, please consider purchasing a paid add-on to help me and make your life easier! :)
-* Enhancement - Added support for forecasting across multiple days. To avoid accidental excess usage of API credits (each day's weather costs 1 API credit), the multi-day limit per shortcode is limited to 10 by default, customizable from 1 to as many as you want. Any shortcode that tries to span more days than the limit will result in an error with helpful tips to adjust the shortcode.
-* Enhancement - Multi-day forecasts will trim days from the beginning only if Today is in the span of days. This can be disabled in the plugin settings.
-* Enhancement - Added "vertical columns" mode option for displaying multiple days adjascent using CSS Flexbox.
-* Enhancement - Displays the name of each day before each day's output. The date format can be set in the plugin settings. Each day's name also has a title attribute (displayed on hover) summarizing the entire day's weather.
-* Enhancement - Added Dark Sky's "language" setting to display the summary text(s) in one of the languages supported by Dark Sky.
-* Enhancement - Added a convenient link in the WP Admin Bar to edit the current URL in the Customizer, jumping right to TK Event Weather's settings panel. Removed the `tk_event_weather_customizer_link_to_core_section` filter, as it is irrelevant now.
-* Enhancement - Added tk_event_weather_gmaps_geocode_request_uri_query_args filter to allow adding things like <a href="https://developers.google.com/maps/documentation/geocoding/intro#RegionCodes">Region Biasing</a>.
-* Enhancement - Each day's Before and After content is generated via the existing template engine, allowing you to override them if desired.
-* Enhancement - Whenever viewing today's weather forecast, the day name will be "Today" (a translatable string) instead of something like "Dec 7". This may be disabled either via template override or via a filter hook... but we think it's nifty!
-* Enhancement - Each day now has a class of "tk-event-weather__day-type-future" (or instead ending with "today" or "past") to make it easy to style past, today, and future days to your liking.
-* Enhancement - Added an option to delete all this plugin's data when this plugin is uninstalled via the wp-admin Plugins settings page.
-* Tweak - Improved the Customizer UI by breaking out all the plugin options from a single section to multiple sections.
-* Tweak - Manually set the WP Customizer's password-type fields for API keys to disable autocomplete and password prompts.
-* Tweak - Removed tk_event_weather_darksky_units_default and tk_event_weather_darksky_exclude_default filters. Added tk_event_weather_dark_sky_request_uri_query_args filter.
-* Tweak - Combined plugin and Dark Sky credit links into a single line and altered CSS as needed.
-* Fix - Detect when a Manual UTC Offset (like "UTC+10") is used instead of an IANA timezone name supported by the weather API and PHP (like "Australia/Brisbane"). If a manual UTC offset is used, the shortcode will now result in an error. Previously, it would fallback to use the API's detected local timezone. This change was made to reduce confusion and the possibility of inconsistencies in some edge cases.
-* Fix - Hourly Horizontal's scrolling CSS no longer affects the Hourly Vertical and Low-High displays.
-* Update Freemius SDK from v1.2.1.7.1 to v1.2.2.9
+* Over 90 development hours since the last release! Enjoy the fruits of my labor and, if you're using alongside a calendar plugin, please consider purchasing a paid add-on to help me and make your life easier! :)
+
+Enhancements:
+
+* Added support for forecasting across multiple days. To avoid accidental excess usage of API credits (each day's weather costs 1 API credit), the multi-day limit per shortcode is limited to 10 by default, customizable from 1 to as many as you want. Any shortcode that tries to span more days than the limit will result in an error with helpful tips to adjust the shortcode.
+* Multi-day forecasts will trim days from the beginning only if Today is in the span of days. This can be disabled in the plugin settings.
+* Added "vertical columns" mode option for displaying multiple days adjascent using CSS Flexbox.
+* Displays the name of each day before each day's output. The date format can be set in the plugin settings. Each day's name also has a title attribute (displayed on hover) summarizing the entire day's weather.
+* Added Dark Sky's "language" setting to display the summary text(s) in one of the languages supported by Dark Sky.
+* Added a convenient link in the WP Admin Bar to edit the current URL in the Customizer, jumping right to TK Event Weather's settings panel. Removed the `tk_event_weather_customizer_link_to_core_section` filter, as it is irrelevant now.
+* Added `tk_event_weather_gmaps_geocode_request_uri_query_args` filter to allow adding things like <a href="https://developers.google.com/maps/documentation/geocoding/intro#RegionCodes">Region Biasing</a>.
+* Each day's Before and After content is generated via the existing template engine, allowing you to override them if desired.
+* Whenever viewing today's weather forecast, the day name will be "Today" (a translatable string) instead of something like "Dec 7". This may be disabled either via template override or via a filter hook... but we think it's nifty!
+* Each day now has a class of "tk-event-weather__day-type-future" (or instead ending with "today" or "past") to make it easy to style past, today, and future days to your liking.
+* Added an option to delete all this plugin's data when this plugin is uninstalled via the wp-admin Plugins settings page.
+
+Tweaks:
+
+* Improved the Customizer UI by breaking out all the plugin options from a single section to multiple sections.
+* All capability checks consolidated into one, which defaults to 'customize' but is customizable via the new `tk_event_weather_required_capability` filter.
+* Removed `tk_event_weather_darksky_units_default` and `tk_event_weather_darksky_exclude_default` filters. Added `tk_event_weather_dark_sky_request_uri_query_args` filter.
+* Combined plugin and Dark Sky credit links into a single line and altered CSS as needed.
+* Updated Freemius SDK from v1.2.1.7.1 to v1.2.2.9
+
+Bug fixes:
+
+* Detect when a Manual UTC Offset (like "UTC+10") is used instead of an IANA timezone name supported by the weather API and PHP (like "Australia/Brisbane"). If a manual UTC offset is used, the shortcode will now result in an error. Previously, it would fallback to use the API's detected local timezone. This change was made to reduce confusion and the possibility of inconsistencies in some edge cases.
+* Hourly Horizontal's scrolling CSS no longer affects the Hourly Vertical and Low-High displays.
 
 = Version 1.4.6 =
 * May 26, 2017
@@ -261,7 +270,7 @@ Many thanks to the following:
 = Version 1.4.2 =
 * March 24, 2017
 * Fix: Add missing Climacons SVG file
-* Rename action hook from get_template_part_tk_event_weather_hourly_horizontal to tk_event_weather_get_template_part_hourly_horizontal (similar renaming for other template names)
+* Rename action hook from `get_template_part_tk_event_weather_hourly_horizontal` to `tk_event_weather_get_template_part_hourly_horizontal` (similar renaming for other template names)
 * Change plugin's Tools tab shortcode usage examples to instead link to this plugin's WordPress.org FAQs to avoid having to upkeep them in more than one place.
 
 = Version 1.4.1 =

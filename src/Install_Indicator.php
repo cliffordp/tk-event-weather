@@ -35,38 +35,6 @@ class Install_Indicator extends Options_Manager {
 	}
 
 	/**
-	 * Get a value for input key in the header section of main plugin file.
-	 * E.g. "Plugin Name", "Version", "Description", "Text Domain", etc.
-	 *
-	 * @param $key string plugin header key
-	 *
-	 * @return string if found, otherwise null
-	 */
-	public function get_plugin_header_value( $key ) {
-		// Read the string from the comment header of the main plugin file
-		$data  = file_get_contents( $this->get_plugin_dir() . $this->get_main_plugin_file_name() );
-		$match = array();
-		preg_match( '/' . $key . ':\s*(\S+)/', $data, $match );
-		if ( count( $match ) >= 1 ) {
-			return $match[1];
-		}
-
-		return null;
-	}
-
-	/**
-	 * If your subclass of this class lives in a different directory,
-	 * override this method with the exact same code. Since __FILE__ will
-	 * be different, you will then get the right dir returned.
-	 * @return string
-	 *
-	 * @link https://developer.wordpress.org/reference/functions/plugin_dir_path/
-	 */
-	protected function get_plugin_dir() {
-		return TK_EVENT_WEATHER_PLUGIN_ROOT_DIR;
-	}
-
-	/**
 	 * @return string name of the main plugin file that has the header section with
 	 * "Plugin Name", "Version", "Description", "Text Domain", etc.
 	 */

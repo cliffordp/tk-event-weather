@@ -216,7 +216,8 @@ class Options_Manager {
 	 * @return void
 	 */
 	public function settings_page() {
-		if ( ! current_user_can( 'customize' ) ) {
+		$capability = required_capability();
+		if ( ! current_user_can( $capability ) ) {
 			wp_die( __( 'You do not have sufficient permissions to access this page.', 'tk-event-weather' ) );
 		}
 
@@ -294,7 +295,7 @@ class Options_Manager {
 				<p><?php _e( "This plugin uses the WordPress Customizer to set its options.", 'tk-event-weather' ); ?></p>
 				<p><?php _e( "Click the button below to be taken directly to this plugin's section within the WordPress Customizer.", 'tk-event-weather' ); ?></p>
 				<p>
-					<a href="<?php echo apply_filters( 'tk_event_weather_customizer_link', get_admin_url( get_current_blog_id(), 'customize.php' ) ); ?>"
+					<a href="<?php echo apply_filters( TK_EVENT_WEATHER_UNDERSCORES . '_customizer_link', get_admin_url( get_current_blog_id(), 'customize.php' ) ); ?>"
 					   class="button-primary">
 						<?php _e( 'Edit Plugin Settings in WP Customizer', 'tk-event-weather' ) ?>
 					</a>
@@ -743,21 +744,35 @@ class Options_Manager {
 				foreach ( $plugin_options as $key => $option ) {
 					?>
 					<tr>
-						<td><?php echo esc_html( 'Core - ' . $key ); ?></td>
+						<td><?php printf( '<strong>Core:</strong> %s', esc_html( $key ) ); ?></td>
 						<td><?php echo esc_html( $option ); ?></td>
 					</tr>
 					<?php
 				}
 			}
 
-			// allow add-ons to output their settings too
-			$addon_plugin_options = apply_filters( 'tk_event_weather_add_on_plugin_options_array', array() );
+			// TODO test with multiple addons
+			/**
+			 * Filter to allow add-ons' plugin options to be on the debug report.
+			 *
+			 * @param array Array should always be added to, not replaced, to
+			 *              allow for multiple add-ons inserting data.
+			 */
+			$addon_plugin_options = apply_filters( TK_EVENT_WEATHER_UNDERSCORES . '_add_on_plugin_options_array', array() );
 
-			if ( ! empty( $addon_plugin_options ) && is_array( $addon_plugin_options ) ) {
+			if (
+				! empty( $addon_plugin_options )
+				&& is_array( $addon_plugin_options )
+			) {
+				$prepend = 'Addon'; // initial set but can change whenever there is a matching key... until there's the next matching key (to support multiple add-ons)
 				foreach ( $addon_plugin_options as $key => $option ) {
+					if ( 'add_on_name' == $key ) {
+						$prepend = $option;
+						continue;
+					}
 					?>
 					<tr>
-						<td><?php echo esc_html( 'Addon - ' . $key ); ?></td>
+						<td><?php printf( '<strong>%s:</strong> %s', esc_html( $prepend ), esc_html( $key ) ); ?></td>
 						<td><?php echo esc_html( $option ); ?></td>
 					</tr>
 					<?php
@@ -936,24 +951,6 @@ class Options_Manager {
 	}
 
 	/**
-	 * If you want to generate an email address like "no-reply@your-site.com" then
-	 * you can use this to get the domain name part.
-	 * E.g.    'no-reply@' . $this->getEmailDomain();
-	 * This code was stolen from the wp_mail function, where it generates a default
-	 * from "wordpress@your-site.com"
-	 * @return string domain name
-	 */
-	public function get_email_domain() {
-		// Get the site domain and get rid of www.
-		$sitename = strtolower( $_SERVER['SERVER_NAME'] );
-		if ( substr( $sitename, 0, 4 ) == 'www.' ) {
-			$sitename = substr( $sitename, 4 );
-		}
-
-		return $sitename;
-	}
-
-	/**
 	 * Cleanup: remove all options from the DB
 	 *
 	 * @link https://coderwall.com/p/yrqrkw/delete-all-existing-wordpress-transients-in-mysql-database
@@ -980,125 +977,4 @@ class Options_Manager {
 		}
 	}
 
-	/**
-	 * Helper-function outputs the correct form element (input tag, select tag) for the given item
-	 *
-	 * @param    $a_option_key       string name of the option (un-prefixed)
-	 * @param    $a_option_meta      mixed meta-data for $aOptionKey (either a string display-name or an array(display-name, option1, option2, ...)
-	 * @param    $saved_option_value string current value for $aOptionKey
-	 *
-	 * @return void
-	 */
-	protected function create_form_control( $a_option_key, $a_option_meta, $saved_option_value ) {
-		$all_password_field_key_endings = array(
-			// enter lower-case here to match any case
-			'_api_key',
-			'_apikey',
-			'_password',
-			'_secret',
-		);
-
-		$is_password_type_field = false;
-
-		foreach ( $all_password_field_key_endings as $password_ending ) {
-			$a_option_key_strlen    = strlen( $a_option_key );
-			$password_ending_strlen = strlen( $password_ending );
-			if (
-				1 <= $password_ending_strlen
-				&& 1 <= $a_option_key_strlen
-				&& $password_ending_strlen <= $a_option_key_strlen
-				&& 0 === substr_compare( $a_option_key, $password_ending, $a_option_key_strlen - $password_ending_strlen, $password_ending_strlen, true ) // added 1+ checks, above, so this function does not throw errors in PHP versions lower than 5.6.0 -- Reference: http://stackoverflow.com/a/619725/893907
-			) {
-				$is_password_type_field = true;
-			}
-		}
-
-		if ( is_array( $a_option_meta ) && count( $a_option_meta ) >= 2 ) { // Drop-down list
-			$choices = array_slice( $a_option_meta, 1 );
-			?>
-			<p>
-				<select name="<?php echo $a_option_key ?>" id="<?php echo $a_option_key ?>">
-					<?php
-					foreach ( $choices as $a_choice ) {
-						$selected = ( $a_choice == $saved_option_value ) ? 'selected' : '';
-						?>
-						<option value="<?php echo $a_choice ?>" <?php echo $selected ?>><?php echo $this->get_option_value_i18n_string( $a_choice ) ?></option>
-						<?php
-					}
-					?>
-				</select></p>
-			<?php
-
-		} elseif ( true === $is_password_type_field ) { // Password/API Key Type field
-			?>
-			<p>
-				<input type="password" autocomplete="off" name="<?php echo $a_option_key ?>" id="<?php echo $a_option_key ?>"
-					   value="<?php echo esc_attr( $saved_option_value ) ?>" size="50" />
-			</p>
-			<?php
-
-		} else { // Simple input field
-			?>
-			<p>
-				<input type="text" name="<?php echo $a_option_key ?>" id="<?php echo $a_option_key ?>"
-					   value="<?php echo esc_attr( $saved_option_value ) ?>" size="50" />
-			</p>
-			<?php
-
-		}
-	}
-
-	/**
-	 * Override this method and follow its format.
-	 * The purpose of this method is to provide i18n display strings for the values of options.
-	 * For example, you may create a options with values 'true' or 'false'.
-	 * In the options page, this will show as a drop down list with these choices.
-	 * But when the the language is not English, you would like to display different strings
-	 * for 'true' and 'false' while still keeping the value of that option that is actually saved in
-	 * the DB as 'true' or 'false'.
-	 * To do this, follow the convention of defining option values in get_option_metadata() as canonical names
-	 * (what you want them to literally be, like 'true') and then add each one to the switch statement in this
-	 * function, returning the "__()" i18n name of that string.
-	 *
-	 * @param    $option_value string
-	 *
-	 * @return string __($optionValue) if it is listed in this method, otherwise just returns $optionValue
-	 */
-	protected function get_option_value_i18n_string( $option_value ) {
-		switch ( $option_value ) {
-			case 'true':
-				return __( 'true', 'tk-event-weather' );
-			case 'false':
-				return __( 'false', 'tk-event-weather' );
-
-			case 'Administrator':
-				return __( 'Administrator', 'tk-event-weather' );
-			case 'Editor':
-				return __( 'Editor', 'tk-event-weather' );
-			case 'Author':
-				return __( 'Author', 'tk-event-weather' );
-			case 'Contributor':
-				return __( 'Contributor', 'tk-event-weather' );
-			case 'Subscriber':
-				return __( 'Subscriber', 'tk-event-weather' );
-			case 'Anyone':
-				return __( 'Anyone', 'tk-event-weather' );
-		}
-
-		return $option_value;
-	}
-
-	/**
-	 * Query MySQL DB for its version
-	 * @return string|false
-	 */
-	protected function get_mysql_version() {
-		global $wpdb;
-		$rows = $wpdb->get_results( 'select version() as mysqlversion' );
-		if ( ! empty( $rows ) ) {
-			return $rows[0]->mysqlversion;
-		}
-
-		return false;
-	}
 }

@@ -264,7 +264,7 @@ class API_Dark_Sky {
 		 *
 		 * @link https://darksky.net/dev/docs#time-machine-request-parameters
 		 */
-		$uri_query_args = apply_filters( 'tk_event_weather_dark_sky_request_uri_query_args', $uri_query_args );
+		$uri_query_args = apply_filters( TK_EVENT_WEATHER_UNDERSCORES . '_dark_sky_request_uri_query_args', $uri_query_args, Shortcode::$custom_context );
 
 		$uri = add_query_arg( $uri_query_args, $uri_base );
 

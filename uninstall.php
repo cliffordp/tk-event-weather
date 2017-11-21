@@ -12,7 +12,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 // Need to load main plugin file to set the constants and load init.php
-require_once( 'tk-event-weather.php' );
+require_once( TK_EVENT_WEATHER_HYPHENS . '.php' );
 
 $life_cyle = new Life_Cycle;
 $life_cyle->uninstall();
