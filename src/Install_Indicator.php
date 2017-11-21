@@ -35,14 +35,6 @@ class Install_Indicator extends Options_Manager {
 	}
 
 	/**
-	 * @return string name of the main plugin file that has the header section with
-	 * "Plugin Name", "Version", "Description", "Text Domain", etc.
-	 */
-	protected function get_main_plugin_file_name() {
-		return TK_EVENT_WEATHER_HYPHENS . 'php';
-	}
-
-	/**
 	 * Useful when checking for upgrades, can tell if the currently installed version is earlier than the
 	 * newly installed code. This case indicates that an upgrade has been installed and this is the first time it
 	 * has been activated, so any upgrade actions should be taken.
@@ -119,6 +111,13 @@ class Install_Indicator extends Options_Manager {
 	 */
 	public function is_version_less_than_equal( $version1, $version2 ) {
 		return ( version_compare( $version1, $version2 ) <= 0 );
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function get_main_plugin_file_name() {
+		return TK_EVENT_WEATHER_HYPHENS . 'php';
 	}
 
 	/**

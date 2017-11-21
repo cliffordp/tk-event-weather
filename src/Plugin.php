@@ -6,26 +6,6 @@ namespace TKEventWeather;
 
 class Plugin extends Life_Cycle {
 
-	/**
-	 * Customizer Panel ID.
-	 *
-	 * Public so add-ons may access it.
-	 *
-	 * @return string
-	 */
-	public static function customizer_panel_id() {
-		return TK_EVENT_WEATHER_UNDERSCORES . '_panel';
-	}
-
-	/**
-	 * Customizer Section ID.
-	 *
-	 * @return string
-	 */
-	private static function customizer_section_id() {
-		return TK_EVENT_WEATHER_UNDERSCORES . '_section';
-	}
-
 	public static function register_assets() {
 		Functions::register_css();
 		Functions::register_climacons_css();
@@ -119,6 +99,26 @@ class Plugin extends Life_Cycle {
 		}
 
 		return $url;
+	}
+
+	/**
+	 * Customizer Panel ID.
+	 *
+	 * Public so add-ons may access it.
+	 *
+	 * @return string
+	 */
+	public static function customizer_panel_id() {
+		return TK_EVENT_WEATHER_UNDERSCORES . '_panel';
+	}
+
+	/**
+	 * Customizer Section ID.
+	 *
+	 * @return string
+	 */
+	private static function customizer_section_id() {
+		return TK_EVENT_WEATHER_UNDERSCORES . '_section';
 	}
 
 	public static function customizer_options_link() {

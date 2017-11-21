@@ -464,7 +464,7 @@ class Shortcode extends Shortcode_Script_Loader {
 
 		// if Event Start and End times are the same
 		//if ( Shortcode::$span_first_hour_timestamp == $end_time_timestamp ) {
-			// this is allowed as of version 1.4
+		// this is allowed as of version 1.4
 		//}
 
 		// if Event End time is before Start time

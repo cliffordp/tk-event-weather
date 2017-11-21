@@ -51,17 +51,17 @@ namespace TKEventWeather;
  * - color options for styling SVGs (e.g. yellow sun with gray cloud) -- not possible with as-is SVGs because they're flattened (no CSS classes to "fill")
  * - Add support for https://wordpress.org/plugins/shortcode-ui/ and/or Gutenberg: https://wordpress.org/gutenberg/handbook/block-api/
  * - poor UX (apparent data discrepancy) when shortcode timezone is not same as API timezone. Example: All Day event on Oct 14, 2017 Central Time... but event is located in Eastern Time... current code will correctly display Midnight through 10pm, not 11pm, because the API actually returned Oct 13 11pm - Oct 14 10pm... so we need to get Oct 13 and Oct 14 from the API
-Proposed eventual solution:
-If shortcode's TZ != API's TZ (after stripslashes) {
-Get midnight from shortcode's tz
-Get midnight from shortcode's tz
-Get 23:59:59 from API's tz
-Get 23:59:59 from API's tz
-Both midnight and 23:59:59 and then get the min/max of each -- so maybe API's is the min and shortcode's is the max -- then use the calendar days based on API's timezone to determine how many days to send to API call loop.
-}
-Rework multi-day, likely in a new class:
-An "all hours" array to loop through Dark Sky and dump each day's hours into it (along with summary) and go off the aggregated timestamps with our own walker determining when one day starts and ends, based on shortcode's timezone, not API's.
-And update template data to pull from here instead.
+ * Proposed eventual solution:
+ * If shortcode's TZ != API's TZ (after stripslashes) {
+ * Get midnight from shortcode's tz
+ * Get midnight from shortcode's tz
+ * Get 23:59:59 from API's tz
+ * Get 23:59:59 from API's tz
+ * Both midnight and 23:59:59 and then get the min/max of each -- so maybe API's is the min and shortcode's is the max -- then use the calendar days based on API's timezone to determine how many days to send to API call loop.
+ * }
+ * Rework multi-day, likely in a new class:
+ * An "all hours" array to loop through Dark Sky and dump each day's hours into it (along with summary) and go off the aggregated timestamps with our own walker determining when one day starts and ends, based on shortcode's timezone, not API's.
+ * And update template data to pull from here instead.
  */
 
 
