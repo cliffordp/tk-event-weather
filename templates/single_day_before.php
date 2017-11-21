@@ -58,7 +58,8 @@ if ( ! empty( $context->api_data->daily->data[0]->summary ) ) { // Note "daily" 
 	$output .= sprintf( ' title="%s"', esc_attr( $context->api_data->daily->data[0]->summary ) );
 }
 
-$day_name = date_i18n( Shortcode::$time_format_day, $context->start_time_timestamp );
+
+$day_name = Time::timestamp_to_display( $context->start_time_timestamp, Shortcode::$timezone, Shortcode::$time_format_day );
 
 /**
  * Filter to disable changing a day's name from something like "Oct 1" to
