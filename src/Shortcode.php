@@ -463,11 +463,9 @@ class Shortcode extends Shortcode_Script_Loader {
 		self::$span_end_time_timestamp = $end_time_timestamp;
 
 		// if Event Start and End times are the same
-		if ( Shortcode::$span_first_hour_timestamp == $end_time_timestamp ) {
+		//if ( Shortcode::$span_first_hour_timestamp == $end_time_timestamp ) {
 			// this is allowed as of version 1.4
-			// Functions::invalid_shortcode_message( 'Please make sure Event Start Time and Event End Time are not the same' );
-			// return Functions::$shortcode_error_message;
-		}
+		//}
 
 		// if Event End time is before Start time
 		if ( Shortcode::$span_first_hour_timestamp > $end_time_timestamp ) {
@@ -486,6 +484,7 @@ class Shortcode extends Shortcode_Script_Loader {
 			$cutoff_future = '';
 		}
 
+		// TODO: date_default_timezone_set() for any strtotime() -- likely not an issue here because of so far in the future -- should move to a method anyway and search for all other strtotime() usage
 		if ( empty( $cutoff_future ) ) { // not set or set to zero (which means "no limit" per plugin option)
 			$max_timestamp = '';
 		} else {
@@ -516,11 +515,12 @@ class Shortcode extends Shortcode_Script_Loader {
 		}
 
 
-		//
-		// Shortcode::$span_first_hour_timestamp is equal to or greater than $min_timestamp and $end_time_timestamp is less than or equal to $max_timestamp
-		// or $min_timestamp and/or $max_timestamp were set to zero (i.e. no limits)
-		// so continue...
-		//
+		/**
+		 * Shortcode::$span_first_hour_timestamp is equal to or greater than $min_timestamp and
+		 * $end_time_timestamp is less than or equal to $max_timestamp
+		 * or $min_timestamp and/or $max_timestamp were set to zero (i.e. no limits)
+		 * so continue...
+		 */
 
 
 		// time_format_day

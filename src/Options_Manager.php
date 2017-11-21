@@ -273,7 +273,7 @@ class Options_Manager {
 					<a href="http://b.tourkick.com/tourkick-com" target="_blank">Website</a>
 				</p>
 				<hr>
-				<p style="font-style: italic;"><?php echo tk_event_weather_terms_agreement_text(); ?></p>
+				<p style="font-style: italic;"><?php echo terms_agreement_text(); ?></p>
 			</div>
 
 
@@ -570,11 +570,11 @@ class Options_Manager {
 					// Check if phpversion function exists.
 					if ( function_exists( 'phpversion' ) ) {
 						$php_version = phpversion();
-						if ( version_compare( $php_version, tk_event_weather_min_php_version(), '<' ) ) {
+						if ( version_compare( $php_version, min_php_version(), '<' ) ) {
 							echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf(
 									__( '%s - This plugin requires a minimum PHP version of %s. See: %s', 'tk-event-weather' ),
 									esc_html( $php_version ),
-									tk_event_weather_min_php_version(),
+									min_php_version(),
 									'<a href="http://docs.woothemes.com/document/how-to-update-your-php-version/" target="_blank">' . __( 'How to update your PHP version', 'tk-event-weather' ) . '</a>'
 								) . '</mark>';
 						} else {

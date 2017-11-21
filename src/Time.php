@@ -336,14 +336,6 @@ class Time {
 		}
 	}
 
-	public function get_timezone() {
-		if ( ! empty( Shortcode::$timezone ) ) {
-			return Shortcode::$timezone;
-		}
-
-		self::set_timezone_and_source_from_shortcode_args();
-	}
-
 	/**
 	 * Taking the shortcode's input and the API's response (if available),
 	 * determine the timezone source and the timezone.

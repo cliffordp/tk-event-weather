@@ -154,21 +154,23 @@ class Plugin extends Life_Cycle {
 					0 === strpos( $option, 'TKEventW' )
 					|| 0 === strpos( $option, 'TkEventW' )
 				) {
-					delete_option( $option );
+					\delete_option( $option );
 				}
 			}
 
 			// Delete old Customizer options, such as tk_event_weather[forecast_io...]
 			$current_options = get_option( TK_EVENT_WEATHER_UNDERSCORES );
 			$needs_update    = false;
+
 			foreach ( $current_options as $sub_option => $value ) {
 				if ( 0 === strpos( $sub_option, 'forecast_io' ) ) {
 					unset( $current_options[ $sub_option ] );
 					$needs_update = true;
 				}
 			}
+
 			if ( $needs_update ) {
-				update_option( TK_EVENT_WEATHER_UNDERSCORES, $current_options );
+				\update_option( TK_EVENT_WEATHER_UNDERSCORES, $current_options );
 			}
 		}
 
@@ -208,7 +210,6 @@ class Plugin extends Life_Cycle {
 		//				wp_enqueue_style('my-style', plugins_url('/css/my-style.css', __FILE__));
 		//				wp_enqueue_script('my-script', plugins_url('/js/my-script.js', __FILE__));
 
-
 		add_action( 'customize_register', array( $this, 'customizer_options' ) );
 
 		add_filter( TK_EVENT_WEATHER_UNDERSCORES . '_customizer_link', array( $this, 'customizer_options_link' ), 20 );
@@ -225,7 +226,7 @@ class Plugin extends Life_Cycle {
 
 	}
 
-/**
+	/**
 	 * Add plugin options to Customizer
 	 * See: https://developer.wordpress.org/themes/customize-api/
 	 */
@@ -520,20 +521,10 @@ class Plugin extends Life_Cycle {
 		$wp_customize->add_control(
 			TK_EVENT_WEATHER_UNDERSCORES . '_darksky_api_key_control', array(
 				'label'       => esc_html__( 'Dark Sky API Key', 'tk-event-weather' ),
-				'description' => __( 'Enter your <a href="https://darksky.net/dev/" target="_blank">Dark Sky API Key</a> (link opens in new window)', 'tk-event-weather' ),
+				'description' => __( 'Enter your <a href="https://darksky.net/dev/account" target="_blank">Dark Sky API Key</a> (link opens in new window)', 'tk-event-weather' ),
 				'section'     => self::customizer_section_id() . '_api_dark_sky',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[darksky_api_key]',
 				'type'        => 'password',
-				/**
-				 * Avoid the nagging LastPass prompt upon each WP Customizer save
-				 * @link https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion
-				 * @link https://www.chromium.org/developers/design-documents/form-styles-that-chromium-understands
-				 * @link https://lastpass.com/support.php?cmd=showfaq&id=10512
-				 */
-				'input_attrs' => array(
-					'data-lpignore' => 'true',
-					'autocomplete'  => 'new-password',
-				),
 			)
 		);
 
@@ -662,7 +653,7 @@ class Plugin extends Life_Cycle {
 		$wp_customize->add_control(
 			TK_EVENT_WEATHER_UNDERSCORES . '_timezone_source_control', array(
 				'label'       => esc_html__( 'Timezone Source', 'tk-event-weather' ),
-				'description' => __( "In which timezone should hourly times be displayed?<br><strong>From API</strong> means times will be displayed per location. For example, if an event on your site is in New York City, the weather times get displayed in New York City time even if your WordPress timezone is set to Honolulu, Hawaii or UTC-10.<br><strong>From Wordpress</strong> means all weather times display in your WordPress timezone. From the example above, the event in New York City would have its weather displayed in Honolulu time.<br>(If you do not see WordPress as an option here, please first set it in your General Settings.)<br>Default: From API", 'tk-event-weather' ),
+				'description' => __( "In which timezone should hourly times be displayed?<br><strong>From API</strong> means times will be displayed per location. For example, if an event on your site is in New York City, the weather times get displayed in New York City time even if your WordPress timezone is set to Honolulu, Hawaii or UTC-10.<br><strong>From Wordpress</strong> means all weather times display in your WordPress timezone. From the example above, the event in New York City would have its weather displayed in Honolulu time.<br>(If you do not see WordPress as an option here, please first set it in your General Settings.)<br>Note: If you manually set the 'timezone' argument in a single shortcode, that will be used regardless of this 'timezone_source' option.<br>Default: From API", 'tk-event-weather' ),
 				'section'     => self::customizer_section_id() . '_api_dark_sky',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[timezone_source]',
 				'type'        => 'select',
@@ -687,10 +678,6 @@ class Plugin extends Life_Cycle {
 				'section'     => self::customizer_section_id() . '_api_google',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[google_maps_api_key]',
 				'type'        => 'password',
-				'input_attrs' => array(
-					'data-lpignore' => 'true',
-					'autocomplete'  => 'new-password',
-				),
 			)
 		);
 
