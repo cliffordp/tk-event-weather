@@ -93,7 +93,7 @@ class Install_Indicator extends Options_Manager {
 	 * @return string
 	 */
 	public function get_version() {
-		return tk_event_weather_version();
+		return get_tk_event_weather_version();
 	}
 
 	/**

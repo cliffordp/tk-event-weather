@@ -951,7 +951,9 @@ class Options_Manager {
 	}
 
 	/**
-	 * Cleanup: remove all options from the DB
+	 * Cleanup: remove each of this core plugin's options from the database, as
+	 * well as those of add-ons (since they should be using
+	 * 'tk_event_weather...' option names).
 	 *
 	 * @link https://coderwall.com/p/yrqrkw/delete-all-existing-wordpress-transients-in-mysql-database
 	 */
@@ -959,8 +961,15 @@ class Options_Manager {
 		$customizer_options = get_option( TK_EVENT_WEATHER_UNDERSCORES );
 
 		if ( ! empty( $customizer_options['uninstall_delete_all_data'] ) ) {
-			// delete customizer options
-			delete_option( TK_EVENT_WEATHER_UNDERSCORES );
+			// delete customizer options for core plugin and add-on plugins
+			$all_options = wp_load_alloptions();
+
+			// Delete options that start with 'tk_event_weather'
+			foreach ( $all_options as $option => $value ) {
+				if ( 0 === strpos( $option, TK_EVENT_WEATHER_UNDERSCORES ) ) {
+					delete_option( $option );
+				}
+			}
 
 			// delete all other options is handled via mark_as_uninstalled()
 

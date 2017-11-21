@@ -37,33 +37,6 @@ class Time {
 	}
 
 	/**
-	 * TODO: Unused function
-	 * Valid strtotime() relative time
-	 *
-	 * @param string $prepend_empty
-	 *
-	 * @link http://php.net/manual/en/function.strtotime.php
-	 * @link http://php.net/manual/en/datetime.formats.relative.php -- plural "s" is optional for all except "weeks" so just used plural for all
-	 *
-	 * @return array|bool
-	 */
-	public static function valid_strtotime_units( $prepend_empty = 'false' ) {
-		$result = array(
-			'hours'  => __( 'Hours', 'tk-event-weather' ),
-			'days'   => __( 'Days (Default)', 'tk-event-weather' ),
-			'weeks'  => __( 'Weeks', 'tk-event-weather' ),
-			'months' => __( 'Months', 'tk-event-weather' ),
-			'years'  => __( 'Years', 'tk-event-weather' ),
-		);
-
-		if ( 'true' == $prepend_empty ) {
-			$result = Functions::array_prepend_empty( $result );
-		}
-
-		return $result;
-	}
-
-	/**
 	 * @param        $input
 	 * @param string $return_format
 	 *

@@ -217,7 +217,7 @@ Many thanks to the following:
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
 
 = Version 1.5.0 =
-* November 20, 2017
+* November 21, 2017
 * Over 90 development hours since the last release! Enjoy the fruits of my labor and, if you're using alongside a calendar plugin, please consider purchasing a paid add-on to help me and make your life easier! :)
 
 Enhancements:
@@ -236,6 +236,7 @@ Enhancements:
 
 Tweaks:
 
+* Plugin now verifies a sufficient version of WordPress core is running. As of this release, 4.5 is the minimum required version.
 * Improved the Customizer UI by breaking out all the plugin options from a single section to multiple sections.
 * All capability checks consolidated into one, which defaults to 'customize' but is customizable via the new `tk_event_weather_required_capability` filter.
 * Removed `tk_event_weather_darksky_units_default` and `tk_event_weather_darksky_exclude_default` filters. Added `tk_event_weather_dark_sky_request_uri_query_args` filter.

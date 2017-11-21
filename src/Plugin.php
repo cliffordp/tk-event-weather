@@ -542,7 +542,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[multi_day_limit]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => array( 'TKEventWeather\Functions', 'sanitize_absint_allow_blank' ),
+				'sanitize_callback' => array( '\TKEventWeather\Functions', 'sanitize_absint_allow_blank' ),
 			)
 		);
 
@@ -580,7 +580,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[cutoff_past_days]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => array( 'TKEventWeather\Functions', 'sanitize_absint_allow_blank' ),
+				'sanitize_callback' => array( '\TKEventWeather\Functions', 'sanitize_absint_allow_blank' ),
 			)
 		);
 
@@ -599,7 +599,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[cutoff_future_days]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => array( 'TKEventWeather\Functions', 'sanitize_absint_allow_blank' ),
+				'sanitize_callback' => array( '\TKEventWeather\Functions', 'sanitize_absint_allow_blank' ),
 			)
 		);
 
@@ -699,7 +699,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[transients_expiration_hours]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => array( 'TKEventWeather\Functions', 'sanitize_absint_allow_blank' ),
+				'sanitize_callback' => array( '\TKEventWeather\Functions', 'sanitize_absint_allow_blank' ),
 			)
 		);
 
@@ -762,7 +762,7 @@ class Plugin extends Life_Cycle {
 		$wp_customize->add_control(
 			TK_EVENT_WEATHER_UNDERSCORES . '_uninstall_delete_all_data_control', array(
 				'label'       => esc_html__( 'Delete all data on uninstall', 'tk-event-weather' ),
-				'description' => __( 'Check this box to delete all data associated with this plugin when deleted (not just deactivated) via the wp-admin Plugins page (not via SFTP).', 'tk-event-weather' ),
+				'description' => __( 'Check this box to delete all data associated with this plugin (and any of its add-ons) when deleted (not just deactivated) via the wp-admin Plugins page (not via SFTP).', 'tk-event-weather' ),
 				'section'     => self::customizer_section_id() . '_advanced',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[uninstall_delete_all_data]',
 				'type'        => 'checkbox',
