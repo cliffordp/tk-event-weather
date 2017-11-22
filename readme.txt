@@ -223,6 +223,7 @@ Many thanks to the following:
 = Version 1.5.1 =
 * November 21, 2017
 * Version bump for issues with .org upload of version 1.5.0
+* Tweaks for uninstalling via Freemius' best practices.
 
 = Version 1.5.0 =
 * November 21, 2017
