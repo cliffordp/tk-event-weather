@@ -44,8 +44,10 @@ class Life_Cycle extends Install_Indicator {
 	}
 
 	/**
-	 * This should only ever get called from uninstall.php in the plugin's
-	 * root directory.
+	 * Uninstall all options and settings from this core plugin as well as
+	 * those of all add-ons.
+	 *
+	 * This should only ever get called from the Freemius uninstall hook.
 	 */
 	public function uninstall() {
 		$this->other_uninstall();

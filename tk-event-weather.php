@@ -286,6 +286,16 @@ function freemius_plugin_icon() {
 	return TK_EVENT_WEATHER_PLUGIN_ROOT_DIR . 'images/icon.svg';
 }
 
+/**
+ * Run the uninstall routine, ran via Freemius' uninstall hook.
+ */
+function freemius_uninstall() {
+	require_once( 'init.php' );
+	tk_event_weather_init( __FILE__ );
+	$life_cyle = new Life_Cycle;
+	$life_cyle->uninstall();
+}
+
 
 // old code?
 /**
@@ -311,6 +321,24 @@ function tkeventweather_i18n_init() {
 // Initialize i18n
 // add_action('plugins_loaded','\TKEventWeather\tkeventweather_i18n_init');
 
+
+tk_event_weather_freemius();
+tk_event_weather_freemius()->add_filter( 'connect_message', '\TKEventWeather\freemius_custom_connect_message', 10, 6 );
+tk_event_weather_freemius()->add_filter( 'plugin_icon', '\TKEventWeather\freemius_plugin_icon' );
+
+/**
+ * Implement uninstall routine upon deleting, leveraging Freemius' hook.
+ *
+ * Freemius does not allow having an uninstall.php file in add-ons because it
+ * tracks uninstalls, but it has its own uninstall action to hook to -- which
+ * is required for add-ons (if any uninstall routine at all) and is best
+ * practice for core/.org plugins implementing Freemius.
+ *
+ * @link https://developer.wordpress.org/plugins/the-basics/uninstall-methods/
+ * @link https://developer.wordpress.org/reference/functions/register_uninstall_hook/
+ */
+tk_event_weather_freemius()->add_action( 'after_uninstall', '\TKEventWeather\freemius_uninstall' );
+
 /**
  * Only run the initialization code if we have the proper WordPress core and
  * PHP versions.
@@ -319,10 +347,6 @@ if (
 	wp_version_check()
 	&& php_version_check()
 ) {
-	tk_event_weather_freemius();
-	tk_event_weather_freemius()->add_filter( 'connect_message', '\TKEventWeather\freemius_custom_connect_message', 10, 6 );
-	tk_event_weather_freemius()->add_filter( 'plugin_icon', '\TKEventWeather\freemius_plugin_icon' );
-
 	require_once( 'init.php' );
 	tk_event_weather_init( __FILE__ );
 
