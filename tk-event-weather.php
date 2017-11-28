@@ -66,7 +66,7 @@ namespace TKEventWeather;
 
 
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( '\ABSPATH' ) ) {
 	exit;
 }
 
@@ -83,27 +83,33 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.5.0
  */
-define( 'TK_EVENT_WEATHER_UNDERSCORES', 'tk_event_weather' );
+if ( ! defined( '\TK_EVENT_WEATHER_UNDERSCORES' ) ) {
+	define( 'TK_EVENT_WEATHER_UNDERSCORES', 'tk_event_weather' );
+}
 
 /**
  * Used for file names and directories, HTML class names, etc.
  *
  * @since 1.5.0
  */
-define( 'TK_EVENT_WEATHER_HYPHENS', 'tk-event-weather' );
+if ( ! defined( '\TK_EVENT_WEATHER_HYPHENS' ) ) {
+	define( 'TK_EVENT_WEATHER_HYPHENS', 'tk-event-weather' );
+}
 
 // Required for Template Loader. Also used elsewhere.
-define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) ); // e.g. /.../.../example-com/wp-content/plugins/tk-event-weather/
+if ( ! defined( '\TK_EVENT_WEATHER_PLUGIN_ROOT_DIR' ) ) {
+	define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_DIR', \plugin_dir_path( __FILE__ ) ); // e.g. /.../.../example-com/wp-content/plugins/tk-event-weather/
+}
 
 // added for consistency to match DIR
-define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_URL', plugin_dir_url( __FILE__ ) ); // e.g. http://example.com/wp-content/plugins/tk-event-weather/
-
-// used for adding Settings link to plugins.php
-// https://developer.wordpress.org/reference/functions/plugin_basename/
-define( 'TK_EVENT_WEATHER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) ); // e.g. tk-event-weather/tk-event-weather.php
+if ( ! defined( '\TK_EVENT_WEATHER_PLUGIN_ROOT_URL' ) ) {
+	define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_URL', \plugin_dir_url( __FILE__ ) ); // e.g. http://example.com/wp-content/plugins/tk-event-weather/
+}
 
 // used by core plugin and by add-on implementations of Freemius
-define( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE', dirname( __FILE__ ) . '/vendor/freemius/wordpress-sdk/start.php' );
+if ( ! defined( '\TK_EVENT_WEATHER_FREEMIUS_START_FILE' ) ) {
+	define( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE', \dirname( __FILE__ ) . '/vendor/freemius/wordpress-sdk/start.php' );
+}
 
 /**
  * Capability required to access the settings and be shown the shortcode errors.
@@ -115,7 +121,7 @@ define( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE', dirname( __FILE__ ) . '/vendor/f
  * @since 1.5.0
  */
 function required_capability() {
-	return apply_filters( TK_EVENT_WEATHER_UNDERSCORES . '_required_capability', 'customize' );
+	return \apply_filters( \TK_EVENT_WEATHER_UNDERSCORES . '_required_capability', 'customize' );
 }
 
 /**
@@ -152,7 +158,7 @@ function notice_wrong_wp_version() {
 }
 
 function wp_version_check() {
-	if ( 0 > version_compare( \get_bloginfo( 'version' ), min_wp_version() ) ) {
+	if ( \version_compare( \get_bloginfo( 'version' ), min_wp_version(), '<' ) ) {
 		add_action( 'admin_notices', '\TKEventWeather\notice_wrong_wp_version' );
 
 		return false;
@@ -178,7 +184,7 @@ function notice_wrong_php_version() {
 }
 
 function php_version_check() {
-	if ( 0 > version_compare( \phpversion(), min_php_version() ) ) {
+	if ( \version_compare( \phpversion(), min_php_version(), '<' ) ) {
 		add_action( 'admin_notices', '\TKEventWeather\notice_wrong_php_version' );
 
 		return false;
@@ -189,20 +195,18 @@ function php_version_check() {
 
 // adapted from http://wpbackoffice.com/get-current-woocommerce-version-number/
 function get_tk_event_weather_version() {
-	// If get_plugins() isn't available, require it
-	if ( ! function_exists( 'get_plugins' ) ) {
-		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+	// If \get_plugins() isn't available, require it
+	if ( ! function_exists( '\get_plugins' ) ) {
+		require_once( \ABSPATH . 'wp-admin/includes/plugin.php' );
 	}
+
 	// Create the plugins folder and file variables
-	$plugin_folder = get_plugins( '/' . TK_EVENT_WEATHER_HYPHENS );
-	$plugin_file   = TK_EVENT_WEATHER_HYPHENS . '.php';
+	$plugin_folder = \get_plugins( '/' . \TK_EVENT_WEATHER_HYPHENS );
+	$plugin_file   = \TK_EVENT_WEATHER_HYPHENS . '.php';
 
 	// If the plugin version number is set, return it
 	if ( isset( $plugin_folder[ $plugin_file ]['Version'] ) ) {
 		return $plugin_folder[ $plugin_file ]['Version'];
-	} else {
-		// Otherwise return null
-		return null;
 	}
 }
 
@@ -224,16 +228,16 @@ function tk_event_weather_freemius() {
 
 	if (
 		! isset( $tk_event_weather_freemius )
-		&& defined( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE' )
-		&& file_exists( TK_EVENT_WEATHER_FREEMIUS_START_FILE )
+		&& defined( '\TK_EVENT_WEATHER_FREEMIUS_START_FILE' )
+		&& file_exists( \TK_EVENT_WEATHER_FREEMIUS_START_FILE )
 	) {
 		// Include Freemius SDK.
-		require_once( TK_EVENT_WEATHER_FREEMIUS_START_FILE );
+		require_once( \TK_EVENT_WEATHER_FREEMIUS_START_FILE );
 
 		$tk_event_weather_freemius = \fs_dynamic_init(
 			array(
 				'id'             => '240',
-				'slug'           => TK_EVENT_WEATHER_HYPHENS,
+				'slug'           => \TK_EVENT_WEATHER_HYPHENS,
 				'public_key'     => 'pk_b6902fc0051f10b5e36bea21fb0e7',
 				'is_premium'     => false,
 				'has_addons'     => true,
@@ -247,7 +251,7 @@ function tk_event_weather_freemius() {
 					 *
 					 * @see Life_Cycle::get_settings_slug()
 					 */
-					'slug'   => TK_EVENT_WEATHER_HYPHENS . '-settings',
+					'slug'   => \TK_EVENT_WEATHER_HYPHENS . '-settings',
 					'parent' => array(
 						'slug' => 'options-general.php',
 					),
@@ -283,7 +287,7 @@ function freemius_custom_connect_message(
 }
 
 function freemius_plugin_icon() {
-	return TK_EVENT_WEATHER_PLUGIN_ROOT_DIR . 'images/icon.svg';
+	return \TK_EVENT_WEATHER_PLUGIN_ROOT_DIR . 'images/icon.svg';
 }
 
 /**
@@ -323,6 +327,8 @@ function tkeventweather_i18n_init() {
 
 
 tk_event_weather_freemius();
+\do_action( \TK_EVENT_WEATHER_UNDERSCORES . '_freemius_loaded' );
+
 tk_event_weather_freemius()->add_filter( 'connect_message', '\TKEventWeather\freemius_custom_connect_message', 10, 6 );
 tk_event_weather_freemius()->add_filter( 'plugin_icon', '\TKEventWeather\freemius_plugin_icon' );
 
@@ -350,7 +356,7 @@ if (
 	require_once( 'init.php' );
 	tk_event_weather_init( __FILE__ );
 
-	do_action( TK_EVENT_WEATHER_UNDERSCORES . '_loaded' );
+	\do_action( \TK_EVENT_WEATHER_UNDERSCORES . '_loaded' );
 } else {
-	do_action( TK_EVENT_WEATHER_UNDERSCORES . '_not_loaded' );
+	\do_action( \TK_EVENT_WEATHER_UNDERSCORES . '_not_loaded' );
 }
