@@ -5,7 +5,7 @@ namespace TKEventWeather;
 /*
 	Plugin Name: TK Event Weather
 	Plugin URI: https://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
-	Version: 1.5.1
+	Version: 1.5.2
 	Author: TourKick (Clifford Paulick)
 	Author URI: https://tourkick.com/?utm_source=author-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
 	Description: Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
@@ -54,8 +54,8 @@ namespace TKEventWeather;
  * Proposed eventual solution:
  * If shortcode's TZ != API's TZ (after stripslashes) {
  * Get midnight from shortcode's tz
- * Get midnight from shortcode's tz
- * Get 23:59:59 from API's tz
+ * Get midnight from API's tz
+ * Get 23:59:59 from shortcode's tz
  * Get 23:59:59 from API's tz
  * Both midnight and 23:59:59 and then get the min/max of each -- so maybe API's is the min and shortcode's is the max -- then use the calendar days based on API's timezone to determine how many days to send to API call loop.
  * }
@@ -300,7 +300,6 @@ function freemius_uninstall() {
 	$life_cyle->uninstall();
 }
 
-
 // old code?
 /**
  * Initialize internationalization (i18n) for this plugin.
@@ -316,7 +315,6 @@ function tkeventweather_i18n_init() {
 }
 */
 
-
 //////////////////////////////////
 // Run initialization
 /////////////////////////////////
@@ -324,7 +322,6 @@ function tkeventweather_i18n_init() {
 // old code (goes with above)?
 // Initialize i18n
 // add_action('plugins_loaded','\TKEventWeather\tkeventweather_i18n_init');
-
 
 tk_event_weather_freemius();
 \do_action( \TK_EVENT_WEATHER_UNDERSCORES . '_freemius_loaded' );

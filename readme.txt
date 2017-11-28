@@ -6,7 +6,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.5
 Tested up to: 4.9
 Requires PHP: 5.4
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 
 Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 
@@ -219,6 +219,10 @@ Many thanks to the following:
 
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
+
+= Version 1.5.2 =
+* November 27, 2017
+* Better loading logic for Freemius, which is especially important if using any add-ons.
 
 = Version 1.5.1 =
 * November 21, 2017
