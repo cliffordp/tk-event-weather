@@ -186,7 +186,19 @@ class Shortcode extends Shortcode_Script_Loader {
 		self::$span_template_data['custom_context'] = trim( $atts['custom_context'] ); // also passed to $context in the templates so they don't need an additional parameter in the hook
 
 		// Initialize output
-		$output = sprintf( '<div class="%s__wrapper">', TK_EVENT_WEATHER_HYPHENS );
+		$output = sprintf( '<div class="%s__wrapper">', \TK_EVENT_WEATHER_HYPHENS );
+		$output .= PHP_EOL;
+
+		// Text Before Shortcode Output (not per day -- there's a filter for that)
+		$before = sanitize_text_field( $atts['before'] );
+
+		$before = apply_filters( \TK_EVENT_WEATHER_UNDERSCORES . '_text_before', $before, self::$custom_context );
+
+		if ( ! empty( $before ) ) {
+			$before = sprintf( '<h4 class="%s__before">%s</h4>', \TK_EVENT_WEATHER_HYPHENS, $before );
+		}
+
+		$output .= $before;
 		$output .= PHP_EOL;
 
 		// Template
@@ -199,26 +211,7 @@ class Shortcode extends Shortcode_Script_Loader {
 		self::$span_template_data['template']            = $display_template;
 		self::$span_template_data['template_class_name'] = Template::template_class_name( $display_template );
 
-		$output .= sprintf( '<div class="%s__wrap_weather %s">', TK_EVENT_WEATHER_HYPHENS, $display_template );
-		$output .= PHP_EOL;
-
-		// Text Before Shortcode Output (not per day -- there's a filter for that)
-		$before = sanitize_text_field( $atts['before'] );
-
-		$before_filtered = apply_filters( TK_EVENT_WEATHER_UNDERSCORES . '_before_full_html', $before, self::$custom_context ); // if you filter it, you're responsible for the entire HTML (e.g. wrapping in h4 tag)
-
-		if (
-			'' != $before
-			|| '' != $before_filtered
-		) {
-			if ( $before_filtered === $before ) {
-				$before = sprintf( '<h4 class="%s__before">%s</h4>', TK_EVENT_WEATHER_HYPHENS, $before );
-			} else {
-				$before = $before_filtered;
-			}
-		}
-
-		$output .= $before;
+		$output .= sprintf( '<div class="%s__wrap_weather %s">', \TK_EVENT_WEATHER_HYPHENS, $display_template );
 		$output .= PHP_EOL;
 
 		// Enable Debug only if user is logged in and can use Customizer (an Admin).
@@ -615,7 +608,7 @@ class Shortcode extends Shortcode_Script_Loader {
 
 		// enqueue CSS file if using Climacons Icon Font
 		if ( 'climacons_font' == $icons ) {
-			wp_enqueue_style( TK_EVENT_WEATHER_HYPHENS . '-climacons' );
+			wp_enqueue_style( \TK_EVENT_WEATHER_HYPHENS . '-climacons' );
 		}
 
 		self::$span_template_data['icons'] = $icons;
@@ -790,17 +783,10 @@ class Shortcode extends Shortcode_Script_Loader {
 		// Text After Shortcode Output (not per day -- there's a filter for that)
 		$after = sanitize_text_field( $atts['after'] );
 
-		$after_filtered = apply_filters( TK_EVENT_WEATHER_UNDERSCORES . '_after_full_html', $after, self::$custom_context ); // if you filter it, you're responsible for the entire HTML (e.g. wrapping in p tag)
+		$after_filtered = apply_filters( \TK_EVENT_WEATHER_UNDERSCORES . '_text_after', $after, self::$custom_context );
 
-		if (
-			'' != $after
-			|| '' != $after_filtered
-		) {
-			if ( $after_filtered === $after ) {
-				$after = sprintf( '<p class="%s__after">%s</p>', TK_EVENT_WEATHER_HYPHENS, $after );
-			} else {
-				$after = $after_filtered;
-			}
+		if ( ! empty( $after ) ) {
+			$after = sprintf( '<p class="%s__after">%s</p>', \TK_EVENT_WEATHER_HYPHENS, $after );
 		}
 
 		$output .= $after;
@@ -820,16 +806,16 @@ class Shortcode extends Shortcode_Script_Loader {
 			self::$added_already = true;
 
 			// need the basic styling even if plugin options are not yet set, e.g. nice-looking error messages
-			wp_enqueue_style( TK_EVENT_WEATHER_HYPHENS );
+			wp_enqueue_style( \TK_EVENT_WEATHER_HYPHENS );
 
 			// only include these styles if plugin options are set
 			if ( ! empty( $plugin_options ) ) {
 				if ( empty( $plugin_options['scroll_horizontal_off'] ) ) {
-					wp_enqueue_style( TK_EVENT_WEATHER_HYPHENS . '-scroll-horizontal' );
+					wp_enqueue_style( \TK_EVENT_WEATHER_HYPHENS . '-scroll-horizontal' );
 				}
 
 				if ( empty( $plugin_options['vertical_to_columns_off'] ) ) {
-					wp_enqueue_style( TK_EVENT_WEATHER_HYPHENS . '-vertical-to-columns' );
+					wp_enqueue_style( \TK_EVENT_WEATHER_HYPHENS . '-vertical-to-columns' );
 				}
 			}
 		}

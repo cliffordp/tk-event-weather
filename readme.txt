@@ -6,7 +6,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.5
 Tested up to: 4.9
 Requires PHP: 5.4
-Stable tag: 1.5.2
+Stable tag: 1.5.3
 
 Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 
@@ -219,6 +219,11 @@ Many thanks to the following:
 
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
+
+= Version 1.5.3 =
+* November 28, 2017
+* Fixed display of Hourly Vertical with Columns when Before Text is present.
+* Cleaned up the Before and After text logic and corrected these filter names: `tk_event_weather_before_full_html` to `tk_event_weather_text_before` and `tk_event_weather_after_full_html` to `tk_event_weather_text_after`.
 
 = Version 1.5.2 =
 * November 27, 2017
