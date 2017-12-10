@@ -159,7 +159,7 @@ function notice_wrong_wp_version() {
 
 function wp_version_check() {
 	if ( \version_compare( \get_bloginfo( 'version' ), min_wp_version(), '<' ) ) {
-		add_action( 'admin_notices', '\TKEventWeather\notice_wrong_wp_version' );
+		add_action( 'admin_notices', __NAMESPACE__ . '\notice_wrong_wp_version' );
 
 		return false;
 	}
@@ -185,7 +185,7 @@ function notice_wrong_php_version() {
 
 function php_version_check() {
 	if ( \version_compare( \phpversion(), min_php_version(), '<' ) ) {
-		add_action( 'admin_notices', '\TKEventWeather\notice_wrong_php_version' );
+		add_action( 'admin_notices', __NAMESPACE__ . '\notice_wrong_php_version' );
 
 		return false;
 	}
@@ -321,13 +321,13 @@ function tkeventweather_i18n_init() {
 
 // old code (goes with above)?
 // Initialize i18n
-// add_action('plugins_loaded','\TKEventWeather\tkeventweather_i18n_init');
+// add_action('plugins_loaded',__NAMESPACE__ . '\tkeventweather_i18n_init');
 
 tk_event_weather_freemius();
 \do_action( \TK_EVENT_WEATHER_UNDERSCORES . '_freemius_loaded' );
 
-tk_event_weather_freemius()->add_filter( 'connect_message', '\TKEventWeather\freemius_custom_connect_message', 10, 6 );
-tk_event_weather_freemius()->add_filter( 'plugin_icon', '\TKEventWeather\freemius_plugin_icon' );
+tk_event_weather_freemius()->add_filter( 'connect_message', __NAMESPACE__ . '\freemius_custom_connect_message', 10, 6 );
+tk_event_weather_freemius()->add_filter( 'plugin_icon', __NAMESPACE__ . '\freemius_plugin_icon' );
 
 /**
  * Implement uninstall routine upon deleting, leveraging Freemius' hook.
@@ -340,7 +340,7 @@ tk_event_weather_freemius()->add_filter( 'plugin_icon', '\TKEventWeather\freemiu
  * @link https://developer.wordpress.org/plugins/the-basics/uninstall-methods/
  * @link https://developer.wordpress.org/reference/functions/register_uninstall_hook/
  */
-tk_event_weather_freemius()->add_action( 'after_uninstall', '\TKEventWeather\freemius_uninstall' );
+tk_event_weather_freemius()->add_action( 'after_uninstall', __NAMESPACE__ . '\freemius_uninstall' );
 
 /**
  * Only run the initialization code if we have the proper WordPress core and

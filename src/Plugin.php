@@ -533,7 +533,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[multi_day_limit]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => array( '\TKEventWeather\Functions', 'sanitize_absint_allow_blank' ),
+				'sanitize_callback' => array( __NAMESPACE__ . '\Functions', 'sanitize_absint_allow_blank' ),
 			)
 		);
 
@@ -571,7 +571,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[cutoff_past_days]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => array( '\TKEventWeather\Functions', 'sanitize_absint_allow_blank' ),
+				'sanitize_callback' => array( __NAMESPACE__ . '\Functions', 'sanitize_absint_allow_blank' ),
 			)
 		);
 
@@ -590,7 +590,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[cutoff_future_days]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => array( '\TKEventWeather\Functions', 'sanitize_absint_allow_blank' ),
+				'sanitize_callback' => array( __NAMESPACE__ . '\Functions', 'sanitize_absint_allow_blank' ),
 			)
 		);
 
@@ -686,7 +686,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[transients_expiration_hours]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => array( '\TKEventWeather\Functions', 'sanitize_absint_allow_blank' ),
+				'sanitize_callback' => array( __NAMESPACE__ . '\Functions', 'sanitize_absint_allow_blank' ),
 			)
 		);
 
