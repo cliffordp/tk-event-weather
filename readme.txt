@@ -3,10 +3,10 @@ Contributors: cliffpaulick, freemius
 Tags: calendar, events, forecast, shortcode, weather
 License: GPL version 3 or any later version
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
-Requires at least: 4.5
-Tested up to: 4.9
+Requires at least: 4.9
+Tested up to: 4.9.1
 Requires PHP: 5.4
-Stable tag: 1.5.3
+Stable tag: 1.5.4
 
 Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 
@@ -219,6 +219,11 @@ Many thanks to the following:
 
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
+
+= Version 1.5.4 =
+* December, 2017
+* Moved Customizer options from PHP to JS for better performance and extensibility (i.e. best practices). As a result, WordPress version 4.9 or later is required.
+* Updated Freemius SDK from v1.2.2.9 to v1.2.3
 
 = Version 1.5.3 =
 * November 28, 2017

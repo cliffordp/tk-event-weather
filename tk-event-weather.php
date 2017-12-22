@@ -5,7 +5,7 @@ namespace TKEventWeather;
 /*
 	Plugin Name: TK Event Weather
 	Plugin URI: https://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
-	Version: 1.5.3
+	Version: 1.5.4
 	Author: TourKick (Clifford Paulick)
 	Author URI: https://tourkick.com/?utm_source=author-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
 	Description: Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
@@ -98,12 +98,12 @@ if ( ! defined( '\TK_EVENT_WEATHER_HYPHENS' ) ) {
 
 // Required for Template Loader. Also used elsewhere.
 if ( ! defined( '\TK_EVENT_WEATHER_PLUGIN_ROOT_DIR' ) ) {
-	define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_DIR', \plugin_dir_path( __FILE__ ) ); // e.g. /.../.../example-com/wp-content/plugins/tk-event-weather/
+	define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_DIR', plugin_dir_path( __FILE__ ) ); // e.g. /.../.../example-com/wp-content/plugins/tk-event-weather/
 }
 
 // added for consistency to match DIR
 if ( ! defined( '\TK_EVENT_WEATHER_PLUGIN_ROOT_URL' ) ) {
-	define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_URL', \plugin_dir_url( __FILE__ ) ); // e.g. http://example.com/wp-content/plugins/tk-event-weather/
+	define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_URL', plugin_dir_url( __FILE__ ) ); // e.g. http://example.com/wp-content/plugins/tk-event-weather/
 }
 
 // used by core plugin and by add-on implementations of Freemius
@@ -121,7 +121,7 @@ if ( ! defined( '\TK_EVENT_WEATHER_FREEMIUS_START_FILE' ) ) {
  * @since 1.5.0
  */
 function required_capability() {
-	return \apply_filters( \TK_EVENT_WEATHER_UNDERSCORES . '_required_capability', 'customize' );
+	return apply_filters( \TK_EVENT_WEATHER_UNDERSCORES . '_required_capability', 'customize' );
 }
 
 /**
@@ -134,13 +134,15 @@ function required_capability() {
  * The 'customize' capability was added in WP 4.0 (September 4, 2014).
  * The Customizer API's Selective Refresh (which, in our case, adds quick-link
  * to each shortcode that's on the page) was added in WP 4.5 (April 12, 2016).
+ * The way we do Customizer controls requires WP 4.9 (November 15, 2017).
  *
+ * @link https://make.wordpress.org/core/2017/11/01/improvements-to-the-customize-js-api-in-4-9/
  * @link https://codex.wordpress.org/WordPress_Versions
  *
  * @return string
  */
 function min_wp_version() {
-	return '4.5';
+	return '4.9';
 }
 
 /**
@@ -153,12 +155,12 @@ function notice_wrong_wp_version() {
 	echo '<div class="error fade">' .
 	     __( 'Error: plugin "TK Event Weather" requires a newer version of WordPress core.', 'tk-event-weather' ) .
 	     '<br/>' . __( 'Minimum required WordPress core version: ', 'tk-event-weather' ) . '<strong>' . min_wp_version() . '</strong>' .
-	     '<br/>' . __( "Your WordPress version: ", 'tk-event-weather' ) . '<strong>' . \get_bloginfo( 'version' ) . '</strong>' .
+	     '<br/>' . __( "Your WordPress version: ", 'tk-event-weather' ) . '<strong>' . get_bloginfo( 'version' ) . '</strong>' .
 	     '</div>';
 }
 
 function wp_version_check() {
-	if ( \version_compare( \get_bloginfo( 'version' ), min_wp_version(), '<' ) ) {
+	if ( version_compare( get_bloginfo( 'version' ), min_wp_version(), '<' ) ) {
 		add_action( 'admin_notices', __NAMESPACE__ . '\notice_wrong_wp_version' );
 
 		return false;
@@ -179,12 +181,12 @@ function notice_wrong_php_version() {
 	echo '<div class="error fade">' .
 	     __( 'Error: plugin "TK Event Weather" requires a newer version of PHP.', 'tk-event-weather' ) .
 	     '<br/>' . __( 'Minimum required PHP version: ', 'tk-event-weather' ) . '<strong>' . min_php_version() . '</strong>' .
-	     '<br/>' . __( "Your server's PHP version: ", 'tk-event-weather' ) . '<strong>' . \phpversion() . '</strong>' .
+	     '<br/>' . __( "Your server's PHP version: ", 'tk-event-weather' ) . '<strong>' . phpversion() . '</strong>' .
 	     '</div>';
 }
 
 function php_version_check() {
-	if ( \version_compare( \phpversion(), min_php_version(), '<' ) ) {
+	if ( version_compare( phpversion(), min_php_version(), '<' ) ) {
 		add_action( 'admin_notices', __NAMESPACE__ . '\notice_wrong_php_version' );
 
 		return false;
@@ -324,7 +326,7 @@ function tkeventweather_i18n_init() {
 // add_action('plugins_loaded',__NAMESPACE__ . '\tkeventweather_i18n_init');
 
 tk_event_weather_freemius();
-\do_action( \TK_EVENT_WEATHER_UNDERSCORES . '_freemius_loaded' );
+do_action( \TK_EVENT_WEATHER_UNDERSCORES . '_freemius_loaded' );
 
 tk_event_weather_freemius()->add_filter( 'connect_message', __NAMESPACE__ . '\freemius_custom_connect_message', 10, 6 );
 tk_event_weather_freemius()->add_filter( 'plugin_icon', __NAMESPACE__ . '\freemius_plugin_icon' );
@@ -353,7 +355,7 @@ if (
 	require_once( 'init.php' );
 	tk_event_weather_init( __FILE__ );
 
-	\do_action( \TK_EVENT_WEATHER_UNDERSCORES . '_loaded' );
+	do_action( \TK_EVENT_WEATHER_UNDERSCORES . '_loaded' );
 } else {
-	\do_action( \TK_EVENT_WEATHER_UNDERSCORES . '_not_loaded' );
+	do_action( \TK_EVENT_WEATHER_UNDERSCORES . '_not_loaded' );
 }

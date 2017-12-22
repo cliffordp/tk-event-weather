@@ -46,16 +46,16 @@
         },
         {
             "name": "freemius/wordpress-sdk",
-            "version": "1.2.2.9",
+            "version": "1.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Freemius/wordpress-sdk.git",
-                "reference": "1992b7ffd07d5a6c169a4fa587aa335a6ef78021"
+                "reference": "5b420d7c7e4eb3fe164a6ccd4956c8b591753550"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Freemius/wordpress-sdk/zipball/1992b7ffd07d5a6c169a4fa587aa335a6ef78021",
-                "reference": "1992b7ffd07d5a6c169a4fa587aa335a6ef78021",
+                "url": "https://api.github.com/repos/Freemius/wordpress-sdk/zipball/5b420d7c7e4eb3fe164a6ccd4956c8b591753550",
+                "reference": "5b420d7c7e4eb3fe164a6ccd4956c8b591753550",
                 "shasum": ""
             },
             "require": {
@@ -64,7 +64,7 @@
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "GPL-2.0+"
+                "GPL-3.0"
             ],
             "description": "Freemius WordPress SDK",
             "homepage": "https://freemius.com",
@@ -74,7 +74,7 @@
                 "sdk",
                 "wordpress"
             ],
-            "time": "2017-08-31T07:35:00+00:00"
+            "time": "2017-12-19T08:42:21+00:00"
         },
         {
             "name": "gamajo/template-loader",
