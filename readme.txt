@@ -3,7 +3,7 @@ Contributors: cliffpaulick, freemius
 Tags: calendar, events, forecast, shortcode, weather
 License: GPL version 3 or any later version
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
-Requires at least: 4.9
+Requires at least: 4.5
 Tested up to: 4.9.1
 Requires PHP: 5.4
 Stable tag: 1.5.4
@@ -222,7 +222,8 @@ Many thanks to the following:
 
 = Version 1.5.4 =
 * December, 2017
-* Moved Customizer options from PHP to JS for better performance and extensibility (i.e. best practices). As a result, WordPress version 4.9 or later is required.
+* Shortcode's asset(s) now load on every page (instead of just when shortcode is present) to support Ajax-based themes and page transitions.
+* Added a "Settings" quick action link on the wp-admin Plugins List page.
 * Updated Freemius SDK from v1.2.2.9 to v1.2.3
 
 = Version 1.5.3 =

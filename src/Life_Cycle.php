@@ -103,7 +103,7 @@ class Life_Cycle extends Install_Indicator {
 		add_options_page(
 			$display_name,
 			$display_name,
-			'manage_options',
+			required_capability(),
 			$this->get_settings_slug(),
 			array( $this, 'settings_page' )
 		);
@@ -123,6 +123,24 @@ class Life_Cycle extends Install_Indicator {
 	protected function get_settings_slug() {
 		return TK_EVENT_WEATHER_HYPHENS . '-settings';
 	}
+
+	/**
+	 * Add a "Settings" link to the plugin actions in the wp-admin Plugins List.
+	 *
+	 * @since 1.5.4
+	 *
+	 * @param $actions
+	 *
+	 * @return array
+	 */
+	public function custom_plugin_action_links( $actions ) {
+		if ( current_user_can( required_capability() ) ) {
+			array_unshift( $actions, '<a href=\'' . menu_page_url( $this->get_settings_slug(), false ) . '\'>' . esc_html__( 'Settings', 'tk-event-weather' ) . '</a>' );
+		}
+
+		return $actions;
+	}
+
 
 	/**
 	 * Convenience function for creating AJAX URLs.

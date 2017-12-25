@@ -64,8 +64,6 @@ class Shortcode extends Shortcode_Script_Loader {
 	 */
 	public static $latitude_longitude = '';
 
-	private static $added_already = false;
-
 	public function handle_shortcode( $atts ) {
 		$plugin_options = Functions::plugin_options();
 
@@ -800,25 +798,6 @@ class Shortcode extends Shortcode_Script_Loader {
 
 	// This method must be declared because of extending an abstract class.
 	public function add_script() {
-		$plugin_options = Functions::plugin_options();
-
-		if ( ! self::$added_already ) {
-			self::$added_already = true;
-
-			// need the basic styling even if plugin options are not yet set, e.g. nice-looking error messages
-			wp_enqueue_style( \TK_EVENT_WEATHER_HYPHENS );
-
-			// only include these styles if plugin options are set
-			if ( ! empty( $plugin_options ) ) {
-				if ( empty( $plugin_options['scroll_horizontal_off'] ) ) {
-					wp_enqueue_style( \TK_EVENT_WEATHER_HYPHENS . '-scroll-horizontal' );
-				}
-
-				if ( empty( $plugin_options['vertical_to_columns_off'] ) ) {
-					wp_enqueue_style( \TK_EVENT_WEATHER_HYPHENS . '-vertical-to-columns' );
-				}
-			}
-		}
 	}
 
 }

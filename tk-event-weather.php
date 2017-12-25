@@ -108,7 +108,7 @@ if ( ! defined( '\TK_EVENT_WEATHER_PLUGIN_ROOT_URL' ) ) {
 
 // used by core plugin and by add-on implementations of Freemius
 if ( ! defined( '\TK_EVENT_WEATHER_FREEMIUS_START_FILE' ) ) {
-	define( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE', \dirname( __FILE__ ) . '/vendor/freemius/wordpress-sdk/start.php' );
+	define( 'TK_EVENT_WEATHER_FREEMIUS_START_FILE', dirname( __FILE__ ) . '/vendor/freemius/wordpress-sdk/start.php' );
 }
 
 /**
@@ -134,15 +134,13 @@ function required_capability() {
  * The 'customize' capability was added in WP 4.0 (September 4, 2014).
  * The Customizer API's Selective Refresh (which, in our case, adds quick-link
  * to each shortcode that's on the page) was added in WP 4.5 (April 12, 2016).
- * The way we do Customizer controls requires WP 4.9 (November 15, 2017).
  *
- * @link https://make.wordpress.org/core/2017/11/01/improvements-to-the-customize-js-api-in-4-9/
  * @link https://codex.wordpress.org/WordPress_Versions
  *
  * @return string
  */
 function min_wp_version() {
-	return '4.9';
+	return '4.5';
 }
 
 /**
@@ -197,13 +195,13 @@ function php_version_check() {
 
 // adapted from http://wpbackoffice.com/get-current-woocommerce-version-number/
 function get_tk_event_weather_version() {
-	// If \get_plugins() isn't available, require it
-	if ( ! function_exists( '\get_plugins' ) ) {
+	// If get_plugins() isn't available, require it
+	if ( ! function_exists( 'get_plugins' ) ) {
 		require_once( \ABSPATH . 'wp-admin/includes/plugin.php' );
 	}
 
 	// Create the plugins folder and file variables
-	$plugin_folder = \get_plugins( '/' . \TK_EVENT_WEATHER_HYPHENS );
+	$plugin_folder = get_plugins( '/' . \TK_EVENT_WEATHER_HYPHENS );
 	$plugin_file   = \TK_EVENT_WEATHER_HYPHENS . '.php';
 
 	// If the plugin version number is set, return it
@@ -236,7 +234,7 @@ function tk_event_weather_freemius() {
 		// Include Freemius SDK.
 		require_once( \TK_EVENT_WEATHER_FREEMIUS_START_FILE );
 
-		$tk_event_weather_freemius = \fs_dynamic_init(
+		$tk_event_weather_freemius = fs_dynamic_init(
 			array(
 				'id'             => '240',
 				'slug'           => \TK_EVENT_WEATHER_HYPHENS,

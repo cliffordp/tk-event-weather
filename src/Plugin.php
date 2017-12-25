@@ -11,6 +11,24 @@ class Plugin extends Life_Cycle {
 		Functions::register_climacons_css();
 	}
 
+	public static function enqueue_assets() {
+		$plugin_options = Functions::plugin_options();
+
+		// need the basic styling even if plugin options are not yet set, e.g. nice-looking error messages
+		wp_enqueue_style( \TK_EVENT_WEATHER_HYPHENS );
+
+		// only include these styles if plugin options are set
+		if ( ! empty( $plugin_options ) ) {
+			if ( empty( $plugin_options['scroll_horizontal_off'] ) ) {
+				wp_enqueue_style( \TK_EVENT_WEATHER_HYPHENS . '-scroll-horizontal' );
+			}
+
+			if ( empty( $plugin_options['vertical_to_columns_off'] ) ) {
+				wp_enqueue_style( \TK_EVENT_WEATHER_HYPHENS . '-vertical-to-columns' );
+			}
+		}
+	}
+
 	/**
 	 * WP Admin Bar: add TK Event Weather settings link under Customizer item
 	 *
@@ -62,7 +80,7 @@ class Plugin extends Life_Cycle {
 		// array_merge() will overwrite the first array's associative keys with the second's. So you should not have a 'url' key in your $query_args, as it will be overwritten.
 		$query_args = array_merge( $query_args, $current_url_array );
 
-		$url = add_query_arg( $query_args, \wp_customize_url() );
+		$url = add_query_arg( $query_args, wp_customize_url() );
 
 		$url = self::convert_link_to_a_customizer_link( $url );
 
@@ -122,7 +140,7 @@ class Plugin extends Life_Cycle {
 	}
 
 	public static function customizer_options_link() {
-		$url = \wp_customize_url();
+		$url = wp_customize_url();
 
 		$url = self::convert_link_to_a_customizer_link( $url );
 
@@ -154,7 +172,7 @@ class Plugin extends Life_Cycle {
 					0 === strpos( $option, 'TKEventW' )
 					|| 0 === strpos( $option, 'TkEventW' )
 				) {
-					\delete_option( $option );
+					delete_option( $option );
 				}
 			}
 
@@ -170,7 +188,7 @@ class Plugin extends Life_Cycle {
 			}
 
 			if ( $needs_update ) {
-				\update_option( TK_EVENT_WEATHER_UNDERSCORES, $current_options );
+				update_option( TK_EVENT_WEATHER_UNDERSCORES, $current_options );
 			}
 		}
 
@@ -187,6 +205,9 @@ class Plugin extends Life_Cycle {
 		// http://plugin.michael-simpson.com/?page_id=47
 		add_action( 'admin_menu', array( $this, 'add_settings_submenu_page' ) );
 
+		add_filter( 'plugin_action_links_' . \TK_EVENT_WEATHER_HYPHENS . '/' . \TK_EVENT_WEATHER_HYPHENS . '.php', array( $this, 'custom_plugin_action_links' ) );
+
+
 		// Example adding a script & style just for the options administration page
 		// http://plugin.michael-simpson.com/?page_id=47
 		//				if (strpos($_SERVER['REQUEST_URI'], $this->get_settings_slug()) !== false) {
@@ -199,6 +220,8 @@ class Plugin extends Life_Cycle {
 		// http://plugin.michael-simpson.com/?page_id=37
 
 		add_action( 'template_redirect', array( $this, 'register_assets' ), 0 );
+
+		add_action( 'wp_footer', array( $this, 'enqueue_assets' ) );
 
 		// WP Admin Bar: add TK Event Weather settings link under Customizer item
 		add_action( 'admin_bar_menu', array( $this, 'customizer_link_to_edit_current_url_add_to_wp_adminbar' ) );
@@ -246,7 +269,7 @@ class Plugin extends Life_Cycle {
 			)
 		);
 
-		// Customizer Panel
+		// Customizer Panel is added via PHP because there's no benefit doing so via JS, since it's always present. To optimize Customizer's performance, JS could be used to add the sections within the always-present Panel and the settings within those sections.
 		$wp_customize->add_panel(
 			self::customizer_panel_id(),
 			array(
@@ -382,7 +405,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[text_before]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => '\sanitize_text_field',
+				'sanitize_callback' => 'sanitize_text_field',
 			)
 		);
 
@@ -401,7 +424,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[text_after]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => '\sanitize_text_field',
+				'sanitize_callback' => 'sanitize_text_field',
 			)
 		);
 
@@ -420,7 +443,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[time_format_day]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => '\sanitize_text_field',
+				'sanitize_callback' => 'sanitize_text_field',
 			)
 		);
 
@@ -439,7 +462,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[time_format_hours]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => '\sanitize_text_field',
+				'sanitize_callback' => 'sanitize_text_field',
 			)
 		);
 
@@ -458,7 +481,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[time_format_minutes]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => '\sanitize_text_field',
+				'sanitize_callback' => 'sanitize_text_field',
 			)
 		);
 
@@ -514,7 +537,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[darksky_api_key]', array(
 				'type'              => 'option',
 				'default'           => '',
-				'sanitize_callback' => '\sanitize_key',
+				'sanitize_callback' => 'sanitize_key',
 			)
 		);
 
@@ -667,7 +690,7 @@ class Plugin extends Life_Cycle {
 			TK_EVENT_WEATHER_UNDERSCORES . '[google_maps_api_key]', array(
 				'type'    => 'option',
 				'default' => '',
-				// 'sanitize_callback'	=> '\sanitize_key', // cannot use this because need to allow uppercase
+				// 'sanitize_callback'	=> 'sanitize_key', // cannot use this because need to allow uppercase
 			)
 		);
 
