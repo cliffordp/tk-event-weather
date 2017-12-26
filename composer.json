@@ -4,7 +4,7 @@
   "type": "project",
   "require": {
     "php": ">=5.4",
-    "freemius/wordpress-sdk": ">=1.2.2.9",
+    "freemius/wordpress-sdk": ">=1.2.3",
     "gamajo/template-loader": ">=1.3",
     "climacons-webfont/climacons-webfont": ">=1.0.0"
   },

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "abf4deaea125eb355ae0c918a095f6b0",
+    "content-hash": "551e4ccc20083b645a457c2b8cb89c2a",
     "packages": [
         {
             "name": "climacons-webfont/climacons-webfont",
