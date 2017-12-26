@@ -200,6 +200,7 @@ class Plugin extends Life_Cycle {
 	}
 
 	public function add_actions_and_filters() {
+		add_filter( 'plugin_action_links_' . \TK_EVENT_WEATHER_HYPHENS . '/' . \TK_EVENT_WEATHER_HYPHENS . '.php', array( $this, 'custom_plugin_action_links' ) );
 
 		// Add options administration page
 		// http://plugin.michael-simpson.com/?page_id=47
