@@ -206,16 +206,7 @@ class Plugin extends Life_Cycle {
 		// http://plugin.michael-simpson.com/?page_id=47
 		add_action( 'admin_menu', array( $this, 'add_settings_submenu_page' ) );
 
-		add_filter( 'plugin_action_links_' . \TK_EVENT_WEATHER_HYPHENS . '/' . \TK_EVENT_WEATHER_HYPHENS . '.php', array( $this, 'custom_plugin_action_links' ) );
-
-
-		// Example adding a script & style just for the options administration page
-		// http://plugin.michael-simpson.com/?page_id=47
-		//				if (strpos($_SERVER['REQUEST_URI'], $this->get_settings_slug()) !== false) {
-		//						wp_enqueue_script('my-script', plugins_url('/js/my-script.js', __FILE__));
-		//						wp_enqueue_style('my-style', plugins_url('/css/my-style.css', __FILE__));
-		//				}
-
+		add_action( 'admin_notices', array( __NAMESPACE__ . '\Addons', 'output_admin_notices' ) );
 
 		// Add Actions & Filters
 		// http://plugin.michael-simpson.com/?page_id=37

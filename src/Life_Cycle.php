@@ -120,7 +120,7 @@ class Life_Cycle extends Install_Indicator {
 	 * @return string Slug name for the URL to the Setting page
 	 * (i.e. the page for setting options).
 	 */
-	protected function get_settings_slug() {
+	public function get_settings_slug() {
 		return TK_EVENT_WEATHER_HYPHENS . '-settings';
 	}
 

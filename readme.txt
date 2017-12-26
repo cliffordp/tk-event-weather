@@ -222,8 +222,9 @@ Many thanks to the following:
 
 = Version 1.5.4 =
 * December, 2017
-* Shortcode's asset(s) now load on every page (instead of just when shortcode is present) to support Ajax-based themes and page transitions.
+* Shortcode's asset(s) now load on every page (instead of just when shortcode is present) to support Ajax-based themes and page transitions. In general, this should not negatively affect page load time (and may actually improve page load time in some situations).
 * Added a "Settings" quick action link on the wp-admin Plugins List page.
+* Added display of a wp-admin notice if you have a plugin for which there is an integration add-on but do not have the add-on installed. It only displays on the Plugins List page and the TK Event Weather settings page.
 * Updated Freemius SDK from v1.2.2.9 to v1.2.3
 
 = Version 1.5.3 =
