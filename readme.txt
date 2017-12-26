@@ -34,7 +34,7 @@ https://www.youtube.com/watch?v=fbGS_LtX-es
 
 Currently Available:
 
-* [The Events Calendar by Modern Tribe](https://wordpress.org/plugins/the-events-calendar/) - 500,000+ active installs - [Purchase](http://tourkick.com/shop/wordpress/tk-event-weather-the-events-calendar/)
+* [The Events Calendar by Modern Tribe](https://wordpress.org/plugins/the-events-calendar/) - 600,000+ active installs - [Purchase](http://tourkick.com/shop/wordpress/tk-event-weather-the-events-calendar/)
 * [Events Manager by Marcus Sykes](https://wordpress.org/plugins/events-manager/) - 100,000+ active installs - [Purchase](http://tourkick.com/shop/wordpress/tk-event-weather-events-manager/)
 * [Simple Calendar by Moonstone Media](https://wordpress.org/plugins/google-calendar-events/) - 80,000+ active installs - [Purchase](https://tourkick.com/shop/wordpress/tk-event-weather-events-manager/)
 
