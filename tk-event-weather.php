@@ -150,7 +150,7 @@ function min_wp_version() {
  * @return boolean true if version check passed. If false, triggers an error which WP will handle, by displaying an error message on the Admin page.
  */
 function notice_wrong_wp_version() {
-	echo '<div class="error fade">' .
+	echo '<div class="notice notice-error">' .
 	     __( 'Error: plugin "TK Event Weather" requires a newer version of WordPress core.', 'tk-event-weather' ) .
 	     '<br/>' . __( 'Minimum required WordPress core version: ', 'tk-event-weather' ) . '<strong>' . min_wp_version() . '</strong>' .
 	     '<br/>' . __( "Your WordPress version: ", 'tk-event-weather' ) . '<strong>' . get_bloginfo( 'version' ) . '</strong>' .
@@ -176,7 +176,7 @@ function min_php_version() {
  * @return boolean true if version check passed. If false, triggers an error which WP will handle, by displaying an error message on the Admin page
  */
 function notice_wrong_php_version() {
-	echo '<div class="error fade">' .
+	echo '<div class="notice notice-error">' .
 	     __( 'Error: plugin "TK Event Weather" requires a newer version of PHP.', 'tk-event-weather' ) .
 	     '<br/>' . __( 'Minimum required PHP version: ', 'tk-event-weather' ) . '<strong>' . min_php_version() . '</strong>' .
 	     '<br/>' . __( "Your server's PHP version: ", 'tk-event-weather' ) . '<strong>' . phpversion() . '</strong>' .
