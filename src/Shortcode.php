@@ -666,9 +666,6 @@ class Shortcode extends Shortcode_Script_Loader {
 			return Functions::$shortcode_error_message;
 		}
 
-		$midnight_first_day = Time::get_a_days_min_max_timestamp( self::$span_start_time_timestamp, self::$timezone );
-		$midnight_last_day  = Time::get_a_days_min_max_timestamp( self::$span_end_time_timestamp, self::$timezone );
-
 		// Multi-Day Limit
 		$multi_day_limit = absint( $atts['multi_day_limit'] );
 
@@ -691,35 +688,17 @@ class Shortcode extends Shortcode_Script_Loader {
 			$total_days_in_span = Time::count_start_end_cal_days_span( self::$span_start_time_timestamp, self::$span_end_time_timestamp, self::$timezone );
 		}
 
-		$midnight_timestamps_except_first_day = array();
+		$midnights = Time::get_array_of_midnights_from_start_to_end( self::$span_start_time_timestamp, self::$span_end_time_timestamp, self::$timezone );
 
-		$existing_timezone = date_default_timezone_get(); // will fallback to UTC but may also return a TZ environment variable (e.g. EST)
-		date_default_timezone_set( self::$timezone );
+		$midnight_first_day = array_slice( $midnights, 0 );
+		$midnight_last_day  = array_slice( $midnights, - 1 ); // may be same as first day
 
-		// because we are excluding the first day
-		for ( $i = $total_days_in_span - 1; 0 !== $i; $i -- ) {
-			$days_string                            = sprintf( '+%d days', $i );
-			$midnight_timestamps_except_first_day[] = strtotime( $days_string, $midnight_first_day );
-		}
+		// Remove first midnight because we already ran it through the API, above.
+		array_shift( $midnights );
 
-		date_default_timezone_set( $existing_timezone );
-
-		sort( $midnight_timestamps_except_first_day, SORT_NUMERIC );
-
-		// Check for data inconsistencies... should not happen.
-		$hopefully_midnight_last_day = array_slice( $midnight_timestamps_except_first_day, - 1 );
-
-		if (
-			empty( $hopefully_midnight_last_day[0] )
-			|| $midnight_last_day !== $hopefully_midnight_last_day[0]
-		) {
-			// instead of returning a full error, let's just display one day; it's better than nothing.
-			$total_days_in_span = 1;
-		}
-
-		// if entire span is in the past, set back to FALSE
 		$today_midnight = Time::get_a_days_min_max_timestamp( time(), self::$timezone );
 
+		// if entire span is in the past, set back to FALSE
 		if (
 			true === self::$span_template_data['multi_day_start_at_today']
 			&& $midnight_last_day < $today_midnight
@@ -747,7 +726,7 @@ class Shortcode extends Shortcode_Script_Loader {
 
 		$day_index = 2;
 		if ( 1 < $total_days_in_span ) {
-			foreach ( $midnight_timestamps_except_first_day as $midnight ) {
+			foreach ( $midnights as $midnight ) {
 				if (
 					true === self::$span_template_data['multi_day_start_at_today']
 					&& $today_midnight > $midnight

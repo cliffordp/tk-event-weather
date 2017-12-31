@@ -105,6 +105,7 @@ class Time {
 	 * @return string
 	 */
 	public static function timestamp_to_display( $timestamp = '', $timezone = '', $date_format = '' ) {
+		// TODO: Move to new method to get timestamp from time format with option to fallback to WP timezone vs existing timezone
 		// timestamp
 		$timestamp = self::valid_timestamp( $timestamp );
 
@@ -206,6 +207,60 @@ class Time {
 	}
 
 	/**
+	 * Get the count of calendar days in the time span from Start Timestamp to
+	 * End Timestamp, per the given Timezone.
+	 *
+	 * Result will never be less than 1.
+	 *
+	 * @param        $start_time_timestamp
+	 * @param        $end_time_timestamp
+	 * @param string $timezone
+	 *
+	 * @return int
+	 */
+	public static function count_start_end_cal_days_span( $start_time_timestamp, $end_time_timestamp, $timezone = '' ) {
+		// We will change timezone just for this conversion. Then we'll set it back.
+		$existing_timezone = date_default_timezone_get(); // will fallback to UTC but may also return a TZ environment variable (e.g. EST)
+
+		// Dark Sky API may return an escaped timezone string
+		$timezone = stripslashes( $timezone );
+
+		if ( ! in_array( $timezone, timezone_identifiers_list() ) ) {
+			$timezone = get_option( 'timezone_string' ); // could return NULL
+		}
+
+		if ( empty( $timezone ) ) {
+			$timezone = $existing_timezone;
+		}
+
+		date_default_timezone_set( $timezone );
+
+		$start = new \DateTime();
+		$end   = new \DateTime();
+
+		$start->setTimestamp( $start_time_timestamp );
+		$end->setTimestamp( $end_time_timestamp );
+
+		/**
+		 * @link https://secure.php.net/manual/en/datetime.diff.php
+		 * @link https://secure.php.net/manual/en/dateinterval.format.php
+		 */
+		$diff = (int) $start->diff( $end, true )->format( '%a' );
+
+		/**
+		 * If Start and End are on the same calendar day, difference will be zero.
+		 * We are trying to get total calendar days covered by 2 dates, not just
+		 * the technical difference.
+		 */
+		$diff = $diff + 1;
+
+		// set back to what date_default_timezone_get() was
+		date_default_timezone_set( $existing_timezone );
+
+		return $diff;
+	}
+
+	/**
 	 * Given a timestamp, find the minimum or maximum timestamp of that same day.
 	 *
 	 * If minimum, it will be midnight of that day. Daylight Savings Time (DST)
@@ -250,7 +305,7 @@ class Time {
 			$day .= ' 00:00:00';
 		}
 
-		$result = strtotime( $day );
+		$result = strtotime( $day ); // may return FALSE
 
 		// set back to what date_default_timezone_get() was
 		date_default_timezone_set( $existing_timezone );
@@ -258,49 +313,67 @@ class Time {
 		return $result;
 	}
 
-	public static function count_start_end_cal_days_span( $start_time_timestamp, $end_time_timestamp, $timezone = '' ) {
-		// We will change timezone just for this conversion. Then we'll set it back.
+	/**
+	 * Build an array of midnight timestamps (starts of each day).
+	 *
+	 * If there is only one day (i.e. not multi-day), the result will be an
+	 * array containing a single timestamp.
+	 *
+	 * @see Time::get_a_days_min_max_timestamp
+	 * @see Time::count_start_end_cal_days_span
+	 *
+	 * @param int    $start_time_timestamp
+	 * @param int    $end_time_timestamp
+	 * @param string $timezone
+	 *
+	 * @return array
+	 */
+	public static function get_array_of_midnights_from_start_to_end( $start_time_timestamp, $end_time_timestamp, $timezone = '' ) {
 		$existing_timezone = date_default_timezone_get(); // will fallback to UTC but may also return a TZ environment variable (e.g. EST)
 
-		// Dark Sky API may return an escaped timezone string
-		$timezone = stripslashes( $timezone );
-
-		if ( ! in_array( $timezone, timezone_identifiers_list() ) ) {
-			$timezone = get_option( 'timezone_string' ); // could return NULL
-		}
-
-		if ( empty( $timezone ) ) {
+		if (
+			empty( $timezone )
+			|| ! in_array( $timezone, timezone_identifiers_list() )
+		) {
 			$timezone = $existing_timezone;
 		}
 
 		date_default_timezone_set( $timezone );
 
-		$start = new \DateTime();
-		$end   = new \DateTime();
+		$result = array();
 
-		$start->setTimestamp( $start_time_timestamp );
-		$end->setTimestamp( $end_time_timestamp );
+		// Either of these two could return FALSE if strtotime() failed, but we've got bigger problems if this happens since everything should have been verified before submitting to this method.
+		$first_midnight = self::get_a_days_min_max_timestamp( $start_time_timestamp, $timezone );
+		$last_midnight  = self::get_a_days_min_max_timestamp( $end_time_timestamp, $timezone );
 
-		/**
-		 * @link https://secure.php.net/manual/en/datetime.diff.php
-		 * @link https://secure.php.net/manual/en/dateinterval.format.php
-		 */
-		$diff = (int) $start->diff( $end, true )->format( '%a' );
+		$result[] = $first_midnight;
 
-		/**
-		 * If Start and End are on the same calendar day, difference will be zero.
-		 * We are trying to get total calendar days covered by 2 dates, not just
-		 * the technical difference.
-		 */
-		$diff = $diff + 1;
+		$total_days_in_span = self::count_start_end_cal_days_span( $start_time_timestamp, $end_time_timestamp, $timezone );
 
-		// set back to what date_default_timezone_get() was
+		// $total_days_in_span minus 1 because we already inserted the first day's into the array
+		for ( $i = $total_days_in_span - 1; 0 !== $i; $i -- ) {
+			$days_string = sprintf( '+%d days', $i );
+			$result[]    = strtotime( $days_string, $first_midnight );
+		}
+
+		// Convert all values to integers, remove all duplicates, then sort from lowest to highest.
+		$result = array_map( 'intval', $result );
+		array_unique( $result, SORT_NUMERIC );
+		sort( $result, SORT_NUMERIC );
+
+		// Check for data inconsistencies... should not happen.
+		$hopefully_midnight_last_day = array_slice( $result, - 1, 1 );
+
+		if ( $last_midnight !== $hopefully_midnight_last_day[0] ) {
+			// The FOR loop did not work as expected :(
+			// Instead of returning nothing, let's at least return the first day; it's better than nothing.
+			$result = array( $first_midnight );
+		}
+
 		date_default_timezone_set( $existing_timezone );
 
-		return $diff;
+		return $result;
 	}
-
-	// e.g. 4:45pm -> 4:00pm
 
 	public static function get_last_hour_of_forecast( $end_time_timestamp ) {
 		/**
