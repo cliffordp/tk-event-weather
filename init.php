@@ -21,8 +21,6 @@ namespace TKEventWeather;
 	If not, see http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-require_once( 'vendor/autoload.php' );
-
 function tk_event_weather_init( $file ) {
 	$a_plugin = new Plugin();
 

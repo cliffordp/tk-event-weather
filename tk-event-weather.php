@@ -69,6 +69,8 @@ if ( ! defined( '\ABSPATH' ) ) {
 	exit;
 }
 
+// Composer's autoloader
+require_once( 'vendor/autoload.php' );
 
 /**
  * Defines
