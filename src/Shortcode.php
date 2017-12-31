@@ -65,6 +65,9 @@ class Shortcode extends Shortcode_Script_Loader {
 	public static $latitude_longitude = '';
 
 	public function handle_shortcode( $atts ) {
+		// If multiple shortcodes being rendered, don't let one ruin it for the ones that come after it.
+		Functions::$shortcode_error_message = '';
+
 		$plugin_options = Functions::plugin_options();
 
 		if ( empty( $plugin_options ) ) {

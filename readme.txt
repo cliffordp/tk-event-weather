@@ -228,6 +228,7 @@ Many thanks to the following:
 * Added a "Settings" quick action link on the wp-admin Plugins List page.
 * Added display of a wp-admin notice if you have a plugin for which there is an integration add-on but do not have the add-on installed. It only displays on the Plugins List page and the TK Event Weather settings page.
 * Fixed display of add-ons' options on the Help tab report.
+* Fix one shortcode's error to not display for following shortcodes on the same page.
 * Updated Freemius SDK from v1.2.2.9 to v1.2.3
 
 = Version 1.5.3 =
