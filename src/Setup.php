@@ -7,13 +7,52 @@ class Setup {
 
 	public static $transient_name_prepend = 'tkeventw';
 
+	public static $support_email_address = 'tko+tkeventw@tourkick.com';
+
 	// https://wordpress.org/about/requirements/
 
-	public static $min_allowed_version_mysql = '5.5';
+	/**
+	 * The required minimum version of MySQL.
+	 *
+	 * There is no accompanying readme.txt entry to maintain.
+	 *
+	 * @return string
+	 */
+	public static function min_mysql_version() {
+		return '5.5'; // not sure why but it's from the original plugin template
+	}
 
-	public static $min_allowed_version_wordpress = '4.3.0';
+	/**
+	 * The required minimum version of PHP.
+	 *
+	 * TODO: Make sure this stays in sync with readme.txt header's "Requires PHP:"
+	 * TODO: Make sure this stays in sync with composer.json
+	 *
+	 * @return string
+	 */
+	public static function min_php_version() {
+		return '5.4';
+	}
 
-	public static $support_email_address = 'tko+tkeventw@tourkick.com';
+	/**
+	 * The required minimum version of WordPress core.
+	 *
+	 * TODO: Make sure this stays in sync with the readme.txt header's "Requires at least:".
+	 *
+	 * The 'customize' capability was added in WP 4.0 (September 4, 2014).
+	 * The Customizer API's Selective Refresh (which, in our case, adds quick-link
+	 * to each shortcode that's on the page) was added in WP 4.5 (April 12, 2016).
+	 * To avoid needing load_plugin_textdomain(), you have to set the "Requires
+	 * at least:" readme.txt header field to 4.6 (August 16, 2016).
+	 *
+	 * @link https://codex.wordpress.org/WordPress_Versions
+	 * @link https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/#loading-text-domain
+	 *
+	 * @return string
+	 */
+	public static function min_wp_version() {
+		return '4.6';
+	}
 
 	/**
 	 * 'TK Event Weather'

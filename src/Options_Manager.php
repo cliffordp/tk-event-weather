@@ -461,11 +461,11 @@ class Options_Manager {
 				<td data-export-label="WP Version"><?php _e( 'WP Version', 'tk-event-weather' ); ?>:</td>
 				<td><?php
 					$wordpress_version = get_bloginfo( 'version' );
-					if ( version_compare( $wordpress_version, Setup::$min_allowed_version_wordpress, '<' ) ) {
+					if ( version_compare( $wordpress_version, Setup::min_wp_version(), '<' ) ) {
 						echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf(
 								__( '%s - This plugin requires a minimum WordPress version of %s. See: %s', 'tk-event-weather' ),
 								esc_html( $wordpress_version ),
-								Setup::$min_allowed_version_wordpress,
+								Setup::min_wp_version(),
 								'<a href="https://codex.wordpress.org/WordPress_Versions" target="_blank">' . __( 'WordPress Version History', 'tk-event-weather' ) . '</a>'
 							) . '</mark>';
 					} else {
@@ -570,11 +570,11 @@ class Options_Manager {
 					// Check if phpversion function exists.
 					if ( function_exists( 'phpversion' ) ) {
 						$php_version = phpversion();
-						if ( version_compare( $php_version, min_php_version(), '<' ) ) {
+						if ( version_compare( $php_version, Setup::min_php_version(), '<' ) ) {
 							echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf(
 									__( '%s - This plugin requires a minimum PHP version of %s. See: %s', 'tk-event-weather' ),
 									esc_html( $php_version ),
-									min_php_version(),
+									Setup::min_php_version(),
 									'<a href="http://docs.woothemes.com/document/how-to-update-your-php-version/" target="_blank">' . __( 'How to update your PHP version', 'tk-event-weather' ) . '</a>'
 								) . '</mark>';
 						} else {
@@ -622,11 +622,11 @@ class Options_Manager {
 					/** @global wpdb $wpdb */
 					global $wpdb;
 					$mysql_version = $wpdb->db_version();
-					if ( version_compare( $mysql_version, Setup::$min_allowed_version_mysql, '<' ) ) {
+					if ( version_compare( $mysql_version, Setup::min_mysql_version(), '<' ) ) {
 						echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf(
 								__( '%s - This plugin requires a minimum MySQL version of %s. See: %s', 'tk-event-weather' ),
 								esc_html( $mysql_version ),
-								Setup::$min_allowed_version_mysql,
+								Setup::min_mysql_version(),
 								'<a href="https://wordpress.org/about/requirements/" target="_blank">' . __( 'WordPress Requirements', 'tk-event-weather' ) . '</a>'
 							) . '</mark>';
 					} else {

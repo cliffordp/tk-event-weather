@@ -130,21 +130,6 @@ function required_capability() {
  */
 
 /**
- * The required minimum version of WordPress core.
- *
- * The 'customize' capability was added in WP 4.0 (September 4, 2014).
- * The Customizer API's Selective Refresh (which, in our case, adds quick-link
- * to each shortcode that's on the page) was added in WP 4.5 (April 12, 2016).
- *
- * @link https://codex.wordpress.org/WordPress_Versions
- *
- * @return string
- */
-function min_wp_version() {
-	return '4.5';
-}
-
-/**
  * Check the WP core version and give a useful error message if the user's
  * version is less than the required version
  *
@@ -153,23 +138,19 @@ function min_wp_version() {
 function notice_wrong_wp_version() {
 	echo '<div class="notice notice-error">' .
 	     __( 'Error: plugin "TK Event Weather" requires a newer version of WordPress core.', 'tk-event-weather' ) .
-	     '<br/>' . __( 'Minimum required WordPress core version: ', 'tk-event-weather' ) . '<strong>' . min_wp_version() . '</strong>' .
+	     '<br/>' . __( 'Minimum required WordPress core version: ', 'tk-event-weather' ) . '<strong>' . Setup::min_wp_version() . '</strong>' .
 	     '<br/>' . __( "Your WordPress version: ", 'tk-event-weather' ) . '<strong>' . get_bloginfo( 'version' ) . '</strong>' .
 	     '</div>';
 }
 
 function wp_version_check() {
-	if ( version_compare( get_bloginfo( 'version' ), min_wp_version(), '<' ) ) {
+	if ( version_compare( get_bloginfo( 'version' ), Setup::min_wp_version(), '<' ) ) {
 		add_action( 'admin_notices', __NAMESPACE__ . '\notice_wrong_wp_version' );
 
 		return false;
 	}
 
 	return true;
-}
-
-function min_php_version() {
-	return '5.4';
 }
 
 /**
@@ -179,13 +160,13 @@ function min_php_version() {
 function notice_wrong_php_version() {
 	echo '<div class="notice notice-error">' .
 	     __( 'Error: plugin "TK Event Weather" requires a newer version of PHP.', 'tk-event-weather' ) .
-	     '<br/>' . __( 'Minimum required PHP version: ', 'tk-event-weather' ) . '<strong>' . min_php_version() . '</strong>' .
+	     '<br/>' . __( 'Minimum required PHP version: ', 'tk-event-weather' ) . '<strong>' . Setup::min_php_version() . '</strong>' .
 	     '<br/>' . __( "Your server's PHP version: ", 'tk-event-weather' ) . '<strong>' . phpversion() . '</strong>' .
 	     '</div>';
 }
 
 function php_version_check() {
-	if ( version_compare( phpversion(), min_php_version(), '<' ) ) {
+	if ( version_compare( phpversion(), Setup::min_php_version(), '<' ) ) {
 		add_action( 'admin_notices', __NAMESPACE__ . '\notice_wrong_php_version' );
 
 		return false;
