@@ -202,10 +202,9 @@ class Shortcode extends Shortcode_Script_Loader {
 
 		if ( ! empty( $before ) ) {
 			$before = sprintf( '<h4 class="%s__before">%s</h4>', \TK_EVENT_WEATHER_HYPHENS, $before );
+			$output .= $before;
+			$output .= PHP_EOL;
 		}
-
-		$output .= $before;
-		$output .= PHP_EOL;
 
 		// Template
 		$display_template = Functions::remove_all_whitespace( strtolower( $atts['template'] ) );
