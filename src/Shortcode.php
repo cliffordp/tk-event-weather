@@ -182,12 +182,17 @@ class Shortcode extends Shortcode_Script_Loader {
 		// Code
 
 		// Custom Context (e.g. for add-ons)
-		self::$custom_context = trim( $atts['custom_context'] );
+		self::$custom_context = esc_attr( trim( $atts['custom_context'] ) );
 
 		self::$span_template_data['custom_context'] = trim( $atts['custom_context'] ); // also passed to $context in the templates so they don't need an additional parameter in the hook
 
 		// Initialize output
-		$output = sprintf( '<div class="%s__wrapper">', \TK_EVENT_WEATHER_HYPHENS );
+		$wrapper_class = sprintf( '%s__wrapper', \TK_EVENT_WEATHER_HYPHENS );
+		if ( ! empty( self::$custom_context ) ) {
+			$wrapper_class .= sprintf( ' context-%s', self::$custom_context );
+		}
+
+		$output = sprintf( '<div class="%s">', $wrapper_class );
 		$output .= PHP_EOL;
 
 		// Text Before Shortcode Output (not per day -- there's a filter for that)

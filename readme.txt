@@ -229,6 +229,7 @@ Many thanks to the following:
 * Shortcode's asset(s) now load on every page load (instead of just when the shortcode is present) to support Ajax-based themes and page transitions as well as simplifying logic within some add-ons. In general, this should not negatively affect overall page load time and may actually improve initial load time of some pages.
 * Added a "Settings" quick action link on the wp-admin Plugins List page.
 * Added display of a wp-admin notice if you have a plugin for which there is an integration add-on but do not have the add-on installed. It only displays on the Plugins List page and the TK Event Weather settings page.
+* Applied `esc_attr()` to the `custom_context` shortcode argument, and, if it is used, it gets added to the wrapper class.
 * Fixed display of add-ons' options on the Help tab report.
 * Fix one shortcode's error to not display for following shortcodes on the same page.
 * Updated Freemius SDK from v1.2.2.9 to v1.2.3
