@@ -222,8 +222,7 @@ Many thanks to the following:
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
 
 = Version 1.5.4 =
-* December, 2017
-* Shortcode's asset(s) now load on every page (instead of just when shortcode is present) to support Ajax-based themes and page transitions. In general, this should not negatively affect page load time (and may actually improve page load time in some situations).
+* December 31, 2017
 * Now requires WordPress version 4.6 or greater, for the sake of translate.wordpress.org
 * Multi-day: Any shortcode that tries to span more days than the limit will no longer result in an error. Instead, it will just display the "limit" number of days.
 * Shortcode's asset(s) now load on every page load (instead of just when the shortcode is present) to support Ajax-based themes and page transitions as well as simplifying logic within some add-ons. In general, this should not negatively affect overall page load time and may actually improve initial load time of some pages.
