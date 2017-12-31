@@ -751,12 +751,17 @@ class Options_Manager {
 				}
 			}
 
-			// TODO test with multiple addons
 			/**
 			 * Filter to allow add-ons' plugin options to be on the debug report.
 			 *
-			 * @param array Array should always be added to, not replaced, to
-			 *              allow for multiple add-ons inserting data.
+			 * Each add-on should add its own array to this existing array so
+			 * that this becomes a multi-dimensional array if one or more
+			 * add-ons exist and send data here.
+			 *
+			 * !!! Make sure to insert the 'add_on_name' key as the first
+			 * !!! element in the add-on's array.
+			 *
+			 * @param array Multi-dimensional array. One array for each add-on, if any.
 			 */
 			$addon_plugin_options = apply_filters( TK_EVENT_WEATHER_UNDERSCORES . '_add_on_plugin_options_array', array() );
 
@@ -765,17 +770,26 @@ class Options_Manager {
 				&& is_array( $addon_plugin_options )
 			) {
 				$prepend = 'Addon'; // initial set but can change whenever there is a matching key... until there's the next matching key (to support multiple add-ons)
-				foreach ( $addon_plugin_options as $key => $option ) {
-					if ( 'add_on_name' == $key ) {
-						$prepend = $option;
-						continue;
+				foreach ( $addon_plugin_options as $single_addon_array ) {
+					if (
+						! empty( $single_addon_array )
+						&& is_array( $single_addon_array )
+					) {
+						foreach ( $single_addon_array as $key => $option ) {
+							{
+								if ( 'add_on_name' == $key ) {
+									$prepend = $option;
+									continue;
+								}
+								?>
+								<tr>
+									<td><?php printf( '<strong>%s:</strong> %s', esc_html( $prepend ), esc_html( $key ) ); ?></td>
+									<td><?php echo esc_html( $option ); ?></td>
+								</tr>
+								<?php
+							}
+						}
 					}
-					?>
-					<tr>
-						<td><?php printf( '<strong>%s:</strong> %s', esc_html( $prepend ), esc_html( $key ) ); ?></td>
-						<td><?php echo esc_html( $option ); ?></td>
-					</tr>
-					<?php
 				}
 			}
 			?>
