@@ -607,10 +607,8 @@ class Shortcode extends Shortcode_Script_Loader {
 			$icons = 'climacons_font';
 		}
 
-		// enqueue CSS file if using Climacons Icon Font
-		if ( 'climacons_font' == $icons ) {
-			wp_enqueue_style( \TK_EVENT_WEATHER_HYPHENS . '-climacons' );
-		}
+		// As of v1.5.4, we always enqueue the Climacons Icon Font CSS file so nothing to do here.
+		// Maybe could add do_action() for if 'climacons_font' !== $icons
 
 		self::$span_template_data['icons'] = $icons;
 

@@ -225,6 +225,7 @@ Many thanks to the following:
 * December, 2017
 * Shortcode's asset(s) now load on every page (instead of just when shortcode is present) to support Ajax-based themes and page transitions. In general, this should not negatively affect page load time (and may actually improve page load time in some situations).
 * Now requires WordPress version 4.6 or greater, for the sake of translate.wordpress.org
+* Shortcode's asset(s) now load on every page load (instead of just when the shortcode is present) to support Ajax-based themes and page transitions as well as simplifying logic within some add-ons. In general, this should not negatively affect overall page load time and may actually improve initial load time of some pages.
 * Added a "Settings" quick action link on the wp-admin Plugins List page.
 * Added display of a wp-admin notice if you have a plugin for which there is an integration add-on but do not have the add-on installed. It only displays on the Plugins List page and the TK Event Weather settings page.
 * Fixed display of add-ons' options on the Help tab report.

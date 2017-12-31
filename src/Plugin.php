@@ -17,6 +17,9 @@ class Plugin extends Life_Cycle {
 		// need the basic styling even if plugin options are not yet set, e.g. nice-looking error messages
 		wp_enqueue_style( \TK_EVENT_WEATHER_HYPHENS );
 
+		// Always need Climacons. Moved here to always load as of v1.5.4
+		wp_enqueue_style( \TK_EVENT_WEATHER_HYPHENS . '-climacons' );
+
 		// only include these styles if plugin options are set
 		if ( ! empty( $plugin_options ) ) {
 			if ( empty( $plugin_options['scroll_horizontal_off'] ) ) {
