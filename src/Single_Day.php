@@ -103,7 +103,7 @@ class Single_Day {
 			return Functions::$shortcode_error_message;
 		}
 
-		$template_data['weather_last_hour_timestamp'] = Time::get_last_hour_hour_of_forecast( self::$end_time_timestamp );
+		$template_data['weather_last_hour_timestamp'] = Time::get_last_hour_of_forecast( self::$end_time_timestamp );
 
 
 		$template_data['sunrise_sunset']['sunrise_timestamp']      = false;

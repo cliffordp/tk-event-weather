@@ -302,7 +302,7 @@ class Time {
 
 	// e.g. 4:45pm -> 4:00pm
 
-	public static function get_last_hour_hour_of_forecast( $end_time_timestamp ) {
+	public static function get_last_hour_of_forecast( $end_time_timestamp ) {
 		/**
 		 * Helps with setting 'sunset_to_be_inserted'
 		 *
