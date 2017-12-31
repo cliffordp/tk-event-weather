@@ -3,7 +3,7 @@ Contributors: cliffpaulick, freemius
 Tags: calendar, events, forecast, shortcode, weather
 License: GPL version 3 or any later version
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
-Requires at least: 4.5
+Requires at least: 4.6
 Tested up to: 4.9.1
 Requires PHP: 5.4
 Stable tag: 1.5.4
@@ -95,6 +95,7 @@ I'll consider making whichever add-ons I receive the most requests for (and are 
 * [View my other plugins](http://tourkick.com/plugins/)
 * [Hire Me for Custom Integrations and other Customizations](http://tourkick.com/)
 * [Contribute code via GitHub](https://github.com/cliffordp/tk-event-weather)
+* [Assist with translations via WordPress.org](https://translate.wordpress.org/projects/wp-plugins/tk-event-weather) -- [How to get started](https://make.wordpress.org/polyglots/handbook/tools/glotpress-translate-wordpress-org/)
 * **[Tweet this plugin](https://twitter.com/home?status=I%20love%20the%20free%20TK%20Event%20Weather%20%23WordPress%20plugin%20by%20%40TourKick.%20http%3A//tourkick.com/plugins/tk-event-weather/%20-%20weather%20for%20any%20event!)**
 
 == Installation ==
@@ -223,6 +224,7 @@ Many thanks to the following:
 = Version 1.5.4 =
 * December, 2017
 * Shortcode's asset(s) now load on every page (instead of just when shortcode is present) to support Ajax-based themes and page transitions. In general, this should not negatively affect page load time (and may actually improve page load time in some situations).
+* Now requires WordPress version 4.6 or greater, for the sake of translate.wordpress.org
 * Added a "Settings" quick action link on the wp-admin Plugins List page.
 * Added display of a wp-admin notice if you have a plugin for which there is an integration add-on but do not have the add-on installed. It only displays on the Plugins List page and the TK Event Weather settings page.
 * Fixed display of add-ons' options on the Help tab report.

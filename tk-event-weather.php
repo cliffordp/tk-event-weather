@@ -282,28 +282,16 @@ function freemius_uninstall() {
 	$life_cyle->uninstall();
 }
 
-// old code?
 /**
- * Initialize internationalization (i18n) for this plugin.
- * References:
- * http://codex.wordpress.org/I18n_for_WordPress_Developers
- * http://www.wdmac.com/how-to-create-a-po-language-translation#more-631
- * @return void
+ * Initialize internationalization (i18n) for this plugin is not needed because
+ * it's hosted at WordPress.org. No more load_plugin_textdomain().
+ *
+ * @link https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/#loading-text-domain
  */
-/*
-function tkeventweather_i18n_init() {
-	$pluginDir = dirname(plugin_basename(__FILE__));
-	load_plugin_textdomain('tk-event-weather', false, $pluginDir . '/languages/');
-}
-*/
 
 //////////////////////////////////
 // Run initialization
 /////////////////////////////////
-
-// old code (goes with above)?
-// Initialize i18n
-// add_action('plugins_loaded',__NAMESPACE__ . '\tkeventweather_i18n_init');
 
 tk_event_weather_freemius();
 do_action( \TK_EVENT_WEATHER_UNDERSCORES . '_freemius_loaded' );
