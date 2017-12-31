@@ -732,17 +732,13 @@ class Shortcode extends Shortcode_Script_Loader {
 			$output .= $first_day_class::$template_output;
 		}
 
+		// If total days are greater than multi-day limit, reduce total days. Prior to v1.5.4, this used to throw a shortcode error. This way is more user-friendly, especially for dynamic sources like calendar events.
 		if ( $multi_day_limit < $total_days_in_span ) {
-			Functions::invalid_shortcode_message(
-				sprintf( 'Multi-Day Forecasting is limited to %d days per shortcode, and this shortcode spans %d days. Please adjust the plugin settings or correct the Event Times or use the `multi_day_limit` argument for this specific shortcode',
-					$multi_day_limit,
-					$total_days_in_span
-				)
-			);
-		}
+			$total_days_in_span = $multi_day_limit;
 
-		if ( ! empty( Functions::$shortcode_error_message ) ) {
-			return Functions::$shortcode_error_message;
+			if ( 1 < $total_days_in_span ) { // because first day was removed and may have been the only day
+				$midnights = array_slice( $midnights, 0, $total_days_in_span - 1 );
+			}
 		}
 
 		$day_index = 2;
