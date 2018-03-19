@@ -4,7 +4,7 @@ Tags: calendar, events, forecast, shortcode, weather
 License: GPL version 3 or any later version
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.6
-Tested up to: 4.9.1
+Tested up to: 4.9.4
 Requires PHP: 5.4
 Stable tag: 1.5.4
 
@@ -59,6 +59,7 @@ I am considering making add-ons for the following event calendars:
 * [Booked - Appointment Booking for WordPress by BoxyStudio](https://codecanyon.net/item/booked-appointments-appointment-booking-for-wordpress/9466968?ref=cliffpaulick) - 5,500+ active installs
 * [Events Calendar Registration & Booking by elbisnero](https://codecanyon.net/item/events-calendar-registration-booking/7647762?ref=cliffpaulick) - 4,000+ sales
 * [Event Espresso](https://wordpress.org/plugins/event-espresso-decaf/) - 3,000+ active installs of EE4 Decaf and/or its [paid version](https://eventespresso.com/pricing/)
+* [Sugar Events Calendar Lite by Pippin Williamson](https://wordpress.org/plugins/sugar-calendar-lite/) - 2,000+ active installs
 * [Team Booking by VonStroheim](https://codecanyon.net/item/team-booking-wordpress-booking-system/9211794?ref=cliffpaulick) - 3,500+ sales
 * [HBook - Hotel booking system by HotelWP](https://codecanyon.net/item/hbook-hotel-booking-system-wordpress-plugin/10622779?ref=cliffpaulick) - 3,000+ sales
 * [Modern Events Calendar by WEBNUS](https://codecanyon.net/item/modern-events-calendar-responsive-event-scheduler-booking-for-wordpress/17731780?ref=cliffpaulick) - 3,000+ sales
