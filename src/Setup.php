@@ -31,7 +31,7 @@ class Setup {
 	 * @return string
 	 */
 	public static function min_php_version() {
-		return '5.4';
+		return '5.6';
 	}
 
 	/**
