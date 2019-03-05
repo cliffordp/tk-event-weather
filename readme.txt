@@ -225,6 +225,7 @@ Many thanks to the following:
 = Version 1.5.5 =
 * March 5, 2019
 * Now requires PHP version 5.6 or greater.
+* Now may disable upsells by adding `define( 'TK_EVENT_WEATHER_DISABLE_UPSELLS', true );` to `wp-config.php`.
 * Update Freemius SDK from v1.2.3 to v2.2.4 (security fix).
 
 = Version 1.5.4 =

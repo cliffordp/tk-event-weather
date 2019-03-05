@@ -77,6 +77,13 @@ class Addons {
 	 * @param $addon_dir
 	 */
 	private static function admin_notice_about_addon( $addon_dir ) {
+		if (
+			defined( 'TK_EVENT_WEATHER_DISABLE_UPSELLS' )
+			&& true === (bool) TK_EVENT_WEATHER_DISABLE_UPSELLS
+		) {
+			return;
+		}
+
 		$plugin_name = self::get_plugin_name_from_addon_dir( $addon_dir );
 
 		$message = sprintf(
