@@ -4,7 +4,7 @@ Tags: calendar, events, forecast, shortcode, weather
 License: GPL version 3 or any later version
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.6
-Tested up to: 4.9.4
+Tested up to: 5.1
 Requires PHP: 5.6
 Stable tag: 1.5.5
 
@@ -224,8 +224,9 @@ Many thanks to the following:
 
 = Version 1.5.5 =
 * March 5, 2019
+* Tested with WordPress 5.1
 * Now requires PHP version 5.6 or greater.
-* Now may disable upsells by adding `define( 'TK_EVENT_WEATHER_DISABLE_UPSELLS', true );` to `wp-config.php`.
+* Now may disable upsells by adding `define( 'TK_EVENT_WEATHER_DISABLE_UPSELLS', true );` to `wp-config.php`
 * Update Freemius SDK from v1.2.3 to v2.2.4 (security fix).
 
 = Version 1.5.4 =
