@@ -224,6 +224,8 @@ Many thanks to the following:
 
 = Version 1.5.5 =
 * March 5, 2019
+* Update Freemius SDK from v1.2.3 to v2.2.4 (security fix).
+
 = Version 1.5.4 =
 * December 31, 2017
 * Now requires WordPress version 4.6 or greater, for the sake of translate.wordpress.org

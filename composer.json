@@ -3,24 +3,42 @@
   "description": "Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.",
   "type": "project",
   "require": {
-    "php": ">=5.4",
-    "freemius/wordpress-sdk": ">=1.2.3",
-    "gamajo/template-loader": ">=1.3",
-    "climacons-webfont/climacons-webfont": ">=1.0.0"
+    "php": ">=5.6",
+    "freemius/wordpress-sdk": "~2.2",
+    "gamajo/template-loader": "~1.3",
+    "climacons-webfont/climacons-webfont": "~1.0"
   },
   "license": "GPL-3.0+",
   "authors": [
     {
       "name": "TourKick LLC (Clifford Paulick)",
       "email": "tko+tkeventw@tourkick.com",
+      "homepage": "https://tourkick.com/",
       "role": "Developer"
     }
   ],
   "minimum-stability": "stable",
+  "archive": {
+    "exclude": [
+      "!vendor/*",
+      "*.zip",
+      ".gitignore",
+      ".github",
+      ".travis.yml",
+      "composer.phar",
+      "composer.json",
+      "composer.lock",
+      "phpunit.xml",
+      "README.md"
+    ]
+  },
   "autoload": {
     "psr-4": {
       "TKEventWeather\\": "src/"
     }
   },
-  "optimize-autoloader": true
+  "config": {
+    "archive-format": "zip",
+    "optimize-autoloader": true
+  }
 }

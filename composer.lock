@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "551e4ccc20083b645a457c2b8cb89c2a",
+    "content-hash": "53754776703700e0448fa7e3647b083d",
     "packages": [
         {
             "name": "climacons-webfont/climacons-webfont",
@@ -46,16 +46,16 @@
         },
         {
             "name": "freemius/wordpress-sdk",
-            "version": "1.2.3",
+            "version": "2.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Freemius/wordpress-sdk.git",
-                "reference": "5b420d7c7e4eb3fe164a6ccd4956c8b591753550"
+                "reference": "a4cc02a705639bcc64b5b55b8732432986b1b228"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Freemius/wordpress-sdk/zipball/5b420d7c7e4eb3fe164a6ccd4956c8b591753550",
-                "reference": "5b420d7c7e4eb3fe164a6ccd4956c8b591753550",
+                "url": "https://api.github.com/repos/Freemius/wordpress-sdk/zipball/a4cc02a705639bcc64b5b55b8732432986b1b228",
+                "reference": "a4cc02a705639bcc64b5b55b8732432986b1b228",
                 "shasum": ""
             },
             "require": {
@@ -64,7 +64,7 @@
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "GPL-3.0"
+                "GPL-3.0-only"
             ],
             "description": "Freemius WordPress SDK",
             "homepage": "https://freemius.com",
@@ -74,24 +74,35 @@
                 "sdk",
                 "wordpress"
             ],
-            "time": "2017-12-19T08:42:21+00:00"
+            "time": "2019-02-25T18:19:27+00:00"
         },
         {
             "name": "gamajo/template-loader",
-            "version": "1.3.0",
+            "version": "1.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/GaryJones/Gamajo-Template-Loader.git",
-                "reference": "05057216f60baebfc4939e1a2b9aae6e89d25c91"
+                "reference": "fa92a37b780d945463f7fea328dce14933558752"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GaryJones/Gamajo-Template-Loader/zipball/05057216f60baebfc4939e1a2b9aae6e89d25c91",
-                "reference": "05057216f60baebfc4939e1a2b9aae6e89d25c91",
+                "url": "https://api.github.com/repos/GaryJones/Gamajo-Template-Loader/zipball/fa92a37b780d945463f7fea328dce14933558752",
+                "reference": "fa92a37b780d945463f7fea328dce14933558752",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.2.4"
+            },
+            "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
+                "php": ">=7.1",
+                "phpcompatibility/phpcompatibility-wp": "^1",
+                "roave/security-advisories": "dev-master",
+                "squizlabs/php_codesniffer": "^3.3",
+                "wp-coding-standards/wpcs": "^1"
+            },
+            "suggest": {
+                "coenjacobs/mozart": "Easily wrap this library with your own prefix, to prevent collisions when multiple plugins use this library"
             },
             "type": "library",
             "autoload": {
@@ -101,23 +112,22 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "GPL-2.0+"
+                "GPL-2.0-or-later"
             ],
             "authors": [
                 {
                     "name": "Gary Jones",
-                    "email": "gamajo@gamajo.com",
-                    "homepage": "http://gamajo.com",
+                    "homepage": "https://gamajo.com",
                     "role": "Developer"
                 }
             ],
             "description": "A class for your WordPress plugin, to allow loading template parts with fallback through the child theme > parent theme > plugin",
-            "homepage": "http://github.com/GaryJones/Gamajo-Template-Loader",
+            "homepage": "https://github.com/GaryJones/Gamajo-Template-Loader",
             "keywords": [
                 "templates",
                 "wordpress"
             ],
-            "time": "2017-03-24T17:28:34+00:00"
+            "time": "2018-09-24T10:23:49+00:00"
         }
     ],
     "packages-dev": [],
@@ -127,7 +137,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.4"
+        "php": ">=5.6"
     },
     "platform-dev": []
 }
