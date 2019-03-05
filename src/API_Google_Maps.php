@@ -169,7 +169,7 @@ class API_Google_Maps {
 		 * @link https://developers.google.com/maps/documentation/geocoding/intro#StatusCodes
 		 */
 		if ( 'OK' != $data->status ) {
-			return Functions::invalid_shortcode_message( 'The Google Maps Geocoding API resulted in an error: ' . $data->status . '.', 'https://developers.google.com/maps/documentation/geocoding/intro#StatusCodes' );
+			return Functions::invalid_shortcode_message( 'The Google Maps Geocoding API resulted in an error: ' . $data->status, 'https://developers.google.com/maps/documentation/geocoding/intro#StatusCodes' );
 		}
 
 		$latitude_longitude = '';
