@@ -6,7 +6,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.6
 Tested up to: 5.1
 Requires PHP: 5.6
-Stable tag: 1.5.5
+Stable tag: 1.6.0
 
 Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 
@@ -222,7 +222,7 @@ Many thanks to the following:
 == Changelog ==
 *Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
 
-= Version 1.5.5 =
+= Version 1.6.0 =
 * March 5, 2019
 * Tested with WordPress 5.1
 * Now requires PHP version 5.6 or greater.
