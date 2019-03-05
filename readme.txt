@@ -5,7 +5,7 @@ License: GPL version 3 or any later version
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.6
 Tested up to: 4.9.4
-Requires PHP: 5.4
+Requires PHP: 5.6
 Stable tag: 1.5.5
 
 Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
@@ -180,7 +180,7 @@ This plugin will work with any properly-coded WordPress theme. Free styling / cu
 
 This plugin requires WordPress version 4.3.0 or later. It is always recommended to use the latest version of WordPress for compatibility, performance, and security reasons.
 
-This plugin may not work properly with PHP versions earlier than 5.4. You should meet or exceed the [WordPress recommended software specs](https://wordpress.org/about/requirements/) for best performance and security.
+This plugin may not work properly with PHP versions earlier than 5.6. You should meet or exceed the [WordPress recommended software specs](https://wordpress.org/about/requirements/) for best performance and security.
 
 Any of this plugin's add-ons for specific event calendars would require the latest version of each add-on plugin and each event calendar plugin.
 
@@ -224,6 +224,7 @@ Many thanks to the following:
 
 = Version 1.5.5 =
 * March 5, 2019
+* Now requires PHP version 5.6 or greater.
 * Update Freemius SDK from v1.2.3 to v2.2.4 (security fix).
 
 = Version 1.5.4 =
