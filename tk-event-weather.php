@@ -2,6 +2,8 @@
 
 namespace TKEventWeather;
 
+use Freemius;
+
 /*
 	Plugin Name: TK Event Weather
 	Plugin URI: https://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
@@ -11,7 +13,7 @@ namespace TKEventWeather;
 	Description: Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 	Text Domain: tk-event-weather
 	License: GPL version 3 or any later version
-	License URI: http://www.gnu.org/licenses/gpl-3.0.html
+	License URI: https://www.gnu.org/licenses/gpl-3.0.html
 */
 
 /*
@@ -31,15 +33,15 @@ namespace TKEventWeather;
 
 	You should have received a copy of the GNU General Public License
 	along with Contact Form to Database Extension.
-	If not, see http://www.gnu.org/licenses/gpl-3.0.html
+	If not, see https://www.gnu.org/licenses/gpl-3.0.html
 */
 
 /** TODO:
  * - sign up for newsletter
  * - add Customizer option to input a Post ID to default to when viewing the customizer from the plugin's Settings Button (could auto-set it if an Event exists)
- * - truncate seconds off all timestamps? -- avoid 10pm hour + 10pm sunset, like http://cl.ly/430H1J0p2R07 -- No.
+ * - truncate seconds off all timestamps? -- avoid 10pm hour + 10pm sunset, like https://cl.ly/430H1J0p2R07 -- No.
  * - the Dark Sky API "apparentTemperature" value is the "feels like" temperature
- * - inspiration from http://darkskyapp.com/
+ * - inspiration from https://darkskyapp.com/
  * - time of day versions of icons (night/day)
  * - UI: https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-174607313
  * - UI: https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-178440095
@@ -104,7 +106,7 @@ if ( ! defined( '\TK_EVENT_WEATHER_PLUGIN_ROOT_DIR' ) ) {
 
 // added for consistency to match DIR
 if ( ! defined( '\TK_EVENT_WEATHER_PLUGIN_ROOT_URL' ) ) {
-	define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_URL', plugin_dir_url( __FILE__ ) ); // e.g. http://example.com/wp-content/plugins/tk-event-weather/
+	define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_URL', plugin_dir_url( __FILE__ ) ); // e.g. https://example.com/wp-content/plugins/tk-event-weather/
 }
 
 // used by core plugin and by add-on implementations of Freemius
@@ -175,7 +177,7 @@ function php_version_check() {
 	return true;
 }
 
-// adapted from http://wpbackoffice.com/get-current-woocommerce-version-number/
+// adapted from https://wpbackoffice.com/get-current-woocommerce-version-number/
 function get_tk_event_weather_version() {
 	// If get_plugins() isn't available, require it
 	if ( ! function_exists( 'get_plugins' ) ) {
@@ -192,10 +194,6 @@ function get_tk_event_weather_version() {
 	}
 }
 
-/**
- * Freemius setup
- */
-
 function terms_agreement_text() {
 	return sprintf(
 		__( 'By using this plugin, you agree to %s and %s terms.', 'tk-event-weather' ),
@@ -204,7 +202,12 @@ function terms_agreement_text() {
 	);
 }
 
-// A helper function for easy Freemius SDK access.
+/**
+ * A helper function for easy Freemius SDK access.
+ *
+
+ * @return Freemius|false
+ */
 function tk_event_weather_freemius() {
 	global $tk_event_weather_freemius;
 
@@ -216,30 +219,36 @@ function tk_event_weather_freemius() {
 		// Include Freemius SDK.
 		require_once( \TK_EVENT_WEATHER_FREEMIUS_START_FILE );
 
-		$tk_event_weather_freemius = fs_dynamic_init(
-			array(
-				'id'             => '240',
-				'slug'           => \TK_EVENT_WEATHER_HYPHENS,
-				'public_key'     => 'pk_b6902fc0051f10b5e36bea21fb0e7',
-				'is_premium'     => false,
-				'has_addons'     => true,
-				'has_paid_plans' => false,
-				'menu'           => array(
-					/**
-					 * The Freemius slug is to where we get redirected upon
-					 * plugin activation (and to where submenu items get
-					 * attached) so it should match the options page URL
-					 * we generate.
-					 *
-					 * @see Life_Cycle::get_settings_slug()
-					 */
-					'slug'   => \TK_EVENT_WEATHER_HYPHENS . '-settings',
-					'parent' => array(
-						'slug' => 'options-general.php',
+		try {
+			$tk_event_weather_freemius = fs_dynamic_init(
+				array(
+					'id'             => '240',
+					'slug'           => \TK_EVENT_WEATHER_HYPHENS,
+					'public_key'     => 'pk_b6902fc0051f10b5e36bea21fb0e7',
+					'is_premium'     => false,
+					'has_addons'     => true,
+					'has_paid_plans' => false,
+					'menu'           => array(
+						/**
+						 * The Freemius slug is to where we get redirected upon
+						 * plugin activation (and to where submenu items get
+						 * attached) so it should match the options page URL
+						 * we generate.
+						 *
+						 * @see Life_Cycle::get_settings_slug()
+						 */
+						'slug'   => \TK_EVENT_WEATHER_HYPHENS . '-settings',
+						'parent' => array(
+							'slug' => 'options-general.php',
+						),
 					),
-				),
-			)
-		);
+				)
+			);
+		}
+		catch ( \Freemius_Exception $e ) {
+			echo $e;
+			return false;
+		}
 	}
 
 	return $tk_event_weather_freemius;

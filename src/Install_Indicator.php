@@ -19,7 +19,7 @@ namespace TKEventWeather;
 
 	You should have received a copy of the GNU General Public License
 	along with Contact Form to Database Extension.
-	If not, see http://www.gnu.org/licenses/gpl-3.0.html
+	If not, see https://www.gnu.org/licenses/gpl-3.0.html
 */
 
 class Install_Indicator extends Options_Manager {
@@ -80,7 +80,7 @@ class Install_Indicator extends Options_Manager {
 	/**
 	 * Version of this code.
 	 * Best practice: define version strings to be easily compared using version_compare()
-	 * (http://php.net/manual/en/function.version-compare.php)
+	 * (https://php.net/manual/en/function.version-compare.php)
 	 * NOTE: You should manually make this match the SVN tag for your main plugin file 'Version' release and 'Stable tag' in readme.txt
 	 * @return string
 	 */
@@ -163,7 +163,7 @@ class Install_Indicator extends Options_Manager {
 	 * need to check if
 	 *
 	 * @param    $version string best practice: use a dot-delimited string like '1.2.3' so version strings can be easily
-	 *                    compared using version_compare (http://php.net/manual/en/function.version-compare.php)
+	 *                    compared using version_compare (https://php.net/manual/en/function.version-compare.php)
 	 *
 	 * @return null
 	 */

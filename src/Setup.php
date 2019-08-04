@@ -106,7 +106,7 @@ class Setup {
 	 */
 
 	/**
-	 * Example: http://example.com/wp-content/plugins/tk-event-weather/images/
+	 * Example: https://example.com/wp-content/plugins/tk-event-weather/images/
 	 *
 	 * @return string
 	 */
@@ -115,7 +115,7 @@ class Setup {
 	}
 
 	/**
-	 * Example: http://example.com/wp-content/plugins/tk-event-weather/vendor/
+	 * Example: https://example.com/wp-content/plugins/tk-event-weather/vendor/
 	 *
 	 * @return string
 	 */

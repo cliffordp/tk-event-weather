@@ -2,6 +2,8 @@
 
 namespace TKEventWeather;
 
+use Freemius;
+
 /*
 		"WordPress Plugin Template" Copyright (C) 2016 Michael Simpson	(email : michael.d.simpson@gmail.com)
 
@@ -19,7 +21,7 @@ namespace TKEventWeather;
 
 		You should have received a copy of the GNU General Public License
 		along with Contact Form to Database Extension.
-		If not, see http://www.gnu.org/licenses/gpl-3.0.html
+		If not, see https://www.gnu.org/licenses/gpl-3.0.html
 */
 
 class Options_Manager {
@@ -216,6 +218,12 @@ class Options_Manager {
 	 * @return void
 	 */
 	public function settings_page() {
+		global $tk_event_weather_freemius;
+
+		if ( ! $tk_event_weather_freemius instanceof Freemius ) {
+			return;
+		}
+
 		$capability = required_capability();
 		if ( ! current_user_can( $capability ) ) {
 			wp_die( __( 'You do not have sufficient permissions to access this page.', 'tk-event-weather' ) );
@@ -236,7 +244,7 @@ class Options_Manager {
 			<div style="width: 80%; padding: 20px; margin: 20px; background-color: #fff; font-size: 120%;">
 				<?php
 				$tourkick_logo = Setup::plugin_dir_url_images() . 'tourkick-logo-square-300.png';
-				printf( '<a href="http://tourkick.com/" target="_blank"><img style="float: left; margin: 5px 40px 10px 10px;" width="100" height="100" src="%s"></a>', $tourkick_logo );
+				printf( '<a href="https://tourkick.com/" target="_blank"><img style="float: left; margin: 5px 40px 10px 10px;" width="100" height="100" src="%s"></a>', $tourkick_logo );
 				?>
 				<?php
 				$addons_url = tk_event_weather_freemius()->addon_url( '' );
@@ -256,24 +264,22 @@ class Options_Manager {
 				?>
 				<br>
 				<p>
-					<a href="http://b.tourkick.com/tkeventw-rate-5-stars"
+					<a href="https://b.tourkick.com/tkeventw-rate-5-stars"
 					   target="_blank"><?php esc_html_e( 'Share your 5-Star Review on WordPress.org', 'tk-event-weather' ); ?></a>
 				</p>
 				<p>
-					<a href="http://b.tourkick.com/github-tk-event-weather" target="_blank">Contribute via GitHub</a>
+					<a href="https://b.tourkick.com/github-tk-event-weather" target="_blank">Contribute via GitHub</a>
 				</p>
 				<p><?php esc_html_e( 'Find me online', 'tk-event-weather' ); ?>:
 					<a
-						href="http://b.tourkick.com/twitter-follow-tourkick" target="_blank">Twitter</a> |
+						href="https://b.tourkick.com/twitter-follow-tourkick" target="_blank">Twitter</a> |
 					<a
-						href="http://b.tourkick.com/facebook-tourkick" target="_blank">Facebook</a> |
+						href="https://b.tourkick.com/facebook-tourkick" target="_blank">Facebook</a> |
 					<a
-						href="http://b.tourkick.com/cliffpaulick-w-org-profile-plugins" target="_blank">WordPress
+						href="https://b.tourkick.com/cliffpaulick-w-org-profile-plugins" target="_blank">WordPress
 						Profile</a> |
-					<a href="http://b.tourkick.com/tourkick-com" target="_blank">Website</a>
+					<a href="https://b.tourkick.com/tourkick-com" target="_blank">Website</a>
 				</p>
-				<hr>
-				<p style="font-style: italic;"><?php echo terms_agreement_text(); ?></p>
 			</div>
 
 
@@ -300,7 +306,23 @@ class Options_Manager {
 						<?php _e( 'Edit Plugin Settings in WP Customizer', 'tk-event-weather' ) ?>
 					</a>
 				</p>
-				<br><br>
+				<?php
+				/**
+				 * @see \TKEventWeather\terms_agreement_text()
+				 */
+				$terms_link = sprintf( 'https://freemius.com/terms/%d/%s/', $tk_event_weather_freemius->get_id(), $tk_event_weather_freemius->get_slug() );
+				?>
+				<div class="terms notice notice-warning inline" style="margin-top: 20px;">
+					<h2>Terms</h2>
+					<p><?php _e( 'By using this plugin, you agree to the following terms (links open in new tab):', 'tk-event-weather' ); ?></p>
+					<ul style="margin-left: 40px; list-style: disc;">
+						<li><a href="https://tourkick.com/terms/?utm_source=terms_agreement_text&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather" target="_blank"><?php echo esc_html_x( "TourKick's terms", 'TourKick terms link text', 'tk-event-weather' );?></a></li>
+						<li><a href="https://freemius.com/terms/" target="_blank"><?php echo esc_html_x( "Freemius's terms", 'Freemius terms link text', 'tk-event-weather' );?></a></li>
+						<li><a href="<?php echo $terms_link;?>#subscriptions_summary" target="_blank"><?php echo esc_html_x( 'Subscriptions terms summary', 'Freemius terms link text', 'tk-event-weather' );?></a></li>
+						<li><a href="<?php echo $terms_link;?>#refund_policy_summary" target="_blank"><?php echo esc_html_x( 'Refund policy summary', 'Freemius terms link text', 'tk-event-weather' );?></a></li>
+						<li><a href="<?php echo $terms_link;?>#refund_policy" target="_blank"><?php echo esc_html_x( 'Full refund policy', 'Freemius terms link text', 'tk-event-weather' );?></a></li>
+					</ul>
+				</div>
 				<?php
 				/**
 				 * Commented out until method exists to return a string for direct URL to re-prompt anonymous users with opt-in -- https://github.com/Freemius/wordpress-sdk/issues/42
@@ -342,10 +364,10 @@ class Options_Manager {
 				'</a>'
 			); ?>:</p>
 		<iframe style="text-align: center; margin-left: 10%; margin-right: 10%; width: 80%; min-width: 300px;"
-				name="Google Maps API Geocoder Tool" src="http://b.tourkick.com/google-maps-geocoder"
+				name="Google Maps API Geocoder Tool" src="https://b.tourkick.com/google-maps-geocoder"
 				height="575" width="800">
 			<p>Your browser does not support iframes. Please visit the <a
-					href="http://b.tourkick.com/google-maps-geocoder" target="_blank">Google Maps API
+					href="https://b.tourkick.com/google-maps-geocoder" target="_blank">Google Maps API
 					Geocoder Tool</a> directly.</p>
 		</iframe>
 	<br><br>
@@ -412,7 +434,7 @@ class Options_Manager {
 				outline: 0
 			}
 		</style>
-		<div class="updated inline">
+		<div class="updated inline" style="margin-top: 20px;">
 			<p><?php _e( 'Please copy and paste this information in your ticket when contacting support:', 'tk-event-weather' ); ?> </p>
 			<p class="submit"><a href="#"
 								 class="button-primary debug-report"><?php _e( 'Get System Report', 'tk-event-weather' ); ?></a>
@@ -421,16 +443,16 @@ class Options_Manager {
 				<textarea readonly="readonly"></textarea>
 				<h3 id="copy-for-support">&#x21b3;
 					<?php
-					// http://htmlarrows.com/arrows/down-arrow-with-tip-right/
+					// https://www.toptal.com/designers/htmlarrows/arrows/down-arrow-with-tip-right/
 					_e( 'Copy and send to Support', 'tk-event-weather' );
-					// http://htmlarrows.com/arrows/down-arrow-with-corner-left/
+					// https://www.toptal.com/designers/htmlarrows/arrows/down-arrow-with-corner-left/
 					?>
 					&#x21b5;
 				</h3>
 				<hr>
 				<p><?php _e( 'And/Or you might want to send your personal computer specifications:', 'tk-event-weather' ); ?></p>
 				<p><a target="_blank"
-					  href="<?php printf( 'http://supportdetails.com/?sender_name=%s&sender=%s&recipient=%s', urlencode( get_home_url() ), urlencode( get_bloginfo( 'admin_email' ) ), urlencode( Setup::$support_email_address ) ); ?>"
+					  href="<?php printf( 'https://supportdetails.com/?sender_name=%s&sender=%s&recipient=%s', urlencode( get_home_url() ), urlencode( get_bloginfo( 'admin_email' ) ), urlencode( Setup::$support_email_address ) ); ?>"
 					  class="button-secondary support-details"><?php _e( 'Get Personal Computer Details', 'tk-event-weather' ); ?></a>
 				</p>
 				<p>
@@ -494,7 +516,7 @@ class Options_Manager {
 						$memory        = max( $memory, $system_memory );
 					}
 					if ( $memory < 67108864 ) { // '64M' in bytes
-						echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf( __( '%s - We recommend setting memory to at least 64MB. See: %s', 'tk-event-weather' ), size_format( $memory ), '<a href="http://codex.wordpress.org/Editing_wp-config.php#Increasing_memory_allocated_to_PHP" target="_blank">' . __( 'Increasing memory allocated to PHP', 'tk-event-weather' ) . '</a>' ) . '</mark>';
+						echo '<mark class="error"><span class="dashicons dashicons-warning"></span> ' . sprintf( __( '%s - We recommend setting memory to at least 64MB. See: %s', 'tk-event-weather' ), size_format( $memory ), '<a href="https://wordpress.org/support/article/editing-wp-config-php/#increasing-memory-allocated-to-php" target="_blank">' . __( 'Increasing memory allocated to PHP', 'tk-event-weather' ) . '</a>' ) . '</mark>';
 					} else {
 						echo '<mark class="yes">' . size_format( $memory ) . '</mark>';
 					}
@@ -575,7 +597,7 @@ class Options_Manager {
 									__( '%s - This plugin requires a minimum PHP version of %s. See: %s', 'tk-event-weather' ),
 									esc_html( $php_version ),
 									Setup::min_php_version(),
-									'<a href="http://docs.woothemes.com/document/how-to-update-your-php-version/" target="_blank">' . __( 'How to update your PHP version', 'tk-event-weather' ) . '</a>'
+									'<a href="https://docs.woothemes.com/document/how-to-update-your-php-version/" target="_blank">' . __( 'How to update your PHP version', 'tk-event-weather' ) . '</a>'
 								) . '</mark>';
 						} else {
 							echo '<mark class="yes">' . esc_html( $php_version ) . '</mark>';
@@ -669,7 +691,7 @@ class Options_Manager {
 				$posting['soap_client']['success'] = true;
 			} else {
 				$posting['soap_client']['success'] = false;
-				$posting['soap_client']['note']    = sprintf( __( 'Your server does not have the %s class enabled - some gateway plugins which use SOAP may not work as expected.', 'tk-event-weather' ), '<a href="http://php.net/manual/en/class.soapclient.php">SoapClient</a>' );
+				$posting['soap_client']['note']    = sprintf( __( 'Your server does not have the %s class enabled - some gateway plugins which use SOAP may not work as expected.', 'tk-event-weather' ), '<a href="https://php.net/manual/en/class.soapclient.php">SoapClient</a>' );
 			}
 			// DOMDocument.
 			$posting['dom_document']['name'] = 'DOMDocument';
@@ -677,7 +699,7 @@ class Options_Manager {
 				$posting['dom_document']['success'] = true;
 			} else {
 				$posting['dom_document']['success'] = false;
-				$posting['dom_document']['note']    = sprintf( __( 'Your server does not have the %s class enabled - HTML/Multipart emails, and also some extensions, will not work without DOMDocument.', 'tk-event-weather' ), '<a href="http://php.net/manual/en/class.domdocument.php">DOMDocument</a>' );
+				$posting['dom_document']['note']    = sprintf( __( 'Your server does not have the %s class enabled - HTML/Multipart emails, and also some extensions, will not work without DOMDocument.', 'tk-event-weather' ), '<a href="https://php.net/manual/en/class.domdocument.php">DOMDocument</a>' );
 			}
 			// GZIP.
 			$posting['gzip']['name'] = 'GZip';
@@ -685,7 +707,7 @@ class Options_Manager {
 				$posting['gzip']['success'] = true;
 			} else {
 				$posting['gzip']['success'] = false;
-				$posting['gzip']['note']    = sprintf( __( 'Your server does not support the %s function - this is required to use the GeoIP database from MaxMind. The API fallback will be used instead for geolocation.', 'tk-event-weather' ), '<a href="http://php.net/manual/en/zlib.installation.php">gzopen</a>' );
+				$posting['gzip']['note']    = sprintf( __( 'Your server does not support the %s function - this is required to use the GeoIP database from MaxMind. The API fallback will be used instead for geolocation.', 'tk-event-weather' ), '<a href="https://php.net/manual/en/zlib.installation.php">gzopen</a>' );
 			}
 			// Multibyte String.
 			$posting['mbstring']['name'] = 'Multibyte String';
@@ -693,11 +715,11 @@ class Options_Manager {
 				$posting['mbstring']['success'] = true;
 			} else {
 				$posting['mbstring']['success'] = false;
-				$posting['mbstring']['note']    = sprintf( __( 'Your server does not support the %s functions - this is required for better character encoding. Some fallbacks will be used instead for it.', 'tk-event-weather' ), '<a href="http://php.net/manual/en/mbstring.installation.php">mbstring</a>' );
+				$posting['mbstring']['note']    = sprintf( __( 'Your server does not support the %s functions - this is required for better character encoding. Some fallbacks will be used instead for it.', 'tk-event-weather' ), '<a href="https://php.net/manual/en/mbstring.installation.php">mbstring</a>' );
 			}
 			// WP Remote Get Check.
 			$posting['wp_remote_get']['name'] = __( 'Remote Get', 'tk-event-weather' );
-			$response                         = wp_safe_remote_get( 'http://www.woothemes.com/wc-api/product-key-api?request=ping&network=' . ( is_multisite() ? '1' : '0' ) );
+			$response                         = wp_safe_remote_get( 'https://www.woothemes.com/wc-api/product-key-api?request=ping&network=' . ( is_multisite() ? '1' : '0' ) );
 			if ( ! is_wp_error( $response ) && $response['response']['code'] >= 200 && $response['response']['code'] < 300 ) {
 				$posting['wp_remote_get']['success'] = true;
 			} else {

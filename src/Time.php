@@ -2,7 +2,7 @@
 
 namespace TKEventWeather;
 
-// TODO: Consider using Carbon once its version 2 is released: http://carbon.nesbot.com/
+// TODO: Consider using Carbon once its version 2 is released: https://carbon.nesbot.com/
 
 class Time {
 	// all variables and methods should be 'static'
