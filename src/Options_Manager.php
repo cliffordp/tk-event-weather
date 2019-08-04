@@ -2,6 +2,8 @@
 
 namespace TKEventWeather;
 
+use Freemius;
+
 /*
 		"WordPress Plugin Template" Copyright (C) 2016 Michael Simpson	(email : michael.d.simpson@gmail.com)
 
@@ -216,6 +218,12 @@ class Options_Manager {
 	 * @return void
 	 */
 	public function settings_page() {
+		global $tk_event_weather_freemius;
+
+		if ( ! $tk_event_weather_freemius instanceof Freemius ) {
+			return;
+		}
+
 		$capability = required_capability();
 		if ( ! current_user_can( $capability ) ) {
 			wp_die( __( 'You do not have sufficient permissions to access this page.', 'tk-event-weather' ) );
@@ -272,8 +280,6 @@ class Options_Manager {
 						Profile</a> |
 					<a href="https://b.tourkick.com/tourkick-com" target="_blank">Website</a>
 				</p>
-				<hr>
-				<p style="font-style: italic;"><?php echo terms_agreement_text(); ?></p>
 			</div>
 
 
@@ -300,7 +306,23 @@ class Options_Manager {
 						<?php _e( 'Edit Plugin Settings in WP Customizer', 'tk-event-weather' ) ?>
 					</a>
 				</p>
-				<br><br>
+				<?php
+				/**
+				 * @see \TKEventWeather\terms_agreement_text()
+				 */
+				$terms_link = sprintf( 'https://freemius.com/terms/%d/%s/', $tk_event_weather_freemius->get_id(), $tk_event_weather_freemius->get_slug() );
+				?>
+				<div class="terms notice notice-warning inline" style="margin-top: 20px;">
+					<h2>Terms</h2>
+					<p><?php _e( 'By using this plugin, you agree to the following terms (links open in new tab):', 'tk-event-weather' ); ?></p>
+					<ul style="margin-left: 40px; list-style: disc;">
+						<li><a href="https://tourkick.com/terms/?utm_source=terms_agreement_text&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather" target="_blank"><?php echo esc_html_x( "TourKick's terms", 'TourKick terms link text', 'tk-event-weather' );?></a></li>
+						<li><a href="https://freemius.com/terms/" target="_blank"><?php echo esc_html_x( "Freemius's terms", 'Freemius terms link text', 'tk-event-weather' );?></a></li>
+						<li><a href="<?php echo $terms_link;?>#subscriptions_summary" target="_blank"><?php echo esc_html_x( 'Subscriptions terms summary', 'Freemius terms link text', 'tk-event-weather' );?></a></li>
+						<li><a href="<?php echo $terms_link;?>#refund_policy_summary" target="_blank"><?php echo esc_html_x( 'Refund policy summary', 'Freemius terms link text', 'tk-event-weather' );?></a></li>
+						<li><a href="<?php echo $terms_link;?>#refund_policy" target="_blank"><?php echo esc_html_x( 'Full refund policy', 'Freemius terms link text', 'tk-event-weather' );?></a></li>
+					</ul>
+				</div>
 				<?php
 				/**
 				 * Commented out until method exists to return a string for direct URL to re-prompt anonymous users with opt-in -- https://github.com/Freemius/wordpress-sdk/issues/42
