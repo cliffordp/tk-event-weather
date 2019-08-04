@@ -193,8 +193,8 @@ function get_tk_event_weather_version() {
 }
 
 /**
- * Freemius setup
- */
+ * A helper function for easy Freemius SDK access.
+ *
 
 function terms_agreement_text() {
 	return sprintf(
@@ -203,8 +203,8 @@ function terms_agreement_text() {
 		'<a target="_blank" href="https://freemius.com/terms/">Freemius\'</a>'
 	);
 }
-
-// A helper function for easy Freemius SDK access.
+ * @return \Freemius|false
+ */
 function tk_event_weather_freemius() {
 	global $tk_event_weather_freemius;
 
@@ -216,30 +216,36 @@ function tk_event_weather_freemius() {
 		// Include Freemius SDK.
 		require_once( \TK_EVENT_WEATHER_FREEMIUS_START_FILE );
 
-		$tk_event_weather_freemius = fs_dynamic_init(
-			array(
-				'id'             => '240',
-				'slug'           => \TK_EVENT_WEATHER_HYPHENS,
-				'public_key'     => 'pk_b6902fc0051f10b5e36bea21fb0e7',
-				'is_premium'     => false,
-				'has_addons'     => true,
-				'has_paid_plans' => false,
-				'menu'           => array(
-					/**
-					 * The Freemius slug is to where we get redirected upon
-					 * plugin activation (and to where submenu items get
-					 * attached) so it should match the options page URL
-					 * we generate.
-					 *
-					 * @see Life_Cycle::get_settings_slug()
-					 */
-					'slug'   => \TK_EVENT_WEATHER_HYPHENS . '-settings',
-					'parent' => array(
-						'slug' => 'options-general.php',
+		try {
+			$tk_event_weather_freemius = fs_dynamic_init(
+				array(
+					'id'             => '240',
+					'slug'           => \TK_EVENT_WEATHER_HYPHENS,
+					'public_key'     => 'pk_b6902fc0051f10b5e36bea21fb0e7',
+					'is_premium'     => false,
+					'has_addons'     => true,
+					'has_paid_plans' => false,
+					'menu'           => array(
+						/**
+						 * The Freemius slug is to where we get redirected upon
+						 * plugin activation (and to where submenu items get
+						 * attached) so it should match the options page URL
+						 * we generate.
+						 *
+						 * @see Life_Cycle::get_settings_slug()
+						 */
+						'slug'   => \TK_EVENT_WEATHER_HYPHENS . '-settings',
+						'parent' => array(
+							'slug' => 'options-general.php',
+						),
 					),
-				),
-			)
-		);
+				)
+			);
+		}
+		catch ( \Freemius_Exception $e ) {
+			echo $e;
+			return false;
+		}
 	}
 
 	return $tk_event_weather_freemius;
