@@ -2,6 +2,8 @@
 
 namespace TKEventWeather;
 
+use Freemius;
+
 /*
 	Plugin Name: TK Event Weather
 	Plugin URI: https://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
@@ -192,10 +194,6 @@ function get_tk_event_weather_version() {
 	}
 }
 
-/**
- * A helper function for easy Freemius SDK access.
- *
-
 function terms_agreement_text() {
 	return sprintf(
 		__( 'By using this plugin, you agree to %s and %s terms.', 'tk-event-weather' ),
@@ -203,7 +201,12 @@ function terms_agreement_text() {
 		'<a target="_blank" href="https://freemius.com/terms/">Freemius\'</a>'
 	);
 }
- * @return \Freemius|false
+
+/**
+ * A helper function for easy Freemius SDK access.
+ *
+
+ * @return Freemius|false
  */
 function tk_event_weather_freemius() {
 	global $tk_event_weather_freemius;
