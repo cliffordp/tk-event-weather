@@ -2,7 +2,7 @@
 Contributors: cliffpaulick
 Tags: calendar, events, forecast, shortcode, weather
 License: GPL version 3 or any later version
-License URI: http://www.gnu.org/licenses/gpl-3.0.html
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.6
 Tested up to: 5.2.2
 Requires PHP: 5.6
@@ -34,8 +34,8 @@ https://www.youtube.com/watch?v=fbGS_LtX-es
 
 Currently Available:
 
-* [The Events Calendar by Modern Tribe](https://wordpress.org/plugins/the-events-calendar/) - 600,000+ active installs - [Purchase](http://tourkick.com/shop/wordpress/tk-event-weather-the-events-calendar/)
-* [Events Manager by Marcus Sykes](https://wordpress.org/plugins/events-manager/) - 100,000+ active installs - [Purchase](http://tourkick.com/shop/wordpress/tk-event-weather-events-manager/)
+* [The Events Calendar by Modern Tribe](https://wordpress.org/plugins/the-events-calendar/) - 600,000+ active installs - [Purchase](https://tourkick.com/shop/wordpress/tk-event-weather-the-events-calendar/)
+* [Events Manager by Marcus Sykes](https://wordpress.org/plugins/events-manager/) - 100,000+ active installs - [Purchase](https://tourkick.com/shop/wordpress/tk-event-weather-events-manager/)
 * [Simple Calendar by Moonstone Media](https://wordpress.org/plugins/google-calendar-events/) - 80,000+ active installs - [Purchase](https://tourkick.com/shop/wordpress/tk-event-weather-events-manager/)
 
 I am considering making add-ons for the following event calendars:
@@ -49,7 +49,7 @@ I am considering making add-ons for the following event calendars:
 * [Bookly Booking Plugin by Ladela](https://codecanyon.net/item/bookly-booking-plugin-responsive-appointment-booking-and-scheduling/7226091?ref=cliffpaulick) - 17,000+ sales
 * [Pinpoint Booking System by DOTonPAPER](https://wordpress.org/plugins/booking-system/) - 10,000+ active installs and/or [its PRO upgrade](https://pinpoint.world/shop/product/1/pinpoint-booking-system-wordpress-plugin-pro-version) [(previously on CodeCanyon)](https://codecanyon.net/item/pinpoint-booking-system-pro-book-everything-with-wordpress/2675936?ref=cliffpaulick) - 12,000+ sales
 * [WP Simple Booking Calendar by simplebookingcalendar](https://wordpress.org/plugins/wp-simple-booking-calendar/) - 10,000+ active installs and/or its [Premium version](https://www.wpsimplebookingcalendar.com/)
-* [Calendarize it! by RightHere](http://codecanyon.net/item/calendarize-it-for-wordpress/2568439?ref=cliffpaulick) - 9,000+ sales
+* [Calendarize it! by RightHere](https://codecanyon.net/item/calendarize-it-for-wordpress/2568439?ref=cliffpaulick) - 9,000+ sales
 * [Appointment+ by WPMU DEV](https://premium.wpmudev.org/project/appointments-plus/) - 125,000+ downloads
 * [Events+ by WPMU DEV](https://premium.wpmudev.org/project/events-plus/) - 95,000+ downloads
 * [Timetable Responsive Schedule For WordPress by QuanticaLabs](https://codecanyon.net/item/timetable-responsive-schedule-for-wordpress/7010836?ref=cliffpaulick) - 6,000+ sales
@@ -83,7 +83,7 @@ I'll consider making whichever add-ons I receive the most requests for (and are 
 * As of October 2016, Dark Sky allows up to 1,000 free API calls per day. The cost for additional API calls is $0.0001 per API call (or $1 per 10,000 requests).
 * You'll need to enter your billing information at Dark Sky if you want to ensure your API access isn't cut off after 1,000 API calls per day.
 * If you're out of API calls for the day and you haven't entered billing information, the plugin will "fail gracefully" (does not display errors to non-Administrators).
-* You can check the [Dark Sky API's Status Updates](http://status.darksky.net/) to read its news.
+* You can check the [Dark Sky API's Status Updates](https://status.darksky.net/) to read its news.
 * The [Dark Sky Terms of Use](https://darksky.net/dev/docs/terms) states, "You agree that any application or service which incorporates data obtained from the Service shall prominently display the message "Powered by Dark Sky" in a legible manner near the data or any information derived from any data from the Service. This message must, if possible, open a link to [https://darksky.net/poweredby/](https://darksky.net/poweredby/) when clicked or touched."
 * This plugin's output will automatically add a compliant link; however, there is a setting to disable outputting this link. This is because your site may not be a "public or user-facing application" (although it probably is) or because you've emailed to the address in their Terms of Use to request (and have been approved for) their extremely-affordable *white-label* account.
 * This plugin and its author are not affiliated with or endorsed by The Dark Sky Company, LLC or any of the other plugins mentioned (including ones for which an add-on is available).
@@ -93,8 +93,8 @@ I'll consider making whichever add-ons I receive the most requests for (and are 
 = Support Me =
 * [Leave a great review](https://wordpress.org/support/view/plugin-reviews/tk-event-weather?rate=5#postform)
 * Buy one of my available paid add-ons or tell me about one you'd be interested in purchasing!
-* [View my other plugins](http://tourkick.com/plugins/)
-* [Hire Me for Custom Integrations and other Customizations](http://tourkick.com/)
+* [View my other plugins](https://tourkick.com/plugins/)
+* [Hire Me for Custom Integrations and other Customizations](https://tourkick.com/)
 * [Contribute code via GitHub](https://github.com/cliffordp/tk-event-weather)
 * [Assist with translations via WordPress.org](https://translate.wordpress.org/projects/wp-plugins/tk-event-weather) -- [How to get started](https://make.wordpress.org/polyglots/handbook/tools/glotpress-translate-wordpress-org/)
 * **[Tweet this plugin](https://twitter.com/home?status=I%20love%20the%20free%20TK%20Event%20Weather%20%23WordPress%20plugin%20by%20%40TourKick.%20http%3A//tourkick.com/plugins/tk-event-weather/%20-%20weather%20for%20any%20event!)**
@@ -220,7 +220,7 @@ Many thanks to the following:
 9. A view of the Freemius links to your Freemius Account, the plugin Contact Us form, the WordPress.org Support Forum, and easy access to paid add-ons.
 
 == Changelog ==
-*Changelog DIFFs for all versions are available at <a href="http://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
+*Changelog DIFFs for all versions are available at <a href="https://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
 
 = Version 1.6.1 =
 * August 4, 2019
@@ -326,7 +326,7 @@ Bug fixes:
 
 = Version 1.4 =
 * March 10, 2017
-* Released <a href="http://tourkick.com/shop/wordpress/tk-event-weather-simple-calendar/" target="_blank">TK Event Weather for Simple Calendar</a>
+* Released <a href="https://tourkick.com/shop/wordpress/tk-event-weather-simple-calendar/" target="_blank">TK Event Weather for Simple Calendar</a>
 * Enhancement: End Time can now be blank/unused and will default to displaying the remaining hours of the day.
 * Enhancement: End Time can now equal Start time to display a single hour's weather. Note that if you enter 5:30am for both Start and End time, the output will be both 5am and 6am (and possibly a 3rd time in the middle with the sunrise or sunset). If you really only want a single hour displayed, you should only enter top of the hour (e.g. 5am or 6am) and also use `sunrise_sunset_off=true`. Example screenshot: https://cl.ly/2N2X1p1C1O1r
 * Enhancement: New "before" (h4) and "after" (p) shortcode arguments to output certain text only if the shortcode has output. Useful for a heading like "Forecast" or some text at the end of the shortcode's output, like a disclaimer about the weather not being guaranteed.
@@ -349,7 +349,7 @@ Bug fixes:
 = Version 1.2.6 =
 * January 4, 2017
 * Added support for <a href="https://make.wordpress.org/core/2016/11/10/visible-edit-shortcuts-in-the-customizer-preview/" target="_blank">Visible Edit Shortcuts in the WP Customizer</a>
-* Released <a href="http://tourkick.com/shop/wordpress/tk-event-weather-events-manager/" target="_blank">TK Event Weather for Events Manager</a>
+* Released <a href="https://tourkick.com/shop/wordpress/tk-event-weather-events-manager/" target="_blank">TK Event Weather for Events Manager</a>
 
 = Version 1.2.5 =
 * January 3, 2017

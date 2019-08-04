@@ -13,7 +13,7 @@ use Freemius;
 	Description: Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 	Text Domain: tk-event-weather
 	License: GPL version 3 or any later version
-	License URI: http://www.gnu.org/licenses/gpl-3.0.html
+	License URI: https://www.gnu.org/licenses/gpl-3.0.html
 */
 
 /*
@@ -33,15 +33,15 @@ use Freemius;
 
 	You should have received a copy of the GNU General Public License
 	along with Contact Form to Database Extension.
-	If not, see http://www.gnu.org/licenses/gpl-3.0.html
+	If not, see https://www.gnu.org/licenses/gpl-3.0.html
 */
 
 /** TODO:
  * - sign up for newsletter
  * - add Customizer option to input a Post ID to default to when viewing the customizer from the plugin's Settings Button (could auto-set it if an Event exists)
- * - truncate seconds off all timestamps? -- avoid 10pm hour + 10pm sunset, like http://cl.ly/430H1J0p2R07 -- No.
+ * - truncate seconds off all timestamps? -- avoid 10pm hour + 10pm sunset, like https://cl.ly/430H1J0p2R07 -- No.
  * - the Dark Sky API "apparentTemperature" value is the "feels like" temperature
- * - inspiration from http://darkskyapp.com/
+ * - inspiration from https://darkskyapp.com/
  * - time of day versions of icons (night/day)
  * - UI: https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-174607313
  * - UI: https://github.com/cliffordp/tk-event-weather/issues/3#issuecomment-178440095
@@ -106,7 +106,7 @@ if ( ! defined( '\TK_EVENT_WEATHER_PLUGIN_ROOT_DIR' ) ) {
 
 // added for consistency to match DIR
 if ( ! defined( '\TK_EVENT_WEATHER_PLUGIN_ROOT_URL' ) ) {
-	define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_URL', plugin_dir_url( __FILE__ ) ); // e.g. http://example.com/wp-content/plugins/tk-event-weather/
+	define( 'TK_EVENT_WEATHER_PLUGIN_ROOT_URL', plugin_dir_url( __FILE__ ) ); // e.g. https://example.com/wp-content/plugins/tk-event-weather/
 }
 
 // used by core plugin and by add-on implementations of Freemius
@@ -177,7 +177,7 @@ function php_version_check() {
 	return true;
 }
 
-// adapted from http://wpbackoffice.com/get-current-woocommerce-version-number/
+// adapted from https://wpbackoffice.com/get-current-woocommerce-version-number/
 function get_tk_event_weather_version() {
 	// If get_plugins() isn't available, require it
 	if ( ! function_exists( 'get_plugins' ) ) {
