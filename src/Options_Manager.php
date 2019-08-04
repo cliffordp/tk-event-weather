@@ -256,21 +256,21 @@ class Options_Manager {
 				?>
 				<br>
 				<p>
-					<a href="http://b.tourkick.com/tkeventw-rate-5-stars"
+					<a href="https://b.tourkick.com/tkeventw-rate-5-stars"
 					   target="_blank"><?php esc_html_e( 'Share your 5-Star Review on WordPress.org', 'tk-event-weather' ); ?></a>
 				</p>
 				<p>
-					<a href="http://b.tourkick.com/github-tk-event-weather" target="_blank">Contribute via GitHub</a>
+					<a href="https://b.tourkick.com/github-tk-event-weather" target="_blank">Contribute via GitHub</a>
 				</p>
 				<p><?php esc_html_e( 'Find me online', 'tk-event-weather' ); ?>:
 					<a
-						href="http://b.tourkick.com/twitter-follow-tourkick" target="_blank">Twitter</a> |
+						href="https://b.tourkick.com/twitter-follow-tourkick" target="_blank">Twitter</a> |
 					<a
-						href="http://b.tourkick.com/facebook-tourkick" target="_blank">Facebook</a> |
+						href="https://b.tourkick.com/facebook-tourkick" target="_blank">Facebook</a> |
 					<a
-						href="http://b.tourkick.com/cliffpaulick-w-org-profile-plugins" target="_blank">WordPress
+						href="https://b.tourkick.com/cliffpaulick-w-org-profile-plugins" target="_blank">WordPress
 						Profile</a> |
-					<a href="http://b.tourkick.com/tourkick-com" target="_blank">Website</a>
+					<a href="https://b.tourkick.com/tourkick-com" target="_blank">Website</a>
 				</p>
 				<hr>
 				<p style="font-style: italic;"><?php echo terms_agreement_text(); ?></p>
@@ -345,7 +345,7 @@ class Options_Manager {
 				name="Google Maps API Geocoder Tool" src="https://b.tourkick.com/google-maps-geocoder"
 				height="575" width="800">
 			<p>Your browser does not support iframes. Please visit the <a
-					href="http://b.tourkick.com/google-maps-geocoder" target="_blank">Google Maps API
+					href="https://b.tourkick.com/google-maps-geocoder" target="_blank">Google Maps API
 					Geocoder Tool</a> directly.</p>
 		</iframe>
 	<br><br>
