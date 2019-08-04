@@ -434,7 +434,7 @@ class Options_Manager {
 				outline: 0
 			}
 		</style>
-		<div class="updated inline">
+		<div class="updated inline" style="margin-top: 20px;">
 			<p><?php _e( 'Please copy and paste this information in your ticket when contacting support:', 'tk-event-weather' ); ?> </p>
 			<p class="submit"><a href="#"
 								 class="button-primary debug-report"><?php _e( 'Get System Report', 'tk-event-weather' ); ?></a>
