@@ -226,6 +226,7 @@ Many thanks to the following:
 * August 4, 2019
 * Tested with WordPress 5.2.2
 * Update Freemius SDK from v2.2.4 to v2.3.0
+* Google geocoder in admin's "Tools" tab now loads on HTTPS
 
 = Version 1.6.0 =
 * March 5, 2019

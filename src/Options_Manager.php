@@ -342,7 +342,7 @@ class Options_Manager {
 				'</a>'
 			); ?>:</p>
 		<iframe style="text-align: center; margin-left: 10%; margin-right: 10%; width: 80%; min-width: 300px;"
-				name="Google Maps API Geocoder Tool" src="http://b.tourkick.com/google-maps-geocoder"
+				name="Google Maps API Geocoder Tool" src="https://b.tourkick.com/google-maps-geocoder"
 				height="575" width="800">
 			<p>Your browser does not support iframes. Please visit the <a
 					href="http://b.tourkick.com/google-maps-geocoder" target="_blank">Google Maps API
