@@ -36,7 +36,8 @@ if ( true === Time::timestamp_is_during_today( $context->start_time_timestamp ) 
 }
 
 // Total Days in Span won't be set at time of first day's run so don't try to include it
-$class = sprintf( '%1$s__wrap_single_day %2$s %1$s__span-%3$d-to-%4$d %1$s__day-index-%5$d %1$s__day-type-%6$s %7$s',
+$class = sprintf(
+	'%1$s__wrap_single_day %2$s %1$s__span-%3$d-to-%4$d %1$s__day-index-%5$d %1$s__day-type-%6$s %7$s',
 	TK_EVENT_WEATHER_HYPHENS,
 	Shortcode::$span_template_data['template_class_name'],
 	Shortcode::$span_start_time_timestamp,
