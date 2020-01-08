@@ -31,11 +31,11 @@ class Functions {
 
 
 	public static function register_css() {
-		wp_register_style( TK_EVENT_WEATHER_HYPHENS, TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/' . TK_EVENT_WEATHER_HYPHENS . '.css', array(), get_tk_event_weather_version() );
+		wp_register_style( TK_EVENT_WEATHER_HYPHENS, TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/' . TK_EVENT_WEATHER_HYPHENS . '.css', [], get_tk_event_weather_version() );
 
-		wp_register_style( TK_EVENT_WEATHER_HYPHENS . '-scroll-horizontal', TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/' . TK_EVENT_WEATHER_HYPHENS . '-scroll-horizontal.css', array(), get_tk_event_weather_version() );
+		wp_register_style( TK_EVENT_WEATHER_HYPHENS . '-scroll-horizontal', TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/' . TK_EVENT_WEATHER_HYPHENS . '-scroll-horizontal.css', [], get_tk_event_weather_version() );
 
-		wp_register_style( TK_EVENT_WEATHER_HYPHENS . '-vertical-to-columns', TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/' . TK_EVENT_WEATHER_HYPHENS . '-vertical-to-columns.css', array(), get_tk_event_weather_version() );
+		wp_register_style( TK_EVENT_WEATHER_HYPHENS . '-vertical-to-columns', TK_EVENT_WEATHER_PLUGIN_ROOT_URL . 'css/' . TK_EVENT_WEATHER_HYPHENS . '-vertical-to-columns.css', [], get_tk_event_weather_version() );
 	}
 
 
@@ -50,7 +50,7 @@ class Functions {
 	// https://github.com/christiannaths/Climacons-Font/blob/master/webfont/demo.html
 	//
 	public static function register_climacons_css() {
-		wp_register_style( TK_EVENT_WEATHER_HYPHENS . '-climacons', Setup::plugin_dir_url_vendor() . 'climacons-webfont/climacons-webfont/climacons-font.css', array(), get_tk_event_weather_version() );
+		wp_register_style( TK_EVENT_WEATHER_HYPHENS . '-climacons', Setup::plugin_dir_url_vendor() . 'climacons-webfont/climacons-webfont/climacons-font.css', [], get_tk_event_weather_version() );
 	}
 
 
@@ -87,9 +87,9 @@ class Functions {
 	 */
 	public static function array_get_value_by_key( $array, $key, $fallback = '' ) {
 		if ( ! is_array( $array )
-		     || empty( $array )
-		     || ! isset( $array[ $key ] ) // use instead of array_key_exists()
-		     || '' === $array[ $key ] // to allow resetting an option back to its blank default
+			|| empty( $array )
+			|| ! isset( $array[ $key ] ) // use instead of array_key_exists()
+			|| '' === $array[ $key ] // to allow resetting an option back to its blank default
 		) {
 			$result = $fallback;
 		} else {
@@ -168,13 +168,13 @@ class Functions {
 	public static function all_valid_wp_capabilities() {
 		$all_roles = wp_roles();
 
-		$all_capabilities = array();
+		$all_capabilities = [];
 
 		foreach ( $all_roles->roles as $key => $value ) {
 			$all_capabilities[] = array_keys( $value['capabilities'], true, true );
 		}
 
-		$all_capabilities_flattened = array();
+		$all_capabilities_flattened = [];
 
 		foreach ( $all_capabilities as $key => $value ) {
 			foreach ( $value as $key_a => $value_a ) {
@@ -195,7 +195,8 @@ class Functions {
 		$result = sprintf(
 			'%s %s',
 			sanitize_html_class( TK_EVENT_WEATHER_HYPHENS . '__wrapper' ), // so the customizer auto-links to it
-			sanitize_html_class( TK_EVENT_WEATHER_HYPHENS . '__error' // for the custom CSS targeting
+			sanitize_html_class(
+				TK_EVENT_WEATHER_HYPHENS . '__error' // for the custom CSS targeting
 			)
 		);
 
@@ -210,7 +211,7 @@ class Functions {
 	 *
 	 * @link https://github.com/woocommerce/woocommerce/blob/3.2.3/includes/wc-formatting-functions.php#L519-L543
 	 *
-	 * @param  string $size Size value.
+	 * @param string $size Size value.
 	 *
 	 * @return int
 	 */

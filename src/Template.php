@@ -9,7 +9,7 @@ class Template {
 	 * @param null  $name
 	 * @param bool  $load
 	 */
-	public static function load_template( $slug, $data = array(), $name = null, $load = true ) {
+	public static function load_template( $slug, $data = [], $name = null, $load = true ) {
 		$template_loader = self::new_template_loader();
 		$template_loader->set_template_data( $data, 'context' ); // passed-through data becomes accessible as $context->piece_of_data within template
 		$template_loader->get_template_part( $slug, $name, $load );
@@ -55,7 +55,7 @@ class Template {
 			'low_high'          => __( 'Low-High Temperature', 'tk-event-weather' ),
 		);
 
-		$custom_display_templates = apply_filters( TK_EVENT_WEATHER_UNDERSCORES . '_custom_display_templates', array(), Shortcode::$custom_context );
+		$custom_display_templates = apply_filters( TK_EVENT_WEATHER_UNDERSCORES . '_custom_display_templates', [], Shortcode::$custom_context );
 
 		if ( ! empty( $custom_display_templates ) ) {
 			$result = array_merge( $result, $custom_display_templates );

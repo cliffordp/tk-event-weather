@@ -23,7 +23,7 @@ class Shortcode extends Shortcode_Script_Loader {
 	public static $dark_sky_api_units = '';
 	public static $dark_sky_api_language = '';
 	public static $dark_sky_api_exclude = '';
-	public static $dark_sky_api_uri_query_args = array();
+	public static $dark_sky_api_uri_query_args = [];
 	public static $dark_sky_api_transient_used = 'FALSE';
 	public static $google_maps_api_key = '';
 	public static $google_maps_api_transient_used = 'FALSE';
@@ -43,7 +43,7 @@ class Shortcode extends Shortcode_Script_Loader {
 	public static $span_first_hour_timestamp = false;
 	public static $span_end_time_timestamp = false; // Start time's timestamp with minutes truncated. Should be equal to or less than $span_start_time_timestamp.
 	public static $span_total_days_in_span = false;
-	public static $span_template_data = array();
+	public static $span_template_data = [];
 
 	/**
 	 * The street address that you want to geocode, in the format used by the
@@ -231,7 +231,7 @@ class Shortcode extends Shortcode_Script_Loader {
 
 		// if false === $transients, clear existing and set new transients
 		if ( ! empty( $atts['transients_off'] )
-		     && 'true' == $atts['transients_off']
+			&& 'true' == $atts['transients_off']
 		) {
 			self::$transients_enabled = false;
 		} else {

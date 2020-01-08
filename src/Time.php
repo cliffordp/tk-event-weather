@@ -353,7 +353,7 @@ class Time {
 
 		date_default_timezone_set( $timezone );
 
-		$result = array();
+		$result = [];
 
 		// Either of these two could return FALSE if strtotime() failed, but we've got bigger problems if this happens since everything should have been verified before submitting to this method.
 		$first_midnight = self::get_a_days_min_max_timestamp( $start_time_timestamp, $timezone );
@@ -516,7 +516,7 @@ class Time {
 	 * @return array
 	 */
 	public static function wp_manual_utc_offsets_array() {
-		$result = array();
+		$result = [];
 
 		// Manual UTC offsets, code borrowed from https://developer.wordpress.org/reference/functions/wp_timezone_choice/
 		$offset_range = array(
