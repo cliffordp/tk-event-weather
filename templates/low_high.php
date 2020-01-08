@@ -6,6 +6,8 @@ namespace TKEventWeather;
  * Template: Event Low to High (plain text)
  *
  * Override this template in your own theme by creating a file at [your-child-theme]/tk-event-weather/low_high.php
+ *
+ * @see \TKEventWeather\Template::load_template()
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
