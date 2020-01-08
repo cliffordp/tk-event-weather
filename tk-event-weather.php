@@ -205,7 +205,6 @@ function terms_agreement_text() {
 /**
  * A helper function for easy Freemius SDK access.
  *
-
  * @return Freemius|false
  */
 function tk_event_weather_freemius() {
@@ -242,6 +241,7 @@ function tk_event_weather_freemius() {
 							'slug' => 'options-general.php',
 						),
 					),
+					'navigation' => 'tabs',
 				)
 			);
 		}
