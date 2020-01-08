@@ -223,7 +223,8 @@ class Single_Day {
 		ob_start();
 
 		if ( ! empty( Shortcode::$debug_enabled ) ) {
-			printf( '<!--%1$s%2$s -- Template Data converted to JSON%1$s%3$s%1$s-->%1$s',
+			printf(
+				'<!--%1$s%2$s -- Template Data converted to JSON%1$s%3$s%1$s-->%1$s',
 				PHP_EOL,
 				Setup::plugin_display_name(),
 				json_encode( $template_data, JSON_PRETTY_PRINT ) // JSON_PRETTY_PRINT option requires PHP 5.4

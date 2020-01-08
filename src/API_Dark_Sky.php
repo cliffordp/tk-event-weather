@@ -35,7 +35,8 @@ class API_Dark_Sky {
 		 * https://api.darksky.net/forecast/___API_KEY___/38.897676,-77.036530,1464604200?units=auto&exclude=minutely,alerts
 		 * -->
 		 */
-		$output .= sprintf( '<!--%1$s%2$s -- Dark Sky API -- Obtained from Transient: %3$s -- Request URI:%1$s%4$s%1$s -- JSON Data:%1$s%5$s%1$s-->%1$s',
+		$output .= sprintf(
+			'<!--%1$s%2$s -- Dark Sky API -- Obtained from Transient: %3$s -- Request URI:%1$s%4$s%1$s -- JSON Data:%1$s%5$s%1$s-->%1$s',
 			PHP_EOL,
 			Setup::plugin_display_name(),
 			Shortcode::$dark_sky_api_transient_used,

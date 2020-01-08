@@ -231,7 +231,7 @@ class Shortcode extends Shortcode_Script_Loader {
 
 		// if false === $transients, clear existing and set new transients
 		if ( ! empty( $atts['transients_off'] )
-		     && 'true' == $atts['transients_off']
+			&& 'true' == $atts['transients_off']
 		) {
 			self::$transients_enabled = false;
 		} else {

@@ -87,9 +87,9 @@ class Functions {
 	 */
 	public static function array_get_value_by_key( $array, $key, $fallback = '' ) {
 		if ( ! is_array( $array )
-		     || empty( $array )
-		     || ! isset( $array[ $key ] ) // use instead of array_key_exists()
-		     || '' === $array[ $key ] // to allow resetting an option back to its blank default
+			|| empty( $array )
+			|| ! isset( $array[ $key ] ) // use instead of array_key_exists()
+			|| '' === $array[ $key ] // to allow resetting an option back to its blank default
 		) {
 			$result = $fallback;
 		} else {
@@ -195,7 +195,8 @@ class Functions {
 		$result = sprintf(
 			'%s %s',
 			sanitize_html_class( TK_EVENT_WEATHER_HYPHENS . '__wrapper' ), // so the customizer auto-links to it
-			sanitize_html_class( TK_EVENT_WEATHER_HYPHENS . '__error' // for the custom CSS targeting
+			sanitize_html_class(
+				TK_EVENT_WEATHER_HYPHENS . '__error' // for the custom CSS targeting
 			)
 		);
 
@@ -210,7 +211,7 @@ class Functions {
 	 *
 	 * @link https://github.com/woocommerce/woocommerce/blob/3.2.3/includes/wc-formatting-functions.php#L519-L543
 	 *
-	 * @param  string $size Size value.
+	 * @param string $size Size value.
 	 *
 	 * @return int
 	 */

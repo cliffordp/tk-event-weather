@@ -47,15 +47,17 @@ class Plugin extends Life_Cycle {
 			return;
 		}
 
-		$wp_adminbar->add_node( array(
-			'id'     => 'tkeventweather_edit_page',
-			'title'  => __( 'Open in TK Event Weather settings', 'tk-event-weather' ),
-			'parent' => 'customize',
-			'href'   => self::customizer_link_to_edit_current_url(),
-			'meta'   => array(
-				'class' => 'hide-if-no-customize',
-			),
-		) );
+		$wp_adminbar->add_node(
+			array(
+				'id'     => 'tkeventweather_edit_page',
+				'title'  => __( 'Open in TK Event Weather settings', 'tk-event-weather' ),
+				'parent' => 'customize',
+				'href'   => self::customizer_link_to_edit_current_url(),
+				'meta'   => array(
+					'class' => 'hide-if-no-customize',
+				),
+			)
+		);
 	}
 
 	/**

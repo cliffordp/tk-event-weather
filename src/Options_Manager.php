@@ -316,11 +316,21 @@ class Options_Manager {
 					<h2>Terms</h2>
 					<p><?php _e( 'By using this plugin, you agree to the following terms (links open in new tab):', 'tk-event-weather' ); ?></p>
 					<ul style="margin-left: 40px; list-style: disc;">
-						<li><a href="https://tourkick.com/terms/?utm_source=terms_agreement_text&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather" target="_blank"><?php echo esc_html_x( "TourKick's terms", 'TourKick terms link text', 'tk-event-weather' );?></a></li>
-						<li><a href="https://freemius.com/terms/" target="_blank"><?php echo esc_html_x( "Freemius's terms", 'Freemius terms link text', 'tk-event-weather' );?></a></li>
-						<li><a href="<?php echo $terms_link;?>#subscriptions_summary" target="_blank"><?php echo esc_html_x( 'Subscriptions terms summary', 'Freemius terms link text', 'tk-event-weather' );?></a></li>
-						<li><a href="<?php echo $terms_link;?>#refund_policy_summary" target="_blank"><?php echo esc_html_x( 'Refund policy summary', 'Freemius terms link text', 'tk-event-weather' );?></a></li>
-						<li><a href="<?php echo $terms_link;?>#refund_policy" target="_blank"><?php echo esc_html_x( 'Full refund policy', 'Freemius terms link text', 'tk-event-weather' );?></a></li>
+						<li>
+							<a href="https://tourkick.com/terms/?utm_source=terms_agreement_text&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather" target="_blank"><?php echo esc_html_x( "TourKick's terms", 'TourKick terms link text', 'tk-event-weather' ); ?></a>
+						</li>
+						<li>
+							<a href="https://freemius.com/terms/" target="_blank"><?php echo esc_html_x( "Freemius's terms", 'Freemius terms link text', 'tk-event-weather' ); ?></a>
+						</li>
+						<li>
+							<a href="<?php echo $terms_link; ?>#subscriptions_summary" target="_blank"><?php echo esc_html_x( 'Subscriptions terms summary', 'Freemius terms link text', 'tk-event-weather' ); ?></a>
+						</li>
+						<li>
+							<a href="<?php echo $terms_link; ?>#refund_policy_summary" target="_blank"><?php echo esc_html_x( 'Refund policy summary', 'Freemius terms link text', 'tk-event-weather' ); ?></a>
+						</li>
+						<li>
+							<a href="<?php echo $terms_link; ?>#refund_policy" target="_blank"><?php echo esc_html_x( 'Full refund policy', 'Freemius terms link text', 'tk-event-weather' ); ?></a>
+						</li>
 					</ul>
 				</div>
 				<?php
