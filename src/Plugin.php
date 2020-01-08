@@ -445,7 +445,12 @@ class Plugin extends Life_Cycle {
 		$wp_customize->add_control(
 			TK_EVENT_WEATHER_UNDERSCORES . '_time_format_day_control', array(
 				'label'       => esc_html__( 'Day Format', 'tk-event-weather' ),
-				'description' => sprintf( __( "Per day date format. Default: M j (e.g. Oct 7)%sReference %s and %sthe Codex's Formatting Date and Time%s for available time formats (links open in new window).", 'tk-event-weather' ), '<br>', '<a href="https://codex.wordpress.org/Function_Reference/date_i18n" target="_blank">date_i18n()</a>', '<a href="https://codex.wordpress.org/Formatting_Date_and_Time" target="_blank">', '</a>' ),
+				'description' => sprintf(
+					__( "Date format per day. Default: M j (e.g. Oct 7)%sReference %sWordPress' Formatting Date and Time article%s for available time formats (link opens in new window).", 'tk-event-weather' ),
+					'<br>',
+					'<a href="https://wordpress.org/support/article/formatting-date-and-time/" target="_blank">',
+					'</a>'
+				),
 				'section'     => self::customizer_section_id() . '_display',
 				'settings'    => TK_EVENT_WEATHER_UNDERSCORES . '[time_format_day]',
 				'type'        => 'text',

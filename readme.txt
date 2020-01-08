@@ -4,7 +4,7 @@ Tags: calendar, events, forecast, shortcode, weather
 License: GPL version 3 or any later version
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.6
-Tested up to: 5.2.2
+Tested up to: 5.3.2
 Requires PHP: 5.6
 Stable tag: 1.6.2
 
@@ -223,6 +223,8 @@ Many thanks to the following:
 *Changelog DIFFs for all versions are available at <a href="https://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
 = Version 1.6.2 =
 * January 8, 2020
+* Tested up to WordPress 5.3.2
+* Updated date display for WordPress 5.3's new [wp_date() function](https://make.wordpress.org/core/2019/09/23/date-time-improvements-wp-5-3/) in a backwards compatible way
 * Updated Freemius SDK to v2.3.2
 * Moved Freemius submenu options to tabs within main plugin options to reduce clutter [Before-After screenshot](https://user-images.githubusercontent.com/1812179/71995548-625ef300-3200-11ea-88db-a227d78a8e98.png)
 
