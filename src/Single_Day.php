@@ -44,6 +44,13 @@ class Single_Day {
 		return $api_class::get_response_data();
 	}
 
+	/**
+	 * Get the template output HTML.
+	 *
+	 * @since 1.6.2 Set empty values for missing properties to avoid undefined property errors in template files.
+	 *
+	 * @return bool|string
+	 */
 	private static function build_template_output() {
 		if ( ! empty( Functions::$shortcode_error_message ) ) {
 			return false;
@@ -157,6 +164,26 @@ class Single_Day {
 
 		//$weather_hourly = Functions::sort_multidim_array_by_sub_key( $weather_hourly, 'time' );
 
+		// Avoid undefined property errors in template files
+		// TODO: could loop through all possible properties instead of just these most likely offenders
+		foreach ( $weather_hourly as &$item ) {
+			if ( ! isset( $item->icon ) ) {
+				$item->icon = '';
+			}
+			if ( ! isset( $item->summary ) ) {
+				$item->summary = '';
+			}
+			if ( ! isset( $item->temperature ) ) {
+				$item->temperature = null;
+			}
+			if ( ! isset( $item->windBearing ) ) {
+				$item->windBearing = null;
+			}
+			if ( ! isset( $item->windSpeed ) ) {
+				$item->windSpeed = null;
+			}
+		}
+
 		$template_data['weather_hourly'] = $weather_hourly;
 
 		// Get Low and High from Hourly
@@ -207,7 +234,7 @@ class Single_Day {
 		Template::load_template( $template_data['template'], $template_data );
 		Template::load_template( 'single_day_after', $template_data );
 
-		return ob_get_clean();
+		return (string) ob_get_clean();
 	}
 
 
