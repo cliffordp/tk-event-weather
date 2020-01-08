@@ -240,7 +240,7 @@ class API_Dark_Sky {
 			self::$start_time_timestamp
 		);
 
-		$uri_query_args = array();
+		$uri_query_args = [];
 
 		$units = self::get_request_uri_units();
 

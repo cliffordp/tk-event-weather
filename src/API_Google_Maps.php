@@ -138,7 +138,7 @@ class API_Google_Maps {
 
 		$uri_base = 'https://maps.googleapis.com/maps/api/geocode/json';
 
-		$uri_query_args = array();
+		$uri_query_args = [];
 
 		$uri_query_args['address'] = urlencode( $address );
 

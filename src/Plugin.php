@@ -68,7 +68,7 @@ class Plugin extends Life_Cycle {
 	 *
 	 * @return string
 	 */
-	public static function customizer_link_to_edit_current_url( $query_args = array() ) {
+	public static function customizer_link_to_edit_current_url( $query_args = [] ) {
 		if (
 			is_customize_preview()
 			|| is_admin()

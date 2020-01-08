@@ -144,7 +144,7 @@ class Single_Day {
 		// Hourly Weather
 		// any internal pointers to reset first?
 
-		$weather_hourly = array();
+		$weather_hourly = [];
 
 		$index = $weather_hourly_start_key;
 

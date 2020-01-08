@@ -686,7 +686,7 @@ class Options_Manager {
 				</td>
 			</tr>
 			<?php
-			$posting = array();
+			$posting = [];
 			// fsockopen/cURL.
 			$posting['fsockopen_curl']['name'] = 'fsockopen/cURL';
 			if ( function_exists( 'fsockopen' ) || function_exists( 'curl_init' ) ) {
@@ -795,7 +795,7 @@ class Options_Manager {
 			 *
 			 * @param array Multi-dimensional array. One array for each add-on, if any.
 			 */
-			$addon_plugin_options = apply_filters( TK_EVENT_WEATHER_UNDERSCORES . '_add_on_plugin_options_array', array() );
+			$addon_plugin_options = apply_filters( TK_EVENT_WEATHER_UNDERSCORES . '_add_on_plugin_options_array', [] );
 
 			if (
 				! empty( $addon_plugin_options )
@@ -839,9 +839,9 @@ class Options_Manager {
 			</thead>
 			<tbody>
 			<?php
-			$active_plugins = (array) get_option( 'active_plugins', array() );
+			$active_plugins = (array) get_option( 'active_plugins', [] );
 			if ( is_multisite() ) {
-				$network_activated_plugins = array_keys( get_site_option( 'active_sitewide_plugins', array() ) );
+				$network_activated_plugins = array_keys( get_site_option( 'active_sitewide_plugins', [] ) );
 				$active_plugins            = array_merge( $active_plugins, $network_activated_plugins );
 			}
 			foreach ( $active_plugins as $plugin ) {
