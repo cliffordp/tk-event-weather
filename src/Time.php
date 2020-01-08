@@ -2,6 +2,9 @@
 
 namespace TKEventWeather;
 
+use DateTimeZone;
+use Exception;
+
 // TODO: Consider using Carbon once its version 2 is released: https://carbon.nesbot.com/
 
 class Time {
@@ -98,8 +101,14 @@ class Time {
 	}
 
 	/**
+	 * Display the specified unix timestamp in the specified date format, optionally with a specified time zone.
+	 *
+	 * @since 1.6.2 Update for WordPress 5.3's `wp_date()`, if available.
+	 *
+	 * @link  https://make.wordpress.org/core/2019/09/23/date-time-improvements-wp-5-3/
+	 *
 	 * @param string $timestamp
-	 * @param string $timezone
+	 * @param string $timezone Optional.
 	 * @param string $date_format
 	 *
 	 * @return string
@@ -109,11 +118,14 @@ class Time {
 		// timestamp
 		$timestamp = self::valid_timestamp( $timestamp );
 
-		if ( '' === $timestamp ) {
+		if (
+			'' === $timestamp
+			|| empty ( $date_format )
+		) {
 			return '';
 		}
 
-		// We will change timezone just for this conversion. Then we'll set it back.
+		// Pre-WP-5.3: We will change timezone just for this conversion. Then we'll set it back.
 		$existing_timezone = date_default_timezone_get(); // will fallback to UTC but may also return a TZ environment variable (e.g. EST)
 
 		// Dark Sky API may return an escaped timezone string
@@ -127,19 +139,20 @@ class Time {
 			$timezone = $existing_timezone;
 		}
 
-		date_default_timezone_set( $timezone );
+		if ( function_exists( 'wp_date' ) ) {
+			try {
+				$tz_obj = new DateTimeZone( $timezone );
+			}
+			catch ( Exception $e ) {
+				$tz_obj = null; // fallback to letting wp_date() figure it out
+			}
 
-
-		if ( empty ( $date_format ) ) {
-			return '';
+			$date = wp_date( $date_format, $timestamp, $tz_obj );
+		} else {
+			date_default_timezone_set( $timezone );
+			$date = date_i18n( $date_format, $timestamp );
+			date_default_timezone_set( $existing_timezone );
 		}
-
-		// $date = date ( $date_format, $timestamp );
-		$date = date_i18n( $date_format, $timestamp );
-		// possibly relevant issues with date_i18n(): https://core.trac.wordpress.org/ticket/38771, https://core.trac.wordpress.org/ticket/39595#comment:5
-
-		// set back to what date_default_timezone_get() was
-		date_default_timezone_set( $existing_timezone );
 
 		// return
 		return $date;

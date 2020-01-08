@@ -7,6 +7,7 @@ namespace TKEventWeather;
  *
  * Override this template in your own theme by creating a file at [your-child-theme]/tk-event-weather/hourly_vertical.php
  *
+ * @see \TKEventWeather\Template::load_template()
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

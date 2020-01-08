@@ -4,9 +4,9 @@ Tags: calendar, events, forecast, shortcode, weather
 License: GPL version 3 or any later version
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.6
-Tested up to: 5.2.2
+Tested up to: 5.3.2
 Requires PHP: 5.6
-Stable tag: 1.6.1
+Stable tag: 1.6.2
 
 Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 
@@ -220,12 +220,23 @@ Many thanks to the following:
 9. A view of the Freemius links to your Freemius Account, the plugin Contact Us form, the WordPress.org Support Forum, and easy access to paid add-ons.
 
 == Changelog ==
-*Changelog DIFFs for all versions are available at <a href="https://plugins.trac.wordpress.org/browser/tk-event-weather/trunk" target="_blank">WordPress SVN</a>.*
+
+* Changelog DIFFs for all versions are available at GitHub: `https://github.com/cliffordp/tk-event-weather/compare/X.X.X...Y.Y.Y` _(older version ... newer version)_
+* Freemius' changelog is available at [GitHub](https://github.com/Freemius/wordpress-sdk/releases)*
+
+= Version 1.6.2 =
+* January 8, 2020
+* Tested up to WordPress 5.3.2
+* Updated date display for WordPress 5.3's new [wp_date() function](https://make.wordpress.org/core/2019/09/23/date-time-improvements-wp-5-3/) in a backwards compatible way
+* Updated Freemius SDK to v2.3.2
+* Moved Freemius submenu options to tabs within main plugin options to reduce clutter [Before-After screenshot](https://user-images.githubusercontent.com/1812179/71995548-625ef300-3200-11ea-88db-a227d78a8e98.png)
+* Fix `icon.svg` at Freemius setup prompt
+* Set empty values for missing properties to avoid undefined property errors in template files
 
 = Version 1.6.1 =
 * August 4, 2019
 * Tested with WordPress 5.2.2
-* Update Freemius SDK from v2.2.4 to v2.3.0
+* Updated Freemius SDK from v2.2.4 to v2.3.0
 * Google geocoder in admin's "Tools" tab now loads on HTTPS
 
 = Version 1.6.0 =
@@ -233,7 +244,7 @@ Many thanks to the following:
 * Tested with WordPress 5.1
 * Now requires PHP version 5.6 or greater.
 * Now may disable upsells by adding `define( 'TK_EVENT_WEATHER_DISABLE_UPSELLS', true );` to `wp-config.php`
-* Update Freemius SDK from v1.2.3 to v2.2.4 (security fix).
+* Updated Freemius SDK from v1.2.3 to v2.2.4 (security fix).
 
 = Version 1.5.4 =
 * December 31, 2017
@@ -296,7 +307,7 @@ Bug fixes:
 = Version 1.4.6 =
 * May 26, 2017
 * Fix - Remove potential for start time timestamp variable not being defined in cases where the start_time shortcode argument value was of an unexpected (and invalid) variety.
-* Update Freemius SDK from v1.2.1.6 to v1.2.1.7.1
+* Updated Freemius SDK from v1.2.1.6 to v1.2.1.7.1
 
 = Version 1.4.5 =
 * May 25, 2017
@@ -322,7 +333,7 @@ Bug fixes:
 = Version 1.4.1 =
 * March 11, 2017
 * Enhancement: If start_time or end_time begins with capital "T" (leaving out the YYYY-MM-DD part of the ISO 8601 format), today's date from WordPress' current_time( 'Y-m-d' ) will be used
-* Update Freemius SDK from v1.2.1.5 to v1.2.1.6
+* Updated Freemius SDK from v1.2.1.5 to v1.2.1.6
 
 = Version 1.4 =
 * March 10, 2017
@@ -341,7 +352,7 @@ Bug fixes:
 * Paid add-ons: lower single-site prices and bulk purchasing is now available (discounted pricing when buying for multiple sites at once).
 * Tested with WordPress 4.7.1
 * Breaking change: Reworked time-based functions due to the Dark Sky API response deprecating 'offset'. Uses 'timezone' response now to retrieve the timezone of the specified location, which makes this plugin display more accurately.
-* Enhancement: Added Time Format options (time_format_hours and time_format_minutes shortcode arguments). Reference <a href="https://codex.wordpress.org/Function_Reference/date_i18n">date_i18n()</a> and <a href="https://codex.wordpress.org/Formatting_Date_and_Time">the Codex's Formatting Date and Time</a> for available time formats. This also changed the Hourly and Vertical templates, if you have customized those.
+* Enhancement: Added Time Format options (time_format_hours and time_format_minutes shortcode arguments). Reference <a href="https://codex.wordpress.org/Function_Reference/date_i18n">date_i18n()</a> and <a href="https://wordpress.org/support/article/formatting-date-and-time/">WordPress' Formatting Date and Time article</a> for available time formats. This also changed the Hourly and Vertical templates, if you have customized those.
 * Changed transient name
 * Fixed error if weather API does not return a sunrise and/or sunset time (e.g. sun does not rise or set this day).
 * Added WP Timezone, Date Format, and Time Format to the Help tab's system information report.
@@ -353,21 +364,21 @@ Bug fixes:
 
 = Version 1.2.5 =
 * January 3, 2017
-* Update Freemius SDK from v1.2.1 to v1.2.1.5
+* Updated Freemius SDK from v1.2.1 to v1.2.1.5
 
 = Version 1.2.4 =
 * October 30, 2016
 * *Breaking Change:* Updated references and code for The Forecast.io API getting renamed to The Dark Sky API as of September 20, 2016. *You will need to re-enter your API key and other settings specific to The Dark Sky API.*
-* Update Freemius SDK from v1.2.0 to v1.2.1
+* Updated Freemius SDK from v1.2.0 to v1.2.1
 
 = Version 1.2.3.3 =
 * August 24, 2016
 * Fix `class` shortcode parameter (existed before but was not implemented into the output)
-* Update Freemius SDK from v1.1.9 to v1.2.0
+* Updated Freemius SDK from v1.1.9 to v1.2.0
 
 = Version 1.2.3.2 =
 * July 22, 2016
-* Update Freemius SDK from v1.1.8.1 to v1.1.9
+* Updated Freemius SDK from v1.1.8.1 to v1.1.9
 
 = Version 1.2.3.1 =
 * July 22, 2016

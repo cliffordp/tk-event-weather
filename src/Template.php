@@ -21,6 +21,9 @@ class Template {
 	 * @link https://pippinsplugins.com/template-file-loaders-plugins/
 	 */
 
+	/**
+	 * @return Template_Loader
+	 */
 	public static function new_template_loader() {
 		return new Template_Loader();
 	}
