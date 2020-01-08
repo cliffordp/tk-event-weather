@@ -230,6 +230,7 @@ Many thanks to the following:
 * Updated date display for WordPress 5.3's new [wp_date() function](https://make.wordpress.org/core/2019/09/23/date-time-improvements-wp-5-3/) in a backwards compatible way
 * Updated Freemius SDK to v2.3.2
 * Moved Freemius submenu options to tabs within main plugin options to reduce clutter [Before-After screenshot](https://user-images.githubusercontent.com/1812179/71995548-625ef300-3200-11ea-88db-a227d78a8e98.png)
+* Fix `icon.svg` at Freemius setup prompt
 
 = Version 1.6.1 =
 * August 4, 2019
