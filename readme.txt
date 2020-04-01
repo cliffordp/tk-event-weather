@@ -6,7 +6,7 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.6
 Tested up to: 5.3.2
 Requires PHP: 5.6
-Stable tag: 1.6.2
+Stable tag: 1.6.3
 
 Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 
@@ -223,6 +223,9 @@ Many thanks to the following:
 
 * Changelog DIFFs for all versions are available at GitHub: `https://github.com/cliffordp/tk-event-weather/compare/X.X.X...Y.Y.Y` _(older version ... newer version)_
 * Freemius' changelog is available at [GitHub](https://github.com/Freemius/wordpress-sdk/releases)
+
+= Version 1.6.3 =
+* April 1, 2020
 
 = Version 1.6.2 =
 * January 8, 2020
