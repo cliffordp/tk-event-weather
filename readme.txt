@@ -4,7 +4,7 @@ Tags: calendar, events, forecast, shortcode, weather
 License: GPL version 3 or any later version
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.6
-Tested up to: 5.3.2
+Tested up to: 5.4
 Requires PHP: 5.6
 Stable tag: 1.6.3
 
@@ -226,6 +226,7 @@ Many thanks to the following:
 
 = Version 1.6.3 =
 * April 1, 2020
+* Tested up to WordPress 5.4
 
 = Version 1.6.2 =
 * January 8, 2020
