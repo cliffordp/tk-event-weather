@@ -227,6 +227,7 @@ Many thanks to the following:
 = Version 1.6.3 =
 * April 1, 2020
 * Tested up to WordPress 5.4
+* Fixed admin embed of Google Maps manual geocoder (in the Settings' "Tools" tab), since they relocated it.
 
 = Version 1.6.2 =
 * January 8, 2020
