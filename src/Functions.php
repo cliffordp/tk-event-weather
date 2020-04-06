@@ -913,7 +913,6 @@ class Functions {
 			$icon_type = 'climacons_font';
 		}
 
-
 		if ( 'climacons_font' == $icon_type ) {
 			$result = sprintf( '<i style="-ms-transform: rotate(%1$ddeg); -webkit-transform: rotate(%1$ddeg); transform: rotate(%1$ddeg);" class="%2$s__wind-direction-icon climacon compass north"></i>', $input, TK_EVENT_WEATHER_HYPHENS );
 		} elseif ( 'climacons_svg' == $icon_type ) {

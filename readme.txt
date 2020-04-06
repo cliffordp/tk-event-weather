@@ -4,9 +4,9 @@ Tags: calendar, events, forecast, shortcode, weather
 License: GPL version 3 or any later version
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 4.6
-Tested up to: 5.3.2
+Tested up to: 5.4
 Requires PHP: 5.6
-Stable tag: 1.6.2
+Stable tag: 1.6.3
 
 Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
 
@@ -80,6 +80,9 @@ I'll consider making whichever add-ons I receive the most requests for (and are 
 
 = Notes =
 * You'll need to register for a free [Dark Sky API key](https://darksky.net/dev/)
+* Quote from Dark Sky's website, as of March 31, 2020:
+  * **Our API service for existing customers is not changing today, but we will no longer accept new signups. The API will continue to function through the end of 2021.**
+  * We are looking into an alternative weather API to easily replace the Dark Sky integration so new users can keep using this plugin.
 * As of October 2016, Dark Sky allows up to 1,000 free API calls per day. The cost for additional API calls is $0.0001 per API call (or $1 per 10,000 requests).
 * You'll need to enter your billing information at Dark Sky if you want to ensure your API access isn't cut off after 1,000 API calls per day.
 * If you're out of API calls for the day and you haven't entered billing information, the plugin will "fail gracefully" (does not display errors to non-Administrators).
@@ -223,6 +226,11 @@ Many thanks to the following:
 
 * Changelog DIFFs for all versions are available at GitHub: `https://github.com/cliffordp/tk-event-weather/compare/X.X.X...Y.Y.Y` _(older version ... newer version)_
 * Freemius' changelog is available at [GitHub](https://github.com/Freemius/wordpress-sdk/releases)
+
+= Version 1.6.3 =
+* April 6, 2020
+* Tested up to WordPress 5.4
+* Fixed admin embed of Google Maps manual geocoder (in the Settings' "Tools" tab), since they relocated it.
 
 = Version 1.6.2 =
 * January 8, 2020

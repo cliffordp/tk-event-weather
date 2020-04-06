@@ -7,7 +7,7 @@ use Freemius;
 /*
 	Plugin Name: TK Event Weather
 	Plugin URI: https://tourkick.com/plugins/tk-event-weather/?utm_source=plugin-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
-	Version: 1.6.2
+	Version: 1.6.3
 	Author: TourKick (Clifford Paulick)
 	Author URI: https://tourkick.com/?utm_source=author-uri-link&utm_medium=free-plugin&utm_term=Event%20Weather%20plugin&utm_campaign=TK%20Event%20Weather
 	Description: Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.
@@ -50,7 +50,7 @@ use Freemius;
  * - add 'demo' option to output all icons (e.g. for styling/testing)
  * - weather advisory alerts (only happen in real-time so probably not going to happen)
  * - color options for styling SVGs (e.g. yellow sun with gray cloud) -- not possible with as-is SVGs because they're flattened (no CSS classes to "fill")
- * - Add support for https://wordpress.org/plugins/shortcode-ui/ and/or Gutenberg: https://wordpress.org/gutenberg/handbook/block-api/
+ * - Build Gutenberg block: https://wordpress.org/gutenberg/handbook/block-api/
  * - poor UX (apparent data discrepancy) when shortcode timezone is not same as API timezone. Example: All Day event on Oct 14, 2017 Central Time... but event is located in Eastern Time... current code will correctly display Midnight through 10pm, not 11pm, because the API actually returned Oct 13 11pm - Oct 14 10pm... so we need to get Oct 13 and Oct 14 from the API
  * Proposed eventual solution:
  * If shortcode's TZ != API's TZ (after stripslashes) {
@@ -132,10 +132,7 @@ function required_capability() {
  */
 
 /**
- * Check the WP core version and give a useful error message if the user's
- * version is less than the required version
- *
- * @return boolean true if version check passed. If false, triggers an error which WP will handle, by displaying an error message on the Admin page.
+ * Output the notice of WordPress minimum version not met.
  */
 function notice_wrong_wp_version() {
 	echo '<div class="notice notice-error">' .
@@ -145,6 +142,11 @@ function notice_wrong_wp_version() {
 	     '</div>';
 }
 
+/**
+ * Check the WP core version and give a useful error message if the user's version is less than the required version.
+ *
+ * @return boolean true if version check passed. If false, triggers an error which WP will handle, by displaying an error message on the Admin page.
+ */
 function wp_version_check() {
 	if ( version_compare( get_bloginfo( 'version' ), Setup::min_wp_version(), '<' ) ) {
 		add_action( 'admin_notices', __NAMESPACE__ . '\notice_wrong_wp_version' );
@@ -156,8 +158,7 @@ function wp_version_check() {
 }
 
 /**
- * Check the PHP version and give a useful error message if the user's version is less than the required version
- * @return boolean true if version check passed. If false, triggers an error which WP will handle, by displaying an error message on the Admin page
+ * Output the notice of PHP minimum version not met.
  */
 function notice_wrong_php_version() {
 	echo '<div class="notice notice-error">' .
@@ -167,6 +168,11 @@ function notice_wrong_php_version() {
 	     '</div>';
 }
 
+/**
+ * Check the PHP version and give a useful error message if the user's version is less than the required version.
+ *
+ * @return boolean true if version check passed. If false, triggers an error which WP will handle, by displaying an error message on the Admin page
+ */
 function php_version_check() {
 	if ( version_compare( phpversion(), Setup::min_php_version(), '<' ) ) {
 		add_action( 'admin_notices', __NAMESPACE__ . '\notice_wrong_php_version' );

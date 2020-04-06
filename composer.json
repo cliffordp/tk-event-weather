@@ -8,7 +8,7 @@
     "gamajo/template-loader": "^1.0",
     "climacons-webfont/climacons-webfont": "^1.0"
   },
-  "license": "GPL-3.0+",
+  "license": "GPL-3.0-or-later",
   "authors": [
     {
       "name": "TourKick LLC (Clifford Paulick)",
@@ -20,16 +20,15 @@
   "minimum-stability": "stable",
   "archive": {
     "exclude": [
+      "*",
+      ".*",
+      "*/",
       "!vendor/*",
-      "*.zip",
-      ".gitignore",
-      ".github",
-      ".travis.yml",
-      "composer.phar",
-      "composer.json",
-      "composer.lock",
-      "phpunit.xml",
-      "README.md"
+      "!dist/*",
+      "!languages/*",
+      "!*.php",
+      "!*.txt",
+      "node_modules/"
     ]
   },
   "autoload": {
