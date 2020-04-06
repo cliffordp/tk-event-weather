@@ -80,6 +80,9 @@ I'll consider making whichever add-ons I receive the most requests for (and are 
 
 = Notes =
 * You'll need to register for a free [Dark Sky API key](https://darksky.net/dev/)
+* Quote from Dark Sky's website, as of March 31, 2020:
+  * **Our API service for existing customers is not changing today, but we will no longer accept new signups. The API will continue to function through the end of 2021.**
+  * We are looking into an alternative weather API to easily replace the Dark Sky integration so new users can keep using this plugin.
 * As of October 2016, Dark Sky allows up to 1,000 free API calls per day. The cost for additional API calls is $0.0001 per API call (or $1 per 10,000 requests).
 * You'll need to enter your billing information at Dark Sky if you want to ensure your API access isn't cut off after 1,000 API calls per day.
 * If you're out of API calls for the day and you haven't entered billing information, the plugin will "fail gracefully" (does not display errors to non-Administrators).
@@ -225,7 +228,7 @@ Many thanks to the following:
 * Freemius' changelog is available at [GitHub](https://github.com/Freemius/wordpress-sdk/releases)
 
 = Version 1.6.3 =
-* April 1, 2020
+* April 6, 2020
 * Tested up to WordPress 5.4
 * Fixed admin embed of Google Maps manual geocoder (in the Settings' "Tools" tab), since they relocated it.
 
