@@ -20,6 +20,7 @@
 	"minimum-stability": "stable",
 	"archive": {
 		"exclude": [
+			".git",
 			".gitignore",
 			"composer.*",
 			"*.zip",
