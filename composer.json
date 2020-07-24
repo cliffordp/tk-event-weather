@@ -20,15 +20,10 @@
   "minimum-stability": "stable",
   "archive": {
     "exclude": [
-      "*",
-      ".*",
-      "*/",
-      "!vendor/*",
-      "!dist/*",
-      "!languages/*",
-      "!*.php",
-      "!*.txt",
-      "node_modules/"
+      ".gitignore",
+      "composer.*",
+      "*.zip",
+      "tk-event-weather"
     ]
   },
   "autoload": {
