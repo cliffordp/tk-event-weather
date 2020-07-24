@@ -1,38 +1,38 @@
 {
-  "name": "tk-event-weather/tk-event-weather",
-  "description": "Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.",
-  "type": "project",
-  "require": {
-    "php": ">=5.6",
-    "freemius/wordpress-sdk": "2.3.2",
-    "gamajo/template-loader": "^1.0",
-    "climacons-webfont/climacons-webfont": "^1.0"
-  },
-  "license": "GPL-3.0-or-later",
-  "authors": [
-    {
-      "name": "TourKick LLC (Clifford Paulick)",
-      "email": "tko+tkeventw@tourkick.com",
-      "homepage": "https://tourkick.com/",
-      "role": "Developer"
-    }
-  ],
-  "minimum-stability": "stable",
-  "archive": {
-    "exclude": [
-      ".gitignore",
-      "composer.*",
-      "*.zip",
-      "tk-event-weather"
-    ]
-  },
-  "autoload": {
-    "psr-4": {
-      "TKEventWeather\\": "src/"
-    }
-  },
-  "config": {
-    "archive-format": "zip",
-    "optimize-autoloader": true
-  }
+	"name": "tk-event-weather/tk-event-weather",
+	"description": "Display beautiful, accurate, and free hourly weather forecasts between a start and end time. Perfect for event calendars.",
+	"type": "project",
+	"require": {
+		"php": ">=5.6",
+		"freemius/wordpress-sdk": "2.3.2",
+		"gamajo/template-loader": "^1.0",
+		"climacons-webfont/climacons-webfont": "^1.0"
+	},
+	"license": "GPL-3.0-or-later",
+	"authors": [
+		{
+			"name": "TourKick LLC (Clifford Paulick)",
+			"email": "tko+tkeventw@tourkick.com",
+			"homepage": "https://tourkick.com/",
+			"role": "Developer"
+		}
+	],
+	"minimum-stability": "stable",
+	"archive": {
+		"exclude": [
+			".gitignore",
+			"composer.*",
+			"*.zip",
+			"tk-event-weather"
+		]
+	},
+	"autoload": {
+		"psr-4": {
+			"TKEventWeather\\": "src/"
+		}
+	},
+	"config": {
+		"archive-format": "zip",
+		"optimize-autoloader": true
+	}
 }
