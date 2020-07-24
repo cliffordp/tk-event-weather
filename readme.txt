@@ -20,51 +20,45 @@ https://www.youtube.com/watch?v=fbGS_LtX-es
 
 = Highlights =
 
-* Registers the `[tk_event_weather]` shortcode for use anywhere on your site (not just for your site calendar's event-specific information) so its usage is very flexible as long as there is a valid Dark Sky API key, latitude, longitude, and time (timestamp or ISO 8601 format)
+* Registers the `[tk_event_weather]` shortcode for use anywhere on your site (not just for your site calendar's event-specific information) so its usage is very flexible as long as there is a valid weather API key, latitude, longitude, and time (timestamp or ISO 8601 format)
 * Uses the Dark Sky API to provide you with an accurate, reliable (typically 99.9% uptime), and free (or low cost if over the daily free API calls limit) weather forecast
-* Uses WordPress' Transients API to minimize Dark Sky API and Google Maps Geocoding API calls (i.e. does not call the APIs on every page load) to increase page load time and save you money (or keep you from hitting the free limits)
-* Returns temperature (fahrenheit or celsius) in units local to the given latitude and longitude (with optional override to force display in one or the other)
+* Uses WordPress' Transients API to minimize external API calls (i.e. does not call the APIs on every page load) to increase page load time and save you money (or keep you from hitting the free limits)
+* Returns temperature (fahrenheit or celsius) in units local to the given latitude and longitude (with option to force display in either unit of measure)
 * Internationalized / translatable (translations not provided)
 * No WP_DEBUG messages
-* Optimized loading of assets and Dark Sky API and Google Maps Geocoding API calls
-* Actions and Filters available for developers and advanced customizations
+* Optimized asset loading and API calls
+* Actions and filters available for developers to support advanced customizations
 * Responsive plugin developer
 
 = Paid Add-Ons =
 
 Currently Available:
 
-* [The Events Calendar by Modern Tribe](https://wordpress.org/plugins/the-events-calendar/) - 600,000+ active installs - [Purchase](https://tourkick.com/shop/wordpress/tk-event-weather-the-events-calendar/)
+* [The Events Calendar by Modern Tribe](https://wordpress.org/plugins/the-events-calendar/) - 800,000+ active installs - [Purchase](https://tourkick.com/shop/wordpress/tk-event-weather-the-events-calendar/)
 * [Events Manager by Marcus Sykes](https://wordpress.org/plugins/events-manager/) - 100,000+ active installs - [Purchase](https://tourkick.com/shop/wordpress/tk-event-weather-events-manager/)
 * [Simple Calendar by Moonstone Media](https://wordpress.org/plugins/google-calendar-events/) - 80,000+ active installs - [Purchase](https://tourkick.com/shop/wordpress/tk-event-weather-events-manager/)
 
 I am considering making add-ons for the following event calendars:
 
 * [All-in-One Event Calendar by Timely](https://wordpress.org/plugins/all-in-one-event-calendar/) - 100,000+ active installs
-* [Event Organiser by Stephen Harris](https://wordpress.org/plugins/event-organiser/) - 40,000+ active installs
-* [Calendar by WD / Spider Event Calendar](https://wordpress.org/plugins/spider-event-calendar/) - 30,000+ active installs
-* [Event Calendar WD](https://wordpress.org/plugins/event-calendar-wd/) - 30,000+ active installs
+* [Event Organiser by Stephen Harris](https://wordpress.org/plugins/event-organiser/) - 30,000+ active installs
 * [My Calendar by Joe Dolson](https://wordpress.org/plugins/my-calendar/) - 30,000+ active installs
-* [EventOn by ashanjay](https://codecanyon.net/item/eventon-wordpress-event-calendar-plugin/1211017?ref=cliffpaulick) - 30,000+ sales
-* [Bookly Booking Plugin by Ladela](https://codecanyon.net/item/bookly-booking-plugin-responsive-appointment-booking-and-scheduling/7226091?ref=cliffpaulick) - 17,000+ sales
-* [Pinpoint Booking System by DOTonPAPER](https://wordpress.org/plugins/booking-system/) - 10,000+ active installs and/or [its PRO upgrade](https://pinpoint.world/shop/product/1/pinpoint-booking-system-wordpress-plugin-pro-version) [(previously on CodeCanyon)](https://codecanyon.net/item/pinpoint-booking-system-pro-book-everything-with-wordpress/2675936?ref=cliffpaulick) - 12,000+ sales
+* [EventOn by ashanjay](https://codecanyon.net/item/eventon-wordpress-event-calendar-plugin/1211017?ref=cliffpaulick) - 51,000+ sales
+* [Bookly Booking Plugin by Ladela](https://codecanyon.net/item/bookly-booking-plugin-responsive-appointment-booking-and-scheduling/7226091?ref=cliffpaulick) - 31,000+ sales
 * [WP Simple Booking Calendar by simplebookingcalendar](https://wordpress.org/plugins/wp-simple-booking-calendar/) - 10,000+ active installs and/or its [Premium version](https://www.wpsimplebookingcalendar.com/)
-* [Calendarize it! by RightHere](https://codecanyon.net/item/calendarize-it-for-wordpress/2568439?ref=cliffpaulick) - 9,000+ sales
-* [Appointment+ by WPMU DEV](https://premium.wpmudev.org/project/appointments-plus/) - 125,000+ downloads
-* [Events+ by WPMU DEV](https://premium.wpmudev.org/project/events-plus/) - 95,000+ downloads
-* [Timetable Responsive Schedule For WordPress by QuanticaLabs](https://codecanyon.net/item/timetable-responsive-schedule-for-wordpress/7010836?ref=cliffpaulick) - 6,000+ sales
-* [Wordpress Pro Event Calendar by DPereyra](https://codecanyon.net/item/wordpress-pro-event-calendar/2485867?ref=cliffpaulick) - 5,500+ sales
+* [Calendarize it! by RightHere](https://codecanyon.net/item/calendarize-it-for-wordpress/2568439?ref=cliffpaulick) - 11,000+ sales
+* [Timetable Responsive Schedule For WordPress by QuanticaLabs](https://codecanyon.net/item/timetable-responsive-schedule-for-wordpress/7010836?ref=cliffpaulick) - 9,000+ sales
+* [Wordpress Pro Event Calendar by DPereyra](https://codecanyon.net/item/wordpress-pro-event-calendar/2485867?ref=cliffpaulick) - 6,700+ sales
 * [Event Booking Pro by MoeHaydar](https://codecanyon.net/item/event-booking-pro-wp-plugin-paypal-or-offline/5543552?ref=cliffpaulick) - 5,000+ active installs
-* [Chronosly Events Calendar](https://wordpress.org/plugins/chronosly-events-calendar/) 4,000+ active installs and/or [its Advanced (Pro) version](https://codecanyon.net/item/chronosly-event-calendar-wordpress-plugin/8493796?ref=cliffpaulick) - 800+ sales
-* [Booked - Appointment Booking for WordPress by BoxyStudio](https://codecanyon.net/item/booked-appointments-appointment-booking-for-wordpress/9466968?ref=cliffpaulick) - 5,500+ active installs
-* [Events Calendar Registration & Booking by elbisnero](https://codecanyon.net/item/events-calendar-registration-booking/7647762?ref=cliffpaulick) - 4,000+ sales
-* [Event Espresso](https://wordpress.org/plugins/event-espresso-decaf/) - 3,000+ active installs of EE4 Decaf and/or its [paid version](https://eventespresso.com/pricing/)
-* [Sugar Events Calendar Lite by Pippin Williamson](https://wordpress.org/plugins/sugar-calendar-lite/) - 2,000+ active installs
-* [Team Booking by VonStroheim](https://codecanyon.net/item/team-booking-wordpress-booking-system/9211794?ref=cliffpaulick) - 3,500+ sales
-* [HBook - Hotel booking system by HotelWP](https://codecanyon.net/item/hbook-hotel-booking-system-wordpress-plugin/10622779?ref=cliffpaulick) - 3,000+ sales
-* [Modern Events Calendar by WEBNUS](https://codecanyon.net/item/modern-events-calendar-responsive-event-scheduler-booking-for-wordpress/17731780?ref=cliffpaulick) - 3,000+ sales
-* [FooEvents for WooCommerce](https://codecanyon.net/item/fooevents-for-woocommerce/11753111?ref=cliffpaulick) - 2,500+ sales
-* [WP Booking Calendar by Wachipi](https://codecanyon.net/item/wp-booking-calendar/4639530?ref=cliffpaulick) - 1,900+ sales
+* [Booked - Appointment Booking for WordPress by BoxyStudio](https://codecanyon.net/item/booked-appointments-appointment-booking-for-wordpress/9466968?ref=cliffpaulick) - 11,000+ active installs
+* [Events Calendar Registration & Booking by elbisnero](https://codecanyon.net/item/events-calendar-registration-booking/7647762?ref=cliffpaulick) - 6,000+ sales
+* [Event Espresso](https://wordpress.org/plugins/event-espresso-decaf/) - 2,000+ active installs of EE4 Decaf and/or its [paid version](https://eventespresso.com/pricing/)
+* [Sugar Events Calendar Lite by Pippin Williamson](https://wordpress.org/plugins/sugar-calendar-lite/) - 1,000+ active installs
+* [Team Booking by VonStroheim](https://codecanyon.net/item/team-booking-wordpress-booking-system/9211794?ref=cliffpaulick) - 5,500+ sales
+* [HBook - Hotel booking system by HotelWP](https://codecanyon.net/item/hbook-hotel-booking-system-wordpress-plugin/10622779?ref=cliffpaulick) - 6,000+ sales
+* [Modern Events Calendar by WEBNUS](https://wordpress.org/plugins/modern-events-calendar-lite/) - 60,000+ active installs, [previously on CodeCanyon](https://codecanyon.net/item/modern-events-calendar-responsive-event-scheduler-booking-for-wordpress/17731780?ref=cliffpaulick)
+* [FooEvents for WooCommerce](https://codecanyon.net/item/fooevents-for-woocommerce/11753111?ref=cliffpaulick) - 3,500+ sales
+* [WP Booking Calendar by Wachipi](https://codecanyon.net/item/wp-booking-calendar/4639530?ref=cliffpaulick) - 2,000+ sales
 * [WooCommerce Bookings](https://woocommerce.com/products/woocommerce-bookings/) - thousands of active installs (exact number unknown)
 * [WooCommerce Appointments by BizzThemes](https://bizzthemes.com/plugins/woocommerce-appointments/)
 * [Booking & Appointment Plugin for WooCommerce by Tyche Softwares](https://www.tychesoftwares.com/store/premium-plugins/woocommerce-booking-plugin/)
@@ -82,16 +76,11 @@ I'll consider making whichever add-ons I receive the most requests for (and are 
 * You'll need to register for a free [Dark Sky API key](https://darksky.net/dev/)
 * Quote from Dark Sky's website, as of March 31, 2020:
   * **Our API service for existing customers is not changing today, but we will no longer accept new signups. The API will continue to function through the end of 2021.**
-  * We are looking into an alternative weather API to easily replace the Dark Sky integration so new users can keep using this plugin.
-* As of October 2016, Dark Sky allows up to 1,000 free API calls per day. The cost for additional API calls is $0.0001 per API call (or $1 per 10,000 requests).
-* You'll need to enter your billing information at Dark Sky if you want to ensure your API access isn't cut off after 1,000 API calls per day.
+* **We're planning to eventually implement [ClimaCell](https://www.climacell.co/) as a weather provider replacement, which is very comparable to the Dark Sky service.**
 * If you're out of API calls for the day and you haven't entered billing information, the plugin will "fail gracefully" (does not display errors to non-Administrators).
-* You can check the [Dark Sky API's Status Updates](https://status.darksky.net/) to read its news.
-* The [Dark Sky Terms of Use](https://darksky.net/dev/docs/terms) states, "You agree that any application or service which incorporates data obtained from the Service shall prominently display the message "Powered by Dark Sky" in a legible manner near the data or any information derived from any data from the Service. This message must, if possible, open a link to [https://darksky.net/poweredby/](https://darksky.net/poweredby/) when clicked or touched."
-* This plugin's output will automatically add a compliant link; however, there is a setting to disable outputting this link. This is because your site may not be a "public or user-facing application" (although it probably is) or because you've emailed to the address in their Terms of Use to request (and have been approved for) their extremely-affordable *white-label* account.
-* This plugin and its author are not affiliated with or endorsed by The Dark Sky Company, LLC or any of the other plugins mentioned (including ones for which an add-on is available).
+* This plugin and its author are not affiliated with or endorsed by The Dark Sky Company, LLC, ClimaCell, Inc., or any of the other plugins mentioned (including ones for which an add-on is available).
 * This plugin utilizes [Freemius](https://freemius.com/wordpress/). All data collected via Freemius will be available to both Freemius and this plugin's author to be used in responsible ways. By opting-in to Freemius, you'll help us learn how we can make this plugin better and possibly communicate with you regarding the plugin's development.
-* This plugin may contain affiliate links.
+* This plugin's description and code may contain affiliate links.
 
 = Support Me =
 * [Leave a great review](https://wordpress.org/support/view/plugin-reviews/tk-event-weather?rate=5#postform)
@@ -112,7 +101,6 @@ After automatically or manually installing to wp-content/plugins/:
 4. Then use the shortcode however you wish throughout your site (will require manually entering latitude and longitude) or install one of our add-ons to make it easy to integrate with your event calendar.
 
 == Frequently Asked Questions ==
-
 
 = What shortcodes are available? =
 
