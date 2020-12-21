@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0c3d1addd304f21fe2e931c6b0643d43",
+    "content-hash": "dd7f09004f4ad1d71ff25945ac34e854",
     "packages": [
         {
             "name": "climacons-webfont/climacons-webfont",
@@ -46,16 +46,16 @@
         },
         {
             "name": "freemius/wordpress-sdk",
-            "version": "2.4.0",
+            "version": "2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Freemius/wordpress-sdk.git",
-                "reference": "1c7e0bc209d32235c0e9ac2f23e52bb83564acbc"
+                "reference": "4f60bf8a5d0635954fb911ffd52a21bc06aa7561"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Freemius/wordpress-sdk/zipball/1c7e0bc209d32235c0e9ac2f23e52bb83564acbc",
-                "reference": "1c7e0bc209d32235c0e9ac2f23e52bb83564acbc",
+                "url": "https://api.github.com/repos/Freemius/wordpress-sdk/zipball/4f60bf8a5d0635954fb911ffd52a21bc06aa7561",
+                "reference": "4f60bf8a5d0635954fb911ffd52a21bc06aa7561",
                 "shasum": ""
             },
             "require": {
@@ -77,7 +77,7 @@
                 "wordpress-plugin",
                 "wordpress-theme"
             ],
-            "time": "2020-07-28T16:18:02+00:00"
+            "time": "2020-10-16T08:50:13+00:00"
         },
         {
             "name": "gamajo/template-loader",
